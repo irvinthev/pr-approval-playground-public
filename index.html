@@ -3,12 +3,12 @@
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark light"><title>PR Approval Playground</title>
 <style>
 :root{font-family:Inter,system-ui,-apple-system,sans-serif;color:#eaf1fb;background:#0a1120}*{box-sizing:border-box}body{margin:0}button,select{font:inherit}button{cursor:pointer}a{color:#a6cdff}.wrap{max-width:1120px;margin:auto;padding:28px 20px 72px}.top{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.eyebrow{color:#91b9ef;font-size:12px;font-weight:700;letter-spacing:.13em;text-transform:uppercase}h1{font-size:clamp(30px,5vw,52px);margin:14px 0 8px;line-height:1.08}h2{margin:0 0 12px;font-size:22px}h3{margin:0 0 7px;font-size:17px}p{line-height:1.55}.sub{color:#b3bfd1;max-width:700px}.pill{padding:7px 11px;background:#17314d;color:#b9dbff;border-radius:999px;font-size:12px;font-weight:700}.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0}.tabs button,.option{background:#15233a;color:#eaf1fb;border:1px solid #31435f;padding:10px 13px;border-radius:10px}.tabs button[aria-selected=true],.option[aria-pressed=true]{border-color:#82b5ff;background:#22446a}.panel{border:1px solid #30415b;background:#111d30;border-radius:17px;padding:22px;margin:15px 0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}.card{border:1px solid #354663;background:#18283f;border-radius:12px;padding:16px}.card small{color:#aab9cf}.flow{display:grid;grid-template-columns:repeat(5,minmax(110px,1fr));gap:9px;margin:22px 0}.step{border:1px solid #3b567b;border-radius:12px;background:#1a3150;padding:14px 8px;min-height:100px;text-align:center;color:#f4f7ff}.step:hover,.step:focus-visible{outline:2px solid #91c0ff}.step strong{display:block}.step span{font-size:12px;color:#c0d2e8;display:block;margin-top:6px}.callout{padding:14px 17px;border-radius:11px;background:#172f45;border-left:4px solid #72b3fa;line-height:1.55}.good{border-left-color:#51d0aa}.bad{border-left-color:#ffa873}.row{display:flex;flex-wrap:wrap;gap:8px}.toggle{display:flex;align-items:center;gap:10px;margin:10px 0}.toggle input{width:19px;height:19px}.dim{color:#adbed2}.hidden{display:none}select{width:100%;padding:12px;border-radius:10px;border:1px solid #617898;color:#f4f7ff;background:#17283f}.result{font-weight:800;font-size:22px;margin:8px 0}.footer{font-size:12px;color:#95a9c5;margin-top:28px}@media(max-width:680px){.flow{grid-template-columns:1fr}.step{min-height:56px;text-align:left;padding:11px 13px}.step span{display:inline;margin-left:8px}.panel{padding:16px}}
-</style></head>
+.journey-steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:18px 0}.journey-steps button{background:#172b44;border:1px solid #49617e;color:#eaf1fb;border-radius:11px;padding:13px 7px;min-height:96px;font-size:13px}.journey-steps button.active{border:2px solid #7fb7ff;background:#23476e}.journey-steps button.done{border-color:#44c8a0}.journey-steps button.blocked{border-color:#ff987c}.journey-steps button span{display:block;color:#b8cbe4;font-size:11px;margin-top:7px}.journey-legend{display:flex;gap:8px;flex-wrap:wrap}.journey-legend span{font-size:11px;padding:5px 9px;border-radius:30px;background:#1e344d}.journey-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:17px}.journey-actions button{border:1px solid #759bc8;background:#214871;color:#fff;padding:11px 16px;border-radius:10px;font-weight:700}.journey-actions button:disabled{opacity:.4;cursor:not-allowed}.small-label{display:block;color:#bacbe0;font-size:12px;margin-bottom:6px}.journey-note{font-size:13px;color:#b2c7e0}@media(max-width:680px){.journey-steps{grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}.journey-steps button{padding:9px 3px;font-size:11px;min-height:94px;overflow-wrap:anywhere}.journey-steps button span{font-size:10px}}</style></head>
 <body><div class="wrap">
 <div class="top"><div class="eyebrow">Independent educational demo</div><span class="pill">Fictional scenarios · No API calls</span></div>
 <h1>PR Approval Playground</h1>
 <p class="sub">Explore how deterministic guardrails, AI assessments, human authorization, and deployment monitoring fit together. Toggle policies and simulate what could go wrong.</p>
-<nav class="tabs" aria-label="Sections"><button data-tab="architecture" aria-selected="true">Architecture</button><button data-tab="simulator" aria-selected="false">PR Simulator</button><button data-tab="policy" aria-selected="false">Policy Lab</button><button data-tab="guide" aria-selected="false">Design Guide</button></nav>
+<nav class="tabs" aria-label="Sections"><button data-tab="architecture" aria-selected="true">Architecture</button><button data-tab="journey" aria-selected="false">Journey Lab</button><button data-tab="simulator" aria-selected="false">PR Simulator</button><button data-tab="policy" aria-selected="false">Policy Lab</button><button data-tab="guide" aria-selected="false">Design Guide</button></nav>
 <section id="architecture">
 <div class="panel"><h2>How a change reaches production</h2><p class="dim">Choose a stage to inspect its purpose and limitations.</p><div class="flow">
 <button class="step" data-stage="0"><strong>1. Pull request</strong><span>Source &amp; SHA</span></button>
@@ -19,6 +19,37 @@
 </div><div class="callout" id="stage-detail" aria-live="polite">Start with a pull request: capture its changed files, author, commit identity, and target branch. A review is meaningful only for the exact change reviewed.</div></div>
 <div class="grid"><div class="card"><h3>Gate 1 — Eligibility</h3><p>Rules establish which changes may be considered for automation.</p><small>An AI score should not expand the eligible population.</small></div><div class="card"><h3>Gate 2 — Authorization</h3><p>A controlled identity approves an eligible change under an enforceable policy.</p><small>Model accuracy alone does not confer authority.</small></div><div class="card"><h3>Gate 3 — Integrity</h3><p>Approved source should trace through the build to the deployed artifact.</p><small>Version monitoring cannot prove code correctness.</small></div></div>
 </section>
+<section id="journey" class="hidden">
+<div class="panel">
+<div class="eyebrow">Interactive experiment</div><h2 style="margin-top:10px">Follow a pull request through the gates</h2>
+<p class="dim">Pick a fictional change and configure the safeguards. Advance through the stages to see how each decision changes the outcome.</p>
+<div class="grid"><div><label for="journey-case" class="small-label">Example change</label><select id="journey-case">
+<option value="doc">Docs typo — low risk</option>
+<option value="billing">Sensitive payment calculation</option>
+<option value="dependency">Shared utility with overlooked financial dependency</option>
+<option value="modified">Approved PR gets a new commit</option>
+<option value="timeout">AI service times out</option>
+<option value="automation">Bot-authored PR</option>
+</select></div><div><label for="journey-ai" class="small-label">Illustrative AI verdict</label><select id="journey-ai"><option value="low">Low risk</option><option value="high">High risk</option></select></div></div>
+<div class="grid" style="margin-top:14px">
+<label class="toggle"><input type="checkbox" id="journey-scope" checked> Enforce sensitive-scope rules</label>
+<label class="toggle"><input type="checkbox" id="journey-fail" checked> Fail closed on timeouts</label>
+<label class="toggle"><input type="checkbox" id="journey-sha" checked> Invalidate stale approvals</label>
+<label class="toggle"><input type="checkbox" id="journey-bot" checked> Require independent merge eligibility</label>
+</div>
+<div class="journey-steps" role="group" aria-label="PR journey stages">
+<button data-jstep="0" class="active">PR<span>Source</span></button>
+<button data-jstep="1">Scope<span>Eligibility</span></button>
+<button data-jstep="2">Review<span>Risk + CI</span></button>
+<button data-jstep="3">Merge<span>Authority</span></button>
+<button data-jstep="4">Deploy<span>Observed</span></button>
+</div>
+<div class="journey-legend"><span>● Blue = selected</span><span>● Green = passed</span><span>● Coral = blocked or exception</span></div>
+<div class="callout" id="journey-output" aria-live="polite" style="margin-top:14px"><strong>Pull request created.</strong> Begin by checking its eligibility.</div>
+<div class="journey-actions"><button id="journey-next" type="button">Next stage →</button><button id="journey-reset" type="button">↺ Reset</button></div>
+<div class="card" style="margin-top:16px"><h3>What this teaches</h3><p id="journey-learning">Automated review only makes sense when authorization and scope are independent of the model's confidence.</p></div>
+<p class="journey-note" style="margin-top:14px">Illustrative logic, not a production approval engine. The “shared utility” scenario intentionally demonstrates a missing dependency rule; no model can make an incomplete deterministic scope complete on its own.</p>
+</div></section>
 <section id="simulator" class="hidden">
 <div class="panel"><h2>Run a fictional pull request</h2><label for="scenario">Select change type</label><select id="scenario"><option value="docs">Documentation typo</option><option value="payment">Sensitive payment calculation</option><option value="shared">Shared library with hidden dependency</option><option value="changed">New commit after AI approval</option><option value="bot">Automated bot-authored PR</option></select>
 <div class="grid" style="margin-top:17px"><div class="card"><small>Eligibility check</small><div id="eligibility" class="result">Eligible</div></div><div class="card"><small>Illustrative AI assessment</small><div class="result">Low risk</div></div><div class="card"><small>Expected authorization</small><div id="decision" class="result">Conditional auto-approval</div></div></div>
@@ -34,7 +65,7 @@
 </div>
 <script>
 const $$=(q)=>document.querySelectorAll(q),$=(q)=>document.querySelector(q);
-$$('[data-tab]').forEach(b=>b.addEventListener('click',()=>{$$('[data-tab]').forEach(x=>x.setAttribute('aria-selected',String(x===b)));['architecture','simulator','policy','guide'].forEach(id=>$('#'+id).classList.toggle('hidden',id!==b.dataset.tab));}));
+$$('[data-tab]').forEach(b=>b.addEventListener('click',()=>{$$('[data-tab]').forEach(x=>x.setAttribute('aria-selected',String(x===b)));['architecture','journey','simulator','policy','guide'].forEach(id=>$('#'+id).classList.toggle('hidden',id!==b.dataset.tab));}));
 const stages=[
 'Capture PR author, changed files, branch, and commit SHA. New changes must trigger fresh evaluation.',
 'Deterministic filters decide eligibility: repository scope, sensitive files, author type, change size, and passing checks.',
@@ -50,4 +81,47 @@ function updatePolicy(){const off=Object.keys(guards).filter(k=>!$('#'+k).checke
 $$('#policy input').forEach(i=>i.addEventListener('change',updatePolicy));
 const topics=[['1. Scope & inventory','Define permitted repositories, sensitive exclusions, owners, and shared dependencies.'],['2. Design guardrails','Use deterministic eligibility, fail-closed handling, commit-bound approval, and untrusted-input defenses.'],['3. Access & change','Govern reviewer rules, prompts, identities, permissions, and operating modes.'],['4. Logging & evidence','Retain reliable decision records and reconcile authorized changes with actual deployments.'],['5. Ownership','Assign accountable program, policy, and incident-response owners.'],['6. Phase testing','Run positive, negative, and bypass tests before expanding automation.'],['7. Monitoring','Measure false approvals, drift, human review samples, and exceptions.'],['8. Rollout & rollback','Use progressive rollout, hypercare, and tested suspension controls.'],['9. Communication','Maintain clear procedures and developer feedback channels.']];
 $('#guide-cards').innerHTML=topics.map(([a,b])=>'<div class="card"><h3>'+a+'</h3><p>'+b+'</p></div>').join('');
+
+const journeyScenarios={
+doc:{title:'Documentation typo',sensitive:false,bot:false,modified:false,timeout:false,hidden:false,learning:'A narrowly scoped documentation-only change can be eligible, but it still needs independent enforcement and successful checks.'},
+billing:{title:'Sensitive payment calculation',sensitive:true,bot:false,modified:false,timeout:false,hidden:false,learning:'Sensitive code should be excluded by scope rules before any favorable AI verdict is considered.'},
+dependency:{title:'Shared utility with hidden dependency',sensitive:false,bot:false,modified:false,timeout:false,hidden:true,learning:'Rules that inspect only file paths can miss an indirect dependency. A green verdict is not proof that financial impact was assessed.'},
+modified:{title:'PR modified after approval',sensitive:false,bot:false,modified:true,timeout:false,hidden:false,learning:'An authorization decision must apply to the exact reviewed code. A new commit requires reauthorization.'},
+timeout:{title:'Reviewer timeout',sensitive:false,bot:false,modified:false,timeout:true,hidden:false,learning:'When a required reviewer is unavailable, the safe default is to withhold automated approval.'},
+automation:{title:'Automated-author PR',sensitive:false,bot:true,modified:false,timeout:false,hidden:false,learning:'Combining automated authorship and approval may concentrate authority. Independent review or explicit exclusions are useful.'}
+};
+let jIndex=0;
+function journeyEvaluate(){
+ const s=journeyScenarios[$('#journey-case').value],scope=$('#journey-scope').checked,fail=$('#journey-fail').checked,sha=$('#journey-sha').checked,ind=$('#journey-bot').checked,low=$('#journey-ai').value==='low';
+ const excluded=s.bot||(s.sensitive&&scope);
+ const timedOut=s.timeout;
+ const stale=s.modified&&!sha;
+ const denied=excluded||(timedOut&&fail)||!low||(s.modified&&sha);
+ const risk= (s.sensitive&&!scope)||(timedOut&&!fail)||stale||(s.hidden);
+ let title='',body='',status='pass';
+ if(jIndex===0){title='PR: '+s.title;body='A change is proposed. Capture exact source identity and changed files.';}
+ else if(jIndex===1){if(excluded){title='Eligibility blocked → human route';body=s.bot?'Automated authorship is excluded in this example.':'The sensitive-scope rule rejects this change before AI approval.';status='block';}
+ else{title='Eligibility check passed';body=s.hidden?'The path rules pass, but an indirect dependency was not represented in the rule set.':s.sensitive?'⚠ Sensitive path passed because scope enforcement is disabled.':'The example passes the configured deterministic filters.';if(s.hidden||s.sensitive)status='warn';}}
+ else if(jIndex===2){if(excluded){title='AI auto-approval not permitted';body='An earlier eligibility gate already routed this change to a human.';status='block';}
+ else if(timedOut&&fail){title='Review unavailable → human route';body='The configured fail-closed rule withholds approval after a timeout.';status='block';}
+ else if(!low){title='AI review flags risk → human route';body='The AI verdict can narrow approval eligibility.';status='block';}
+ else{title='Review stage reports low risk';body=timedOut?'⚠ Timeout was ignored because fail-closed is off.':s.hidden?'⚠ AI says low risk, but the hidden dependency remains unresolved.':'The simulated review outcome is low risk.';if(risk)status='warn';}}
+ else if(jIndex===3){if(denied){title='Auto-approval withheld';body='A gate requires human authorization or further review.';status='block';}
+ else if(s.modified&&sha){title='Stale approval invalidated';body='A new commit prevents reuse of the old decision.';status='block';}
+ else {title='Auto-approval path proceeds';body=(s.modified&&!sha?'⚠ Approval was not invalidated after the new commit. ':'')+(ind?'The merge identity is assumed to verify a valid decision.':'⚠ Independent merge eligibility is disabled; a privileged actor could potentially bypass the intended path.');if(risk||!ind)status='warn';}
+ }
+ else {if(denied){title='Automation does not deploy this change';body='A human-approved workflow could still proceed through a separate release path.';status='block';}
+ else{title='Deployment stage reached';body=(risk||!ind?'⚠ The pipeline may reach deployment despite a missing safeguard. ':'')+'Observing a version in production does not establish that the change was correct or appropriately authorized.';if(risk||!ind)status='warn';}}
+ const output=$('#journey-output');output.className='callout '+(status==='block'||status==='warn'?'bad':'good');
+ output.innerHTML='<strong>'+title+'</strong><p style="margin:5px 0 0">'+body+'</p>';
+ $('#journey-learning').textContent=s.learning;
+ $('[data-jstep]').forEach(b=>{const n=Number(b.dataset.jstep);b.className=n===jIndex?'active':n<jIndex?'done':'';if(n===jIndex&&status!=='pass')b.classList.add('blocked');});
+ $('#journey-next').disabled=jIndex===4;
+ $('#journey-next').textContent=jIndex===3?'Show deployment →':'Next stage →';
+}
+$('#journey-next').addEventListener('click',()=>{jIndex=Math.min(4,jIndex+1);journeyEvaluate();});
+$('#journey-reset').addEventListener('click',()=>{jIndex=0;journeyEvaluate();});
+$('[data-jstep]').forEach(b=>b.addEventListener('click',()=>{jIndex=Number(b.dataset.jstep);journeyEvaluate();}));
+['journey-case','journey-ai','journey-scope','journey-fail','journey-sha','journey-bot'].forEach(id=>$('#'+id).addEventListener('change',()=>{jIndex=0;journeyEvaluate();}));
+journeyEvaluate();
 </script></body></html>
