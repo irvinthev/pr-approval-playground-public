@@ -142,32 +142,26 @@ automation:{title:'Automated-author PR',sensitive:false,bot:true,modified:false,
 };
 let jIndex=0;
 function journeyEvaluate(){
- const s=journeyScenarios[$('#journey-case').value],scope=$('#journey-scope').checked,fail=$('#journey-fail').checked,sha=$('#journey-sha').checked,ind=$('#journey-bot').checked,low=$('#journey-ai').value==='low';
- const excluded=s.bot||(s.sensitive&&scope);
- const timedOut=s.timeout;
- const stale=s.modified&&!sha;
- const denied=excluded||(timedOut&&fail)||!low||(s.modified&&sha);
- const risk= (s.sensitive&&!scope)||(timedOut&&!fail)||stale||(s.hidden);
- let title='',body='',status='pass';
- if(jIndex===0){title='PR: '+s.title;body='A change is proposed. Capture exact source identity and changed files.';}
- else if(jIndex===1){if(excluded){title='Eligibility blocked → human route';body=s.bot?'Automated authorship is excluded in this example.':'The sensitive-scope rule rejects this change before AI approval.';status='block';}
- else{title='Eligibility check passed';body=s.hidden?'The path rules pass, but an indirect dependency was not represented in the rule set.':s.sensitive?'⚠ Sensitive path passed because scope enforcement is disabled.':'The example passes the configured deterministic filters.';if(s.hidden||s.sensitive)status='warn';}}
- else if(jIndex===2){if(excluded){title='AI auto-approval not permitted';body='An earlier eligibility gate already routed this change to a human.';status='block';}
- else if(timedOut&&fail){title='Review unavailable → human route';body='The configured fail-closed rule withholds approval after a timeout.';status='block';}
- else if(!low){title='AI review flags risk → human route';body='The AI verdict can narrow approval eligibility.';status='block';}
- else{title='Review stage reports low risk';body=timedOut?'⚠ Timeout was ignored because fail-closed is off.':s.hidden?'⚠ AI says low risk, but the hidden dependency remains unresolved.':'The simulated review outcome is low risk.';if(risk)status='warn';}}
- else if(jIndex===3){if(denied){title='Auto-approval withheld';body='A gate requires human authorization or further review.';status='block';}
- else if(s.modified&&sha){title='Stale approval invalidated';body='A new commit prevents reuse of the old decision.';status='block';}
- else {title='Auto-approval path proceeds';body=(s.modified&&!sha?'⚠ Approval was not invalidated after the new commit. ':'')+(ind?'The merge identity is assumed to verify a valid decision.':'⚠ Independent merge eligibility is disabled; a privileged actor could potentially bypass the intended path.');if(risk||!ind)status='warn';}
+ const s=journeyScenarios[$('#journey-case').value];
+ const c={sensitive:s.sensitive,dependency:s.hidden,bot:s.bot,n:1,ci:true,ai:$('#journey-ai').value==='low',timeout:s.timeout,changed:s.modified,permit:true};
+ const p={sensitive:$('#journey-scope').checked,dependency:false,bot:true,size:false,limit:5,ci:true,ai:true,timeout:$('#journey-fail').checked,sha:$('#journey-sha').checked,permit:$('#journey-bot').checked};
+ const evaluation=bAssess(c,p), gateMap=[-1,0,5,7,8],stageLabels=['PR created','Eligibility','Review','Authorization','Deployment'];
+ 
+ let label=stageLabels[jIndex],message='',status='pass';
+ if(jIndex===0){message='Change: '+s.title+'. Capture author, scope and exact source commit.';}
+ else {
+ const upto=jIndex===1?3:jIndex===2?6:8;
+ const firstStop=evaluation.steps.slice(0,upto+1).find(x=>x.state==='BLOCK');
+ if(firstStop){label='Human review required';message='First blocking gate: '+firstStop.name+'. '+firstStop.reason;status='block';}
+ else if(jIndex===4){label='Automated path reaches deployment';message='No enabled gate blocked this fictional PR. A deployed version is not itself proof of code correctness or authorization.';}
+ else{message='No enabled gate has blocked this PR yet. Continue to inspect the next control boundary.';}
+ if(!firstStop&&(s.hidden||s.sensitive&&!p.sensitive||s.timeout&&!p.timeout||s.modified&&!p.sha||!p.permit)){status='warn';message+=' ⚠ Safeguards may be incomplete or disabled.';}
  }
- else {if(denied){title='Automation does not deploy this change';body='A human-approved workflow could still proceed through a separate release path.';status='block';}
- else{title='Deployment stage reached';body=(risk||!ind?'⚠ The pipeline may reach deployment despite a missing safeguard. ':'')+'Observing a version in production does not establish that the change was correct or appropriately authorized.';if(risk||!ind)status='warn';}}
- const output=$('#journey-output');output.className='callout '+(status==='block'||status==='warn'?'bad':'good');
- output.innerHTML='<strong>'+title+'</strong><p style="margin:5px 0 0">'+body+'</p>';
+ const output=$('#journey-output');output.className='callout '+(status==='pass'?'good':'bad');
+ output.textContent=label+': '+message;
  $('#journey-learning').textContent=s.learning;
- $('[data-jstep]').forEach(b=>{const n=Number(b.dataset.jstep);b.className=n===jIndex?'active':n<jIndex?'done':'';if(n===jIndex&&status!=='pass')b.classList.add('blocked');});
- $('#journey-next').disabled=jIndex===4;
- $('#journey-next').textContent=jIndex===3?'Show deployment →':'Next stage →';
+ $$('[data-jstep]').forEach(b=>{const n=Number(b.dataset.jstep);b.className=n===jIndex?'active':n<jIndex?'done':'';if(n===jIndex&&status==='block')b.classList.add('blocked');});
+ $('#journey-next').disabled=jIndex===4;$('#journey-next').textContent=jIndex===3?'Show deployment →':'Next stage →';
 }
 $('#journey-next').addEventListener('click',()=>{jIndex=Math.min(4,jIndex+1);journeyEvaluate();});
 $('#journey-reset').addEventListener('click',()=>{jIndex=0;journeyEvaluate();});
@@ -221,16 +215,31 @@ const bCases=[
 {id:'untrusted',name:'Merge identity without entitlement',expected:false,n:2,permit:false}
 ];
 function bPolicy(){return {sensitive:$('#b-sensitive').checked,bot:$('#b-bot').checked,size:$('#b-size').checked,limit:Number($('#b-limit').value),ci:$('#b-ci').checked,ai:$('#b-ai').checked,timeout:$('#b-timeout').checked,sha:$('#b-sha').checked,permit:$('#b-permit').checked,dependency:$('#b-dependency').checked};}
-function bAssess(c,p){const steps=[
-['Sensitive paths',!p.sensitive||!c.sensitive,'Sensitive files require a human when the exclusion is enabled.'],
-['Known dependencies',!p.dependency||!c.dependency,'Known sensitive dependency must be included in scope rules.'],
-['Automated author',!p.bot||!c.bot,'Bot-authored changes are not auto-approved under this guardrail.'],
-['Size threshold',!p.size||c.n<=p.limit,'Changed-file count exceeds the configured limit.'],
-['CI status',!p.ci||c.ci!==false,'CI did not pass.'],
-['AI assessment',(!c.timeout||!p.timeout)&&(!p.ai||c.ai!==false),'Risk judgment is high, or the AI review timed out under a fail-closed policy.'],
-['Commit identity',!p.sha||!c.changed,'Approval is stale after a new commit.'],
-['Merge authority',!p.permit||c.permit!==false,'The merge identity lacks the required entitlement.']
-];return {steps,approved:steps.every(s=>s[1])};}
+// Shared, deterministic, fail-fast evaluation used by Policy Builder and Journey Lab.
+// DISABLED means the safeguard is off; SKIP means not evaluated after a block.
+function bAssess(c,p){
+ const definitions=[
+ ['Sensitive paths',p.sensitive,!!c.sensitive,'Sensitive files require review under the scope rule.'],
+ ['Known dependencies',p.dependency,!!c.dependency,'Known sensitive dependencies are excluded from auto-approval.'],
+ ['Automated author',p.bot,!!c.bot,'Automated authors are excluded under this policy.'],
+ ['Size threshold',p.size,c.n>p.limit,'This change exceeds the file threshold.'],
+ ['CI status',p.ci,c.ci===false,'Required CI checks did not pass.'],
+ ['AI availability',p.timeout,!!c.timeout,'The AI assessment is unavailable and fails closed.'],
+ ['AI risk verdict',p.ai,c.ai===false,'The AI assessment returned high risk.'],
+ ['Commit identity',p.sha,!!c.changed,'The change differs from the reviewed commit.'],
+ ['Merge authority',p.permit,c.permit===false,'The merge identity is not entitled to execute this approval.']
+ ];
+ let blocked=false;
+ const steps=definitions.map(([name,enabled,violation,reason])=>{
+  let state;
+  if(blocked)state='SKIP';
+  else if(!enabled)state='DISABLED';
+  else if(violation){state='BLOCK';blocked=true;}
+  else state='PASS';
+  return {name,state,reason};
+ });
+ return {steps,approved:!blocked,firstBlocked:steps.find(s=>s.state==='BLOCK')||null};
+}
 let bActive='docs';let activeRole='engineering';
 const roleInsights={
 docs:['The configured policy may automate this routine change. Check how the category is identified.','Confirm the scope rule and decision log identify the exact commit.'],
@@ -256,7 +265,7 @@ function roleRefresh(){
 }
 $('[data-role]').forEach(b=>b.addEventListener('click',()=>{activeRole=b.dataset.role;roleRefresh();}));
 
-function bShow(c,p){const r=bAssess(c,p);$('#b-selected').textContent=c.name;$('#b-path').innerHTML=r.steps.map(([name,ok],i)=>'<div class="'+(ok?'passed':'stopped')+'"><b>'+String(i+1)+'. '+name+'</b><small>'+(ok?'Pass':'Block')+'</small></div>').join('');const reason=r.steps.find(s=>!s[1]);$('#b-reason').textContent=(reason?'First blocked gate: '+reason[0]+'. '+reason[2]:'No configured gate blocked this PR. Auto-approval would be permitted in this fictional policy.')+(r.approved!==c.expected?' ⚠ This differs from the scenario’s expected routing.':'');}
+function bShow(c,p){const r=bAssess(c,p);$('#b-selected').textContent=c.name;$('#b-path').innerHTML=r.steps.map((step,i)=>'<div class="'+(step.state==='PASS'?'passed':step.state==='BLOCK'?'stopped':'')+'"><b>'+String(i+1)+'. '+step.name+'</b><small>'+({PASS:'Pass',BLOCK:'Block',SKIP:'Not evaluated',DISABLED:'Disabled'}[step.state])+'</small></div>').join('');const reason=r.firstBlocked;$('#b-reason').textContent=(reason?'First blocked gate: '+reason.name+'. '+reason.reason:'No configured gate blocked this PR. Auto-approval would be permitted in this fictional policy.')+(r.approved!==c.expected?' ⚠ This differs from the scenario’s expected routing.':'');}
 function bRender(){const p=bPolicy();let approvals=0,miss=0;$('#b-rows').innerHTML='';bCases.forEach(c=>{const r=bAssess(c,p);if(r.approved)approvals++;if(r.approved!==c.expected)miss++;const tr=document.createElement('tr');const vals=[c.name,c.expected?'Automation eligible':'Human route',r.approved?'Auto-approve':'Human review',r.approved===c.expected?'Aligned':'⚠ Diverges'];vals.forEach((s,i)=>{const td=document.createElement('td');td.textContent=s;if(i===2||i===3)td.className=(i===3&&r.approved!==c.expected)?'builder-block':r.approved?'builder-pass':'builder-block';tr.appendChild(td);});tr.tabIndex=0;tr.setAttribute('aria-label','Inspect '+c.name);tr.addEventListener('click',()=>{bActive=c.id;bShow(c,p);roleRefresh()});tr.addEventListener('keydown',e=>{if(e.key==='Enter'){bActive=c.id;bShow(c,p);roleRefresh()}});$('#b-rows').appendChild(tr);});$('#b-stats').innerHTML='<span><b>'+bCases.length+'</b> test cases</span><span><b>'+approvals+'</b> automated</span><span><b>'+miss+'</b> expected-route deviations</span>';bShow(bCases.find(x=>x.id===bActive)||bCases[0],p);roleRefresh();}
 $('#b-test').addEventListener('click',bRender);
 $('#b-reset').addEventListener('click',()=>{['b-sensitive','b-bot','b-size','b-ci','b-ai','b-timeout','b-sha','b-permit','b-dependency'].forEach(id=>$('#'+id).checked=true);$('#b-limit').value='5';bActive='docs';bRender();});
