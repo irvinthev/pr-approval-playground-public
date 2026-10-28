@@ -6,12 +6,15 @@ A **fictional, public-safe, interactive demonstration** of automated pull-reques
 
 Once GitHub Pages is enabled: https://irvinthev.github.io/pr-approval-playground-public/
 
-## Features
+## Start here
 
-- **Architecture:** Click through source, eligibility, review, authorization, and production monitoring.
-- **PR Simulator:** Explore documentation, sensitive payment logic, shared dependencies, post-approval commits, and bot-authored changes.
-- **Policy Lab:** Toggle four hypothetical safeguards and see potential consequences.
-- **Design Guide:** Explore nine general governance areas.
+The front door asks: **Two AI reviewers approved it. Should it ship?**
+
+- **Follow a change:** a five-step guided story through technical review, dependencies, independent policy, authority and outcome. Choose a shared-library change, routine documentation or an unknown dependency.
+- **Explore the sandbox:** optional policy, authority and financial-impact experiments. Existing timelines, evidence exercises and the full scenario library remain under advanced experiments.
+- **How it works:** a concise explanation, with architecture and design reference material.
+
+Potential dollar exposure and decision records are collapsed details in the story. Engineering and Assurance explanations appear together, without a global role switch. The optional calculator informs review scope; it does not waive protected review.
 
 This is an educational simulator, **not** a working approval system or evidence of any real organization's controls. Examples are fictional.
 
@@ -37,7 +40,7 @@ The playground is a static client-side HTML/CSS/JavaScript application hosted th
 
 ## Financial Impact Lab
 
-Under **Design Controls → Financial Impact Lab**, inspect invented service dependencies, adjust conditional billing-error assumptions, and test an independent financial review requirement. The shared-library scenario starts with two low AI verdicts but still requires qualified independent authorization.
+Under **Explore the sandbox → Financial Impact Lab**, inspect invented service dependencies, adjust conditional billing-error assumptions, and test an independent financial review requirement. The shared-library scenario starts with two low AI verdicts but still requires qualified independent authorization.
 
 - Six fictional cases cover documentation, shared dependencies, pricing, reporting schedules, missing mappings, and policy downgrades.
 - Approval Race includes financial review, post-approval commits, and mapping-version invalidation.
@@ -52,3 +55,7 @@ Under **Design Controls → Financial Impact Lab**, inspect invented service dep
 Run `node --test tests/*.test.js`. No dependencies are required for engine tests. Open `index.html` locally to use the complete demo.
 
 Optional browser smoke: with Playwright and Chromium installed, run `node tests/browser-smoke.cjs`. It covers the new lab, financial and existing approval races, navigation, export, mobile overflow and external-request detection.
+
+### Guided story implementation
+
+`story-model.js` uses the same financial decision engine as the lab; `story.js` renders the walkthrough and `story.css` supplies responsive styles. No new company-specific facts or data were introduced. The independent gate is described as an authorization boundary based on known mappings, not proof that code is safe.
