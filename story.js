@@ -1,7 +1,8 @@
 (function(){
  'use strict';
  const $=id=>document.getElementById(id),S=StoryDemo;
- let state=S.initial();
+ let state=S.initial(),selectedNode='source';
+ const nodeByStep=['source','scope','policy','authority','outcome'];
  const titles=['A small change. Two green reviews.','Follow what consumes the change.','Apply the separately governed rule.','Who can satisfy that requirement?','See the authorization outcome.'];
  const copies={
  shared:[
@@ -29,8 +30,9 @@
  function render(focus=false){
   const x=S.evaluate(state),visual=$('story-visual');visual.replaceChildren();
   $('story-progress').textContent='Step '+(state.step+1)+' of 5';
-  [...$('story-steps').children].forEach((el,i)=>{el.className=i<state.step?'done':'';if(i===state.step)el.setAttribute('aria-current','step');else el.removeAttribute('aria-current');});
+  renderPipeline(x);
   $('story-title').textContent=titles[state.step];$('story-copy').textContent=copies[state.scenario][state.step];
+  if(selectedNode==='technical'){$('story-title').textContent='What did the technical reviews establish?';$('story-copy').textContent='CI and the two AI assessments supply technical evidence. They do not determine whether a separately governed financial policy requires independent authorization.';}
   if(state.step===0){
    const code=document.createElement('pre');code.className='story-code';code.textContent=state.scenario==='shared'?'lib/dedup/key.js · 2 lines changed\n\n− return event.id;\n+ return event.customerId + ":" + event.id;':state.scenario==='docs'?'docs/usage-guide.md\n\n− Read the instuctions.\n+ Read the instructions.':'services/new-meter/index.js\n\nNew metering component · consumers not mapped';visual.appendChild(code);
    const row=document.createElement('div');row.className='grid story-status';appendCard(row,'CI',state.ci?'Passed for '+x.change.sha:'Pending for new revision');appendCard(row,'Reviewer A','Low risk');appendCard(row,'Reviewer B','Low risk');visual.appendChild(row);
@@ -66,9 +68,21 @@
   $('story-limit').hidden=state.step<2;
   if(focus)$('story-title').focus({preventScroll:true});
  }
- function dispatch(event,value){state=S.transition(state,event,value);if(event==='scenario'||event==='reset'){$('story-share').value=20;$('story-months').value=1;$('story-impact').open=false;$('story-evidence').open=false;}render(['next','back','scenario','reset'].includes(event));}
+ function dispatch(event,value){state=S.transition(state,event,value);if(['next','back','scenario','reset'].includes(event))selectedNode=nodeByStep[state.step];if(event==='scenario'||event==='reset'){$('story-share').value=20;$('story-months').value=1;$('story-impact').open=false;$('story-evidence').open=false;}render(['next','back','scenario','reset'].includes(event));}
  [['story-next','next'],['story-back','back'],['story-reset','reset'],['story-override','override'],['story-authorize','approve'],['story-push','push'],['story-recheck','recheck'],['story-review-again','approve']].forEach(([id,event])=>$(id).addEventListener('click',()=>dispatch(event)));
  $('story-case').addEventListener('change',()=>dispatch('scenario',$('story-case').value));
  [['story-share','share'],['story-months','months']].forEach(([id,key])=>$(id).addEventListener('input',()=>dispatch(key,$(id).value.trim()===''?NaN:Number($(id).value))));
+ function renderPipeline(x){
+  const unresolved=x.financial.status==='UNRESOLVED',allowed=x.decision.allowed,reviewSatisfied=x.decision.route==='HUMAN_AUTHORIZED';
+  const statuses={source:['Revision '+state.revision,'info'],technical:[state.ci?'Passed · 2 low verdicts':'Fresh checks required',state.ci?'pass':'unknown'],scope:[unresolved?'Mapping missing':state.scenario==='docs'?'Limited scope verified':'Financial link found',unresolved?'unknown':'pass'],policy:[unresolved?'Scope unresolved':reviewSatisfied?'Review rule satisfied':x.financial.requiredRole?'Independent review required':'Automated route permitted',unresolved?'unknown':reviewSatisfied?'pass':x.financial.requiredRole?'review':'pass'],authority:[allowed?state.approval?'Human authorized':'Requirements satisfied':unresolved?'Resolve scope first':!state.ci?'Awaiting fresh checks':'Waiting for reviewer',allowed?'pass':unresolved||!state.ci?'unknown':'review'],outcome:[allowed?'Eligible · not deployed':'On hold',allowed?'pass':'unknown']};
+  document.querySelectorAll('[data-pipeline]').forEach(button=>{const key=button.dataset.pipeline;button.dataset.status=statuses[key][1];button.setAttribute('aria-pressed',String(key===selectedNode));$('pipe-'+key+'-state').textContent=statuses[key][0];});
+  const map=document.querySelector('.pipeline-map');map.dataset.technical=state.ci?'pass':'unknown';map.dataset.scope=unresolved?'unknown':'pass';map.dataset.authorized=allowed?'yes':'no';
+  const summary=allowed?state.approval?'Independent review complete. This revision is eligible.':'Verified routine scope. The automated route is eligible.':unresolved?'Two low verdicts. Financial scope is still unknown.':!state.ci?'New revision. Fresh validation is required.':'Two low verdicts. Independent review still required.';
+  $('pipeline-summary-text').textContent=summary;document.querySelector('.pipeline-summary').dataset.allowed=String(allowed);
+  $('pipeline-action').textContent=allowed?'Inspect the outcome →':unresolved?'Inspect the missing scope →':'Inspect the gate →';
+  $('pipeline-detail-label').textContent={source:'Inside the pull request',technical:'Inside technical review',scope:'Inside the dependency map',policy:'Inside the independent gate',authority:'Inside authorization',outcome:'Inside the release decision'}[selectedNode];
+ }
+ document.querySelectorAll('[data-pipeline]').forEach(button=>button.addEventListener('click',()=>{selectedNode=button.dataset.pipeline;dispatch('goto',Number(button.dataset.step));$('story-content').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'nearest'});$('story-title').focus({preventScroll:true});}));
+ $('pipeline-action').addEventListener('click',()=>{const x=S.evaluate(state);selectedNode=x.decision.allowed?'outcome':x.financial.status==='UNRESOLVED'?'scope':'policy';const step={outcome:4,scope:1,policy:2}[selectedNode];dispatch('goto',step);$('story-title').focus({preventScroll:true});$('story-content').scrollIntoView({block:'nearest',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});});
  render();
 })();

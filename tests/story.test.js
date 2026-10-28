@@ -25,3 +25,8 @@ test('optional exposure inputs cannot weaken review; changes clear approval',()=
 test('navigation stays bounded and scenario/reset clear all prior state',()=>{
  let s=S.transition(next(S.initial(),10),'approve');assert.equal(s.step,4);s=S.transition(s,'scenario','docs');assert.equal(s.step,0);assert.equal(s.approval,null);s=S.transition(s,'back');assert.equal(s.step,0);s=S.transition(s,'push');s=S.transition(s,'reset');assert.equal(s.revision,1);assert.equal(s.ci,true);
 });
+
+test('jumping between pipeline nodes never changes authorization',()=>{
+ let s=S.initial();for(const value of [4,3,1,2,0]){s=S.transition(s,'goto',value);assert.equal(s.step,value);assert.equal(S.evaluate(s).decision.allowed,false);assert.equal(s.approval,null);}
+ for(const value of [-1,5,NaN,'3']){const before=s;s=S.transition(s,'goto',value);assert.equal(s.step,before.step);}
+});

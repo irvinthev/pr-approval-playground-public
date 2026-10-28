@@ -8,7 +8,7 @@ Once GitHub Pages is enabled: https://irvinthev.github.io/pr-approval-playground
 
 ## Start here
 
-The front door asks: **Two AI reviewers approved it. Should it ship?**
+The front door asks: **Two green reviews. Should it ship?**
 
 - **Follow a change:** a five-step guided story through technical review, dependencies, independent policy, authority and outcome. Choose a shared-library change, routine documentation or an unknown dependency.
 - **Explore the sandbox:** optional policy, authority and financial-impact experiments. Existing timelines, evidence exercises and the full scenario library remain under advanced experiments.
@@ -59,3 +59,9 @@ Optional browser smoke: with Playwright and Chromium installed, run `node tests/
 ### Guided story implementation
 
 `story-model.js` uses the same financial decision engine as the lab; `story.js` renders the walkthrough and `story.css` supplies responsive styles. No new company-specific facts or data were introduced. The independent gate is described as an authorization boundary based on known mappings, not proof that code is safe.
+
+### Clickable pipeline
+
+The guided view opens with a six-node interactive pipeline. Click a pull request, technical review, dependency map, independent gate, authorization, or release-route node to inspect it. Technical evidence and financial context converge at authorization. Node colors and text follow the decision engine, not which stages have been visited. Clicking a node never grants approval.
+
+The diagram uses local HTML/CSS/SVG and plain JavaScript. It includes keyboard-operable buttons, reduced-motion support, a compact mobile layout, and text labels alongside status colors. Release eligibility is explicitly simulated, not a real deployment.
