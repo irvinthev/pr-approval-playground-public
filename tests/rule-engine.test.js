@@ -1,0 +1,17 @@
+'use strict';
+const assert = require('node:assert/strict');
+const { test } = require('node:test');
+const rules = require('../rule-engine.js');
+const low = (sha) => ({sha,level:'LOW'});
+const base = () => ({headSha:'a111',ciSha:'a111',reviewerA:low('a111'),reviewerB:low('a111'),restricted:false,approvedSha:'a111',policy:{protectInstructions:true,requireCI:true,requireTwoReviews:true,shadowMode:false}});
+test('routine change passes and has current approval',()=>{const r=rules.evaluateApproval(base());assert.equal(r.canMerge,true);assert.equal(r.canApprove,true);});
+test('protected policy modification blocks',()=>{const s=base();s.restricted=true;const r=rules.evaluateApproval(s);assert.equal(r.canMerge,false);assert.equal(r.firstBlocked.name,'Eligibility');});
+test('reviewer disagreement blocks',()=>{const s=base();s.reviewerB.level='MEDIUM';const r=rules.evaluateApproval(s);assert.equal(r.canApprove,false);assert.equal(r.firstBlocked.name,'Reviewer B');});
+test('new commit invalidates old CI and approvals',()=>{const s=base();s.headSha='b222';const r=rules.evaluateApproval(s);assert.equal(r.canMerge,false);assert.equal(r.hasPending,true);});
+test('shadow mode does not authorize approval or merge',()=>{const s=base();s.policy.shadowMode=true;const r=rules.evaluateApproval(s);assert.equal(r.canApprove,false);assert.equal(r.canMerge,false);});
+test('missing CI remains pending',()=>{const s=base();s.ciSha=null;const r=rules.evaluateApproval(s);assert.equal(r.approved,false);assert.equal(r.hasPending,true);});
+test('disabled rule does not block',()=>{const r=rules.evaluate([{name:'A',enabled:false,violation:true}],true);assert.equal(r.approved,true);assert.equal(r.steps[0].state,'DISABLED');});
+test('fail-fast skips remaining rules',()=>{const r=rules.evaluate([{name:'A',enabled:true,violation:true},{name:'B',enabled:true,violation:false}],true);assert.deepEqual(r.steps.map(x=>x.state),['BLOCK','SKIP']);});
+test('exhaustive mode reports multiple failures',()=>{const r=rules.evaluate([{name:'A',enabled:true,violation:true},{name:'B',enabled:true,violation:true}],false);assert.deepEqual(r.steps.map(x=>x.state),['BLOCK','BLOCK']);});
+test('explicit violation wins over pending status',()=>{const r=rules.evaluate([{name:'A',enabled:true,pending:true,violation:true}],false);assert.equal(r.steps[0].state,'BLOCK');});
+test('invalid input is rejected',()=>assert.throws(()=>rules.evaluate([{}],true),TypeError));
