@@ -25,7 +25,7 @@
   if(event==='share'||event==='months'){next[event]=value;next.approval=null;next.feedback='What-if assumptions changed. Simulated approval cleared; protected review remains required.';}
   if(event==='approve'){
    const x=evaluate(state);
-   if(x.technical.eligible&&x.financial.status==='REVIEW_REQUIRED'{
+   if(x.technical.eligible&&x.financial.status==='REVIEW_REQUIRED'){
     next.approval=F.approve(x.change,x.financial);next.feedback='Independent reviewer authorized this revision under the current mapping and policy. This was human authorization, not automatic approval.';
    }else next.feedback=x.financial.status==='UNRESOLVED'?'An approval cannot substitute for missing scope. Resolve the dependency mapping first.':'No independent financial review can be added until applicable requirements are established and technical checks pass.';
   }
