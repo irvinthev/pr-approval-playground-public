@@ -184,11 +184,11 @@ function journeyEvaluate(){
 }
 $('#journey-next').addEventListener('click',()=>{jIndex=Math.min(4,jIndex+1);journeyEvaluate();});
 $('#journey-reset').addEventListener('click',()=>{jIndex=0;journeyEvaluate();});
-$('[data-jstep]').forEach(b=>b.addEventListener('click',()=>{jIndex=Number(b.dataset.jstep);journeyEvaluate();}));
+$$('[data-jstep]').forEach(b=>b.addEventListener('click',()=>{jIndex=Number(b.dataset.jstep);journeyEvaluate();}));
 ['journey-case','journey-ai','journey-scope','journey-fail','journey-sha','journey-bot'].forEach(id=>$('#'+id).addEventListener('change',()=>{jIndex=0;journeyEvaluate();}));
 journeyEvaluate();
 
-$('[data-lab]').forEach(btn=>btn.addEventListener('click',()=>{$('[data-lab]').forEach(b=>b.setAttribute('aria-pressed',String(b===btn)));['comparison','sod','trace'].forEach(id=>$('#lab-'+id).classList.toggle('hidden',id!==btn.dataset.lab));}));
+$$('[data-lab]').forEach(btn=>btn.addEventListener('click',()=>{$$('[data-lab]').forEach(b=>b.setAttribute('aria-pressed',String(b===btn)));['comparison','sod','trace'].forEach(id=>$('#lab-'+id).classList.toggle('hidden',id!==btn.dataset.lab));}));
 const comparisonStates={
 routine:['Both paths can be reasonable','A tightly scoped documentation edit may be suitable for properly governed automation, though a human-review workflow also remains valid.','good'],
 critical:['Human review expected in this illustrative design','Sensitive business logic needs a deliberately authorized review path. A low-risk AI label does not override a deterministic exclusion.','bad'],
@@ -273,7 +273,7 @@ stale:['Invalidate the decision when new source arrives.','Compare evaluated SHA
 untrusted:['Ensure the privileged merge identity can act only on validated decisions.','Verify identity permission scope and negative-test bypass attempts.']
 };
 function roleRefresh(){
- $('[data-role]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.role===activeRole)));
+ $$('[data-role]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.role===activeRole)));
  $('#role-context').textContent=activeRole==='engineering'?'Design an approval policy that handles routine changes efficiently while enforcing required boundaries.':'Investigate what the same policy decisions prove, what evidence is missing, and which failures to test.';
  const c=bCases.find(x=>x.id===bActive)||bCases[0],x=bAssess(c,bPolicy()),v=roleInsights[c.id];
  $('#evidence-heading').textContent=activeRole==='engineering'?'Engineering design insight':'Auditor evidence question';
@@ -282,14 +282,14 @@ function roleRefresh(){
  el.className='callout '+(deviations.length?'bad':'good');
  el.textContent=activeRole==='engineering'?('Engineering lens: '+approved.length+'/'+bCases.length+' fictional PRs take the auto-approval path; '+deviations.length+' diverge from example routing. Optimizing throughput must not silently change scope.') :('Audit lens: '+deviations.length+' example-routing deviations to investigate. Even zero deviations does not demonstrate administrative independence, evidence completeness, or production enforcement.');
 }
-$('[data-role]').forEach(b=>b.addEventListener('click',()=>{activeRole=b.dataset.role;roleRefresh();}));
+$$('[data-role]').forEach(b=>b.addEventListener('click',()=>{activeRole=b.dataset.role;roleRefresh();}));
 
 function bShow(c,p){const r=bAssess(c,p);$('#b-selected').textContent=c.name;$('#b-path').innerHTML=r.steps.map((step,i)=>'<div class="'+(step.state==='PASS'?'passed':step.state==='BLOCK'?'stopped':'')+'"><b>'+String(i+1)+'. '+step.name+'</b><small>'+({PASS:'Pass',BLOCK:'Block',SKIP:'Not evaluated',DISABLED:'Disabled'}[step.state])+'</small></div>').join('');const reason=r.firstBlocked;$('#b-reason').textContent=(reason?'First blocked gate: '+reason.name+'. '+reason.reason:'No configured gate blocked this PR. Auto-approval would be permitted in this fictional policy.')+(r.approved!==c.expected?' ⚠ This differs from the scenario’s expected routing.':'');}
 function bRender(){const p=bPolicy();let approvals=0,miss=0;$('#b-rows').innerHTML='';bCases.forEach(c=>{const r=bAssess(c,p);if(r.approved)approvals++;if(r.approved!==c.expected)miss++;const tr=document.createElement('tr');const vals=[c.name,c.expected?'Automation eligible':'Human route',r.approved?'Auto-approve':'Human review',r.approved===c.expected?'Aligned':'⚠ Diverges'];vals.forEach((s,i)=>{const td=document.createElement('td');td.textContent=s;if(i===2||i===3)td.className=(i===3&&r.approved!==c.expected)?'builder-block':r.approved?'builder-pass':'builder-block';tr.appendChild(td);});tr.tabIndex=0;tr.setAttribute('aria-label','Inspect '+c.name);tr.addEventListener('click',()=>{bActive=c.id;bShow(c,p);roleRefresh()});tr.addEventListener('keydown',e=>{if(e.key==='Enter'){bActive=c.id;bShow(c,p);roleRefresh()}});$('#b-rows').appendChild(tr);});$('#b-stats').innerHTML='<span><b>'+bCases.length+'</b> test cases</span><span><b>'+approvals+'</b> automated</span><span><b>'+miss+'</b> expected-route deviations</span>';bShow(bCases.find(x=>x.id===bActive)||bCases[0],p);roleRefresh();}
 $('#b-test').addEventListener('click',bRender);
 $('#b-reset').addEventListener('click',()=>{['b-sensitive','b-bot','b-size','b-ci','b-ai','b-timeout','b-sha','b-permit','b-dependency'].forEach(id=>$('#'+id).checked=true);$('#b-limit').value='5';bActive='docs';bRender();});
 $('#b-export').addEventListener('click',()=>{const data=JSON.stringify({type:'fictional-pr-approval-policy',version:1,policy:bPolicy()},null,2),blob=new Blob([data],{type:'application/json'}),a=document.createElement('a'),url=URL.createObjectURL(blob);a.href=url;a.download='playground-policy.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
-$('#builder input').forEach(el=>el.addEventListener('change',bRender));$('#b-limit').addEventListener('change',bRender);bRender();
+$$('#builder input').forEach(el=>el.addEventListener('change',bRender));$('#b-limit').addEventListener('change',bRender);bRender();
 
 const auditPackets={
 clean:{answer:'none',records:[['PR record','PR #101 · commit c0ffee1 · docs/readme.md'],['Decision log','Eligible · low risk · CI passed · SHA c0ffee1'],['Merge record','Authorized service review · merged c0ffee1'],['Production trace','Build digest sha256:aa11 · runtime sha256:aa11']],feedback:'The supplied identifiers agree. This is not proof of control effectiveness: independently verify rules, completeness, privileges, and whether relevant code actually required deployment.',boundary:'A matching record set supports this example transaction. It does not establish the completeness of the population or design suitability.'},
