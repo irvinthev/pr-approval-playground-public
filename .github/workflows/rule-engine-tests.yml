@@ -3,6 +3,9 @@ on:
   push:
     paths:
       - 'rule-engine.js'
+      - 'story-model.js'
+      - 'story.js'
+      - 'financial-engine.js'
       - 'playground.html'
       - 'tests/**'
       - '.github/workflows/rule-engine-tests.yml'
@@ -25,6 +28,9 @@ jobs:
       - name: Validate JavaScript syntax
         run: |
           node --check rule-engine.js
+          node --check story-model.js
+          node --check story.js
+          node --check financial-engine.js
           node --check tests/rule-engine.test.js
       - name: Run regression suite
-        run: node --test tests/rule-engine.test.js
+        run: node --test tests/*.test.js
