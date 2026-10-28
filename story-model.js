@@ -12,6 +12,7 @@
   let next={...state};
   if(event==='scenario')return initial(['shared','docs','unknown'].includes(value)?value:'shared');
   if(event==='reset')return initial(state.scenario);
+  if(event==='goto'&&Number.isInteger(value)&&value>=0&&value<=4)next.step=value;
   if(event==='next')next.step=Math.min(4,state.step+1);
   if(event==='back')next.step=Math.max(0,state.step-1);
   if(event==='override')next.feedback=F.attemptPolicyChange('approval-bot').message;
