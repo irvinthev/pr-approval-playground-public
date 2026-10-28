@@ -198,7 +198,7 @@
 </div>
 <script src="financial-engine.js"></script>
 <script src="financial-ui.js"></script>
-<script>
+<script src="rule-engine.js"></script><script>
 const $$=(q)=>document.querySelectorAll(q),$=(q)=>document.querySelector(q);
 // Primary navigation and nested activities are initialized after exercise scripts.
 const stages=[
@@ -304,19 +304,8 @@ function bPolicy(){return {sensitive:$('#b-sensitive').checked,bot:$('#b-bot').c
 // Shared, deterministic, fail-fast evaluation used by Policy Builder and Journey Lab.
 // DISABLED means the safeguard is off; SKIP means not evaluated after a block.
 /* Shared, fictional rule evaluator used by Policy Builder and Approval Race. */
-function sharedEvaluateRules(rules,stopOnBlock){
- let stopped=false;
- const steps=rules.map(rule=>{
-  let state;
-  if(stopped)state='SKIP';
-  else if(!rule.enabled)state='DISABLED';
-  else if(rule.pending)state='PENDING';
-  else if(rule.violation){state='BLOCK';if(stopOnBlock)stopped=true;}
-  else state='PASS';
-  return {name:rule.name,state,reason:rule.reason||''};
- });
- return {steps,approved:steps.every(x=>x.state==='PASS'||x.state==='DISABLED'),firstBlocked:steps.find(x=>x.state==='BLOCK')||null,hasPending:steps.some(x=>x.state==='PENDING')};
-}
+const sharedEvaluateRules = (rules, stopOnBlock) => PlaygroundRules.evaluate(rules, stopOnBlock);
+
 function bAssess(c,p){
  const definitions=[
  ['Sensitive paths',p.sensitive,!!c.sensitive,'Sensitive files require review under the scope rule.'],
