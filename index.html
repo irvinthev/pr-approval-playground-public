@@ -8,7 +8,7 @@
 <div class="top"><div class="eyebrow">Independent educational demo</div><span class="pill">Fictional scenarios · No API calls</span></div>
 <h1>PR Approval Playground</h1>
 <p class="sub">Explore how deterministic guardrails, AI assessments, human authorization, and deployment monitoring fit together. Toggle policies and simulate what could go wrong.</p>
-<div class="panel" style="margin-bottom:10px"><div class="eyebrow">Choose your perspective</div><div class="row" style="margin-top:12px"><button type="button" class="option" data-role="engineering" aria-pressed="true">⚙ Engineering view</button><button type="button" class="option" data-role="auditor" aria-pressed="false">◈ Auditor view</button></div><p id="role-context" class="sub" style="margin-bottom:0">Design an approval policy that handles routine changes efficiently while enforcing the required boundaries.</p></div><nav class="tabs" aria-label="Sections"><button data-tab="architecture" aria-selected="true">Architecture</button><button data-tab="journey" aria-selected="false">Journey Lab</button><button data-tab="simulator" aria-selected="false">PR Simulator</button><button data-tab="control-lab" aria-selected="false">Control Lab</button><button data-tab="builder" aria-selected="false">Policy Builder</button><button data-tab="policy" aria-selected="false">Policy Lab</button><button data-tab="guide" aria-selected="false">Design Guide</button></nav>
+<div class="panel" style="margin-bottom:10px"><div class="eyebrow">Choose your perspective</div><div class="row" style="margin-top:12px"><button type="button" class="option" data-role="engineering" aria-pressed="true">⚙ Engineering view</button><button type="button" class="option" data-role="auditor" aria-pressed="false">◈ Auditor view</button></div><p id="role-context" class="sub" style="margin-bottom:0">Design an approval policy that handles routine changes efficiently while enforcing the required boundaries.</p></div><nav class="tabs" aria-label="Sections"><button data-tab="architecture" aria-selected="true">Architecture</button><button data-tab="journey" aria-selected="false">Journey Lab</button><button data-tab="simulator" aria-selected="false">PR Simulator</button><button data-tab="control-lab" aria-selected="false">Control Lab</button><button data-tab="investigate" aria-selected="false">Evidence Lab</button><button data-tab="builder" aria-selected="false">Policy Builder</button><button data-tab="policy" aria-selected="false">Policy Lab</button><button data-tab="guide" aria-selected="false">Design Guide</button></nav>
 <section id="architecture">
 <div class="panel"><h2>How a change reaches production</h2><p class="dim">Choose a stage to inspect its purpose and limitations.</p><div class="flow">
 <button class="step" data-stage="0"><strong>1. Pull request</strong><span>Source &amp; SHA</span></button>
@@ -93,7 +93,19 @@
 <div class="trace-line" id="trace-line"></div>
 <div id="trace-result" class="callout" aria-live="polite"></div>
 </div>
-</div></section><section id="builder" class="hidden"><div class="panel">
+</div></section><section id="investigate" class="hidden"><div class="panel">
+<div class="eyebrow">Auditor view · fictional evidence</div><h2 style="margin-top:9px">Evidence Investigation Lab</h2>
+<p class="dim">Examine a synthetic auto-approved PR, inspect evidence records, and determine what they establish. The evidence contains deliberate discrepancies.</p>
+<label for="audit-case">Select an evidence packet</label>
+<select id="audit-case"><option value="clean">PR #101 — Routine documentation change</option><option value="stale">PR #202 — Commit changed after approval</option><option value="scope">PR #303 — Shared dependency not in scope rules</option><option value="merge">PR #404 — Missing approval decision</option><option value="deploy">PR #505 — Production artifact mismatch</option></select>
+<div class="grid" style="margin-top:15px" id="audit-records"></div>
+<div class="card" style="margin-top:14px"><h3>Investigation</h3>
+<p class="dim">Choose the most significant issue supported by these records.</p>
+<label for="audit-answer" class="small-label">Your assessment</label>
+<select id="audit-answer"><option value="">Choose an assessment</option><option value="none">No apparent discrepancy in supplied records</option><option value="sha">Approval was for a different commit</option><option value="scope">Eligibility scope omitted an indirect dependency</option><option value="auth">Approval decision evidence is missing</option><option value="artifact">Production artifact does not match expected build</option></select>
+<button type="button" class="option" id="audit-check" style="margin-top:12px">Evaluate my assessment</button>
+<div id="audit-feedback" class="callout" style="margin-top:12px" aria-live="polite">Review each record before choosing.</div>
+</div><div class="card" style="margin-top:14px"><h3>Evidence boundaries</h3><p class="dim" id="audit-boundary">A complete-looking packet still needs population completeness, source reliability, and administrative independence testing.</p></div></div></section><section id="builder" class="hidden"><div class="panel">
 <div class="eyebrow">Hands-on lab · fictional policies</div><h2 style="margin-top:9px">Build an approval policy</h2><p class="dim">Choose which gates apply. Then test your design against synthetic pull requests. This is a deterministic policy sandbox—not AI classification or an authorization system.</p>
 <div class="builder-rules">
 <div class="builder-rule"><h3>1 · Eligibility</h3><label><input type="checkbox" id="b-sensitive" checked> Reject sensitive files</label><label><input type="checkbox" id="b-bot" checked> Reject bot-authored PRs</label><label><input type="checkbox" id="b-size" checked> Limit changed files</label><label for="b-limit">Maximum files</label><select id="b-limit"><option value="3">3</option><option value="5" selected>5</option><option value="10">10</option></select></div>
@@ -115,7 +127,7 @@
 </div>
 <script>
 const $$=(q)=>document.querySelectorAll(q),$=(q)=>document.querySelector(q);
-$$('[data-tab]').forEach(b=>b.addEventListener('click',()=>{$$('[data-tab]').forEach(x=>x.setAttribute('aria-selected',String(x===b)));['architecture','journey','simulator','control-lab','builder','policy','guide'].forEach(id=>$('#'+id).classList.toggle('hidden',id!==b.dataset.tab));}));
+$$('[data-tab]').forEach(b=>b.addEventListener('click',()=>{$$('[data-tab]').forEach(x=>x.setAttribute('aria-selected',String(x===b)));['architecture','journey','simulator','control-lab','investigate','builder','policy','guide'].forEach(id=>$('#'+id).classList.toggle('hidden',id!==b.dataset.tab));}));
 const stages=[
 'Capture PR author, changed files, branch, and commit SHA. New changes must trigger fresh evaluation.',
 'Deterministic filters decide eligibility: repository scope, sensitive files, author type, change size, and passing checks.',
@@ -271,4 +283,20 @@ $('#b-test').addEventListener('click',bRender);
 $('#b-reset').addEventListener('click',()=>{['b-sensitive','b-bot','b-size','b-ci','b-ai','b-timeout','b-sha','b-permit','b-dependency'].forEach(id=>$('#'+id).checked=true);$('#b-limit').value='5';bActive='docs';bRender();});
 $('#b-export').addEventListener('click',()=>{const data=JSON.stringify({type:'fictional-pr-approval-policy',version:1,policy:bPolicy()},null,2),blob=new Blob([data],{type:'application/json'}),a=document.createElement('a'),url=URL.createObjectURL(blob);a.href=url;a.download='playground-policy.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
 $('#builder input').forEach(el=>el.addEventListener('change',bRender));$('#b-limit').addEventListener('change',bRender);bRender();
+
+const auditPackets={
+clean:{answer:'none',records:[['PR record','PR #101 · commit c0ffee1 · docs/readme.md'],['Decision log','Eligible · low risk · CI passed · SHA c0ffee1'],['Merge record','Authorized service review · merged c0ffee1'],['Production trace','Build digest sha256:aa11 · runtime sha256:aa11']],feedback:'The supplied identifiers agree. This is not proof of control effectiveness: independently verify rules, completeness, privileges, and whether relevant code actually required deployment.',boundary:'A matching record set supports this example transaction. It does not establish the completeness of the population or design suitability.'},
+stale:{answer:'sha',records:[['PR record','PR #202 · final commit 9ab234f'],['Decision log','Eligible · low risk · evaluated SHA 7de111c'],['Merge record','Merged SHA 9ab234f · automated approval accepted'],['Production trace','Build recorded for merged SHA 9ab234f']],feedback:'The bot approved a different commit from the one merged. Verify branch protection, dismissal settings, and event timing. This illustrates a transaction-level exception.',boundary:'Commit-specific authorization requires checking the exact evaluated version against the merged change.'},
+scope:{answer:'scope',records:[['PR record','PR #303 · shared/currency_math.js'],['Scope registry','Only payments/* marked sensitive; shared library not mapped'],['Decision log','Eligible · low AI risk · checks passed'],['Dependency note','payments/invoice_calc imports shared/currency_math.js']],feedback:'The eligibility check may have run as configured, but the sensitivity inventory omitted an indirect dependency. This suggests a scope-design issue rather than necessarily a broken check.',boundary:'Control design completeness and control execution are separate assertions.'},
+merge:{answer:'auth',records:[['PR record','PR #404 · commit 21cd443'],['Decision log','No approval record found in provided export'],['Merge record','Service identity merged commit 21cd443'],['Production trace','Expected and observed artifact both sha256:4b44']],feedback:'An artifact match cannot replace missing authorization evidence. Investigate whether the record is absent, the export is incomplete, or a bypass occurred.',boundary:'A missing record is not proof of an unauthorized change; establish log and export completeness before concluding.'},
+deploy:{answer:'artifact',records:[['PR record','PR #505 · commit d432e11'],['Decision log','Eligible · low risk · approved SHA d432e11'],['Build record','Expected image digest sha256:5555'],['Runtime observation','Running image digest sha256:9999']],feedback:'The runtime image differs from the expected build. Investigate release history, incident or rollback events, and whether observation timing explains the mismatch.',boundary:'Observed version divergence establishes a reconciliation question, not automatically an unauthorized deployment.'}
+};
+function renderAudit(){
+const c=auditPackets[$('#audit-case').value],root=$('#audit-records');root.replaceChildren();
+c.records.forEach(([name,value])=>{const card=document.createElement('div');card.className='card';const title=document.createElement('h3');title.textContent=name;const body=document.createElement('p');body.textContent=value;card.append(title,body);root.appendChild(card);});
+$('#audit-answer').value='';$('#audit-feedback').textContent='Review each record before choosing.';$('#audit-feedback').className='callout';$('#audit-boundary').textContent=c.boundary;
+}
+$('#audit-case').addEventListener('change',renderAudit);
+$('#audit-check').addEventListener('click',()=>{const c=auditPackets[$('#audit-case').value],v=$('#audit-answer').value,f=$('#audit-feedback');f.className='callout '+(v===c.answer?'good':'bad');f.textContent=!v?'Select an assessment first.':(v===c.answer?'Supported by the supplied scenario. ':'Reconsider the evidence. ')+c.feedback;});
+renderAudit();
 </script></body></html>
