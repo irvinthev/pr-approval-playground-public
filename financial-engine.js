@@ -38,6 +38,7 @@
   function assessTechnicalEligibility(change) {
     const reasons = [];
     if (!change.ci) reasons.push('Required CI has not passed for this revision.');
+    if (change.repoAllowlisted === false) reasons.push('Repository is outside the automated approval allowlist.');
     if (change.reviewA !== 'low' || change.reviewB !== 'low') reasons.push('Both simulated review results must be low for this route.');
     return {eligible: reasons.length === 0, reasons};
   }
