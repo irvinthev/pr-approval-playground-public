@@ -1,0 +1,30 @@
+name: Rule engine regression tests
+on:
+  push:
+    paths:
+      - 'rule-engine.js'
+      - 'playground.html'
+      - 'tests/**'
+      - '.github/workflows/rule-engine-tests.yml'
+  pull_request:
+    paths:
+      - 'rule-engine.js'
+      - 'playground.html'
+      - 'tests/**'
+      - '.github/workflows/rule-engine-tests.yml'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate JavaScript syntax
+        run: |
+          node --check rule-engine.js
+          node --check tests/rule-engine.test.js
+      - name: Run regression suite
+        run: node --test tests/rule-engine.test.js
