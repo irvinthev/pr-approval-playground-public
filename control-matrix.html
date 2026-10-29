@@ -17,7 +17,7 @@ const stageMappings=[
 {title:'Authorization',ids:['D01','G02','X01']},
 {title:'Production',ids:['P01','P02','P03','X01']}
 ];
-let highlighted=null;const p=new URLSearchParams(location.search);if(/^\\d$/.test(p.get('stage')||'')){const i=Number(p.get('stage'));if(i>=0&&i<stageMappings.length)highlighted=stageMappings[i]}
+let highlighted=null;const p=new URLSearchParams(location.search);if(/^[0-6]$/.test(p.get('stage')||'')){const i=Number(p.get('stage'));if(i>=0&&i<stageMappings.length)highlighted=stageMappings[i]}
 const banner=document.getElementById('stage-banner');if(highlighted){banner.hidden=false;document.getElementById('stage-name').textContent=highlighted.title;document.getElementById('clear-stage').addEventListener('click',()=>{highlighted=null;banner.hidden=true;history.replaceState({},'',location.pathname);render()})}
 
 const descriptions={all:'Full reference: foundational engineering objectives and AI-specific additions. SOX is an overlay showing objectives that may require particular attention in financially relevant change paths.',foundation:'Baseline controls for reliable software delivery, whether people or AI perform review. This filter does not imply every control applies identically to all systems.',ai:'Additional governance when AI classifies, recommends, approves or takes action. These requirements complement—not replace—the foundational controls.',sox:'SOX relevance is conditional on financial-reporting impact and control design. These highlighted objectives are examples to evaluate, not a complete SOX RCM or claims of compliance.'};
