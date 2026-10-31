@@ -21,15 +21,15 @@ details{margin-top:15px;border:1px solid #355366;background:#0e2031;border-radiu
 @media(max-width:1180px){.pipeline{grid-template-columns:repeat(4,1fr)}.node:nth-child(4):after{display:none}.branch{grid-template-columns:1fr 1fr}.branchcard:last-child{grid-column:1/-1}}
 @media(max-width:690px){.nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.nav a{text-align:center;padding:9px 4px}.pipeline{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.node{min-height:137px}.node:nth-child(even):after{display:none}.node:nth-child(4):after{display:none}.node:last-child{grid-column:1/-1;min-height:105px}.branch{grid-template-columns:1fr}.branchcard:last-child{grid-column:auto}.inspector-grid{grid-template-columns:1fr}.chooser{width:100%}.selectbox,.selectbox select{width:100%}.head{margin-top:13px}.frame{padding:12px}.node strong{font-size:13px}.node .symbol{font-size:19px}.node small{font-size:11px}}
 @media(prefers-reduced-motion:reduce){.node{transition:none}}
-</style>
+.phases{display:grid;grid-template-columns:2fr 2fr 3fr;margin:2px 0 13px;gap:14px;color:#91b8c8;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}.phases span{border-bottom:1px solid #345368;padding:8px}.branch{grid-template-columns:1fr;margin-top:15px}.branchcard{min-height:0}.branchcard strong{font-size:16px}.inspector-grid{grid-template-columns:1.3fr 1fr}.live{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}[hidden]{display:none!important}.review-results{display:flex;gap:7px;margin:8px 0;flex-wrap:wrap}.review-results span{border:1px solid #496979;padding:7px;border-radius:8px;font-size:12px}.node small{font-size:12px}@media(max-width:1180px){.phases{display:none}}@media(max-width:690px){.inspector-grid{grid-template-columns:1fr}}</style>
 </head>
 <body><main class="wrap">
 <header class="top"><div class="brand">◈ PR APPROVAL / FIELD GUIDE</div><span class="pill">CONCEPTUAL DESIGN · FICTIONAL EXAMPLE</span></header>
 <nav class="nav" aria-label="Field guide chapters"><a href="./index.html">Overview</a><a href="./experience.html" aria-current="page">1 · Pipeline</a><a href="./engineering-blueprint.html">2 · Blueprint</a><a href="./risk-controls.html">3 · Risks</a><a href="./control-matrix.html">4 · Controls</a><a href="./continuous-monitoring.html">5 · Monitoring</a><a href="./independent-assurance.html">6 · Assurance</a></nav>
-<section class="head"><div><h1>How does auto-approval work?</h1><p class="sub">Two approval paths. Shared build and release gates.</p><p class="caption">Fictional example · Eligible documentation change by default</p></div><div class="chooser"><label class="selectbox">Scenario<select id="scenario"><option value="low">Routine documentation · automated</option><option value="human">Protected dependency · human review</option><option value="release">Release validation failure · blocked</option></select></label><button class="btn primary" id="run" type="button">Run the flow →</button></div></section>
+<section class="head"><div><h1>How does auto-approval work?</h1><p class="sub">Two approval paths. Shared build and release gates.</p><p class="caption">Fictional example · Eligible documentation change by default</p></div><div class="chooser"><label class="selectbox">What if?<select id="scenario"><option value="low">Nothing fails · low-risk change</option><option value="human">Protected or unknown dependency</option><option value="release">Release check fails</option><option value="ai">AI reviews do not both qualify</option></select></label><button class="btn primary" id="run" type="button">Start walkthrough →</button></div></section>
 <section class="frame" aria-label="Interactive approval pipeline">
 <div id="route" class="route mint">READY · Choose Run the flow, or select any stage to inspect it.</div>
-<div class="pipeline" id="pipeline">
+<div class="phases" aria-hidden="true"><span>1 · Screen</span><span>2 · Assess</span><span>3 · Deliver</span></div><div class="pipeline" id="pipeline">
 <button class="node" data-step="0" type="button"><span class="n">1</span><span class="symbol" aria-hidden="true">▢</span><strong>Pull request</strong><small>Code + commit SHA</small><span class="status">Not started</span></button>
 <button class="node" data-step="1" type="button"><span class="n">2</span><span class="symbol" aria-hidden="true">☷</span><strong>Eligibility gate</strong><small>Paths · dependencies · required CI</small><span class="status">Not started</span></button>
 <button class="node" data-step="2" type="button"><span class="n">3</span><span class="symbol" aria-hidden="true">▣</span><strong>Two AI reviews</strong><small>Reviewer A + Reviewer B</small><span class="status">Not started</span></button>
@@ -38,19 +38,14 @@ details{margin-top:15px;border:1px solid #355366;background:#0e2031;border-radiu
 <button class="node" data-step="5" type="button"><span class="n">6</span><span class="symbol" aria-hidden="true">⬡</span><strong>Pre-production gate</strong><small>Artifact · release checks</small><span class="status">Not started</span></button>
 <button class="node" data-step="6" type="button"><span class="n">7</span><span class="symbol" aria-hidden="true">↗</span><strong>Production</strong><small>Deploy + monitor</small><span class="status">Not started</span></button>
 </div>
-<div class="branch">
-<div class="branchcard" id="human-review" data-off="true"><span class="small">↳ Ineligible, unknown impact, or AI escalation</span><strong>Human review</strong><p>Expert assesses the change and its dependencies.</p></div>
-<div class="branchcard" id="human-approval" data-off="true"><span class="small">↳ Required authorization</span><strong>Human approval</strong><p id="human-text">Qualified reviewer decides whether to proceed.</p><div id="human-actions" class="branchbuttons" hidden><button id="approve" type="button">Approve → merge/build</button><button id="reject" class="reject" type="button">Reject change</button></div></div>
-<div class="branchcard" id="release-block" data-off="true"><span class="small">↳ Pre-production failure</span><strong>Block release + investigate</strong><p>Remediate the failure, then rerun applicable checks. Human approval cannot override it.</p></div>
-</div>
-<p class="hint">Mint = completed automated route · Amber = human authorization · Red = release blocked. Selected stage has a white outline. This is a simulation, not a real approval system.</p>
+<div class="branch" id="branch" hidden><div class="branchcard" id="human-path" hidden><span class="small" id="branch-source">Eligibility / AI → human route</span><strong>Human review &amp; approval → 5 · Merge + build</strong><p id="human-text">Review the change and authorize this revision.</p><div id="human-actions" class="branchbuttons"><button id="approve" type="button">Simulate human approval →</button><button id="reject" class="reject" type="button">Reject change</button></div></div><div class="branchcard" id="release-block" hidden data-alert="true"><strong>Release blocked</strong><p>Investigate and correct the failure. Code changes require fresh review, approval and build; human approval cannot waive required checks.</p><button class="btn" id="restart" type="button">Restart after correction</button></div></div><p class="hint">Click a stage to inspect it. Use Next step to advance. Mint = passed · Amber = human route · Red = blocked.</p>
 <p class="live" id="announcement" role="status" aria-live="polite"></p>
 </section>
 <section class="inspector" aria-label="Selected stage explanation">
-<div class="inspector-grid"><div><span class="eyebrow" id="stage-tag">STAGE 1 / 7</span><h2 class="detail-title" id="detail-title">Pull request</h2><p id="description">A contributor opens a pull request containing a defined revision.</p></div><div><h3>What runs / produces</h3><p id="mechanism">PR metadata and commit identifier.</p></div><div><h3>What happens next</h3><p id="next">Check eligibility before requesting AI reviews.</p><span class="outcome" id="result">READY TO START</span></div></div>
-<details><summary>Related controls and evidence ▸</summary><div class="evidence"><p id="control-explanation"></p><div id="control-links"></div></div></details>
+<div class="inspector-grid"><div><span class="eyebrow" id="stage-tag">STAGE 1 / 7</span><h2 class="detail-title" id="detail-title">Pull request</h2><p id="description">A contributor opens a pull request containing a defined revision.</p></div><div><h3>What happens next</h3><p id="next">Check eligibility before requesting AI reviews.</p><span class="outcome" id="result">READY TO START</span></div></div>
+<details><summary>Technical details, controls and evidence</summary><div class="evidence"><h3>What runs / produces</h3><p id="mechanism"></p><p id="control-explanation"></p><div id="control-links"></div></div></details>
 </section>
-<footer class="foot">Public fictional illustration only. The policy engine—not the AI reviewers—grants automated authorization. Actual implementation and SOX effectiveness have not been verified. <a href="./playground.html">Advanced experiments →</a><a href="./risk-controls.html">Next: Risks →</a></footer>
+<footer class="foot">Public fictional illustration only. The policy engine—not the AI reviewers—grants automated authorization. Actual implementation and SOX effectiveness have not been verified. <a href="./playground.html">Advanced experiments →</a><a href="./engineering-blueprint.html">Next: Blueprint →</a></footer>
 </main>
 <script>
 (function(){
@@ -64,26 +59,36 @@ var stages=[
 {title:'Pre-production gate',description:'Release protections apply equally to AI- and human-approved changes. An approval does not waive release criteria.',mechanism:'Check approved-source linkage, artifact digest, environment policy and release validations. Output: pass / block.',next:'Pass → production. Failure → block, investigate, fix, and rerun checks.',controls:['P01','P02','X01']},
 {title:'Production',description:'Deploy the authorized artifact and monitor for incidents, mismatches and reversions.',mechanism:'Deployment record, artifact SHA/digest, production version, alerts and rollback events.',next:'Retain the full decision-to-deployment trace and monitor outcomes.',controls:['P02','P03','X01']}
 ];
-var scenario=document.getElementById('scenario'),nodes=[].slice.call(document.querySelectorAll('.node')),run=document.getElementById('run');
-var selected=1,states=Array(7).fill('idle'),timer=null,mode='low',waiting=false,finished=false;
 var $=function(id){return document.getElementById(id)};
-function cancel(){if(timer!==null){clearTimeout(timer);timer=null}}
-function setRoute(message,type){$('route').textContent=message;$('route').className='route '+type;$('announcement').textContent=message}
-function showBranches(which){['human-review','human-approval','release-block'].forEach(function(id){$(id).dataset.off=String(which!==id&&!(which==='human-approval'&&id==='human-review'));$(id).dataset.alert=String(which===id&&id==='release-block')})}
-function select(i){selected=i;var s=stages[i];$('stage-tag').textContent='STAGE '+(i+1)+' / 7';$('detail-title').textContent=s.title;$('description').textContent=s.description;$('mechanism').textContent=s.mechanism;$('next').textContent=s.next;var explanation='Illustrative control objectives and supporting evidence for this stage:';$('control-explanation').textContent=explanation;var el=$('control-links');el.replaceChildren();s.controls.forEach(function(c){var a=document.createElement('a');a.href='./control-matrix.html#control-'+c;a.textContent=c+' ↗';el.append(a)});render()}
-function render(){nodes.forEach(function(n,i){n.dataset.selected=String(i===selected);n.setAttribute('aria-pressed',String(i===selected));n.dataset.state=states[i];n.querySelector('.status').textContent=({idle:'Not started',active:'Running…',done:'✓ Passed',human:'↳ Human route',blocked:'✕ Blocked',skipped:'Not applicable'})[states[i]]});var s=states[selected],out=$('result');out.textContent=({idle:'NOT STARTED',active:'RUNNING',done:'✓ COMPLETE',human:'HUMAN AUTHORIZATION',blocked:'RELEASE BLOCKED',skipped:'NOT APPLICABLE'})[s];out.className='outcome'+(s==='human'?' amber':s==='blocked'?' red':'')}
-function reset(){cancel();mode=scenario.value;states=Array(7).fill('idle');waiting=false;finished=false;run.disabled=false;$('human-actions').hidden=true;$('human-text').textContent='Qualified reviewer decides whether to proceed.';showBranches(null);setRoute('READY · Select Run the flow to demonstrate the '+(mode==='low'?'automated':mode==='human'?'human escalation':'blocked release')+' route.','mint');select(1)}
-function step(i){select(i);states[i]='active';render();setRoute('RUNNING · Stage '+(i+1)+' / 7 — '+stages[i].title,'mint');timer=setTimeout(function(){timer=null;
- if(mode==='human'&&i===1){states[i]='human';states[2]='skipped';states[3]='skipped';select(i);showBranches('human-approval');waiting=true;run.disabled=true;$('human-actions').hidden=false;$('human-text').textContent='Protected dependency: expert review required. Choose an outcome below.';setRoute('HUMAN REVIEW · Protected dependency prevents auto-approval. Human decision required.','amber');return}
- if(mode==='release'&&i===5){states[i]='blocked';states[6]='skipped';select(i);showBranches('release-block');run.disabled=false;finished=true;setRoute('RELEASE BLOCKED · Artifact validation failed. Fix and rerun release checks; approval does not override failure.','red');return}
- states[i]='done';select(i);if(i===6){run.disabled=false;finished=true;setRoute('DEPLOYED · Authorized revision reached production; monitoring continues.','mint');return}
- step(i+1)
-},530)}
-function start(){reset();run.disabled=true;step(0)}
-nodes.forEach(function(n,i){n.addEventListener('click',function(){select(i)})});
-scenario.addEventListener('change',reset);run.addEventListener('click',start);
-$('approve').addEventListener('click',function(){if(!waiting)return;waiting=false;$('human-actions').hidden=true;$('human-text').textContent='Human authorization recorded for the current revision. Shared merge and release gates still apply.';states[1]='human';showBranches('human-approval');setRoute('HUMAN APPROVED · Continue through the shared build and release checks.','amber');run.disabled=true;step(4)});
-$('reject').addEventListener('click',function(){if(!waiting)return;waiting=false;$('human-actions').hidden=true;$('human-text').textContent='Change rejected. No merge or deployment.';states[4]='skipped';states[5]='skipped';states[6]='skipped';select(1);run.disabled=false;finished=true;setRoute('REJECTED · Human reviewer declined authorization. No merge or release.','amber')});
+var nodes=[].slice.call(document.querySelectorAll('.node')),selected=0;
+var flow={mode:'low',cursor:0,status:'ready',states:Array(7).fill('idle'),human:false};
+function transition(f,event){
+ var n={mode:f.mode,cursor:f.cursor,status:f.status,states:f.states.slice(),human:f.human};
+ if(event==='approve'&&n.status==='human'){n.status='running';n.human=true;n.cursor=4;return n}
+ if(event==='reject'&&n.status==='human'){n.status='rejected';n.states.fill('skipped',n.cursor+1);return n}
+ if(event!=='next'||!['ready','running'].includes(n.status))return n;
+ var i=n.cursor;
+ if(n.mode==='human'&&i===1||n.mode==='ai'&&i===2){n.states[i]='human';n.states.fill('skipped',i+1,4);n.status='human';return n}
+ if(n.mode==='release'&&i===5){n.states[i]='blocked';n.states[6]='skipped';n.status='blocked';return n}
+ n.states[i]='done';n.cursor=i+1;n.status=i===6?'deployed':'running';return n;
+}
+var messages={ready:'Start with an eligible low-risk change. Advance at your own pace.',running:'Continue to the next check.',human:'Human review required. Automated approval is withheld.',blocked:'Release blocked. Investigate and correct the failed check.',rejected:'Change rejected. No merge or deployment.',deployed:'Simulated deployment complete. Monitor outcomes and exceptions.'};
+function select(i){selected=i;var x=stages[i];$('stage-tag').textContent='STAGE '+(i+1)+' / 7';$('detail-title').textContent=x.title;$('description').textContent=x.description;$('mechanism').textContent=x.mechanism;$('next').textContent=x.next;$('control-explanation').textContent='Illustrative supporting objectives:';$('control-links').replaceChildren();x.controls.forEach(function(c){var a=document.createElement('a');a.href='./control-matrix.html#control-'+c;a.textContent=c+' ↗';$('control-links').append(a)});render()}
+function render(){
+ var names={idle:'Not started',done:'✓ Passed',human:'↳ Human route',blocked:'✕ Blocked',skipped:'Not applicable'};
+ nodes.forEach(function(n,i){n.dataset.selected=String(i===selected);n.setAttribute('aria-pressed',String(i===selected));n.dataset.state=flow.states[i];n.querySelector('.status').textContent=names[flow.states[i]]});
+ var msg=messages[flow.status];if(flow.status==='running')msg='Next: '+stages[flow.cursor].title+'.';
+ $('route').textContent=msg;$('route').className='route '+(flow.status==='blocked'?'red':flow.status==='human'||flow.human?'amber':'mint');$('announcement').textContent=msg;
+ $('run').textContent=flow.status==='ready'?'Start walkthrough →':flow.status==='deployed'||flow.status==='rejected'?'Start again ↺':'Next step →';$('run').disabled=flow.status==='human'||flow.status==='blocked';
+ $('branch').hidden=!(flow.status==='human'||flow.human||flow.status==='blocked'||flow.status==='rejected');$('human-path').hidden=!(flow.status==='human'||flow.human||flow.status==='rejected');$('release-block').hidden=flow.status!=='blocked';$('human-actions').hidden=flow.status!=='human';
+ $('branch-source').textContent=(flow.mode==='ai'?'AI criteria not met':'Protected or unknown dependency')+' → human route';
+ $('human-text').textContent=flow.human?'Human approval recorded for this revision. Continue at Merge + build; required checks still apply.':flow.status==='rejected'?'Reviewer rejected the change.':'A qualified reviewer assesses impact and resolves issues before authorizing this revision. This simulated approval does not waive tests.';
+ var state=flow.states[selected];$('result').textContent=names[state];$('result').className='outcome'+(state==='human'?' amber':state==='blocked'?' red':'');
+}
+function reset(){flow={mode:$('scenario').value,cursor:0,status:'ready',states:Array(7).fill('idle'),human:false};select(0)}
+$('run').addEventListener('click',function(){if(['deployed','rejected'].includes(flow.status)){reset();return}var i=flow.cursor;flow=transition(flow,'next');select(i)});
+$('scenario').addEventListener('change',reset);nodes.forEach(function(n,i){n.addEventListener('click',function(){select(i)})});
+$('approve').addEventListener('click',function(){flow=transition(flow,'approve');select(4)});$('reject').addEventListener('click',function(){flow=transition(flow,'reject');render()});$('restart').addEventListener('click',function(){$('scenario').value='low';reset();$('route').textContent='Correction assumed for this new demonstration. Fresh checks and approval are required.'});
 reset();
 })();
 </script>
