@@ -8,15 +8,19 @@ Once GitHub Pages is enabled: https://irvinthev.github.io/pr-approval-playground
 
 ## Start here
 
-The front door asks: **Two green reviews. Should it ship?**
+The five-chapter field guide opens with **When AI reviews code, who authorizes the change?**
 
-- **Follow a change:** a five-step guided story through technical review, dependencies, independent policy, authority and outcome. Choose a shared-library change, routine documentation or an unknown dependency.
-- **Explore the sandbox:** optional policy, authority and financial-impact experiments. Existing timelines, evidence exercises and the full scenario library remain under advanced experiments.
-- **How it works:** a concise explanation, with architecture and design reference material.
+1. **Pipeline:** one primary seven-stage walkthrough, with related controls available on demand.
+2. **Risks:** choose a failure, inspect its response, and expand the human/rules/AI comparison.
+3. **Controls:** six essential safeguards first, then the full 14-objective reference. Stage and control deep links open it automatically.
+4. **Monitoring:** investigate a revision mismatch and challenge whether 24/24 feed records cover every production route.
+5. **Assurance:** concise test actions and expected responses, with full procedures and evidence expandable.
 
-Potential dollar exposure and decision records are collapsed details in the story. Engineering and Assurance explanations appear together, without a global role switch. The optional calculator informs review scope; it does not waive protected review.
+Published framework references remain visible on the homepage. They inform proposed designs, without endorsing this architecture or establishing effectiveness.
 
-This is an educational simulator, **not** a working approval system or evidence of any real organization's controls. Examples are fictional.
+**Advanced experiments** opens the sandbox overview directly. Policy Builder, Control Lab, Financial Impact Lab, Approval Race, Evidence Lab and the scenario library remain available. The older story and retired exercises remain in source temporarily, outside the primary journey.
+
+This is an educational simulator, not a working approval system or evidence of a real organization's controls. Examples are fictional.
 
 ## Run locally
 

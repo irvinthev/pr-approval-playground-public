@@ -9,33 +9,10 @@ const path = require('node:path');
  const errors=[], external=[];
  page.on('pageerror',e=>errors.push(e.message));
  page.on('request',r=>{if(/^https?:/.test(r.url()))external.push(r.url());});
- await page.goto(pathToFileURL(path.resolve(__dirname,'../index.html')).href);
- assert.equal(await page.locator('#story').isVisible(),true);
- assert.equal(await page.locator('[data-tab]').count(),3);
- assert.equal(await page.locator('[data-pipeline]').count(),6);
- await page.locator('[data-pipeline="outcome"]').click();assert.match(await page.locator('#story-verdict').textContent(),/Independent human review still required/);
- assert.equal(await page.locator('#pipe-outcome-state').textContent(),'On hold');
- await page.locator('[data-pipeline="authority"]').click();await page.locator('#story-authorize').click();assert.equal(await page.locator('#pipe-outcome-state').textContent(),'Eligible · not deployed');
- await page.locator('#story-reset').click();
- await page.locator('[data-pipeline="technical"]').focus();await page.keyboard.press('Enter');assert.match(await page.locator('#story-title').textContent(),/technical reviews establish/);
- await page.locator('[data-pipeline="scope"]').click();assert.equal(await page.locator('[data-pipeline="scope"]').getAttribute('aria-pressed'),'true');
- await page.locator('#story-reset').click();
-
- await page.locator('#story-next').click();await page.locator('#story-next').click();
- assert.equal(await page.locator('#story-impact').isVisible(),true);
- assert.equal(await page.locator('#story-impact').evaluate(el=>el.open),false);
- await page.locator('#story-next').click();await page.locator('#story-override').click();
- assert.match(await page.locator('#story-feedback').textContent(),/Denied/);
- await page.locator('#story-authorize').click();await page.locator('#story-next').click();
- assert.match(await page.locator('#story-verdict').textContent(),/Authorized through independent human review/);
- await page.locator('#story-push').click();assert.match(await page.locator('#story-verdict').textContent(),/Fresh technical validation/);
- await page.locator('#story-recheck').click();assert.match(await page.locator('#story-verdict').textContent(),/Independent human review still required/);
- await page.locator('#story-review-again').click();assert.match(await page.locator('#story-verdict').textContent(),/Authorized through/);
- for(const [id,expected] of [['docs',/Eligible for the automated route/],['unknown',/Resolve the missing dependency mapping/]]){
-  await page.locator('#story-case').selectOption(id);for(let i=0;i<4;i++)await page.locator('#story-next').click();assert.match(await page.locator('#story-verdict').textContent(),expected);
- }
- await page.locator('#story-case').selectOption('shared');
-
+ await page.goto(pathToFileURL(path.resolve(__dirname,'../playground.html')).href);
+ assert.equal(await page.locator('#sandbox-home').isVisible(),true);
+ assert.equal(await page.locator('#story').isVisible(),false);
+ assert.equal(await page.locator('#discovery').isVisible(),false);
  await page.locator('[data-tab="sandbox"]').click();
  await page.locator('[data-open-section="financial"]').click();
  assert.equal(await page.locator('#financial').isVisible(),true);
@@ -72,9 +49,9 @@ const path = require('node:path');
  await page.locator('#race-scenario').selectOption('financial');await page.locator('#race-policy-shadow').check();await page.locator('#race-all').click();assert.equal(JSON.parse(await page.locator('#race-json').textContent()).mergeAuthorized,false);await page.locator('#race-policy-shadow').uncheck();
  // Existing Approval Race and each primary/secondary section remain usable.
  for(const [id,merged] of [['routine',true],['push',false],['disagreement',false],['policy',false]]) {await page.locator('#race-scenario').selectOption(id);await page.locator('#race-all').click();assert.equal(JSON.parse(await page.locator('#race-json').textContent()).mergeAuthorized,merged);}
- for(const id of ['builder','control-lab','financial','approval-race','investigate','library','journey','simulator','policy','discovery','access','operations','results']) {await page.selectOption('#sandbox-activity',id);assert.equal(await page.locator('#'+id).isVisible(),true);}
- await page.locator('[data-tab="reference"]').click();for(let i=0;i<3;i++)await page.locator('#secondary-nav button').nth(i).click();
- await page.locator('[data-tab="story"]').click();
+ for(const id of ['builder','control-lab','financial','approval-race','investigate','library']) {await page.selectOption('#sandbox-activity',id);assert.equal(await page.locator('#'+id).isVisible(),true);}
+ await page.locator('[data-tab="reference"]').click();for(let i=0;i<2;i++)await page.locator('#secondary-nav button').nth(i).click();
+ await page.locator('[data-tab="sandbox"]').click();
  await page.setViewportSize({width:390,height:844});
  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
  if(process.env.SMOKE_SCREENSHOT_DIR)await page.screenshot({path:path.join(process.env.SMOKE_SCREENSHOT_DIR,'financial-mobile.png'),fullPage:true});
