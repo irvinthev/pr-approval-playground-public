@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const F = require('../financial-engine');
 const ui = fs.readFileSync(path.join(__dirname,'../financial-ui.js'),'utf8');
-const html = fs.readFileSync(path.join(__dirname,'../index.html'),'utf8');
+const html = fs.readFileSync(path.join(__dirname,'../playground.html'),'utf8');
 const context = vm.createContext({FinancialDemo:F});
 vm.runInContext(ui.slice(0,ui.indexOf("document.addEventListener('DOMContentLoaded'")), context);
 const definitions = ui.slice(ui.indexOf('  const events ='),ui.indexOf('  Object.entries(raceDefinitions)'));
