@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Assurance | PR Approval Field Guide</title><link rel="stylesheet" href="./guide.css"><link rel="stylesheet" href="./assurance.css?v=rcm-1"><link rel="stylesheet" href="./case.css?v=visual-1"><link rel="stylesheet" href="./site.css"><link rel="stylesheet" href="./learning.css?v=learning-1"><style>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Assurance | PR Approval Field Guide</title><link rel="stylesheet" href="./guide.css"><link rel="stylesheet" href="./assurance.css?v=mobile-qa-2"><link rel="stylesheet" href="./case.css?v=visual-1"><link rel="stylesheet" href="./site.css"><link rel="stylesheet" href="./learning.css?v=learning-1"><style>
 .assurance-jump{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:22px 0 26px}
 .assurance-jump a{display:block;text-decoration:none;padding:16px 18px;border:1px solid #456779;border-radius:12px;background:#102c3d;color:#e4f6f2}
 .assurance-jump a strong,.assurance-jump a span{display:block}.assurance-jump a span{font-size:13px;color:#bdd4db;margin-top:5px}
@@ -69,6 +69,17 @@ const rows=[
 ["AI-09","Unapproved artifact deployed","Bind reviewed revision to provenance and production artifact","Can a different artifact reach production?","SLSA v1.0 Build Track","https://slsa.dev/spec/v1.0/levels","Supporting supply-chain guidance"],
 ["AI-14","Model drift leads to unsafe auto-approval","Monitoring, recalibration and suspension gates","What evidence triggers retesting or suspension?","NIST AI RMF 1.0 MEASURE 2.4","https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.100-1.pdf","Specific subcategory alignment"]
 ];
+// Expand the intended content when navigating from a resource card or deep link.
+function revealResource(hash){
+  const id=decodeURIComponent((hash||'').replace(/^#/,''));
+  if(!['framework-crosswalk','rcm-preview-list'].includes(id))return;
+  const target=document.getElementById(id);if(!target)return;
+  if(target.tagName==='DETAILS')target.open=true;
+  target.scrollIntoView({block:'start',behavior:'auto'});
+}
+document.querySelectorAll('.assurance-resource[href^="#"]').forEach(link=>link.addEventListener('click',()=>{setTimeout(()=>revealResource(link.hash),0)}));
+if(['#framework-crosswalk','#rcm-preview-list'].includes(location.hash))setTimeout(()=>revealResource(location.hash),0);
+window.addEventListener('hashchange',()=>revealResource(location.hash));
 const button=document.getElementById('framework-csv-download');if(!button)return;
 button.addEventListener('click',()=>{
 const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\r\n');
