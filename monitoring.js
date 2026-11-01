@@ -22,6 +22,7 @@
   box.append(toggles,records,result,el('p',example.qualification,'monitor-qualification'));show('exception');return box;
  }
  function render(){
+  const examples=$('worked-examples');examples.hidden=active!==6;if(active!==6)examples.open=false;
   const stage=data.stages[active];$('stage-index').textContent='STAGE '+(active+1)+' / 7';
   for(const [id,key]of [['stage-title','title'],['stage-subtitle','subtitle'],['scenario','scenario'],['risk','risk'],['concern','concern'],['principle','principle']])$(id).textContent=stage[key];
   $('framework-guidance').replaceChildren(...stage.guidance.map(g=>{const row=el('div',null,'framework-row');row.append(source(g.ref),el('p',g.text));return row;}));
