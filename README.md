@@ -8,17 +8,17 @@ Once GitHub Pages is enabled: https://irvinthev.github.io/pr-approval-playground
 
 ## Start here
 
-The overview asks **How do you evaluate AI-assisted code approval?** It introduces five reusable questions about delegation, impact, required conditions, authority and evidence. **Start with a change** opens the fictional shared-library case directly; readers can also enter through implementation, risk or assurance questions.
+The main journey has three pages and three shared fictional scenarios: **Happy path**, **Protected dependency**, and **AI review doesn’t qualify**.
 
-- **Pipeline:** inspect one possible workflow. Each stage invites a judgment before expanding the example’s facts, available approaches, rationale and evidence needs.
-- **Blueprint:** examine how decisions could be enforced.
-- **Risks & Safeguards:** challenge failure modes and coverage.
-- **Monitoring:** explore observation, investigation and response.
-- **Assurance:** examine evidence, testing and the limits of conclusions.
+- **Field Guide:** a short introduction, the proposed pipeline, and stage-specific engineering, monitoring and audit requirements.
+- **Blueprint:** implementation requirements, acceptance checks and worked monitoring rules.
+- **Assurance:** linked example records, audit tests, the control crosswalk and downloadable RCM.
 
-The goal is transferable judgment, not adoption of a prescribed architecture. A closing exercise asks readers to apply the questions to another change and identify what their own tools establish or leave unresolved. Optional Engineering, Risk/GRC, Internal Audit and external-audit prompts share the same case; no separate role dashboards are added.
+Use the next simulation action to produce review, authorization, build, release, deployment and reconciliation records. Stage selection only inspects the case. URL links preserve the same validated event history across all three pages; imported conclusions are recomputed. Human approval never requires rerunning AI until it returns LOW, and mandatory CI/release checks still apply.
 
-Published framework references remain visible on the homepage. They inform proposed designs, without endorsing this architecture or establishing effectiveness.
+Each stage identifies its monitor, owner, sources, cadence, example results, response, and RCM/library references. All inputs and validation results are invented. A matched example is not evidence of real model reliability, complete production coverage or control effectiveness. Framework references and broader test considerations remain under the reference disclosures.
+
+Older `#case=` links receive an explicit handoff to the advanced walkthrough rather than being displayed beside a different case. See [GUIDE-JOURNEY.md](GUIDE-JOURNEY.md) for the state contract and reference boundaries.
 
 **Advanced experiments** opens the sandbox overview directly. Policy Builder, Control Lab, Financial Impact Lab, Approval Race, Evidence Lab and the scenario library remain available. The older story and retired exercises remain in source temporarily, outside the primary journey.
 
@@ -58,7 +58,7 @@ Under **Explore the sandbox → Financial Impact Lab**, inspect invented service
 
 ### Tests
 
-Run `node --test tests/*.test.js`. No dependencies are required for engine tests. Open `index.html` locally to use the complete demo.
+Run `node --test tests/*.test.js`. No dependencies are required for engine tests. Open `index.html` locally to use the complete demo. Serve the repository and open `tests/browser-guide.html` for browser regression checks covering the three journeys, cross-page state, import rejection, legacy links, control destinations and 390/320 CSS-pixel reflow. These browser checks are separate from the Node CI job; they do not establish native-device or full accessibility compatibility.
 
 Optional browser smoke: with Playwright and Chromium installed, run `node tests/browser-smoke.cjs`. It covers the new lab, financial and existing approval races, navigation, export, mobile overflow and external-request detection.
 

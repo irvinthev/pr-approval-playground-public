@@ -1,0 +1,39 @@
+/* Native browser regression checks, run by opening browser-guide.html. No external dependencies. */
+(async function(){
+'use strict';
+const frame=document.getElementById('subject'),results=document.getElementById('results');let passed=0,failed=0;
+const check=(condition,message)=>{if(!condition)throw new Error(message);};
+async function mount(path,width=1100){
+ frame.style.width=width+'px';
+ await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error('Page load timed out: '+path)),12000);frame.onload=()=>{clearTimeout(timer);resolve();};const target=new URL(path.startsWith('http')?path:'../'+path,location.href).href;if(frame.contentWindow.location.href===target)frame.contentWindow.location.reload();else frame.src=target;});
+ await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+ return frame.contentDocument;
+}
+async function test(name,fn){const only=new URLSearchParams(location.search).get('only');if(only&&!name.includes(only))return;const item=document.createElement('li');item.textContent=name;results.append(item);try{await fn();passed++;item.className='pass';item.textContent='PASS — '+name;}catch(e){failed++;item.className='fail';item.textContent='FAIL — '+name+': '+e.message;}}
+for(const id of ['happy','protected','review'])await test(id+': complete the six-step journey and preserve every record',async()=>{
+ let d=await mount('index.html?scenario='+id);
+ for(let i=0;i<6;i++){const action=d.querySelector('[data-action]');check(action,'Missing next action at '+i);action.click();check(d.getElementById('guide-app').dataset.caseEvents===String(i+1),'Action did not advance');}
+ check(!d.querySelector('[data-action]'),'Completed case still offers advancement');
+ const href=d.querySelector('.site-chapters a[href*="independent-assurance.html"]').href;d=await mount(href);
+ const record=JSON.parse(d.querySelector('#guide-app pre').textContent);
+ check(record.authorization.kind===(id==='happy'?'POLICY':'HUMAN'),'Wrong approval kind');
+ check(record.deployment.authorizationId===record.authorization.recordId,'Deployment does not reference approval');
+ check(record.release.digest===record.build.digest&&record.reconciliation.digest===record.build.digest,'Artifact continuity lost');
+ if(id==='review')check(record.checks.reviewB==='HIGH','Human route forced a favorable AI rerun');
+ check(!d.getElementById('shared-case-panel'),'Conflicting legacy case renderer present');
+});
+await test('stage navigation cannot authorize or deploy',async()=>{const d=await mount('index.html?scenario=protected');const before=frame.contentWindow.location.hash;for(const b of [...d.querySelectorAll('[data-step]')]){const target=d.querySelector('[data-step="'+b.dataset.step+'"]');target.click();check(d.getElementById('guide-app').dataset.caseEvents==='0','Stage click advanced workflow');check(frame.contentWindow.location.hash===before||before===''&&JSON.parse(decodeURIComponent(frame.contentWindow.location.hash.slice(7))).events.length===0,'History changed');}});
+await test('case survives cross-page navigation and reload',async()=>{let d=await mount('index.html?scenario=protected');d.querySelector('[data-action]').click();d.querySelector('[data-action]').click();const h=frame.contentWindow.location.hash;for(const file of ['engineering-blueprint.html','independent-assurance.html','index.html']){const href=d.querySelector('.site-chapters a[href*="'+file+'"]').href;d=await mount(href);check(frame.contentWindow.location.hash===h,'Case changed across '+file);check(d.getElementById('guide-app').dataset.caseEvents==='2','Event count changed');}d=await mount(frame.contentWindow.location.href);check(d.getElementById('guide-app').dataset.caseEvents==='2','Reload reset progress');});
+await test('skip and same-page reference links preserve the case history',async()=>{const d=await mount('index.html?scenario=protected');d.querySelector('[data-action]').click();const before=frame.contentWindow.location.hash;d.querySelector('.site-skip').click();check(frame.contentWindow.location.hash===before,'Skip link replaced case history');check(d.getElementById('guide-app').dataset.caseEvents==='1','Skip reset progress');});
+await test('invalid state and conflicting scenario links show no favorable conclusion',async()=>{
+ const good='#guide='+encodeURIComponent(JSON.stringify({schemaVersion:2,scenario:'protected',events:['REVIEW']}));
+ for(const path of ['index.html?scenario=unknown','index.html#guide=%','index.html?scenario=happy'+good,'independent-assurance.html#guide='+encodeURIComponent(JSON.stringify({schemaVersion:2,scenario:'happy',events:['DEPLOY']}))]){const d=await mount(path);check(d.querySelector('[role="alert"]'),'Import was not rejected');check(!d.querySelector('#guide-app .context'),'Favorable case substituted');}
+});
+await test('legacy links hand off exact state and never render a second case',async()=>{const hash='#case='+encodeURIComponent(JSON.stringify({schemaVersion:1,caseId:'shared-library',events:['CHECKS','APPROVE','BUILD','RELEASE_CHECKS','DEPLOY','CORROBORATE']}));const d=await mount('independent-assurance.html?scenario=happy&step=6'+hash);check(d.querySelector('#legacy-case-link').hash===hash,'Legacy event history lost');check(!d.querySelector('#guide-app .context'),'New case substituted');check(!d.getElementById('shared-case-panel'),'Legacy case rendered beside new case');});
+await test('monitor rows and control links follow the active stage',async()=>{const d=await mount('index.html?scenario=protected&step=2');d.querySelector('[data-action]').click();const text=d.querySelector('#guide-app').textContent;check(text.includes('severe false approvals')&&text.includes('shared misses'),'Model behavior monitoring missing');check(d.querySelector('.monitor-sample'),'Worked record table missing');check(d.querySelector('.related').textContent.includes('AI-03'),'Stage RCM mapping missing');});
+await test('RCM link retains case history and opens its exact crosswalk row',async()=>{let d=await mount('index.html?scenario=protected&step=1');d.querySelector('[data-action]').click();const a=d.querySelector('.related a'),id=new URL(a.href).searchParams.get('section'),hash=new URL(a.href).hash;d=await mount(a.href);const row=d.getElementById(id);check(row,'RCM row missing');check(row.closest('details').open,'Crosswalk did not open');check(frame.contentWindow.location.hash===hash,'Case lost at control reference');});
+await test('legacy reference anchor is not overwritten by case propagation',async()=>{const hash='#case='+encodeURIComponent(JSON.stringify({schemaVersion:1,caseId:'shared-library',events:['CHECKS']}));const d=await mount('continuous-monitoring.html'+hash);const anchors=[...d.querySelectorAll('a')].filter(a=>a.href.includes('independent-assurance.html')&&a.href.includes('testing-guide'));check(anchors.length>0,'Expected reference link missing');check(anchors.every(a=>a.hash==='#testing-guide'),'Reference destination overwritten');});
+for(const width of [390,320])await test(width+'px reflow: all three primary pages fit and controls remain usable',async()=>{for(const file of ['index.html','engineering-blueprint.html','independent-assurance.html']){const d=await mount(file+'?scenario=protected&step=2',width);check(d.documentElement.scrollWidth<=frame.contentWindow.innerWidth+1,file+' overflows horizontally');for(const b of d.querySelectorAll('#guide-app button'))check(b.getBoundingClientRect().height>=44,file+' has short action target');const action=d.querySelector('[data-action]');action.click();check(d.getElementById('guide-app').dataset.caseEvents==='1','Narrow viewport action failed');}});
+document.getElementById('status').textContent=`Complete: ${passed} passed, ${failed} failed.`;
+document.body.dataset.passed=passed;document.body.dataset.failed=failed;
+})();
