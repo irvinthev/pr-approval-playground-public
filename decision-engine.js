@@ -11,8 +11,8 @@ const definitions={
 };
 function evaluate(input){
  const x=input||{},id=definitions[x.scenario]?x.scenario:'docs',definition=definitions[id];
- const sha=typeof x.sha==='string'&&x.sha.trim()?x.sha:'demo-sha-001';
- const reviewedSha=typeof x.reviewedSha==='string'&&x.reviewedSha.trim()?x.reviewedSha:sha;
+ const sha=!Object.hasOwn(x,'sha')?'demo-sha-001':typeof x.sha==='string'&&x.sha.trim()?x.sha:'';
+ const reviewedSha=!Object.hasOwn(x,'reviewedSha')?sha:typeof x.reviewedSha==='string'&&x.reviewedSha.trim()?x.reviewedSha:'';
  const policyVersion=F.registry.policyVersion;
  const events=[];
  const add=(stage,status,reason)=>events.push({stage,status,reason});
@@ -21,16 +21,17 @@ function evaluate(input){
    const change=F.makeChange(definition.financialScenario,{sha,ci:x.ci!==false,reviewA:x.reviewA||'low',reviewB:x.reviewB||'low'});
    const technical=F.assessTechnicalEligibility(change);
    const scope=F.assessFinancialImpact(change);
-   const authorization=F.resolveAuthorization(technical,scope,change,null);
+   const stale=!sha||!reviewedSha||sha!==reviewedSha;
+   const authorization=stale?{allowed:false,route:'INVALIDATED',reason:!sha||!reviewedSha?'Required revision identity is missing.':'Review belongs to '+reviewedSha+'; reevaluate '+sha+'.'}:F.resolveAuthorization(technical,scope,change,null);
    add('eligibility',scope.status==='ELIGIBLE'?'ELIGIBLE':'ESCALATE',scope.reason);
-   add('review',technical.eligible?'FAVORABLE':'NOT_CLEARED',technical.eligible?'Simulated reviews and CI favorable.':technical.reasons.join(' '));
+   add('review',stale?'STALE':technical.eligible?'FAVORABLE':'NOT_CLEARED',stale?'Review evidence is not bound to the current identified revision.':technical.eligible?'Simulated reviews and CI favorable.':technical.reasons.join(' '));
    add('authorization',authorization.route,authorization.reason);
    add('merge',authorization.allowed?'CONDITIONALLY_ELIGIBLE':'BLOCKED',authorization.allowed?'Still subject to independently enforced merge requirements.':'Automated route cannot merge.');
    add('production','NOT_DEPLOYED','No real build or deployment takes place.');
-   return {scenario:id,sha,reviewedSha,policyVersion,classification:technical.eligible?'LOW_RISK':'NOT_CLEARED',eligibility:scope.status,authorization:authorization.route,merge:authorization.allowed?'CONDITIONALLY_ELIGIBLE':'BLOCKED',deployment:'NOT_DEPLOYED',evidence:events,reason:authorization.reason};
+   return {scenario:id,sha,reviewedSha,policyVersion,classification:stale?'STALE':technical.eligible?'LOW_RISK':'NOT_CLEARED',eligibility:scope.status,authorization:authorization.route,merge:authorization.allowed?'CONDITIONALLY_ELIGIBLE':'BLOCKED',deployment:'NOT_DEPLOYED',evidence:events,reason:authorization.reason};
  }
  if(definition.kind==='revision'){
-   const stale=sha!==reviewedSha;
+   const stale=!sha||!reviewedSha||sha!==reviewedSha;
    add('eligibility','CHECK_REQUIRED','Re-evaluate changed content.');
    add('review',stale?'STALE':'FAVORABLE',stale?'Review applied to '+reviewedSha:'Review matches current SHA.');
    add('authorization',stale?'INVALIDATED':'CONDITIONALLY_ELIGIBLE',stale?'Approval is bound to a different SHA.':'No evidence of a stale approval in this simulated record.');

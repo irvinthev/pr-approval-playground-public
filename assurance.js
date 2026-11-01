@@ -29,12 +29,12 @@
       const list=el('ol');list.append(...area.steps.map(s=>el('li',s)));group.append(list,el('p','Evidence: '+area.evidence),el('p','Further challenge: '+area.blind));return group;
     }));
     [...$('stage-pickers').children].forEach((b,i)=>b.setAttribute('aria-pressed',String(i===active)));
-    $('stage-status').textContent='Showing assurance for stage '+(active+1)+': '+stage.title;
+    $('stage-status').textContent='Showing assurance for stage '+(active+1)+': '+stage.title;if(window.SharedCaseUI)window.SharedCaseUI.refreshLinks();
   }
   data.stages.forEach((stage,i)=>{
     const b=el('button');b.type='button';b.append(el('span',String(i+1).padStart(2,'0')),document.createTextNode(stage.title));
     b.addEventListener('click',()=>{
-      active=i;render();const url=new URL(location.href);url.search='';url.searchParams.set('stage',String(i));url.hash='testing-guide';history.replaceState(null,'',url);
+      active=i;render();const url=new URL(location.href);url.search='';url.searchParams.set('stage',String(i));if(!url.hash.startsWith('#case='))url.hash='testing-guide';history.replaceState(null,'',url);
       $('stage-title').focus({preventScroll:true});$('testing-guide').scrollIntoView({behavior:'auto',block:'start'});
     });$('stage-pickers').append(b);
   });

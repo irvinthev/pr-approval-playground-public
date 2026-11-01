@@ -486,7 +486,7 @@ const examples=[
 function evaluate(key,record){
  const example=examples.find(e=>e.key===key);if(!example)throw new Error('Unknown monitor example');
  const valid=record&&Object.entries(example.normal).every(([field,value])=>Array.isArray(value)?Array.isArray(record[field])&&record[field].every(v=>typeof v==='string'):typeof record[field]===typeof value&&(typeof value!=='number'||Number.isFinite(record[field])));
- if(!valid)return {state:'exception',reasons:['Sample input is incomplete or invalid; no conclusion can be drawn.']};
+ if(!valid)return {state:'exception',reasons:['Sample input is incomplete or invalid; no conclusion can be drawn.'],message:'Sample input is incomplete or invalid; no deployment conclusion can be drawn.'};
  if(key==='0:0'&&record.ageMinutes<5)return {state:'pending',reasons:['Within the illustrative five-minute processing window; reconcile again after the window.']};
  if(key==='1:0'&&!record.aiInvoked)return {state:'clear',reasons:[]};
  if(key==='2:1'&&record.bothQualify)return {state:'clear',reasons:[]};
@@ -500,7 +500,8 @@ function evaluate(key,record){
   if(check.op==='sameSetField')ok=actual.length===new Set(actual).size&&expected.length===new Set(expected).size&&actual.length===expected.length&&actual.every(v=>expected.includes(v));
   return !ok;
  }).map(c=>c.label);
- return {state:reasons.length?'exception':'clear',reasons};
+ const message=key==='5:0'&&reasons.length?(record.promotionCompleted?example.alert:'Blocked attempt: release validation failed; no completed promotion is recorded. Investigate and correct the gate failure.'):example.alert;
+ return {state:reasons.length?'exception':'clear',reasons,message};
 }
 const api={examples,evaluate};if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.MonitoringExamples=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

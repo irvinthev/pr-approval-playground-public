@@ -8,7 +8,10 @@
   const change=F.makeChange(scenarioId,{repoAllowlisted:state.scenario!=='outside',sha:'demo-story-'+state.revision,ci:state.ci,assumptions:{...F.scenarios.shared.assumptions,affected:state.share,months:state.months}});
   const technical=F.assessTechnicalEligibility(change);let financial=F.assessFinancialImpact(change);
   if(state.scenario==='billingImpact'&&state.visibility==='unknown')financial={...financial,status:'UNRESOLVED',requiredRole:null,reason:'Dependency mapping unavailable: downstream financial relevance cannot be established.',exposure:{status:'UNKNOWN',reason:'Mapping unavailable.'}};
-  if(state.scenario==='billingImpact'&&state.visibility==='none')financial={...financial,status:'ELIGIBLE',requiredRole:null,reason:'Hypothetical complete mapping identifies no protected downstream consumer.',exposure:{status:'NOT_APPLICABLE',reason:'No protected financial dependency in this hypothetical map.'}};
+  if(state.scenario==='billingImpact'&&state.visibility==='none'){
+   const alternate=JSON.parse(JSON.stringify(F.registry));alternate.version='demo-map-no-consumers-1';alternate.nodes.dedup.consumers=[];alternate.nodes.dedup.financial=false;
+   change.calculation=null;financial=F.assessFinancialImpact(change,alternate);
+  }
   return {change,technical,financial,decision:F.resolveAuthorization(technical,financial,change,state.approval)};
  }
  function transition(state,event,value){

@@ -74,10 +74,12 @@
       reason: unknown.length ? 'Resolve missing or stale mappings; an approval cannot substitute for financial scope.' : policyChange ? 'Registry changes require an independent policy reviewer.' : requiredRole ? 'Protected financial dependencies require qualified independent review, regardless of the dollar estimate.' : 'Verified limited financial relevance within this fictional registry.'};
   }
   function resolveAuthorization(technical, financial, change, approval) {
+    if(![change.sha,change.author,financial.mappingVersion,financial.policyVersion].every(v=>typeof v==='string'&&!!v.trim()))return {allowed:false,route:'UNRESOLVED',reason:'Required revision, actor or policy/mapping identity is missing.'};
     if (!technical.eligible) return {allowed: false, route: 'BLOCKED', reason: technical.reasons.join(' ')};
     if (financial.status === 'UNRESOLVED') return {allowed: false, route: 'UNRESOLVED', reason: financial.reason};
     if (financial.requiredRole) {
-      const valid = approval && approval.actor !== change.author && approval.role === financial.requiredRole && approval.sha === change.sha && approval.mappingVersion === financial.mappingVersion && approval.policyVersion === financial.policyVersion;
+      const identity = v => typeof v==='string' && !!v.trim();
+      const valid = approval && [change.sha,change.author,financial.mappingVersion,financial.policyVersion,financial.requiredRole,approval.actor,approval.role,approval.sha,approval.mappingVersion,approval.policyVersion].every(identity) && approval.actor !== change.author && approval.role === financial.requiredRole && approval.sha === change.sha && approval.mappingVersion === financial.mappingVersion && approval.policyVersion === financial.policyVersion;
       if (!valid) return {allowed: false, route: 'HUMAN_REVIEW_REQUIRED', reason: financial.reason};
       return {allowed: true, route: 'HUMAN_AUTHORIZED', reason: 'Qualified independent approval matches this revision and the current mapping and policy versions.'};
     }

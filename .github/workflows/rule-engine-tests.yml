@@ -2,17 +2,16 @@ name: Rule engine regression tests
 on:
   push:
     paths:
-      - 'rule-engine.js'
-      - 'story-model.js'
-      - 'story.js'
-      - 'financial-engine.js'
-      - 'playground.html'
+      - '*.js'
+      - '*.html'
+      - '*.css'
       - 'tests/**'
       - '.github/workflows/rule-engine-tests.yml'
   pull_request:
     paths:
-      - 'rule-engine.js'
-      - 'playground.html'
+      - '*.js'
+      - '*.html'
+      - '*.css'
       - 'tests/**'
       - '.github/workflows/rule-engine-tests.yml'
 jobs:
@@ -27,10 +26,6 @@ jobs:
           node-version: '22'
       - name: Validate JavaScript syntax
         run: |
-          node --check rule-engine.js
-          node --check story-model.js
-          node --check story.js
-          node --check financial-engine.js
-          node --check tests/rule-engine.test.js
+          for file in *.js; do node --check "$file"; done
       - name: Run regression suite
         run: node --test tests/*.test.js

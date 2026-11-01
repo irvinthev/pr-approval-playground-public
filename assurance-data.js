@@ -333,7 +333,7 @@
       ]
     },
     {
-      "title": "Production",
+      "title": "Production rollout",
       "subtitle": "Corroborate coverage and exercise response",
       "scenario": "The dashboard accounts for 24 of 24 collected records, but an emergency deployment was never ingested. An unsafe approval requires suspension.",
       "risk": "Incomplete telemetry hides unauthorized releases, while automation continues after a systemic failure.",

@@ -37,6 +37,7 @@
     const sha = s.headSha;
     return [
       { name: 'Eligibility', enabled: p.protectInstructions !== false, violation: !!s.restricted },
+      { name: 'Revision identity', enabled: true, pending: typeof sha!=='string'||!sha.trim(), reason:'A nonempty current revision is required.' },
       { name: 'Required CI', enabled: p.requireCI !== false, pending: s.ciSha !== sha },
       { name: 'Reviewer A', enabled: true, pending: !s.reviewerA || s.reviewerA.sha !== sha, violation: !!s.reviewerA && s.reviewerA.sha === sha && s.reviewerA.level !== 'LOW' },
       { name: 'Reviewer B', enabled: p.requireTwoReviews !== false, pending: !s.reviewerB || s.reviewerB.sha !== sha, violation: !!s.reviewerB && s.reviewerB.sha === sha && s.reviewerB.level !== 'LOW' }
@@ -45,10 +46,11 @@
   function evaluateApproval(input) {
     const s = input || {};
     const assessment = evaluate(approvalRules(s), false);
-    const currentApproval = !!s.headSha && s.approvedSha === s.headSha;
+    const hasIdentity = typeof s.headSha==='string' && !!s.headSha.trim();
+    const currentApproval = hasIdentity && typeof s.approvedSha==='string' && s.approvedSha === s.headSha;
     return {
       ...assessment,
-      canApprove: assessment.approved && !(s.policy && s.policy.shadowMode),
+      canApprove: hasIdentity && assessment.approved && !(s.policy && s.policy.shadowMode),
       validApproval: currentApproval && assessment.approved,
       canMerge: currentApproval && assessment.approved && !(s.policy && s.policy.shadowMode)
     };
