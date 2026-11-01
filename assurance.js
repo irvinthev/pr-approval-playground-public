@@ -40,5 +40,7 @@
   });
   const status=el('p',null,'stage-status');status.id='stage-status';status.setAttribute('role','status');$('stage-pickers').after(status);
   $('reference-list').replaceChildren(...Object.keys(data.references).map(id=>{const p=el('p',null,'reference-item');p.append(source(id));return p;}));
+  const frameworkSlot=$('framework-side-slot'),frameworkPanel=$('stage-framework');
+  if(frameworkSlot&&frameworkPanel)frameworkSlot.append(frameworkPanel);
   render();
 })(typeof globalThis!=='undefined'?globalThis:this);
