@@ -8,13 +8,15 @@ Once GitHub Pages is enabled: https://irvinthev.github.io/pr-approval-playground
 
 ## Start here
 
-The five-chapter field guide opens with **When AI reviews code, who authorizes the change?**
+The overview asks **How do you evaluate AI-assisted code approval?** It introduces five reusable questions about delegation, impact, required conditions, authority and evidence. **Start with a change** opens the fictional shared-library case directly; readers can also enter through implementation, risk or assurance questions.
 
-1. **Pipeline:** one primary seven-stage walkthrough, with related controls available on demand.
-2. **Risks:** choose a failure, inspect its response, and expand the human/rules/AI comparison.
-3. **Controls:** six essential safeguards first, then the full 14-objective reference. Stage and control deep links open it automatically.
-4. **Monitoring:** investigate a revision mismatch and challenge whether 24/24 feed records cover every production route.
-5. **Assurance:** concise test actions and expected responses, with full procedures and evidence expandable.
+- **Pipeline:** inspect one possible workflow. Each stage invites a judgment before expanding the example’s facts, available approaches, rationale and evidence needs.
+- **Blueprint:** examine how decisions could be enforced.
+- **Risks & Safeguards:** challenge failure modes and coverage.
+- **Monitoring:** explore observation, investigation and response.
+- **Assurance:** examine evidence, testing and the limits of conclusions.
+
+The goal is transferable judgment, not adoption of a prescribed architecture. A closing exercise asks readers to apply the questions to another change and identify what their own tools establish or leave unresolved. Optional Engineering, Risk/GRC, Internal Audit and external-audit prompts share the same case; no separate role dashboards are added.
 
 Published framework references remain visible on the homepage. They inform proposed designs, without endorsing this architecture or establishing effectiveness.
 
@@ -81,3 +83,9 @@ The main stage-gate presentation and Risk-to-Control Explorer remain distinct en
 On the main Pipeline page, choose **Shared library · connected case** or **Follow the shared-library case**. This bounded deterministic case carries revision-bound evidence and policy/mapping versions into the existing Monitoring and Assurance pages. Use the case links to preserve the editable action history. No role lenses or new lab were added.
 
 `case-model.js` is the pure evaluator and replay contract; `case-ui.js` renders the same case in all three chapters. See [SHARED-CASE.md](./SHARED-CASE.md) for schema/status definitions, import limits, baseline-test disposition and a reproducible revision-A → approval → revision-B → renewed-review trace. Browser history and exports remain editable simulation data, not authentic audit records.
+
+## Guided reasoning
+
+`case-guide.js` turns the shared evaluator’s output into stage-specific learning explanations. It does not evaluate or authorize changes. Optional reasoning notes stay in page memory, are bounded to 2,000 characters per stage, are not saved or included in case links, and are cleared by the shared-case reset. Navigating away or reloading discards them.
+
+The overview links to `experience.html?example=shared`, which starts a fresh case only when no fragment exists. Existing case fragments take priority and invalid fragments remain rejected. The ordinary Pipeline entry retains its existing default walkthrough. The bounded learning pass adds no case actions or evaluator/schema changes; dependency-removal and artifact-substitution challenges are not added to the connected case.
