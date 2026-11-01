@@ -87,6 +87,8 @@ $('run').addEventListener('click',function(){if(['deployed','rejected'].includes
 $('scenario').addEventListener('change',reset);nodes.forEach(function(n,i){n.addEventListener('click',function(){select(i)})});
 $('approve').addEventListener('click',function(){flow=transition(flow,'approve');select(4)});$('reject').addEventListener('click',function(){flow=transition(flow,'reject');render()});$('restart').addEventListener('click',function(){$('scenario').value='low';reset();$('route').textContent='Correction assumed for this new demonstration. Fresh checks and approval are required.'});
 reset();
+var initialStage=new URLSearchParams(location.search).get('stage');
+if(/^[0-6]$/.test(initialStage||''))select(Number(initialStage));
 })();
 </script>
 </body></html>
