@@ -89,3 +89,8 @@ On the main Pipeline page, choose **Shared library · connected case** or **Foll
 `case-guide.js` turns the shared evaluator’s output into stage-specific learning explanations. It does not evaluate or authorize changes. Optional reasoning notes stay in page memory, are bounded to 2,000 characters per stage, are not saved or included in case links, and are cleared by the shared-case reset. Navigating away or reloading discards them.
 
 The overview links to `experience.html?example=shared`, which starts a fresh case only when no fragment exists. Existing case fragments take priority and invalid fragments remain rejected. The ordinary Pipeline entry retains its existing default walkthrough. The bounded learning pass adds no case actions or evaluator/schema changes; dependency-removal and artifact-substitution challenges are not added to the connected case.
+
+
+## Auditor View
+
+Under **5 · Assurance**, choose **Auditor View** for four fixed fictional scenarios pairing pipeline JSON with illustrative control objectives, IPE descriptions and testing strategies. The secondary menu links back to the testing guide and example RCM download. `auditor-view.html` is self-contained and has no external dependencies. These scenarios do not import or mutate the connected shared-library case; the workpapers describe synthetic evidence rather than actual retained records or a control-effectiveness conclusion.
