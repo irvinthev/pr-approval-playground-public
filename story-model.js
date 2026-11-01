@@ -10,7 +10,7 @@
   if(state.scenario==='billingImpact'&&state.visibility==='unknown')financial={...financial,status:'UNRESOLVED',requiredRole:null,reason:'Dependency mapping unavailable: downstream financial relevance cannot be established.',exposure:{status:'UNKNOWN',reason:'Mapping unavailable.'}};
   if(state.scenario==='billingImpact'&&state.visibility==='none'){
    const alternate=JSON.parse(JSON.stringify(F.registry));alternate.version='demo-map-no-consumers-1';alternate.nodes.dedup.consumers=[];alternate.nodes.dedup.financial=false;
-   financial=F.assessFinancialImpact(change,alternate);
+   change.calculation=null;financial=F.assessFinancialImpact(change,alternate);
   }
   return {change,technical,financial,decision:F.resolveAuthorization(technical,financial,change,state.approval)};
  }
