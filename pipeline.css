@@ -7,3 +7,19 @@
 /* Keep the actual stages in the first desktop viewport. */
 .site-header{margin-bottom:20px}.wrap>.head{padding:8px 0 14px!important;margin-bottom:10px!important}.wrap>.head h1{font-size:clamp(32px,3.5vw,44px);margin:4px 0 10px}.wrap>.head .sub{margin:0;font-size:17px}.pipeline-prerequisites{margin:14px 0 0;border:0;border-top:1px solid #2f4b5d;padding-top:8px}.pipeline-prerequisites summary{padding:8px 0}.pipeline-prerequisites .test-principle{margin:4px 0 0}.phases{margin-bottom:10px}.pipeline-heading{margin-bottom:4px}#shared-case-root[data-case-active=true]+#pipeline-section #route{display:none}
 @media(min-width:1000px){.wrap>.head{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:24px}.wrap>.head .chooser{max-width:285px}.wrap>.head .caption{font-size:11px}}
+
+/* Mobile compact stage rail: buttons and their event handlers are unchanged. */
+.pipeline-mode-note{font-size:13px;line-height:1.55;color:#c1d8e3;max-width:870px;margin:0 0 14px;padding:11px 14px;border-left:3px solid #9cebd5;background:#102a3a;border-radius:7px}
+@media(max-width:690px){
+  .pipeline{display:flex;flex-direction:row;overflow-x:auto;overflow-y:hidden;gap:8px;scroll-snap-type:x proximity;overscroll-behavior-x:contain;padding:4px 3px 12px;scrollbar-width:thin}
+  .pipeline .node,.pipeline .node:last-child{display:flex;flex:0 0 148px;min-height:112px;max-width:148px;padding:11px 12px;scroll-snap-align:start}
+  .pipeline .node .n{display:block;width:auto;height:auto;margin:0;font-size:11px}
+  .pipeline .node strong{font-size:13px;line-height:1.25;margin:5px 0 3px}
+  .pipeline .node small{font-size:11px;line-height:1.35}
+  .pipeline .node .status{font-size:10px;margin-top:auto;padding-top:6px}
+  .pipeline .node:after,.pipeline .node:nth-child(even):after,.pipeline .node:nth-child(4):after{display:none!important}
+  .pipeline-heading>span{font-size:12px}
+  #pipeline-section .hint{margin:4px 0;font-size:11px}
+  .inspector{margin-top:9px;padding:15px}
+  .pipeline-mode-note{font-size:12px;margin-bottom:10px}
+}

@@ -9,3 +9,12 @@ body{margin:0;font-family:inherit;font-size:16px;line-height:1.6;background:radi
 
 /* Secondary navigation within Assurance; the five chapter routes stay stable. */
 .assurance-tools{display:flex;flex-wrap:wrap;gap:8px;margin:-10px 0 24px}.assurance-tools a{display:inline-flex;align-items:center;min-height:44px;padding:9px 14px;border-radius:8px;border:1px solid var(--site-border);font-size:13px;text-decoration:none}.assurance-tools a:hover{background:#193b46}.assurance-tools a[aria-current=page]{color:var(--site-text);background:#20504d;border-color:var(--site-mint);font-weight:750}
+
+/* Shared mobile shell: quieter background and compact, accessible horizontal chapters. */
+@media(max-width:700px){
+ body{background:#091321!important}
+ .site-header{margin-bottom:17px;padding-bottom:12px}
+ .site-chapters{display:flex!important;flex-wrap:nowrap!important;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity;gap:7px;padding:2px 2px 10px;scrollbar-width:thin}
+ .site-chapters a{flex:0 0 auto!important;white-space:nowrap;min-height:42px;padding:8px 12px!important;scroll-snap-align:start;font-size:12px;line-height:1.2}
+ .site-chapters a[aria-current=page]{padding:7px 11px!important}
+}
