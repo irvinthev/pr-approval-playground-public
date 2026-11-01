@@ -1,0 +1,5 @@
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+const data=require('../monitoring-data.js'),assurance=require('../assurance-data.js'),{initialStage}=require('../monitoring.js');
+test('monitoring stages align with assurance and the pipeline',()=>{assert.deepEqual(data.stages.map(s=>s.title),assurance.stages.map(s=>s.title));});
+test('monitoring links accept only a valid stage index',()=>{for(let i=0;i<7;i++)assert.equal(initialStage('?stage='+i),i);for(const query of ['','?stage=','?stage=7','?stage=-1','?stage=2x','?stage=2.5'])assert.equal(initialStage(query),0);});
+test('monitoring signals resolve to published references and control objectives',()=>{const controls=fs.readFileSync(path.join(__dirname,'../control-matrix.html'),'utf8');for(const stage of data.stages){assert.ok(stage.signals.length>=1&&stage.signals.length<=2);for(const id of stage.controls)assert.ok(controls.includes('id="control-'+id+'"'),id);for(const id of [...stage.guidance.map(g=>g.ref),...stage.signals.flatMap(s=>s.refs)])assert.equal(new URL(data.references[id].url).protocol,'https:');}});
