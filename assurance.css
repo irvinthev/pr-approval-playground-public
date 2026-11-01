@@ -3,3 +3,31 @@
 .rcm-intro{display:flex;align-items:center;gap:24px;justify-content:space-between}.rcm-intro>div{flex:1;min-width:0}.rcm-intro .muted{margin-bottom:0}.rcm-download{display:block;flex-shrink:0;padding:15px 18px;border:1px solid #a4edda;border-radius:10px;background:#a4edda;color:#102238;font-weight:800;text-decoration:none;text-align:center}.rcm-download:hover{background:#cff9ed;color:#102238}.rcm-download:focus-visible,.rcm-previews summary:focus-visible{outline:3px solid #f9ce79;outline-offset:4px}.rcm-download span{display:block;margin-top:5px;font-size:12px;font-weight:500}.rcm-contents{font-size:14px;color:#c5d9e3}.rcm-panel>h3{margin-top:25px}.rcm-id{display:inline-block;margin-right:9px;font-size:12px;color:#a4edda}.rcm-detail{padding:0 8px 8px}.rcm-detail p{line-height:1.65}.rcm-detail a{font-size:14px;font-weight:700}.rcm-previews summary{cursor:pointer;line-height:1.6}.rcm-previews details{scroll-margin-top:20px}
 @media(max-width:750px){.rcm-intro{flex-direction:column;align-items:stretch;gap:16px}.rcm-download{white-space:normal}.rcm-detail{padding-left:0;padding-right:0}}
 @media(max-width:650px){.panel,.practitioner-box{padding:16px}.practitioner-box h2{font-size:23px}.stage-pickers{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.stage-pickers button{min-height:64px;padding:9px;font-size:12px}.stage-pickers button[aria-pressed=true]{padding:8px}.stage-pickers button span{margin-bottom:3px}.risk-grid,.test-grid{grid-template-columns:1fr}.risk-grid{gap:8px}.framework-box,.test-card{padding:16px}.scenario{padding:15px}.scenario p{font-size:16px}}
+
+
+/* Assurance visual workspace: existing evaluator and stage logic are unchanged. */
+.assurance-evaluate-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:13px;margin:18px 0}
+.assurance-eval-card{min-width:0;padding:18px;background:#142d41;border:1px solid #466577;border-radius:13px}
+.assurance-eval-card h3{margin:0 0 11px;font-size:16px;color:#a4edda}
+.assurance-eval-card p,.assurance-eval-card li{font-size:14px;line-height:1.55;color:#d0e3ea}
+.assurance-eval-card ul{padding-left:20px;margin:8px 0}
+.assurance-workspace{display:grid;grid-template-columns:minmax(185px,0.85fr) minmax(0,2.5fr) minmax(205px,1.05fr);gap:13px;align-items:start}
+.assurance-workspace>.panel{margin:0;min-width:0}
+.assurance-workspace .stage-pickers{grid-template-columns:1fr;gap:5px;margin:14px 0}
+.assurance-workspace .stage-pickers button{min-height:51px;display:flex;gap:10px;align-items:center;padding:10px 12px}
+.assurance-workspace .stage-pickers button span{margin:0;min-width:26px}
+.assurance-workspace .stage-frame>h2{font-size:24px!important}
+.assurance-workspace .risk-grid,.assurance-workspace .test-grid{grid-template-columns:1fr}
+.assurance-stage-aside{background:#102238;border:1px solid #375569;border-radius:14px;padding:17px;min-width:0}
+.assurance-stage-aside h3{margin:0 0 12px;font-size:17px}
+.assurance-stage-aside a{font-size:13px}
+.assurance-stage-aside #stage-framework{margin:0}
+.assurance-stage-aside .framework-box{padding:10px;background:transparent;border:0}
+.assurance-document-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.assurance-resource{display:flex;flex-direction:column;gap:10px;padding:18px;background:#172e45;color:#e7f6f3;text-decoration:none;border:1px solid #59798b;border-radius:13px}
+.assurance-resource strong{font-size:17px}
+.assurance-resource span{color:#c6dce5;font-size:14px;line-height:1.5;flex:1}
+.assurance-resource em{font-size:13px;font-style:normal;color:#a4edda;font-weight:750}
+.assurance-resource:hover,.assurance-resource:focus-visible{border-color:#a4edda;outline-offset:3px}
+@media(max-width:1100px){.assurance-workspace{grid-template-columns:minmax(180px,1fr) minmax(0,2.2fr)}.assurance-stage-aside{grid-column:2}}
+@media(max-width:760px){.assurance-evaluate-grid{grid-template-columns:1fr}.assurance-workspace{grid-template-columns:1fr}.assurance-stage-aside{grid-column:auto}.assurance-workspace .stage-pickers{grid-template-columns:repeat(2,minmax(0,1fr))}.assurance-document-cards{grid-template-columns:1fr}}
