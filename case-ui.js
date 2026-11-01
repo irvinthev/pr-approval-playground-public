@@ -1,0 +1,62 @@
+/* Shared, editable fictional case. View navigation never grants authorization. */
+(function(){
+'use strict';
+const C=window.SharedCase,root=document.getElementById('shared-case-root');if(!root)return;
+const isJourney=location.pathname.endsWith('experience.html'),isMonitoring=location.pathname.endsWith('continuous-monitoring.html');
+let current=C.initial(),active=false,error='';
+const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text)n.textContent=text;if(cls)n.className=cls;return n;};
+const start=el('button','Follow the shared-library case','case-button');start.type='button';root.append(start);
+const panel=el('section',null,'case-panel');panel.id='shared-case-panel';panel.hidden=true;panel.setAttribute('aria-labelledby','case-title');root.append(panel);
+const title=el('h2','One shared-library case, from review to assurance');title.id='case-title';title.tabIndex=-1;
+const notice=el('p','Editable, fictional simulation data. No live review, authorization or deployment occurs. Links carry actions; each page replays them and recomputes conclusions.','case-notice');
+const announcement=el('p',null,'case-announcement');announcement.id='case-announcement';announcement.setAttribute('role','status');
+const content=el('div');panel.append(el('span','CONNECTED CASE · SHARED LIBRARY','eyebrow'),title,notice,announcement,content);
+const labels={CHECKS:'Simulate fresh CI + two LOW reviews',APPROVE:'Simulate qualified independent review',BUILD:'Simulate trusted build',RELEASE_CHECKS:'Simulate passing release checks',DEPLOY:'Simulate standard deployment',MAP_RESTORE:'Resolve the missing mapping'};
+function button(label,action){const b=el('button',label,'case-button');b.type='button';b.addEventListener('click',()=>{try{current=C.transition(current,action);error='';persist();render(true);}catch(e){announcement.textContent=e.message;}});return b;}
+function wireLinks(){for(const a of document.querySelectorAll('a[href]')){if(a.classList.contains('site-skip')||a.getAttribute('href').startsWith('#'))continue;const u=new URL(a.getAttribute('href'),location.href);if(u.origin!==location.origin||!['experience.html','continuous-monitoring.html','independent-assurance.html'].some(p=>u.pathname.endsWith('/'+p)))continue;if(active&&!error)u.hash=C.encode(current);else if(u.hash.startsWith('#case='))u.hash='';a.href=u.href;}}
+function persist(){const u=new URL(location.href);u.hash=C.encode(current);history.replaceState(null,'',u);}
+function setJourneyMode(){if(!isJourney)return;const select=document.getElementById('scenario');if(active&&select.value!=='shared'){select.value='shared';select.dispatchEvent(new Event('change'));const stage=new URLSearchParams(location.search).get('stage');if(/^[0-6]$/.test(stage||''))document.querySelector('#pipeline .node[data-step="'+stage+'"]').click();}}
+function render(focus=false){
+ panel.hidden=!active;start.hidden=active;root.dataset.caseActive=String(active);content.replaceChildren();
+ if(!active){delete root.dataset.caseFragment;delete root.dataset.caseRevision;wireLinks();return;}
+ if(error){content.append(el('p','Rejected case link: '+error,'case-error'));const reset=el('button','Reset to the fictional shared case','case-button');reset.type='button';reset.addEventListener('click',()=>{current=C.initial();error='';persist();render(true);});content.append(reset);announcement.textContent='Imported case rejected. No imported conclusion has been accepted.';return;}
+ const x=C.evaluateCase(current);root.dataset.caseFragment=C.encode(current);root.dataset.caseRevision=x.evaluatedRevision;
+ const meta=el('dl',null,'case-meta');for(const [label,value]of [['Case','shared-library · lib/dedup/key.js'],['Repository',current.change.repository],['Evaluated revision',x.evaluatedRevision],['Applicable policy',x.policyVersion],['Applicable mapping',x.mappingVersion],['Dependency path',x.dependencyAssessment.components.join(' → ')||'Unresolved'],['Recorded actions',String(current.events.length)]]){const row=el('div');row.append(el('dt',label),el('dd',value));meta.append(row);}content.append(meta);
+ const outcomes=el('div',null,'case-outcomes');for(const[label,value]of [['Mandatory policy',x.policyStatus],['Authorization',x.authorizationStatus],['Evidence completeness',x.evidenceCompleteness],['Release eligibility',x.releaseEligibility],['Risk acceptance',x.riskAcceptance]]){const box=el('div');box.append(el('strong',label),el('p',value));outcomes.append(box);}content.append(outcomes);
+ content.append(el('p','Protected financial dependencies require independent review regardless of a dollar estimate. Risk acceptance cannot satisfy mandatory predicates. “Complete” is limited to the modeled evidence scope.','case-note'));
+ const actions=el('div',null,'case-actions');actions.id='case-actions';actions.setAttribute('role','group');actions.setAttribute('aria-label','Next valid case actions');
+ content.append(el('h3','Next valid action'));
+ for(const action of x.nextValidActions)actions.append(button(labels[action],action));
+ if(!x.nextValidActions.length)actions.append(el('p',x.releaseEligibility==='ELIGIBLE'?'No further release step is required in this modeled state. Inspect monitoring gaps or change the case below.':'No automatic next action is available. Resolve failed or unknown predicates before continuing.'));
+ content.append(actions);
+ if(isMonitoring){content.append(el('h3','Monitoring this same case'));const list=el('ul');for(const f of x.monitoringFindings)list.append(el('li',f.status+' · '+f.detail));if(!x.monitoringFindings.length)list.append(el('li','No exception identified from the available case records. Evidence completeness is assessed separately.'));content.append(list);}
+ else if(!isJourney)content.append(el('h3','Assurance of this same case'),el('p','Reperform the predicates below and inspect the linked revision/version evidence. A simulated result does not establish real control effectiveness.'));
+ const details=el('details');details.open=!isJourney;details.append(el('summary','Predicates and evidence gaps'));
+ const table=el('table',null,'case-predicates'),head=el('thead'),tr=el('tr');for(const label of ['Predicate','Status','Reason / record'])tr.append(el('th',label));head.append(tr);table.append(head);const body=el('tbody');
+ for(const p of [...x.predicates,...x.releasePredicates.map(p=>({...p,id:'release · '+p.id}))]){const row=el('tr');row.append(el('td',p.id),el('td',p.status),el('td',p.reason+(p.evidenceRefs.length?' ['+p.evidenceRefs.join(', ')+']':'')));body.append(row);}table.append(body);const scroll=el('div',null,'case-table-wrap');scroll.tabIndex=0;scroll.setAttribute('role','region');scroll.setAttribute('aria-label','Case predicate table');scroll.append(table);details.append(scroll);
+ const gaps=el('ul');for(const gap of x.evidenceGaps)gaps.append(el('li',gap));if(!x.evidenceGaps.length)gaps.append(el('li','No modeled gap remains. Source reliability outside the simulation is not established.'));details.append(el('h3','Evidence gaps'),gaps);content.append(details);
+ const changes=el('details');changes.append(el('summary','Change the case or inspect its record'));
+ const controls=el('div',null,'case-actions');for(const[action,label]of [['PUSH','Push a post-approval revision'],['MAP_CHANGE','Change mapping version'],['POLICY_CHANGE','Change policy version'],['MAP_MISSING','Remove dependency mapping'],['UNCOVERED_ROUTE','Observe an uncovered manual deployment'],['CORROBORATE','Simulate independent population corroboration'],['ACCEPT_RISK','Record residual-risk acceptance']])controls.append(button(label,action));
+ changes.append(controls,el('p','Corroboration is an invented evidence event for the known modeled routes; it does not prove all real production routes are captured.','case-note'));
+ const reset=el('button','Reset shared case','case-button');reset.type='button';reset.addEventListener('click',()=>{current=C.initial();persist();render(true);});changes.append(reset);
+ const record=el('pre',JSON.stringify({notice:'Editable simulated data; no real audit evidence or tamper resistance.',case:current,evaluation:x},null,2));changes.append(record);content.append(changes);
+ const links=el('nav',null,'case-links');links.setAttribute('aria-label','Follow this same case');for(const[file,label]of [['experience.html','Journey'],['continuous-monitoring.html','Monitoring'],['independent-assurance.html','Assurance']]){const a=el('a',label+' →');a.href='./'+file;links.append(a);}content.append(links);
+ if(!isJourney)content.append(el('p','The stage examples below are general references. The connected case above is recomputed from the same action history as the Journey.','case-note'));
+ announcement.textContent='Evaluated '+x.evaluatedRevision+'. Authorization '+x.authorizationStatus+'. Policy '+x.policyStatus+'.';
+ wireLinks();refreshPipeline();if(focus){const target=actions.querySelector('button')||title;target.focus({preventScroll:true});}
+}
+function refreshPipeline(){if(!isJourney)return;const shared=document.getElementById('scenario').value==='shared';document.getElementById('run').hidden=shared;document.querySelector('#pipeline-section .hint').textContent=shared?'Select a stage to inspect this case. Use the next valid action above; stage selection never authorizes a change.':'Click a stage to inspect it. Use Next step to advance. Mint = passed · Amber = human route · Red = blocked.';document.querySelector('.head .caption').textContent=shared?'Fictional shared-library case · independent financial review required':'Fictional example · Eligible documentation change by default';const authNode=document.querySelector('#pipeline .node[data-step="3"] strong');authNode.textContent=shared?'Independent authorization':'Auto-approval';if(!shared)return;document.getElementById('branch').hidden=true;if(error)return;
+ const x=C.evaluateCase(current),scope=x.predicates.find(p=>p.id==='mapping'),tech=x.predicates.filter(p=>['ci','reviewA','reviewB'].includes(p.id));
+ const statuses=[x.predicates.find(p=>p.id==='identity').status,C.aggregate([scope,...tech.filter(p=>p.id==='ci')]),C.aggregate(tech.filter(p=>p.id!=='ci')),x.policyStatus,x.releasePredicates[1].status,x.releasePredicates[2].status,!current.deployments.some(d=>d.revision===x.evaluatedRevision)?'PENDING':x.evidenceCompleteness==='COMPLETE_IN_MODELED_SCOPE'?'PASS':'UNKNOWN'];
+ const nodeNames={PASS:'Satisfied in case',FAIL:'Failed / stale',UNKNOWN:'Evidence unresolved',PENDING:'Pending'};
+ document.querySelectorAll('#pipeline .node').forEach((n,i)=>{n.dataset.state=statuses[i]==='PASS'?'done':statuses[i]==='FAIL'?'blocked':'idle';n.querySelector('.status').textContent=nodeNames[statuses[i]];});
+ document.getElementById('route').textContent='Shared case · '+x.evaluatedRevision+' · '+x.authorizationStatus;document.getElementById('announcement').textContent='Stage selection inspects the case; it does not advance authorization.';
+ const selected=document.querySelector('#pipeline .node[aria-pressed=true]');if(selected){document.getElementById('result').textContent=nodeNames[statuses[Number(selected.dataset.step)]];if(Number(selected.dataset.step)===3){document.getElementById('detail-title').textContent='Independent authorization';document.getElementById('description').textContent='This shared-library case requires qualified independent human review of the current revision and policy/mapping versions. Two LOW findings do not auto-authorize it.';}}
+}
+window.SharedCaseUI={refreshPipeline,refreshLinks:wireLinks};
+start.addEventListener('click',()=>{active=true;current=C.initial();error='';persist();setJourneyMode();render(true);});
+if(isJourney)document.getElementById('scenario').addEventListener('change',()=>{active=document.getElementById('scenario').value==='shared';if(active){if(!error)persist();render();}else{const u=new URL(location.href);if(u.hash.startsWith('#case=')){u.hash='';history.replaceState(null,'',u);}render();}});
+function load(){active=location.hash.startsWith('#case=');if(active){try{current=C.decode(location.hash);error='';}catch(e){error=e.message;}setJourneyMode();}render();}
+document.querySelector('.site-skip')?.addEventListener('click',event=>{if(!active)return;event.preventDefault();const target=document.getElementById('main-content');target.focus({preventScroll:true});target.scrollIntoView({behavior:'auto',block:'start'});});
+window.addEventListener('hashchange',load);window.addEventListener('popstate',load);load();
+})();

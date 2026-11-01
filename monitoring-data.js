@@ -293,7 +293,7 @@
       ]
     },
     {
-      "title": "Production",
+      "title": "Production rollout",
       "subtitle": "Establish coverage and close the response loop",
       "scenario": "The dashboard accounts for 24/24 collected records, but a separate release source reveals a manual deployment. Another release has an approval/revision mismatch.",
       "risk": "Missing deployments or unresolved authorization exceptions remain hidden behind a green dashboard.",

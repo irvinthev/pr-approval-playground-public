@@ -75,3 +75,9 @@ The diagram uses local HTML/CSS/SVG and plain JavaScript. It includes keyboard-o
 To reduce duplicated experiences before consolidating the shared simulation engine, the main Advanced Playground menu now exposes only Policy Builder, Control Lab, Financial Impact Lab, Approval Race, Evidence Lab, and Full Scenario Library. The legacy PR Journey, PR Simulator, Policy Lab, Operational Discovery, Access Governance, Incident Timeline, and Policy Outcomes exercises are retired from the visible menu. Their implementations remain intact temporarily to preserve behavior until a tested consolidation replaces them; this is **not** a code-size reduction yet.
 
 The main stage-gate presentation and Risk-to-Control Explorer remain distinct entry points. Follow-up work should remove legacy code only after regression tests cover replacements.
+
+## Connected case slice
+
+On the main Pipeline page, choose **Shared library · connected case** or **Follow the shared-library case**. This bounded deterministic case carries revision-bound evidence and policy/mapping versions into the existing Monitoring and Assurance pages. Use the case links to preserve the editable action history. No role lenses or new lab were added.
+
+`case-model.js` is the pure evaluator and replay contract; `case-ui.js` renders the same case in all three chapters. See [SHARED-CASE.md](./SHARED-CASE.md) for schema/status definitions, import limits, baseline-test disposition and a reproducible revision-A → approval → revision-B → renewed-review trace. Browser history and exports remain editable simulation data, not authentic audit records.

@@ -14,7 +14,7 @@
    const record=example[which],finding=api.evaluate(key,record);records.replaceChildren();
    for(const[field,label]of Object.entries(example.fields)){const row=el('div');const value=record[field];row.append(el('dt',label),el('dd',Array.isArray(value)?value.join(', '):typeof value==='boolean'?(value?'Yes':'No'):String(value)));records.append(row);}
    result.dataset.state=finding.state;result.replaceChildren(el('strong',finding.state==='exception'?'Investigate this sample':finding.state==='pending'?'Await reconciliation':'No exception in this sample'));
-   if(finding.state==='exception'){result.append(el('p','Unmet conditions: '+finding.reasons.join('; ')),el('p',example.alert));}
+   if(finding.state==='exception'){result.append(el('p','Unmet conditions: '+finding.reasons.join('; ')),el('p',finding.message||example.alert));}
    else result.append(el('p',finding.state==='pending'?finding.reasons[0]:'The displayed records meet this example’s rule. This does not establish completeness or control effectiveness.'));
    [...toggles.children].forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.sample===which)));
   }
@@ -37,8 +37,8 @@
   $('pipeline-link').href='./experience.html?stage='+active+'#pipeline-section';$('assurance-link').href='./independent-assurance.html?stage='+active+'#testing-guide';
   $('control-links').replaceChildren(...stage.controls.map(id=>{const a=el('a',id+' · View control →');a.href='./control-matrix.html#control-'+id;return a;}));
   [...$('stage-pickers').children].forEach((b,i)=>b.setAttribute('aria-pressed',String(i===active)));
-  $('monitoring-stage-status').textContent='Showing monitoring for stage '+(active+1)+': '+stage.title;
+  $('monitoring-stage-status').textContent='Showing monitoring for stage '+(active+1)+': '+stage.title;if(window.SharedCaseUI)window.SharedCaseUI.refreshLinks();
  }
- data.stages.forEach((stage,i)=>{const b=el('button');b.type='button';b.append(el('span',String(i+1).padStart(2,'0')),document.createTextNode(stage.title));b.addEventListener('click',()=>{active=i;render();const url=new URL(location.href);url.search='';url.searchParams.set('stage',String(i));url.hash='monitoring-guide';history.replaceState(null,'',url);$('stage-title').focus({preventScroll:true});$('monitoring-guide').scrollIntoView({behavior:'auto',block:'start'});});$('stage-pickers').append(b);});
+ data.stages.forEach((stage,i)=>{const b=el('button');b.type='button';b.append(el('span',String(i+1).padStart(2,'0')),document.createTextNode(stage.title));b.addEventListener('click',()=>{active=i;render();const url=new URL(location.href);url.search='';url.searchParams.set('stage',String(i));if(!url.hash.startsWith('#case='))url.hash='monitoring-guide';history.replaceState(null,'',url);$('stage-title').focus({preventScroll:true});$('monitoring-guide').scrollIntoView({behavior:'auto',block:'start'});});$('stage-pickers').append(b);});
  const status=el('p',null,'stage-status');status.id='monitoring-stage-status';status.setAttribute('role','status');$('stage-pickers').after(status);render();
 })(typeof globalThis!=='undefined'?globalThis:this);
