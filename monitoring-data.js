@@ -164,7 +164,7 @@
       ]
     },
     {
-      "title": "Auto-approval",
+      "title": "Authorization",
       "subtitle": "Monitor the policy decision and its authority",
       "scenario": "An approval is recorded on a stale revision or after a policy administrator weakens the prerequisites. Two LOW findings remain visible.",
       "risk": "The record looks approved even though policy conditions or administrative independence were not preserved.",
