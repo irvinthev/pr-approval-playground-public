@@ -182,7 +182,7 @@
       ]
     },
     {
-      "title": "Auto-approval",
+      "title": "Authorization",
       "subtitle": "Test authorization separately from assessment",
       "scenario": "Two LOW findings exist, but the revision changed or required CI failed. The contributor can also edit the policy that authorizes their own change.",
       "risk": "Favorable scores or self-modified rules create an approval without the required authority and prerequisites.",
