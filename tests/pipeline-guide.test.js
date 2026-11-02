@@ -22,7 +22,7 @@ test('seven guide stages render, navigate, and keep the active case fragment',()
  assert.equal(element('learn-prev').disabled,false);
  for(let i=5;i>=0;i--){element('learn-prev').onclick();assert.equal(element('learn-title').textContent,['Pull request','Eligibility gate','Two AI reviews','Authorization','Merge + build','Preproduction gate','Production rollout'][i]);}
  assert.equal(element('learn-prev').disabled,true);
- assert.match(html,/<button\\b[^>]*id="learn-jump"[^>]*>Try the simulation/);
- assert.match(html,/<section\\b[^>]*id="simulator"[^>]*tabindex="-1"/);
+ assert.match(html,/<button\b[^>]*id="learn-jump"[^>]*>Try the simulation/);
+ assert.match(html,/<section\b[^>]*id="simulator"[^>]*tabindex="-1"/);
  const hash='#case=preserve-this';ctx.location={hash};element('learn-jump').onclick();assert.equal(ctx.location.hash,hash);assert.equal(element('simulator').scrolled,true);assert.equal(element('simulator').focused,true);
 });
