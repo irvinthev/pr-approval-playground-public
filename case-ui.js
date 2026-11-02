@@ -34,7 +34,7 @@ function wireLinks(){for(const a of document.querySelectorAll('a[href]')){if(a.c
 function persist(){const u=new URL(location.href);u.hash=C.encode(current);history.replaceState(null,'',u);}
 function setJourneyMode(){if(!isJourney)return;const select=document.getElementById('scenario');if(active&&select.value!=='shared'){select.value='shared';select.dispatchEvent(new Event('change'));const stage=new URLSearchParams(location.search).get('stage');if(/^[0-6]$/.test(stage||''))document.querySelector('#pipeline .node[data-step="'+stage+'"]').click();}}
 function render(focus=false){
- panel.hidden=!active;start.hidden=active;evidence.hidden=!active||!!error;root.dataset.caseActive=String(active);content.replaceChildren();evidence.replaceChildren();actionDock.replaceChildren();actionDock.hidden=!active||!!error;reasoning.hidden=!active||!!error||!isJourney;
+ root.hidden=!active;panel.hidden=!active;start.hidden=active;evidence.hidden=!active||!!error;root.dataset.caseActive=String(active);content.replaceChildren();evidence.replaceChildren();actionDock.replaceChildren();actionDock.hidden=!active||!!error;reasoning.hidden=!active||!!error||!isJourney;
  if(!active){delete root.dataset.caseFragment;delete root.dataset.caseRevision;wireLinks();return;}
  if(error){content.append(el('p','Rejected case link: '+error,'case-error'));const reset=el('button','Reset to the fictional shared case','case-button');reset.type='button';reset.addEventListener('click',()=>{current=C.initial();error='';persist();render(true);});content.append(reset);announcement.textContent='Imported case rejected. No imported conclusion has been accepted.';return;}
  const x=C.evaluateCase(current);root.dataset.caseFragment=C.encode(current);root.dataset.caseRevision=x.evaluatedRevision;

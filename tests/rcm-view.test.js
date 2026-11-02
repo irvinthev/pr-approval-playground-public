@@ -11,3 +11,9 @@ test('Assurance entry and Auditor View preserve both views and testing guide',()
  assert.match(landing,/id="test-approval"/);assert.match(landing,/id="test-detail"/);
  assert.match(auditor,/href="\.\/rcm-view\.html"/);assert.match(auditor,/initialScenario/);
 });
+test('RCM detail cells wrap and the skip link targets the focusable content intro',()=>{
+ const page=read('rcm-view.html');
+ assert.match(page,/\.rcm-table td:nth-child\(1\):not\(\[colspan\]\)[^{]*\{[^}]*white-space:nowrap/);
+ assert.match(page,/<a class="site-skip" href="#main-content">Skip to content<\/a>/);
+ assert.match(page,/<header class="rcm-intro" id="main-content" tabindex="-1">/);
+});

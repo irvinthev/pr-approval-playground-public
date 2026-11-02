@@ -170,7 +170,7 @@ document.querySelectorAll('[data-mobile-tab]').forEach(button => button.addEvent
   byId('dashboard').dataset.mobileView = view;
   document.querySelectorAll('[data-mobile-tab]').forEach(tab => tab.setAttribute('aria-pressed', String(tab.dataset.mobileTab === view)));
 }));
-const initialScenario = decodeURIComponent(location.hash.slice(1));
+const initialScenario = location.hash.slice(1);
 renderScenario(Object.prototype.hasOwnProperty.call(scenarios, initialScenario) ? initialScenario : 'pass');
 </script>
 </body>
