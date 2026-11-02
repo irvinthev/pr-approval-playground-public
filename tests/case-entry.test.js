@@ -27,3 +27,8 @@ test('invalid case fragment is rejected rather than replaced by a favorable star
   assert.match(entry.error, /Malformed/);
   assert.equal(entry.location.hash, '#case=%');
 });
+test('shared-case root is hidden on the default landing and revealed for active links', () => {
+  const page = fs.readFileSync(path.join(__dirname, '../independent-assurance.html'), 'utf8');
+  assert.match(page, /<div id="shared-case-root" hidden><\/div>/);
+  assert.match(source, /root\.hidden=!active/);
+});

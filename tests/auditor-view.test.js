@@ -1,10 +1,10 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const html=fs.readFileSync(path.join(__dirname,'../auditor-view.html'),'utf8');
-function mount(){
+function mount(hash=''){
  const elements=Object.fromEntries([...html.matchAll(/id="([^"]+)"/g)].map(m=>[m[1],{dataset:{},textContent:'',innerHTML:'',replaceChildren(...children){this.children=children;}}]));
  const buttons=['pass','split','scope','canary'].map(scenario=>({dataset:{scenario},attrs:{},setAttribute(k,v){this.attrs[k]=v;},addEventListener(name,fn){this[name]=fn;}}));
  const tabs=['engineering','audit'].map(mobileTab=>({dataset:{mobileTab},attrs:{},setAttribute(k,v){this.attrs[k]=v;},addEventListener(name,fn){this[name]=fn;}}));
- const context=vm.createContext({document:{getElementById:id=>elements[id],querySelectorAll:selector=>selector==='[data-scenario]'?buttons:selector==='[data-mobile-tab]'?tabs:[],createElement:()=>({})}});
+ const context=vm.createContext({document:{getElementById:id=>elements[id],querySelectorAll:selector=>selector==='[data-scenario]'?buttons:selector==='[data-mobile-tab]'?tabs:[],createElement:()=>({})},location:{hash}});
  vm.runInContext(html.match(/<script>([\s\S]*?)<\/script>/)[1],context);
  return {elements,buttons,tabs,context};
 }
@@ -12,6 +12,14 @@ test('Auditor View scenario buttons synchronize telemetry, evidence, status and 
  const {elements:e,buttons}=mount();
  const expected=[['Policy Auto-Approval','AUTO-APPROVED','ITGC-CM-02'],['AI Reviews','APPROVAL PENDING','ITGC-CM-03'],['Eligibility Gates','SCOPE EXCLUDED','ITGC-CM-01'],['Canary Rollouts','ROLLED BACK','ITGC-CM-07']];
  buttons.forEach((b,i)=>{b.click();assert.equal(e.dashboard.dataset.mode,b.dataset.scenario);assert.equal(buttons.filter(x=>x.attrs['aria-pressed']==='true').length,1);assert.equal(b.attrs['aria-pressed'],'true');assert.equal(e['stage-title'].textContent,expected[i][0]);assert.equal(e['audit-status'].textContent,expected[i][1]);assert.equal(e['control-id'].textContent,expected[i][2]);assert.equal(e['testing-steps'].children.length,3);assert.equal(e.artifact.textContent,e['log-file'].textContent);const payload=JSON.parse(e['json-log'].innerHTML.replace(/<\/?span[^>]*>/g,''));assert.equal(payload.run_id,e['run-id'].textContent);});
+});
+test('Auditor View selects supported deep links and defaults malformed fragments',()=>{
+ for(const scenario of ['pass','split','scope','canary']){
+  const {elements,buttons}=mount('#'+scenario);
+  assert.equal(elements.dashboard.dataset.mode,scenario);
+  assert.equal(buttons.find(button=>button.dataset.scenario===scenario).attrs['aria-pressed'],'true');
+ }
+ assert.equal(mount('#%').elements.dashboard.dataset.mode,'pass');
 });
 test('Auditor View mobile workpaper tabs preserve scenario and update independent selection',()=>{
  const {elements:e,buttons,tabs}=mount();
