@@ -13,5 +13,16 @@ test('seven guide stages render, navigate, and keep the active case fragment',()
  vm.runInNewContext(match[0].slice('<script>'.length,-'</script>'.length),ctx);
  assert.equal(stageButtons.length,7);
  for(let i=0;i<7;i++){stageButtons[i].onclick();assert.equal(element('learn-title').textContent,['Pull request','Eligibility gate','Two AI reviews','Authorization','Merge + build','Preproduction gate','Production rollout'][i]);assert.equal(element('learn-requirements').children.length,4);assert.ok(element('learn-happens').textContent.length>20);assert.equal(stageButtons[i]['aria-pressed'],'true')}
- const hash='#case=preserve-this';ctx.location={hash};element('learn-jump').onclick();assert.equal(ctx.location.hash,hash);assert.equal(element('simulator').scrolled,true);
+ assert.equal(element('learn-prev').disabled,false);
+ stageButtons[0].onclick();
+ assert.equal(element('learn-prev').disabled,true);
+ assert.equal(element('learn-next').disabled,false);
+ for(let i=1;i<7;i++){element('learn-next').onclick();assert.equal(element('learn-title').textContent,['Pull request','Eligibility gate','Two AI reviews','Authorization','Merge + build','Preproduction gate','Production rollout'][i]);}
+ assert.equal(element('learn-next').disabled,true);
+ assert.equal(element('learn-prev').disabled,false);
+ for(let i=5;i>=0;i--){element('learn-prev').onclick();assert.equal(element('learn-title').textContent,['Pull request','Eligibility gate','Two AI reviews','Authorization','Merge + build','Preproduction gate','Production rollout'][i]);}
+ assert.equal(element('learn-prev').disabled,true);
+ assert.match(html,/<button\\b[^>]*id="learn-jump"[^>]*>Try the simulation/);
+ assert.match(html,/<section\\b[^>]*id="simulator"[^>]*tabindex="-1"/);
+ const hash='#case=preserve-this';ctx.location={hash};element('learn-jump').onclick();assert.equal(ctx.location.hash,hash);assert.equal(element('simulator').scrolled,true);assert.equal(element('simulator').focused,true);
 });
