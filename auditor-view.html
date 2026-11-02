@@ -14,21 +14,71 @@
 
 .site-skip{position:absolute;top:-100px;left:20px;padding:12px;background:#fff;color:#182633;z-index:10}.site-skip:focus{top:8px}.site-header{margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--line)}.site-brand-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}.site-brand{font-size:14px;font-weight:800;letter-spacing:.035em;color:var(--ink);text-decoration:none}.site-experiments{font-size:12px;color:var(--muted)}.site-chapters,.assurance-tools{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.site-chapters a,.assurance-tools a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:9px 13px;border:1px solid var(--line);border-radius:8px;font-size:12px;text-decoration:none;color:var(--ink);background:#fff}.site-chapters a:hover,.assurance-tools a:hover{border-color:#16754c}.site-chapters a[aria-current=location],.assurance-tools a[aria-current=page]{background:#eaf6ef;border-color:#16754c;color:#12603f;font-weight:750}.assurance-tools{margin:0 0 24px}.context-note{border-left:3px solid #70849b;background:#e9eef4;padding:12px 15px;font-size:12px;color:#465668;margin:0 0 22px}.resource-links{display:flex;gap:14px;flex-wrap:wrap;margin-top:20px}.resource-links a{color:#12603f;font-size:13px;font-weight:650;min-height:44px;display:inline-flex;align-items:center}a:focus-visible{outline:3px solid #336fe0;outline-offset:4px}@media(max-width:760px){.site-chapters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.site-chapters a{padding:8px 5px;font-size:11px}}@media print{.site-header,.assurance-tools,.resource-links,.site-skip{display:none}}
 </style>
-</head>
+<style>
+/* Auditor View redesign: scenario-first visual hierarchy; preserve simulation semantics. */
+:root{--page:#f5f7fb;--ink:#102239;--muted:#50627a;--line:#d5deeb;--radius:14px}
+body{background:var(--page)}
+.site-header{background:#101e32;border-radius:12px;padding:13px 16px;margin-bottom:26px;color:#eaf3ff}
+.site-brand{color:#f1f7ff}.site-experiments{color:#c5d6ed}
+.site-chapters a{color:#d8e6f8;background:#1a2c45;border-color:#354966}
+.site-chapters a:hover{border-color:#7ac9ed}
+.site-chapters a[aria-current=location]{color:#fff;background:#225196;border-color:#81b7ff}
+.assurance-tools{gap:8px}.assurance-tools a{background:white}
+.masthead{margin-bottom:14px}.masthead h1{font-size:clamp(30px,3vw,42px);margin:6px 0 8px}
+.subtitle{max-width:920px;font-size:16px;line-height:1.55}
+.context-note{display:flex;align-items:flex-start;gap:11px;padding:13px 17px;border:1px solid #c6d9f2;border-left:4px solid #4380d2;border-radius:9px;background:#eaf2fc;font-size:13px;color:#274566}
+.context-note:before{content:"ⓘ";font-size:20px;line-height:1;color:#2164b3}
+.scenario-panel{padding:19px}.panel-label h2{font-size:18px}.panel-label .hint{font-size:13px}
+.scenario{min-height:86px;padding:15px;display:flex;flex-direction:column;justify-content:center}
+.scenario-title{font-size:14px;line-height:1.3}.scenario-note{margin:5px 0 0;font-size:12px;line-height:1.4}
+.dashboard{gap:16px}.pane-header h2{font-size:19px}.pane-header .eyebrow{font-size:11px}
+.console-summary h3{font-size:23px}.console-summary p{font-size:14px;line-height:1.55}
+.stage,.file-bar{font-size:12px}.console-footer{font-size:11px}
+pre{font-size:12px;line-height:1.75}.workpaper{padding:22px}
+.work-section h3{font-size:12px}.work-section p{font-size:15px}
+.evidence p,.testing ol{font-size:13px}.testing h3{font-size:15px}
+.outcome{padding:14px;border:1px solid var(--accent);border-radius:9px;background:var(--tint)}
+.outcome strong{font-size:14px}.outcome p{font-size:13px;line-height:1.6}
+.mobile-view-control{display:none}
+.assurance-boundary{font-size:12px;color:#54667a;line-height:1.5;margin:10px 0 0}
+@media(max-width:760px){
+ main{padding:15px 13px 24px}.site-header{padding:11px 12px;margin-bottom:17px}
+ .site-chapters{display:flex;flex-wrap:nowrap;gap:6px;overflow-x:auto;scrollbar-width:thin;padding:2px 0 9px;overscroll-behavior-x:contain}
+ .site-chapters a{flex:0 0 auto;white-space:nowrap;font-size:12px;padding:10px 12px}
+ .assurance-tools{display:flex;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;margin-bottom:15px}
+ .assurance-tools a{flex:0 0 auto;white-space:nowrap;font-size:12px}
+ .masthead h1{font-size:32px}.subtitle{font-size:15px}
+ .scenario-buttons{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .scenario{min-height:85px;padding:10px}.scenario-title{font-size:13px}.scenario-note{font-size:12px}
+ .simulation{margin-top:10px}.context-note{font-size:12px;padding:11px}
+ .mobile-view-control{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:14px 0 0;padding:5px;background:#e7edf5;border:1px solid #cbd6e4;border-radius:11px}
+ .mobile-view-control button{min-height:44px;border:1px solid transparent;border-radius:8px;background:transparent;color:#34516f;font-size:14px;font-weight:700}
+ .mobile-view-control button[aria-pressed=true]{background:#fff;border-color:#a7c4e7;color:#12365d;box-shadow:0 1px 4px #14233a1c}
+ .dashboard{display:block;margin-top:12px}
+ .dashboard[data-mobile-view=engineering] .audit,.dashboard[data-mobile-view=audit] .engineering{display:none}
+ .pane-header{padding:14px 16px}.console-summary{padding:16px}
+ .file-bar{margin:0 13px}.code-wrap{margin:0 13px 14px;max-height:400px}
+ .console-footer{padding:0 14px 15px}.workpaper{padding:15px}
+ .reference strong{font-size:20px}.work-section{margin-top:17px}
+ .outcome{margin-top:15px}
+}
+@media(min-width:761px){.dashboard .pane{display:flex!important}}
+@media(prefers-reduced-motion:reduce){.scenario{transition:none}}
+</style></head>
 <body>
 <main>
 <a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ PR APPROVAL / FIELD GUIDE</a><a class="site-experiments" href="./playground.html">Advanced experiments ↗</a></div><nav class="site-chapters" aria-label="Chapters"><a href="./index.html">Overview</a><a href="./experience.html">1 · Pipeline</a><a href="./engineering-blueprint.html">2 · Blueprint</a><a href="./risk-controls.html">3 · Risks & Safeguards</a><a href="./continuous-monitoring.html">4 · Monitoring</a><a href="./independent-assurance.html" aria-current="location">5 · Assurance</a></nav></header><nav class="assurance-tools" aria-label="Assurance tools"><a href="./independent-assurance.html">Testing guide</a><a href="./auditor-view.html" aria-current="page">Auditor View</a><a href="./independent-assurance.html#example-rcm">Example RCM ↓</a></nav>
-<header class="masthead" id="main-content" tabindex="-1"><div><div class="eyebrow">PR Approval Field Guide / Assurance</div><h1>From pipeline to workpaper.</h1><p class="subtitle">Follow the same change through engineering decisions, control objectives, and the evidence an auditor would test.</p></div><span class="simulation">FICTIONAL SIMULATION</span></header>
-<p class="context-note">Four fixed fictional scenarios. This view does not import or change the connected shared-library case. Return to the testing guide to continue that case.</p>
+<header class="masthead" id="main-content" tabindex="-1"><div><div class="eyebrow">PR Approval Field Guide / Assurance</div><h1>Auditor View <span style="font-size:.38em;vertical-align:middle;letter-spacing:0;background:#e7efff;color:#21509c;border-radius:99px;padding:7px 12px;font-weight:700">Interactive workpaper</span></h1><p class="subtitle">Compare fictional pipeline records with the associated audit approach. Explore what the system reports, what evidence an auditor would inspect, and what conclusions remain conditional.</p></div><span class="simulation">FICTIONAL SIMULATION</span></header>
+<p class="context-note"><strong>Independent audit examples.</strong> These four fixed fictional outcomes do not import or change the editable shared-library case used elsewhere in the playground.</p>
 <section class="scenario-panel" aria-labelledby="scenarios-heading"><div class="panel-label"><h2 id="scenarios-heading">Simulation Scenarios</h2><span class="hint">Select a scenario to inspect the decision and evidence.</span></div><div class="scenario-buttons" role="group" aria-label="Pipeline simulation scenarios">
 <button class="scenario" type="button" data-scenario="pass" aria-pressed="true" aria-controls="dashboard"><span class="scenario-title">✅ Standard Low-Risk Pass</span><span class="scenario-note">04 / Policy auto-approval</span></button>
 <button class="scenario" type="button" data-scenario="split" aria-pressed="false" aria-controls="dashboard"><span class="scenario-title">🔀 AI Split Decision</span><span class="scenario-note">03 / Route to human approval</span></button>
 <button class="scenario" type="button" data-scenario="scope" aria-pressed="false" aria-controls="dashboard"><span class="scenario-title">🛑 Hard Gate Scope Exclusion</span><span class="scenario-note">02 / Enforce protected scope</span></button>
 <button class="scenario" type="button" data-scenario="canary" aria-pressed="false" aria-controls="dashboard"><span class="scenario-title">💥 Production Canary Failure</span><span class="scenario-note">07 / Roll back production</span></button>
 </div></section>
-<div class="dashboard" id="dashboard" data-mode="pass">
-<section class="pane engineering" aria-labelledby="engineering-heading"><header class="pane-header"><div><div class="eyebrow">01 / Engineering pane</div><h2 id="engineering-heading">Pipeline telemetry</h2></div><span class="badge" id="engineering-status">PASS</span></header><div class="console-summary"><div class="stage" id="stage"></div><h3 id="stage-title"></h3><p id="engineering-summary"></p></div><div class="file-bar"><span id="log-file"></span><span>JSON · SIMULATED</span></div><div class="code-wrap" tabindex="0" role="region" aria-label="Scrollable formatted pipeline JSON"><pre><code id="json-log"></code></pre></div><div class="console-footer"><span>Fictional service / delivery-demo</span><span id="run-id"></span></div></section>
-<section class="pane audit" aria-labelledby="audit-heading"><header class="pane-header"><div><div class="eyebrow">02 / Auditor workpaper pane</div><h2 id="audit-heading">Control &amp; evidence</h2></div><span class="badge" id="audit-status">PASS</span></header><div class="workpaper"><div class="reference"><span>COSO Control Reference ID</span><strong id="control-id"></strong></div><p class="mapping-note">Illustrative internal control ID; confirm mapping to the entity’s approved COSO framework and RCM.</p><section class="work-section"><h3>Control Objective Statement</h3><p id="objective"></p></section><section class="work-section"><h3>Information Produced by Entity (IPE) Evidence</h3><div class="evidence"><code class="artifact" id="artifact"></code><p id="evidence-description"></p></div></section><aside class="testing" aria-labelledby="testing-heading"><h3 id="testing-heading">Auditor Testing Strategy</h3><ol id="testing-steps"></ol></aside><div class="outcome"><strong id="outcome-title"></strong><p id="outcome-description"></p></div></div></section>
+<div class="mobile-view-control" role="group" aria-label="Mobile evidence and workpaper views"><button type="button" data-mobile-tab="engineering" aria-pressed="true" aria-controls="engineering-heading">Engineering evidence</button><button type="button" data-mobile-tab="audit" aria-pressed="false" aria-controls="audit-heading">Audit workpaper</button></div><div class="dashboard" id="dashboard" data-mode="pass" data-mobile-view="engineering">
+<section class="pane engineering" aria-labelledby="engineering-heading"><header class="pane-header"><div><div class="eyebrow">01 / Engineering pane</div><h2 id="engineering-heading">Engineering evidence</h2></div><span class="badge" id="engineering-status">PASS</span></header><div class="console-summary"><div class="stage" id="stage"></div><h3 id="stage-title"></h3><p id="engineering-summary"></p></div><div class="file-bar"><span id="log-file"></span><span>JSON · SIMULATED</span></div><div class="code-wrap" tabindex="0" role="region" aria-label="Scrollable formatted pipeline JSON"><pre><code id="json-log"></code></pre></div><div class="console-footer"><span>Fictional service / delivery-demo</span><span id="run-id"></span></div></section>
+<section class="pane audit" aria-labelledby="audit-heading"><header class="pane-header"><div><div class="eyebrow">02 / Auditor workpaper pane</div><h2 id="audit-heading">Audit workpaper <span style="font-size:12px;font-weight:500">(Illustrative)</span></h2></div><span class="badge" id="audit-status">PASS</span></header><div class="workpaper"><div class="reference"><span>COSO Control Reference ID</span><strong id="control-id"></strong></div><p class="mapping-note">Illustrative internal control ID; confirm mapping to the entity’s approved COSO framework and RCM.</p><section class="work-section"><h3>Control Objective Statement</h3><p id="objective"></p></section><section class="work-section"><h3>Information Produced by Entity (IPE) Evidence</h3><div class="evidence"><code class="artifact" id="artifact"></code><p id="evidence-description"></p></div></section><aside class="testing" aria-labelledby="testing-heading"><h3 id="testing-heading">How would an auditor test this?</h3><ol id="testing-steps"></ol></aside><div class="outcome"><strong id="outcome-title"></strong><p id="outcome-description"></p></div><p class="assurance-boundary">Illustrative assessment only. A simulated log or successful result does not establish evidence completeness, accuracy, authorization, or operating effectiveness.</p></div></section>
 </div><p id="announcement" role="status" aria-live="polite" aria-atomic="true" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap"></p>
 <nav class="resource-links" aria-label="Assurance resources"><a href="./independent-assurance.html">← Back to testing guide</a><a href="./downloads/AI_Approval_Example_RCM.xlsx" download="AI_Approval_Example_RCM.xlsx">Download example RCM (.xlsx) ↓</a></nav>
 <footer class="footer"><span>Editable source · Synthetic logs and evidence descriptions · No live pipeline connection</span><span>A simulated pass does not establish control operating effectiveness.</span></footer>
@@ -115,6 +165,11 @@ function renderScenario(key) {
   byId('announcement').textContent = state.title + '. ' + state.status + '. ' + state.outcomeTitle;
 }
 document.querySelectorAll('[data-scenario]').forEach(button => button.addEventListener('click', () => renderScenario(button.dataset.scenario)));
+document.querySelectorAll('[data-mobile-tab]').forEach(button => button.addEventListener('click', () => {
+  const view = button.dataset.mobileTab;
+  byId('dashboard').dataset.mobileView = view;
+  document.querySelectorAll('[data-mobile-tab]').forEach(tab => tab.setAttribute('aria-pressed', String(tab.dataset.mobileTab === view)));
+}));
 renderScenario('pass');
 </script>
 </body>
