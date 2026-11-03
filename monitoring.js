@@ -34,6 +34,7 @@
    const detail=el('details');detail.append(el('summary','Exercise this monitor'),el('p',signal.exercise),el('p','Expected response: '+signal.expected));card.append(detail);
    const refs=el('div',null,'test-refs');refs.append(...signal.refs.map(source));card.append(refs);return card;
   }));
+  $('monitor-blueprint-link').href='./engineering-blueprint.html?stage='+active+'#technical-requirements';
   $('pipeline-link').href='./experience.html?stage='+active+'#pipeline-section';$('assurance-link').href='./independent-assurance.html?stage='+active+'#testing-guide';
   $('control-links').replaceChildren(...stage.controls.map(id=>{const a=el('a',id+' · View control →');a.href='./control-matrix.html#control-'+id;return a;}));
   [...$('stage-pickers').children].forEach((b,i)=>b.setAttribute('aria-pressed',String(i===active)));
