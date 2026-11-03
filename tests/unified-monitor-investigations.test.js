@@ -15,7 +15,7 @@ test('advanced Monitoring investigations and working interactions migrated into 
  const page=read('engineering-blueprint.html'),renderer=read('unified-monitoring.js');
  for(const text of ['id="worked-examples"','Approved demo-01. Deployed demo-02.','24 / 24 records','id="eng-data"','id="event-detail"','id="investigate"','id="resolve"','id="trace"','data-event="0"'])assert.ok(page.includes(text),'missing '+text);
  assert.match(renderer,/document\.getElementById\('worked-examples'\)/);
- assert.match(page,/revealLegacyInvestigation\(\)/);
+ assert.match(page,/revealLinkedResource\(\)/);
  assert.match(page,/section\.open=true/);
  assert.match(page,/section\.scrollIntoView/);
  assert.match(renderer,/investigations\.hidden=active!==6/);
