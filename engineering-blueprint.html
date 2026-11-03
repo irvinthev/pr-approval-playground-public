@@ -140,5 +140,13 @@ function render(){
  [...$('flow').children].forEach((node,i)=>{node.textContent=flowNames[mode][i];node.dataset.kind=componentKinds[mode][i];node.title='Implementation: '+componentKinds[mode][i]});
 }
 stages.forEach((s,i)=>{const b=document.createElement('button');b.type='button';b.innerHTML='<b>'+(i+1)+'</b>';b.append(document.createTextNode(s[0]));b.addEventListener('click',()=>{active=i;render();const url=new URL(location.href);url.searchParams.set('stage',String(i));history.replaceState(null,'',url)});$('stages').append(b)});document.querySelectorAll('.option').forEach(b=>b.addEventListener('click',()=>{mode=b.dataset.mode;render()}));$('view-build').addEventListener('click',()=>chooseView('build'));$('view-monitor').addEventListener('click',()=>chooseView('monitor'));window.addEventListener('popstate',()=>{active=readStage();chooseView(new URLSearchParams(location.search).get('view'),false);render()});chooseView(view,false);render();
+function revealLegacyInvestigation(){
+ if(location.hash!=='#worked-examples')return;
+ active=6;chooseView('monitor',false);render();
+ const section=document.getElementById('worked-examples');
+ if(section){section.open=true;requestAnimationFrame(()=>section.scrollIntoView({block:'start',behavior:'auto'}));}
+}
+revealLegacyInvestigation();
+window.addEventListener('hashchange',revealLegacyInvestigation);
 })();
 </script></body></html>
