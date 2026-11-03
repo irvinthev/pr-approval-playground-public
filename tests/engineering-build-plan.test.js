@@ -14,5 +14,8 @@ test('Build plan keeps accessible mobile summaries and original interactive chap
  assert.match(page,/build-plan__mobile-label/);
  assert.match(page,/@media\(max-width:800px\)/);
  for(const id of ['view-build','view-monitor','technical-requirements','monitor-view','supporting-resources','required-ci','progressive-rollout'])assert.ok(page.includes('id="'+id+'"'),id);
- assert.match(page,/Explore stage details/);
+ assert.match(page,/<h2>Engineering stage explorer<\/h2>/);
+ assert.match(page,/<summary>Full implementation checklist/);
+ const mode=page.indexOf('id="view-build"'),stageButtons=page.indexOf('id="stages"');
+ assert.ok(mode>=0&&stageButtons>mode,'Build/Operate modes precede stage selection');
 });
