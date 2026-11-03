@@ -3,10 +3,11 @@ const read=name=>fs.readFileSync(path.join(__dirname,'..',name),'utf8');
 test('Blueprint and Monitoring offer stage-aware reciprocal lenses',()=>{
  const blueprint=read('engineering-blueprint.html'),monitoring=read('continuous-monitoring.html'),monitorJS=read('monitoring.js');
  assert.match(blueprint,/id="blueprint-monitor-link"/);
- assert.match(blueprint,/initialStageParam=new URLSearchParams\(location\.search\)\.get\('stage'\)/);
+ assert.match(blueprint,/function readStage\(\)\{const stage=new URLSearchParams\(location\.search\)\.get\('stage'\);return \/\^\[0-6\]\$\/\.test\(stage\|\|''\)\?Number\(stage\):0;\}/);
  assert.match(blueprint,/\^\[0-6\]\$/);
  assert.match(blueprint,/monitoring\.html\?stage='\+active\+'#monitoring-guide'/);
  assert.match(blueprint,/history\.replaceState\(null,'',url\)/);
+ assert.match(blueprint,/window\.addEventListener\('popstate',\(\)=>\{active=readStage\(\);render\(\)\}\)/);
  assert.match(monitoring,/id="monitor-blueprint-link"/);
  assert.match(monitoring,/Why these monitoring signals matter/);
  assert.match(monitorJS,/monitor-blueprint-link/);

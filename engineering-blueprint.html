@@ -93,7 +93,7 @@ procured:['Confirm webhook retry and revision-change behavior.','Check whether e
 hybrid:['Reuse trusted event sources and normalize once.','Plan policy storage, deployment, ownership and independent change control.','Define stable vendor result schemas and version records.','Plan service identity, policy availability, decision logs and fail-closed behavior.','Reuse protected merge and artifact integrations.','Reuse environment protections and independent deploy authority.','Reuse observability; add reconciliation only where needed.'],
 custom:['Use existing Git source-control events rather than inventing a code host.','Budget for a maintained dependency mapping and rule test suite.','Budget for reviewer evaluation sets, model operations and failure handling.','Operate authorization services, credentials, retries and immutable decision records.','Reuse existing CI/CD infrastructure rather than rebuilding it.','Reuse deployed environment gates.','Reuse logging, alerting and incident management where available.']
 };
-const initialStageParam=new URLSearchParams(location.search).get('stage');let mode='procured',active=/^[0-6]$/.test(initialStageParam||'')?Number(initialStageParam):0;const $=id=>document.getElementById(id);
+function readStage(){const stage=new URLSearchParams(location.search).get('stage');return /^[0-6]$/.test(stage||'')?Number(stage):0;}let mode='procured',active=readStage();const $=id=>document.getElementById(id);
 function render(){
  const s=stages[active];
  $('blueprint-monitor-link').href='./continuous-monitoring.html?stage='+active+'#monitoring-guide';
@@ -114,6 +114,6 @@ function render(){
  document.querySelectorAll('.stages button').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===active)));
  [...$('flow').children].forEach((node,i)=>{node.textContent=flowNames[mode][i];node.dataset.kind=componentKinds[mode][i];node.title='Implementation: '+componentKinds[mode][i]});
 }
-stages.forEach((s,i)=>{const b=document.createElement('button');b.type='button';b.innerHTML='<b>'+(i+1)+'</b>';b.append(document.createTextNode(s[0]));b.addEventListener('click',()=>{active=i;render();const url=new URL(location.href);url.searchParams.set('stage',String(i));history.replaceState(null,'',url)});$('stages').append(b)});document.querySelectorAll('.option').forEach(b=>b.addEventListener('click',()=>{mode=b.dataset.mode;render()}));render();
+stages.forEach((s,i)=>{const b=document.createElement('button');b.type='button';b.innerHTML='<b>'+(i+1)+'</b>';b.append(document.createTextNode(s[0]));b.addEventListener('click',()=>{active=i;render();const url=new URL(location.href);url.searchParams.set('stage',String(i));history.replaceState(null,'',url)});$('stages').append(b)});document.querySelectorAll('.option').forEach(b=>b.addEventListener('click',()=>{mode=b.dataset.mode;render()}));window.addEventListener('popstate',()=>{active=readStage();render()});render();
 })();
 </script></body></html>

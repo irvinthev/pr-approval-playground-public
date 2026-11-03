@@ -32,3 +32,21 @@ test('shared-case root is hidden on the default landing and revealed for active 
   assert.match(page, /<div id="shared-case-root" hidden><\/div>/);
   assert.match(source, /root\.hidden=!active/);
 });
+test('active Monitoring lens scrolls without replacing the shared-case fragment', () => {
+  const handler = source.slice(source.indexOf("document.querySelector('.lens-switch"), source.indexOf('window.addEventListener'));
+  let click, prevented = false, focused = false, scrolled = false;
+  const context = {
+    active: true,
+    isMonitoring: true,
+    document: {
+      querySelector: () => ({ addEventListener: (type, listener) => { if (type === 'click') click = listener; } }),
+      getElementById: id => id === 'stage-title' ? { focus: options => { focused = options.preventScroll; } } : { scrollIntoView: options => { scrolled = options.block === 'start'; } }
+    }
+  };
+  vm.runInNewContext(handler, context);
+  const event = { preventDefault: () => { prevented = true; } };
+  click(event);
+  assert.equal(prevented, true);
+  assert.equal(focused, true);
+  assert.equal(scrolled, true);
+});
