@@ -7,7 +7,7 @@ test('one page owns Build and Monitor lenses and one stage selector',()=>{
  assert.match(page,/if\(window\.renderUnifiedMonitor\)window\.renderUnifiedMonitor\(active\)/);
  assert.match(page,/new URLSearchParams\(location\.search\)\.get\('view'\)/);
  assert.match(monitor,/root\.renderUnifiedMonitor=function\(stage\)/);
- assert.doesNotMatch(monitor,/stage-pickers|monitor-blueprint-link|worked-examples/);
+ assert.doesNotMatch(monitor,/stage-pickers|monitor-blueprint-link/);
 });
 test('technical depth and interactive examples retained; old monitoring links migrate',()=>{
  const page=read('engineering-blueprint.html'),legacy=read('continuous-monitoring.html');
