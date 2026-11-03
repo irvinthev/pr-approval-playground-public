@@ -120,7 +120,7 @@ hybrid:['Reuse trusted event sources and normalize once.','Plan policy storage, 
 custom:['Use existing Git source-control events rather than inventing a code host.','Budget for a maintained dependency mapping and rule test suite.','Budget for reviewer evaluation sets, model operations and failure handling.','Operate authorization services, credentials, retries and immutable decision records.','Reuse existing CI/CD infrastructure rather than rebuilding it.','Reuse deployed environment gates.','Reuse logging, alerting and incident management where available.']
 };
 function readStage(){const stage=new URLSearchParams(location.search).get('stage');return /^[0-6]$/.test(stage||'')?Number(stage):0;}let mode='procured',active=readStage(),view=new URLSearchParams(location.search).get('view')==='monitor'?'monitor':'build';const $=id=>document.getElementById(id);
-function chooseView(which,write=true){view=which==='monitor'?'monitor':'build';$('build-view').hidden=view!=='build';$('monitor-view').hidden=view!=='monitor';document.querySelectorAll('.build-only').forEach(x=>x.hidden=view!=='build');$('view-build').setAttribute('aria-pressed',String(view==='build'));$('view-monitor').setAttribute('aria-pressed',String(view==='monitor'));if(write){const u=new URL(location.href);u.searchParams.set('view',view);history.replaceState(null,'',u)}}
+function chooseView(which,write=true){view=which==='monitor'?'monitor':'build';$('build-view').hidden=view!=='build';$('monitor-view').hidden=view!=='monitor';document.querySelectorAll('.build-only').forEach(x=>x.hidden=view!=='build');$('view-build').setAttribute('aria-pressed',String(view==='build'));$('view-monitor').setAttribute('aria-pressed',String(view==='monitor'));if(write){const u=new URL(location.href);u.searchParams.set('view',view);if(['#worked-examples','#monitoring-use-notes','#ci-canary-monitoring'].includes(u.hash))u.hash='';history.replaceState(null,'',u)}}
 function render(){
  const s=stages[active];
  if(window.renderUnifiedMonitor)window.renderUnifiedMonitor(active);
@@ -141,11 +141,14 @@ function render(){
  document.querySelectorAll('.stages button').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===active)));
  [...$('flow').children].forEach((node,i)=>{node.textContent=flowNames[mode][i];node.dataset.kind=componentKinds[mode][i];node.title='Implementation: '+componentKinds[mode][i]});
 }
-stages.forEach((s,i)=>{const b=document.createElement('button');b.type='button';b.innerHTML='<b>'+(i+1)+'</b>';b.append(document.createTextNode(s[0]));b.addEventListener('click',()=>{active=i;render();const url=new URL(location.href);url.searchParams.set('stage',String(i));history.replaceState(null,'',url)});$('stages').append(b)});document.querySelectorAll('.option').forEach(b=>b.addEventListener('click',()=>{mode=b.dataset.mode;render()}));$('view-build').addEventListener('click',()=>chooseView('build'));$('view-monitor').addEventListener('click',()=>chooseView('monitor'));window.addEventListener('popstate',()=>{active=readStage();chooseView(new URLSearchParams(location.search).get('view'),false);render()});chooseView(view,false);render();
+stages.forEach((s,i)=>{const b=document.createElement('button');b.type='button';b.innerHTML='<b>'+(i+1)+'</b>';b.append(document.createTextNode(s[0]));b.addEventListener('click',()=>{active=i;render();const url=new URL(location.href);url.searchParams.set('stage',String(i));if(['#worked-examples','#monitoring-use-notes','#ci-canary-monitoring'].includes(url.hash))url.hash='';history.replaceState(null,'',url)});$('stages').append(b)});document.querySelectorAll('.option').forEach(b=>b.addEventListener('click',()=>{mode=b.dataset.mode;render()}));$('view-build').addEventListener('click',()=>chooseView('build'));$('view-monitor').addEventListener('click',()=>chooseView('monitor'));window.addEventListener('popstate',()=>{active=readStage();chooseView(new URLSearchParams(location.search).get('view'),false);render()});chooseView(view,false);render();
+const legacyMonitoringFragments=new Set(['worked-examples','monitoring-use-notes','ci-canary-monitoring']);
 function revealLegacyInvestigation(){
- if(location.hash!=='#worked-examples')return;
- active=6;chooseView('monitor',false);render();
- const section=document.getElementById('worked-examples');
+ const id=location.hash.slice(1);
+ if(!legacyMonitoringFragments.has(id))return;
+ if(id==='worked-examples')active=6;
+ chooseView('monitor',false);render();
+ const section=document.getElementById(id);
  if(section){section.open=true;requestAnimationFrame(()=>section.scrollIntoView({block:'start',behavior:'auto'}));}
 }
 revealLegacyInvestigation();
