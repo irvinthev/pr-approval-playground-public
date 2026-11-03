@@ -25,7 +25,20 @@ test('advanced Monitoring investigations and working interactions migrated into 
 test('legacy deep link opens migrated exercises at stage 7 and shared case links stay on legacy page',()=>{
  const page=read('continuous-monitoring.html');
  assert.match(page,/if\(location\.hash\.startsWith\('#case='\)\)return/);
- assert.match(page,/location\.hash==='#worked-examples'/);
- assert.match(page,/if\(investigation\)stage='6'/);
- assert.match(page,/investigation\?'#worked-examples'/);
+ assert.match(page,/\['#worked-examples','#monitoring-use-notes','#ci-canary-monitoring'\]\.includes\(location\.hash\)/);
+ assert.match(page,/if\(fragment==='#worked-examples'\)stage='6'/);
+ assert.match(page,/location\.replace\('\.\/engineering-blueprint\.html\?stage='\+stage\+'&view=monitor'\+fragment\)/);
+});
+
+test('remaining monitoring setup and CI/canary guidance are retained with deep links',()=>{
+ const page=read('engineering-blueprint.html'),legacy=read('continuous-monitoring.html');
+ for(const id of ['monitoring-use-notes','ci-canary-monitoring']){assert.ok(page.includes('id="'+id+'"'));assert.ok(legacy.includes("'#"+id+"'"));}
+ for(const phrase of ['Define the population, processing window, threshold, owner and closure evidence','Reconcile against independent merge and deployment sources','Required CI and canary outcomes'])assert.ok(page.includes(phrase),phrase);
+});
+test('coverage warning has readable foreground and navigation discards stale monitoring fragments',()=>{
+ const page=read('engineering-blueprint.html');
+ assert.match(page,/\.unified-monitor p#coverage-note\.label\{color:#16332f!important\}/);
+ assert.match(page,/if\(\['#worked-examples','#monitoring-use-notes','#ci-canary-monitoring'\]\.includes\(u\.hash\)\)u\.hash=''/);
+ assert.match(page,/if\(\['#worked-examples','#monitoring-use-notes','#ci-canary-monitoring'\]\.includes\(url\.hash\)\)url\.hash=''/);
+ assert.match(page,/legacyMonitoringFragments=new Set\(\['worked-examples','monitoring-use-notes','ci-canary-monitoring'\]\)/);
 });
