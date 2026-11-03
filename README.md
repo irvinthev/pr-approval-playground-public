@@ -11,7 +11,7 @@ Once GitHub Pages is enabled: https://irvinthev.github.io/pr-approval-playground
 The overview asks **How do you evaluate AI-assisted code approval?** It introduces five reusable questions about delegation, impact, required conditions, authority and evidence. **Start with a change** opens the fictional shared-library case directly; readers can also enter through implementation, risk or assurance questions.
 
 - **Pipeline:** inspect one possible workflow. Each stage invites a judgment before expanding the example’s facts, available approaches, rationale and evidence needs.
-- **Blueprint:** examine how decisions could be enforced.
+- **Blueprint:** scan a seven-stage engineering build checklist (reuse/integrate/build, implementation tasks, acceptance tests, and human versus automated code-review routes); then explore implementation, monitoring and enforcement details.
 - **Risks & Safeguards:** challenge failure modes and coverage.
 - **Monitoring:** explore observation, investigation and response.
 - **Assurance:** examine evidence, testing and the limits of conclusions.
