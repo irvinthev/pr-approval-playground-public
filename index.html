@@ -149,9 +149,20 @@
 </div></details>
 <footer class="overview-boundary"><p>An illustrative approach informed by established frameworks—not a prescribed architecture or a determination of compliance.</p></footer>
 
+<script src="./product-pipeline.js?v=foundation-1"></script>
 <script>
 (function () {
   "use strict";
+  // Presentation metadata comes from one product contract, not a second page-level stage list.
+  const pipelineContract = window.ProductPipeline;
+  if (pipelineContract && pipelineContract.stages.length === 8) {
+    document.querySelectorAll('#workflow-stages [data-stage]').forEach((node, i) => {
+      const stage = pipelineContract.stages[i];
+      node.dataset.pipelineStage = stage.id;
+      node.querySelector('strong').textContent = stage.label;
+      node.querySelector('p').textContent = stage.description;
+    });
+  }
   const details = [
     ["Capture the PR event, diff, repository, author, base branch, and immutable commit SHA. Re-evaluate on revision changes.","Verify that all evaluations and approvals refer to the exact revision that was merged."],
     ["Run deterministic scope, path, dependency, and financial-impact rules before considering automated approval. Treat missing mappings as unresolved.","Test excluded and indirect-impact changes, incomplete inventories, and changes to the policy or mapping versions."],
