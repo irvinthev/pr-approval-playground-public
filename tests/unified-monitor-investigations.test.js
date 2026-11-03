@@ -14,7 +14,7 @@ test('four chapter footers advance from Risks and Controls to Assurance',()=>{
 test('advanced Monitoring investigations and working interactions migrated into unified page',()=>{
  const page=read('engineering-blueprint.html'),renderer=read('unified-monitoring.js');
  for(const text of ['id="worked-examples"','Approved demo-01. Deployed demo-02.','24 / 24 records','id="eng-data"','id="event-detail"','id="investigate"','id="resolve"','id="trace"','data-event="0"'])assert.ok(page.includes(text),'missing '+text);
- assert.match(page,/document\.getElementById\('worked-examples'\)/);
+ assert.match(renderer,/document\.getElementById\('worked-examples'\)/);
  assert.match(page,/revealLegacyInvestigation\(\)/);
  assert.match(page,/section\.open=true/);
  assert.match(page,/section\.scrollIntoView/);
