@@ -24,7 +24,7 @@
   for(const [id,key]of [['stage-title','title'],['stage-subtitle','subtitle'],['scenario','scenario'],['risk','risk'],['concern','concern'],['principle','principle']])$(id).textContent=stage[key];
   $('framework-guidance').replaceChildren(...stage.guidance.map(g=>{const row=el('div',null,'framework-row');row.append(source(g.ref),el('p',g.text));return row;}));
   $('signal-cards').replaceChildren(...stage.signals.map((signal,i)=>{
-   const card=el('article',null,'test-card signal-card');card.append(el('span','SIGNAL '+(i+1),'test-number'),el('h4',signal.title),el('p','Responsible owner: '+signal.owner,'owner'));
+   const card=el('article',null,'unified-mon-card signal-card');card.append(el('span','SIGNAL '+(i+1),'test-number'),el('h4',signal.title),el('p','Responsible owner: '+signal.owner,'owner'));
    card.append(workedMonitor(active+':'+i));
    const purpose=el('details');purpose.append(el('summary','Purpose, evidence and owner response'));
    for(const[label,key]of [['Watch for','signal'],['Evidence to correlate','evidence'],['Owner response','response']])purpose.append(el('h5',label),el('p',signal[key]));card.append(purpose);
