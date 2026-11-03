@@ -11,7 +11,7 @@ test('one page owns Build and Monitor lenses and one stage selector',()=>{
 });
 test('technical depth and interactive examples retained; old monitoring links migrate',()=>{
  const page=read('engineering-blueprint.html'),legacy=read('continuous-monitoring.html');
- for(const label of ['id="technical-requirements"','id="required-ci"','Full implementation checklist','Sourcing, integrations and technical detail'])assert.ok(page.includes(label),label);
+ for(const label of ['id="technical-requirements"','id="required-ci"','Full implementation checklist','Implementation details, sourcing and integrations'])assert.ok(page.includes(label),label);
  for(const label of ['Normal sample','Exception sample','Purpose, evidence and owner response','Exercise this monitor'])assert.ok(read('unified-monitoring.js').includes(label),label);
  assert.match(legacy,/location\.replace\('\.\/engineering-blueprint\.html\?stage='/);
  assert.match(legacy,/location\.hash\.startsWith\('#case='\)/);
