@@ -124,3 +124,12 @@ test('case URL actions can be replayed into identical evaluated state',()=>{
   const restored=Case.decode(Case.encode(c));
   assert.deepEqual(Case.evaluateCase(restored),Case.evaluateCase(c));
 });
+
+test('Overview reads stage metadata from canonical contract',()=>{
+  const fs=require('node:fs');
+  const path=require('node:path');
+  const html=fs.readFileSync(path.join(__dirname,'../index.html'),'utf8');
+  assert.match(html,/product-pipeline\\.js\\?v=foundation-1/);
+  assert.match(html,/pipelineContract\\.stages\\[i\\]/);
+  assert.match(html,/node\\.dataset\\.pipelineStage = stage\\.id/);
+});
