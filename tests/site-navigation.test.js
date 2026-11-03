@@ -15,5 +15,22 @@ test('published pages share the four-chapter navigation with accurate page or re
  }
 });
 test('static local links and fragment destinations resolve',()=>{for(const page of pages){for(const match of read(page).matchAll(/href="([^"]+)"/g)){const u=new URL(match[1],'https://example.test/'+page);if(u.origin!=='https://example.test')continue;const file=decodeURIComponent(u.pathname.slice(1));assert.ok(fs.existsSync(path.join(root,file)),page+' → '+match[1]);if(u.hash){const id=decodeURIComponent(u.hash.slice(1));assert.ok(read(file).includes('id="'+id+'"'),page+' → '+match[1]);}}}});
-test('homepage has four intended chapters including combined Engineering and Operations',()=>{const chapters=read('index.html').match(/<(section|div)\b[^>]*class="chapters"[^>]*>([\s\S]*?)<\/\1>/);assert.ok(chapters,'homepage chapter container must exist');const targets=[...chapters[2].matchAll(/<a[^>]*href="\.\/([^"]+)"/g)].map(m=>m[1]);assert.deepEqual(targets,['experience.html','engineering-blueprint.html','risk-controls.html','independent-assurance.html']);});
+test('homepage offers four practitioner lenses and a separate pipeline entry',()=>{
+ const html=read('index.html');
+ const section=html.match(/<section class="lens-section"[^>]*>([\s\S]*?)<\/section>/);
+ assert.ok(section,'practitioner lens section must exist');
+ const targets=[...section[1].matchAll(/<a class="lens-card" href="\.\/([^"]+)"/g)].map(m=>m[1]);
+ assert.deepEqual(targets,['engineering-blueprint.html','risk-controls.html','independent-assurance.html','control-matrix.html']);
+ assert.match(html,/<a class="guide-action" href="#workflow">Explore the workflow/);
+ assert.match(html,/<a class="guide-action" href="\.\/engineering-blueprint.html">View the engineering blueprint/);
+});
+test('homepage maintains eight stages and four distinct example outcomes',()=>{
+ const html=read('index.html');
+ const stages=[...html.matchAll(/<button class="workflow-stage"[^>]*data-stage="(\d+)"/g)].map(m=>Number(m[1]));
+ assert.deepEqual(stages,[0,1,2,3,4,5,6,7]);
+ const scenarios=[...html.matchAll(/<button type="button" data-scenario="([^"]+)"/g)].map(m=>m[1]);
+ assert.deepEqual(scenarios,['pass','split','excluded','canary']);
+ assert.match(html,/AI classification, formal authorization, and release eligibility are separate decisions/);
+ assert.match(html,/Human approval is an alternative route, not a second AI submission/);
+});
 
