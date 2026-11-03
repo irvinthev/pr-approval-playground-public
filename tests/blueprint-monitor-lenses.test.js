@@ -1,20 +1,18 @@
-const test=require('node:test');const assert=require('node:assert/strict');const fs=require('node:fs');const path=require('node:path');
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const read=name=>fs.readFileSync(path.join(__dirname,'..',name),'utf8');
-test('Blueprint and Monitoring offer stage-aware reciprocal lenses',()=>{
- const blueprint=read('engineering-blueprint.html'),monitoring=read('continuous-monitoring.html'),monitorJS=read('monitoring.js');
- assert.match(blueprint,/id="blueprint-monitor-link"/);
- assert.match(blueprint,/function readStage\(\)\{const stage=new URLSearchParams\(location\.search\)\.get\('stage'\);return \/\^\[0-6\]\$\/\.test\(stage\|\|''\)\?Number\(stage\):0;\}/);
- assert.match(blueprint,/\^\[0-6\]\$/);
- assert.match(blueprint,/monitoring\.html\?stage='\+active\+'#monitoring-guide'/);
- assert.match(blueprint,/history\.replaceState\(null,'',url\)/);
- assert.match(blueprint,/window\.addEventListener\('popstate',\(\)=>\{active=readStage\(\);render\(\)\}\)/);
- assert.match(monitoring,/id="monitor-blueprint-link"/);
- assert.match(monitoring,/Why these monitoring signals matter/);
- assert.match(monitorJS,/monitor-blueprint-link/);
- assert.match(monitorJS,/engineering-blueprint\.html\?stage='\+active\+'#technical-requirements'/);
+test('one page owns Build and Monitor lenses and one stage selector',()=>{
+ const page=read('engineering-blueprint.html'),monitor=read('unified-monitoring.js');
+ for(const id of ['view-build','view-monitor','build-view','monitor-view','stages','mon-signal-cards'])assert.match(page,new RegExp('id="'+id+'"'));
+ assert.match(page,/src="\.\/monitoring-data\.js"/);assert.match(page,/src="\.\/monitoring-examples\.js"/);assert.match(page,/src="\.\/unified-monitoring\.js"/);
+ assert.match(page,/if\(window\.renderUnifiedMonitor\)window\.renderUnifiedMonitor\(active\)/);
+ assert.match(page,/new URLSearchParams\(location\.search\)\.get\('view'\)/);
+ assert.match(monitor,/root\.renderUnifiedMonitor=function\(stage\)/);
+ assert.doesNotMatch(monitor,/stage-pickers|monitor-blueprint-link/);
 });
-test('Two-lens change retains Blueprint guidance and worked Monitoring examples',()=>{
- const blueprint=read('engineering-blueprint.html'),monitoring=read('continuous-monitoring.html');
- for(const item of ['id="technical-requirements"','id="required-ci"','Full implementation checklist']) assert.ok(blueprint.includes(item),item);
- for(const item of ['id="monitoring-guide"','id="signal-cards"','monitoring-examples.js','id="stage-pickers"']) assert.ok(monitoring.includes(item),item);
+test('technical depth and interactive examples retained; old monitoring links migrate',()=>{
+ const page=read('engineering-blueprint.html'),legacy=read('continuous-monitoring.html');
+ for(const label of ['id="technical-requirements"','id="required-ci"','Full implementation checklist','Sourcing, integrations and technical detail'])assert.ok(page.includes(label),label);
+ for(const label of ['Normal sample','Exception sample','Purpose, evidence and owner response','Exercise this monitor'])assert.ok(read('unified-monitoring.js').includes(label),label);
+ assert.match(legacy,/location\.replace\('\.\/engineering-blueprint\.html\?stage='/);
+ assert.match(legacy,/location\.hash\.startsWith\('#case='\)/);
 });
