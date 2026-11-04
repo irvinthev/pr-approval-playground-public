@@ -44,7 +44,7 @@ test('assessment page exposes accessible selections with bounded neutral disclai
  for(const s of stageDefinitions)assert.match(html,new RegExp('name="'+s.id+'"'),s.id);
  assert.match(html,/id="operating-model-results"/);
  assert.match(html,/src="\.\/operating-model\.js"/);
- assert.match(html,/Not an authorization decision/);
+ assert.match(html,/Illustrative guidance, not authorization/);
  assert.doesNotMatch(html,/risk score:\s*[0-9]/i);
 });
 
@@ -216,4 +216,15 @@ test('example results support focus management and reduced motion',()=>{
  assert.match(script,/resultsHeading\.focus\(\{preventScroll:true\}\)/);
  assert.match(script,/prefers-reduced-motion: reduce/);
  assert.match(script,/revealResults\(\)/);
+});
+
+test('risk examples link to real engineering and assurance anchors with scope caveat',()=>{
+ const risk=fs.readFileSync(path.join(root,'ai-sdlc-risk.html'),'utf8');
+ const engineering=fs.readFileSync(path.join(root,'engineering-blueprint.html'),'utf8');
+ const assurance=fs.readFileSync(path.join(root,'independent-assurance.html'),'utf8');
+ assert.match(risk,/href="\.\/engineering-blueprint\.html#engineering-build-plan"/);
+ assert.match(engineering,/id="engineering-build-plan"/);
+ assert.match(risk,/href="\.\/independent-assurance\.html#test-approval"/);
+ assert.match(assurance,/id="test-approval"/);
+ assert.match(risk,/do not fully cover every operating model/i);
 });
