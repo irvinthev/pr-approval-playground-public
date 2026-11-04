@@ -47,3 +47,33 @@ test('assessment page exposes accessible selections with bounded neutral disclai
  assert.match(html,/Not an authorization decision/);
  assert.doesNotMatch(html,/risk score:\s*[0-9]/i);
 });
+
+test('advisory monitoring must not imply autonomous production authority',()=>{
+  const result=explain({...base,monitor:'advisory'});
+  const monitor=result.applicable.find(s=>s.id==='monitor');
+  assert.ok(monitor);
+  assert.equal(monitor.authority,'Advisory');
+  assert.ok(!result.authorities.includes('Production'));
+  assert.doesNotMatch(monitor.concern,/unsafe remediation|cascading production/i);
+});
+test('autonomous remediation adds production privileges and containment evidence',()=>{
+  const advisory=explain({...base,monitor:'advisory'}).applicable[0];
+  const autonomous=explain({...base,monitor:'autonomous'}).applicable[0];
+  assert.equal(autonomous.authority,'Production');
+  assert.notEqual(autonomous.safeguard,advisory.safeguard);
+  assert.match(autonomous.evidence,/privileges|permissions/i);
+  assert.match(autonomous.safeguard,/bound|restrict|contain/i);
+});
+test('mandatory AI review gate receives incremental enforcement considerations',()=>{
+  const advisory=explain({...base,review:'advisory'}).applicable[0];
+  const gating=explain({...base,review:'gating'}).applicable[0];
+  assert.notEqual(gating.authority,advisory.authority);
+  assert.notEqual(gating.safeguard,advisory.safeguard);
+  assert.match(gating.safeguard,/fail.closed|required|block/i);
+  assert.match(gating.evidence,/bypass|check|ruleset/i);
+});
+test('advisory reviewer is not represented as required gate',()=>{
+  const advisory=explain({...base,review:'advisory'}).applicable[0];
+  assert.equal(advisory.authority,'Advisory');
+  assert.doesNotMatch(advisory.safeguard,/required gate/i);
+});
