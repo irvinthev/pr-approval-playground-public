@@ -29,6 +29,7 @@
     }
   });
   const governanceOptions=Object.freeze([
+    ['unknown','Not assessed'],
     ['none','AI cannot propose or change governance settings'],
     ['advisory','AI suggests governance changes; humans authorize and apply them'],
     ['modify','AI can modify approval rules, model settings, credentials, permissions or enforcement']
@@ -63,12 +64,13 @@
     const applicable=stageDefinitions.filter(s=>meaningful[s.id].includes(selection[s.id])).map(s=>({
       ...s,...(capabilityOverrides[s.id]?.[selection[s.id]]||{})
     }));
-    const governance=selection.governance||'none';
+    const governance=selection.governance||'unknown';
     if(governance==='advisory')applicable.push({...governanceAdvisory});
     if(governance==='modify')applicable.push({...governanceFinding});
     const authorities=[...new Set(applicable.map(s=>s.authority))];
     const context=selection.context||'unassessed';
     const questions=additionalQuestions(context,applicable);
+    if(governance==='unknown' && applicable.length)questions.push('Verify whether any AI agent can directly or indirectly change protected governance rules, identities or enforcement settings.');
     return {applicable,authorities,context,governance,questions};
 
   }
@@ -95,7 +97,8 @@
     questionsEl.replaceChildren();
     let contextNote=context==='unassessed'?'Business/system criticality has not been evaluated.':context==='critical'?'Financially significant, security-sensitive or otherwise critical systems require explicit scope and authorization decisions.':'Routine/low-impact scope is user-declared and not verified.';
     summary.textContent=(applicable.length?applicable.length+' AI-involved activity/activities identified.':'No AI involvement selected. Conventional SDLC safeguards still apply.')+
-      ' Authority dimensions in scope: '+(authorities.length?authorities.join('; '):'none identified')+'. '+contextNote;
+      ' Authority dimensions in scope: '+(authorities.length?authorities.join('; '):'none identified')+'. '+contextNote+
+      (selection.governance==='unknown'?' Governance authority has not been assessed.':'');
     for(const s of applicable){
       const article=add('article',null,outputList,'operating-finding');
       add('h3',s.label+' — '+s.authority,article);
