@@ -44,7 +44,7 @@ test('assessment page exposes accessible selections with bounded neutral disclai
  for(const s of stageDefinitions)assert.match(html,new RegExp('name="'+s.id+'"'),s.id);
  assert.match(html,/id="operating-model-results"/);
  assert.match(html,/src="\.\/operating-model\.js"/);
- assert.match(html,/Not an authorization decision/);
+ assert.match(html,/Illustrative guidance, not authorization/);
  assert.doesNotMatch(html,/risk score:\s*[0-9]/i);
 });
 
