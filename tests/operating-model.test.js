@@ -94,3 +94,36 @@ test('all UI capability choices correspond to the operating-model definitions',(
    for(const [value] of stage.options)assert.ok(select.includes('value="'+value+'"'),stage.id+' / '+value);
  }
 });
+
+test('governance autonomy is separate from execution and exposes independent enforcement questions',()=>{
+ const result=explain({...base,develop:'execution',governance:'modify'});
+ assert.ok(result.authorities.includes('Execution'));
+ assert.ok(result.authorities.includes('Governance'));
+ const g=result.applicable.find(s=>s.id==='governance');
+ assert.ok(g);
+ assert.match(g.safeguard,/independently restrict|independent/i);
+ assert.match(g.evidence,/administrative grants|permissions/i);
+});
+test('governance recommendations remain advisory, not autonomous administration',()=>{
+ const x=explain({...base,governance:'advisory'});
+ assert.deepEqual(x.applicable.map(s=>s.id),['governance']);
+ assert.deepEqual(x.authorities,['Advisory']);
+ assert.match(x.applicable[0].safeguard,/human/i);
+});
+test('criticality introduces contextual challenge questions without changing to a risk score',()=>{
+ const unassessed=explain({...base,approve:'delegated'});
+ const critical=explain({...base,approve:'delegated',context:'critical'});
+ const routine=explain({...base,approve:'delegated',context:'routine'});
+ assert.deepEqual(critical.applicable.map(s=>s.id),unassessed.applicable.map(s=>s.id));
+ assert.ok(critical.questions.length>unassessed.questions.length);
+ assert.match(critical.questions.join(' '),/dependency|critical/i);
+ assert.match(routine.questions.join(' '),/reclassification/i);
+ assert.ok(!('riskScore' in critical));
+ assert.ok(!('authorized' in critical));
+});
+test('governance selector and contextual questions have matching HTML hooks',()=>{
+ const html=fs.readFileSync(path.join(root,'ai-sdlc-risk.html'),'utf8');
+ for(const value of ['none','advisory','modify'])assert.match(html,new RegExp('<option value="'+value+'">'));
+ assert.match(html,/name="governance"/);
+ assert.match(html,/id="operating-model-questions"/);
+});
