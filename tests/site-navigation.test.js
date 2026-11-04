@@ -49,14 +49,16 @@ test('engineering build remains primary while monitoring is a dedicated chapter'
  assert.match(engineering,/Engineering stage explorer/);
  assert.match(engineering,/Implementation/);
 });
-test('assurance entry presents task-led choices with optional detailed matrix',()=>{
+test('Assurance presents the four-step guided journey and retains detailed testing',()=>{
  const html=fs.readFileSync(path.join(root,'independent-assurance.html'),'utf8');
- assert.match(html,/Explore the controls/);
- assert.match(html,/Test a fictional change/);
- assert.match(html,/href="\.\/rcm-view\.html"/);
+ const markers=['id="foundational-controls"','id="test-approval"','id="failure-scenarios"','id="document-assessment"'];
+ for(const marker of markers)assert.ok(html.includes(marker),marker);
+ assert.ok(markers.every((marker,i)=>i===0||html.indexOf(marker)>html.indexOf(markers[i-1])));
+ assert.match(html,/id="assurance-matrix-body"/);
+ assert.match(html,/id="matrix-details"/);
+ assert.match(html,/href="\.\/rcm-view\.html#download-current-rcm"/);
  assert.match(html,/href="\.\/auditor-view\.html"/);
- assert.match(html,/href="#test-approval"/);
- assert.ok(html.indexOf('Explore the controls')<html.indexOf('Risk, Control &amp; Testing Matrix'));
+ assert.doesNotMatch(html,/<strong>Framework references<\/strong>|<strong>Control previews<\/strong>/);
 });
 test('advisory example avoids claiming execution authority',()=>{
  const html=fs.readFileSync(path.join(root,'ai-sdlc-risk.html'),'utf8');
@@ -83,10 +85,13 @@ test('current chapter footers do not send the main journey to archived perspecti
   assert.doesNotMatch(footer,/href="\.\/(?:experience|risk-controls)\.html"/);
  }
 });
-test('Assurance task choices precede the detailed matrix without duplicate toolbar choices',()=>{
+test('Assurance step navigation replaces task cards without duplicate toolbar choices',()=>{
  const assurance=read('independent-assurance.html');
  assert.doesNotMatch(assurance,/<nav class="assurance-tools"/);
- assert.match(assurance,/Explore the controls/);
- assert.match(assurance,/Test a fictional change/);
+ assert.match(assurance,/01 · Establish the Foundation/);
+ assert.match(assurance,/02 · Evaluate the Pipeline/);
+ assert.match(assurance,/03 · Select Failure Scenarios/);
+ assert.match(assurance,/04 · Document the Assessment/);
  assert.match(assurance,/href="#test-approval"/);
+ assert.match(assurance,/href="#failure-scenarios"/);
 });

@@ -11,12 +11,12 @@ const foundations=[
 {title:'Continuous Monitoring & Assurance Evidence',question:'Can stakeholders obtain timely, complete and reliable records of decisions, exceptions, configuration changes and production deployment?',owner:'Platform operations, monitoring and control owners',evidence:'Source-to-monitor event reconciliation, approval and deployment audit trail, evidence retention, freshness indicators, exception alerts, investigations and closure.',challenge:'Interrupt the evidence feed; verify the dashboard identifies missing records rather than presenting stale data as current.',related:'AI-10, AI-11, AI-12, AI-13'}
 ];
 const scenarios=[
-{label:'Branch protection bypass',category:'Repository protection',condition:'An administrator bypasses a mandatory merge check.',response:'A governed ruleset prevents the bypass, or an independently authorized exception is recorded and reviewed. Uncontrolled bypass is a design failure.',evidence:'Effective ruleset, bypass actor list, merge and admin event logs, exception record.'},
-{label:'Cross-repository SoD conflict',category:'Independent authorization',condition:'A contributor can change application logic in one repository and the central approval policy in another.',response:'A policy owner evaluates effective cross-repository access and removes or independently governs conflicting authority. Separate repositories do not, by themselves, establish SoD.',evidence:'Permissions across repositories, policy history, admin roles and independent authorization.'},
-{label:'Missing financial dependency',category:'Data integrity',condition:'A shared library is changed, but the dependency map omits a downstream billing-related service.',response:'Unknown or incomplete required impact information blocks automated approval and routes the change for human assessment.',evidence:'Dependency mapping version, completeness check, affected service list and escalation record.'},
-{label:'False-low-risk classification',category:'AI validation',condition:'A deliberately unsafe change affecting a sensitive calculation is presented with misleading low-risk metadata.',response:'Deterministic exclusions or reviewers identify the risk; a missed case is recorded as a false-low-risk result, investigated and used for regression validation.',evidence:'Known expected outcome, model and prompt versions, adjudication, review outputs and regression history.'},
-{label:'Security gate failure',category:'Security baseline',condition:'A required security check fails or returns no result while both reviewers label the change low risk.',response:'The mandatory technical gate blocks automated merge regardless of agreement between AI reviewers.',evidence:'Required-check policy, CI results, current revision identity and attempted override records.'},
-{label:'Evidence feed interruption',category:'Continuous assurance',condition:'Production approvals continue, but the assurance data feed stops receiving new events.',response:'A freshness or completeness alarm identifies the monitoring gap. A stale dashboard cannot support a claim of ongoing effectiveness.',evidence:'Source event counts, ingestion health, missing-record alerts and reconciliation follow-up.'}
+{label:'Branch protection bypass',category:'Repository protection',stage:4,condition:'An administrator bypasses a mandatory merge check.',response:'A governed ruleset prevents the bypass, or an independently authorized exception is recorded and reviewed. Uncontrolled bypass is a design failure.',evidence:'Effective ruleset, bypass actor list, merge and admin event logs, exception record.'},
+{label:'Cross-repository SoD conflict',category:'Independent authorization',stage:3,condition:'A contributor can change application logic in one repository and the central approval policy in another.',response:'A policy owner evaluates effective cross-repository access and removes or independently governs conflicting authority. Separate repositories do not, by themselves, establish SoD.',evidence:'Permissions across repositories, policy history, admin roles and independent authorization.'},
+{label:'Missing financial dependency',category:'Data integrity',stage:1,condition:'A shared library is changed, but the dependency map omits a downstream billing-related service.',response:'Unknown or incomplete required impact information blocks automated approval and routes the change for human assessment.',evidence:'Dependency mapping version, completeness check, affected service list and escalation record.'},
+{label:'False-low-risk classification',category:'AI validation',stage:2,condition:'A deliberately unsafe change affecting a sensitive calculation is presented with misleading low-risk metadata.',response:'Deterministic exclusions or reviewers identify the risk; a missed case is recorded as a false-low-risk result, investigated and used for regression validation.',evidence:'Known expected outcome, model and prompt versions, adjudication, review outputs and regression history.'},
+{label:'Security gate failure',category:'Security baseline',stage:3,condition:'A required security check fails or returns no result while both reviewers label the change low risk.',response:'The mandatory technical gate blocks automated merge regardless of agreement between AI reviewers.',evidence:'Required-check policy, CI results, current revision identity and attempted override records.'},
+{label:'Evidence feed interruption',category:'Continuous assurance',stage:6,condition:'Production approvals continue, but the assurance data feed stops receiving new events.',response:'A freshness or completeness alarm identifies the monitoring gap. A stale dashboard cannot support a claim of ongoing effectiveness.',evidence:'Source event counts, ingestion health, missing-record alerts and reconciliation follow-up.'}
 ];
 const list=document.getElementById('foundation-list'),choices=document.getElementById('challenge-choices'),result=document.getElementById('challenge-result');
 if(!list||!choices||!result)return;
@@ -32,20 +32,25 @@ foundations.forEach((item,i)=>{
   const p=el('p',null,undefined,body);el('strong',null,label+': ',p);p.appendChild(document.createTextNode(value));
  }
 });
-let active=2;
+const query=new URLSearchParams(location.search);
+const initial=Number(query.get('failure'));
+let active=query.has('failure')&&Number.isInteger(initial)&&initial>=0&&initial<scenarios.length?initial:2;
 function render(){
  choices.replaceChildren();
  scenarios.forEach((s,i)=>{
   const b=el('button','challenge-option',undefined,choices);
   b.type='button';b.setAttribute('aria-pressed',String(i===active));b.setAttribute('aria-controls','challenge-result');
   el('span','challenge-circle',undefined,b).setAttribute('aria-hidden','true');
-  el('span',null,s.label,b);b.addEventListener('click',()=>{active=i;render();});
+  el('span',null,s.label,b);b.addEventListener('click',()=>{active=i;const url=new URL(location.href);url.searchParams.set('failure',String(i));history.replaceState(null,'',url);render();});
  });
  const s=scenarios[active];result.replaceChildren();
  el('span','challenge-category',s.category,result);
  for(const [title,body] of [['Injected condition',s.condition],['Expected safeguard response',s.response],['Evidence to inspect',s.evidence]]){
  el('h4',null,title,result);el('p',null,body,result);
  }
+ const stageTitles=['Pull request','Eligibility gate','Two AI reviews','Authorization','Merge + build','Pre-production gate','Production rollout'];
+ const a=el('a','challenge-stage-link','Inspect stage '+String(s.stage+1).padStart(2,'0')+' · '+stageTitles[s.stage]+' testing →',result);
+ a.href='./independent-assurance.html?stage='+s.stage+'#testing-guide';
 }
 render();
 })();
