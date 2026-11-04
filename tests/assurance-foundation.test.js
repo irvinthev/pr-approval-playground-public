@@ -1,0 +1,43 @@
+'use strict';
+const test=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const root=path.resolve(__dirname,'..');
+const read=name=>fs.readFileSync(path.join(root,name),'utf8');
+test('foundational assurance is present and public-safe',()=>{
+ const page=read('independent-assurance.html');
+ const script=read('assurance-foundations.js');
+ const style=read('assurance-foundations.css');
+ assert.match(page,/id="foundational-controls"/);
+ assert.match(page,/id="challenge-choices"/);
+ assert.match(page,/assurance-foundations\.js/);
+ assert.match(page,/assurance-foundations\.css/);
+ for(const term of ['Repository Protection & Enforcement','Independent Authorization & Segregation of Duties','Engineering & Security Baseline','Classification Data & Dependency Integrity','AI Classification QA & Negative Testing','Model & Policy Change Governance','Continuous Monitoring & Assurance Evidence'])assert.ok(script.includes(term),term);
+ for(const scenario of ['Branch protection bypass','Cross-repository SoD conflict','Missing financial dependency','False-low-risk classification','Security gate failure','Evidence feed interruption'])assert.ok(script.includes(scenario),scenario);
+ for(const text of [page,script,style])assert.doesNotMatch(text,/Braze|Appboy|braze\.com/i);
+});
+test('assurance labels agree with proposed RCM identifiers',()=>{
+ const assurance=read('independent-assurance.html');
+ const rcm=read('rcm-view.html');
+ const match=rcm.match(/const controls=(\[[\s\S]*?\]);\s*const domainEl/);
+ assert.ok(match,'proposed 15-control catalog exists');
+ const controls=JSON.parse(match[1]);
+ assert.equal(controls.length,15);
+ const ids=new Set(controls.map(c=>c.id));
+ assert.equal(ids.size,15);
+ const labels=[...assurance.matchAll(/<span class="rcm-id">(AI-\d{2})<\/span>/g)].map(m=>m[1]);
+ assert.ok(labels.length>=10);
+ for(const id of labels)assert.ok(ids.has(id),id);
+ const expected=new Map([['rcm-dependencies','AI-01'],['rcm-binding','AI-07'],['rcm-independence','AI-03'],['rcm-artifacts','AI-10']]);
+ for(const [anchor,id] of expected)assert.match(assurance,new RegExp('id="'+anchor+'"[^>]*>[\\s\\S]*?<span class="rcm-id">'+id+'</span>'));
+ assert.match(rcm,/id="rcm-csv-download"/);
+ assert.match(assurance,/legacy 16-control/i);
+});
+test('new assurance scripts are valid JavaScript',()=>{
+ const vm=require('node:vm');
+ new vm.Script(read('assurance-foundations.js'),{filename:'assurance-foundations.js'});
+ const page=read('independent-assurance.html');
+ const inline=[...page.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(m=>m[1]).filter(Boolean);
+ inline.forEach((s,i)=>new vm.Script(s,{filename:'assurance-inline-'+i+'.js'}));
+});
