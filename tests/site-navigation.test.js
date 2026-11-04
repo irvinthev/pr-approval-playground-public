@@ -39,3 +39,54 @@ test('risk assessment explains capability-specific authority without claiming a 
  assert.match(html,/management/i);
 });
 
+
+test('engineering build remains primary while monitoring is a dedicated chapter',()=>{
+ const engineering=fs.readFileSync(path.join(root,'engineering-blueprint.html'),'utf8');
+ const monitoring=fs.readFileSync(path.join(root,'continuous-monitoring.html'),'utf8');
+ assert.match(engineering,/href="\.\/continuous-monitoring\.html\?stage=0#monitoring-guide"/);
+ assert.match(monitoring,/id="monitoring-guide"/);
+ assert.match(engineering,/id="view-monitor"[^>]*hidden/);
+ assert.match(engineering,/Engineering stage explorer/);
+ assert.match(engineering,/Implementation/);
+});
+test('assurance entry presents task-led choices with optional detailed matrix',()=>{
+ const html=fs.readFileSync(path.join(root,'independent-assurance.html'),'utf8');
+ assert.match(html,/Explore the controls/);
+ assert.match(html,/Test a fictional change/);
+ assert.match(html,/href="\.\/rcm-view\.html"/);
+ assert.match(html,/href="\.\/auditor-view\.html"/);
+ assert.match(html,/href="#test-approval"/);
+ assert.ok(html.indexOf('Explore the controls')<html.indexOf('Risk, Control &amp; Testing Matrix'));
+});
+test('advisory example avoids claiming execution authority',()=>{
+ const html=fs.readFileSync(path.join(root,'ai-sdlc-risk.html'),'utf8');
+ assert.match(html,/01 \/ Advisory assistance/);
+ assert.doesNotMatch(html,/01 \/ Advisory and execution/);
+});
+
+test('Engineering to Monitoring preserves selected stage and legacy view links remain supported',()=>{
+ const engineering=fs.readFileSync(path.join(root,'engineering-blueprint.html'),'utf8');
+ const monitoring=read('continuous-monitoring.html');
+ assert.match(engineering,/id="stage-monitor-link" href="\.\/continuous-monitoring\.html\?stage=0#monitoring-guide"/);
+ assert.match(engineering,/id="engineering-footer-monitor-link" href="\.\/continuous-monitoring\.html\?stage=0#monitoring-guide"/);
+ assert.match(engineering,/\$\('stage-monitor-link'\)\.href='\.\/continuous-monitoring\.html\?stage='\+encodeURIComponent\(String\(active\)\)/);
+ assert.match(engineering,/id="view-monitor"[^>]*hidden/);
+ assert.match(engineering,/get\('view'\)==='monitor'\?'monitor':'build'/);
+ assert.match(monitoring,/id="monitoring-guide"/);
+ const script=fs.readFileSync(path.join(root,'monitoring.js'),'utf8');
+ assert.match(script,/new URLSearchParams\(search\)\.get\('stage'\)/);
+});
+test('current chapter footers do not send the main journey to archived perspective pages',()=>{
+ for(const page of ['engineering-blueprint.html','continuous-monitoring.html','independent-assurance.html']){
+  const footer=read(page).match(/<footer class="site-footer">[\s\S]*?<\/footer>/)?.[0];
+  assert.ok(footer,page+' footer');
+  assert.doesNotMatch(footer,/href="\.\/(?:experience|risk-controls)\.html"/);
+ }
+});
+test('Assurance task choices precede the detailed matrix without duplicate toolbar choices',()=>{
+ const assurance=read('independent-assurance.html');
+ assert.doesNotMatch(assurance,/<nav class="assurance-tools"/);
+ assert.match(assurance,/Explore the controls/);
+ assert.match(assurance,/Test a fictional change/);
+ assert.match(assurance,/href="#test-approval"/);
+});
