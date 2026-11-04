@@ -14,7 +14,7 @@ test('current pages use five-section navigation, with reference pages not impers
  if(mapped[page]){
  assert.equal(active.length,1,page);
  assert.equal(active[0][1],'./'+mapped[page],page);
- assert.equal(active[0][2],page===mapped[page]?'page':'page',page);
+ assert.equal(active[0][2],page===mapped[page]?'page':'location',page);
  }else assert.equal(active.length,0,page);
  }
 });
