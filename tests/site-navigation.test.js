@@ -65,7 +65,7 @@ test('advisory example avoids claiming execution authority',()=>{
 });
 
 test('Engineering to Monitoring preserves selected stage and legacy view links remain supported',()=>{
- const engineering=read('engineering-blueprint.html');
+ const engineering=fs.readFileSync(path.join(root,'engineering-blueprint.html'),'utf8');
  const monitoring=read('continuous-monitoring.html');
  assert.match(engineering,/id="stage-monitor-link" href="\.\/continuous-monitoring\.html\?stage=0#monitoring-guide"/);
  assert.match(engineering,/id="engineering-footer-monitor-link" href="\.\/continuous-monitoring\.html\?stage=0#monitoring-guide"/);
