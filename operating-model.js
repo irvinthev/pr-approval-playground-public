@@ -46,7 +46,7 @@
     id:'governance',label:'Independent AI governance authorization',authority:'Governance authorization',
     concern:'AI can alter or authorize policies, credentials, model settings or approval enforcement without an independent gate, permitting self-expansion of authority or control bypass.',
     safeguard:'Separately protect the governing rules and privileged credentials; require independent authorization and enforce fail-closed boundaries against self-modification.',
-    evidence:'Effective policy/admin grants, ruleset history, bypass and credential inventory, protected workflow tests and independent approvals.',
+    evidence:'Effective administrative grants, ruleset history, bypass and credential inventory, protected workflow tests and independent approvals.',
     control:'G02',rcm:'AI-15'
   });
   const governanceAdvisory=Object.freeze({
