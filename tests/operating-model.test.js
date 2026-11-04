@@ -163,3 +163,30 @@ test('critical-system questions follow the selected delegated authority',()=>{
  assert.match(production.questions.join(' '),/release\/remediation privileges/i);
  assert.doesNotMatch(production.questions.join(' '),/approval\/check status/i);
 });
+
+test('three example models are illustrative, non-exclusive and preserve distinct authority pathways',()=>{
+  const {examples}=require('../operating-model.js');
+  assert.deepEqual(Object.keys(examples),['assist','approval','autonomous']);
+  const assist=explain(examples.assist);
+  assert.ok(assist.applicable.some(s=>s.id==='develop'&&s.authority==='Advisory'));
+  assert.ok(!assist.authorities.includes('Delegated decision'));
+  const approval=explain(examples.approval);
+  assert.ok(approval.authorities.includes('Decision gate'));
+  assert.ok(approval.authorities.includes('Delegated decision'));
+  assert.ok(!approval.authorities.includes('Production'));
+  const autonomous=explain(examples.autonomous);
+  assert.ok(autonomous.authorities.includes('Production'));
+  assert.ok(autonomous.authorities.includes('Execution'));
+  for(const e of Object.values(examples))assert.equal(e.governance,'unknown');
+});
+test('example cards precede advanced questionnaire and preserve input labels',()=>{
+  const html=fs.readFileSync(path.join(root,'ai-sdlc-risk.html'),'utf8');
+  assert.match(html,/data-model="assist"/);
+  assert.match(html,/data-model="approval"/);
+  assert.match(html,/data-model="autonomous"/);
+  assert.match(html,/<details id="operating-model-advanced"/);
+  assert.ok(html.indexOf('data-model="assist"')<html.indexOf('id="operating-model-form"'));
+  assert.match(html,/id="operating-model-results"[^>]*hidden/);
+  for(const name of ['develop','review','approve','deploy','monitor','governance','context'])
+    assert.match(html,new RegExp('name="'+name+'"'),name);
+});
