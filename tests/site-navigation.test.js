@@ -43,7 +43,7 @@ test('risk assessment explains capability-specific authority without claiming a 
 test('engineering build remains primary while monitoring is a dedicated chapter',()=>{
  const engineering=fs.readFileSync(path.join(root,'engineering-blueprint.html'),'utf8');
  const monitoring=fs.readFileSync(path.join(root,'continuous-monitoring.html'),'utf8');
- assert.match(engineering,/href="\.\/continuous-monitoring\.html#monitoring-guide"/);
+ assert.match(engineering,/href="\.\/continuous-monitoring\.html\?stage=0#monitoring-guide"/);
  assert.match(monitoring,/id="monitoring-guide"/);
  assert.match(engineering,/id="view-monitor"[^>]*hidden/);
  assert.match(engineering,/Engineering stage explorer/);
