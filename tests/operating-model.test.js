@@ -1,0 +1,96 @@
+'use strict';
+const test=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const root=path.resolve(__dirname,'..');
+const {stageDefinitions,explain}=require('../operating-model.js');
+const base={develop:'human',review:'human',approve:'human',deploy:'deterministic',monitor:'conventional',context:'unassessed'};
+test('non-AI baseline has no invented AI risk classification',()=>{
+  const x=explain(base);
+  assert.equal(x.applicable.length,0);
+  assert.deepEqual(x.authorities,[]);
+  assert.equal(x.context,'unassessed');
+});
+test('AI development and delegated approval remain distinct authority dimensions',()=>{
+  const x=explain({...base,develop:'execution',approve:'delegated'});
+  assert.deepEqual(x.applicable.map(s=>s.id),['develop','approve']);
+  assert.ok(x.authorities.includes('Execution'));
+  assert.ok(x.authorities.includes('Delegated decision'));
+  assert.ok(!x.authorities.includes('Production'));
+});
+test('AI-directed deployment and remediation each receive production-related safeguards',()=>{
+  const x=explain({...base,deploy:'ai',monitor:'autonomous'});
+  assert.deepEqual(x.applicable.map(s=>s.id),['deploy','monitor']);
+  assert.ok(x.applicable.every(s=>s.safeguard&&s.evidence&&s.concern));
+  assert.ok(x.applicable.some(s=>s.rcm==='AI-11'));
+  assert.ok(x.applicable.some(s=>s.rcm==='AI-13'));
+});
+test('advisory AI can be assessed without granting authorization',()=>{
+  const x=explain({...base,review:'advisory'});
+  assert.deepEqual(x.applicable.map(s=>s.id),['review']);
+  assert.ok(!x.authorities.includes('Delegated decision'));
+});
+test('each mapped objective has a local control anchor; every stage offers meaningful options',()=>{
+  const library=fs.readFileSync(path.join(root,'control-matrix.html'),'utf8');
+  for(const stage of stageDefinitions){
+    assert.ok(stage.options.length>=2,stage.id);
+    assert.ok(library.includes('id="control-'+stage.control+'"'),stage.control);
+    assert.ok(stage.evidence&&stage.safeguard&&stage.concern,stage.id);
+  }
+});
+test('assessment page exposes accessible selections with bounded neutral disclaimers',()=>{
+ const html=fs.readFileSync(path.join(root,'ai-sdlc-risk.html'),'utf8');
+ for(const s of stageDefinitions)assert.match(html,new RegExp('name="'+s.id+'"'),s.id);
+ assert.match(html,/id="operating-model-results"/);
+ assert.match(html,/src="\.\/operating-model\.js"/);
+ assert.match(html,/Not an authorization decision/);
+ assert.doesNotMatch(html,/risk score:\s*[0-9]/i);
+});
+
+test('advisory monitoring must not imply autonomous production authority',()=>{
+  const result=explain({...base,monitor:'advisory'});
+  const monitor=result.applicable.find(s=>s.id==='monitor');
+  assert.ok(monitor);
+  assert.equal(monitor.authority,'Advisory');
+  assert.ok(!result.authorities.includes('Production'));
+  assert.doesNotMatch(monitor.concern,/unsafe remediation|cascading production/i);
+});
+test('autonomous remediation adds production privileges and containment evidence',()=>{
+  const advisory=explain({...base,monitor:'advisory'}).applicable[0];
+  const autonomous=explain({...base,monitor:'autonomous'}).applicable[0];
+  assert.equal(autonomous.authority,'Production');
+  assert.notEqual(autonomous.safeguard,advisory.safeguard);
+  assert.match(autonomous.evidence,/privileges|permissions/i);
+  assert.match(autonomous.safeguard,/bound|restrict|contain/i);
+});
+test('mandatory AI review gate receives incremental enforcement considerations',()=>{
+  const advisory=explain({...base,review:'advisory'}).applicable[0];
+  const gating=explain({...base,review:'gating'}).applicable[0];
+  assert.notEqual(gating.authority,advisory.authority);
+  assert.notEqual(gating.safeguard,advisory.safeguard);
+  assert.match(gating.safeguard,/fail.closed|required|block/i);
+  assert.match(gating.evidence,/bypass|check|ruleset/i);
+});
+test('advisory reviewer is not represented as required gate',()=>{
+  const advisory=explain({...base,review:'advisory'}).applicable[0];
+  assert.equal(advisory.authority,'Advisory');
+  assert.doesNotMatch(advisory.safeguard,/required gate/i);
+});
+
+test('governance or criticality must not be silently converted into a low-risk authorization',()=>{
+  const x=explain({...base,context:'critical',approve:'delegated'});
+  assert.equal(x.context,'critical');
+  assert.ok(x.applicable.some(s=>s.id==='approve'));
+  assert.ok(!('riskScore' in x));
+  assert.ok(!('authorized' in x));
+});
+test('all UI capability choices correspond to the operating-model definitions',()=>{
+ const html=fs.readFileSync(path.join(root,'ai-sdlc-risk.html'),'utf8');
+ for(const stage of stageDefinitions){
+   const start=html.indexOf('name="'+stage.id+'"');
+   assert.ok(start>=0,stage.id);
+   const select=html.slice(start,html.indexOf('</select>',start));
+   for(const [value] of stage.options)assert.ok(select.includes('value="'+value+'"'),stage.id+' / '+value);
+ }
+});
