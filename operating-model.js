@@ -32,13 +32,21 @@
     ['unknown','Not assessed'],
     ['none','AI cannot propose or change governance settings'],
     ['advisory','AI suggests governance changes; humans authorize and apply them'],
-    ['modify','AI can modify approval rules, model settings, credentials, permissions or enforcement']
+    ['execute','AI executes governance changes only after independent authorization'],
+    ['self-authorize','AI can authorize or change governing rules without an independent approval']
   ]);
-  const governanceFinding=Object.freeze({
-    id:'governance',label:'Governance & control administration',authority:'Governance',
-    concern:'AI may modify the policies, approval checks, identities or monitoring rules that constrain its own behavior, creating a self-authorization or control-bypass path.',
-    safeguard:'Prohibit unreviewed self-modification. Independently restrict and approve changes to enforcement, agent permissions, models, prompts and scope; test escalation and bypass paths.',
-    evidence:'Effective administrative grants, protected policy repository/rulesets, change logs, independent approvals and negative privilege tests.',
+  const governanceExecute=Object.freeze({
+    id:'governance',label:'Authorized governance execution',authority:'Governance execution',
+    concern:'AI executes a governance change, potentially applying a larger or different configuration change than independently authorized.',
+    safeguard:'Require independently approved, revision-bound governance changes; restrict execution to the authorized policy/configuration and preserve protected enforcement.',
+    evidence:'Authorized governance diff and revision, independent approver, effective admin privileges, execution logs and negative tests.',
+    control:'G02',rcm:'AI-15'
+  });
+  const governanceSelfAuthorize=Object.freeze({
+    id:'governance',label:'Independent AI governance authorization',authority:'Governance authorization',
+    concern:'AI can alter or authorize policies, credentials, model settings or approval enforcement without an independent gate, permitting self-expansion of authority or control bypass.',
+    safeguard:'Separately protect the governing rules and privileged credentials; require independent authorization and enforce fail-closed boundaries against self-modification.',
+    evidence:'Effective policy/admin grants, ruleset history, bypass and credential inventory, protected workflow tests and independent approvals.',
     control:'G02',rcm:'AI-15'
   });
   const governanceAdvisory=Object.freeze({
@@ -49,11 +57,20 @@
     control:'G02',rcm:'AI-15'
   });
   function additionalQuestions(context,applicable){
-    if(context==='critical')return [
-      'Which financially significant, security-sensitive or otherwise critical processes depend on the affected services, repositories or shared components?',
-      'What protected scope, dependency mappings and fail-closed eligibility rules prevent unauthorized AI-driven changes to critical functions?',
-      'What independent authorization, release integrity and exception evidence demonstrates that the relevant safeguards operate for this critical scope?'
-    ];
+    const has=id=>applicable.some(s=>s.id===id);
+    if(context==='critical'){
+      const questions=[
+        'Which financially significant, security-sensitive or otherwise critical processes depend on the affected services, repositories or shared components?',
+        'Who validated the protected scope and indirect dependencies, and what evidence supports the criticality classification?'
+      ];
+      if(has('approve')||has('review')&&applicable.some(s=>s.id==='review'&&s.authority==='Decision gate'))
+        questions.push('How are required approval/check status, eligibility exclusions and exception routes independently enforced for critical changes?');
+      if(has('deploy')||has('monitor')&&applicable.some(s=>s.id==='monitor'&&s.authority==='Production'))
+        questions.push('What release/remediation privileges, artifact integrity requirements and containment evidence protect production actions in critical systems?');
+      if(has('develop'))questions.push('How are changes generated or suggested by AI independently tested against critical business and security requirements?');
+      if(has('governance'))questions.push('What independent restrictions protect control administration and policy changes affecting critical systems?');
+      return questions;
+    }
     if(context==='routine')return [
       'Who substantiated that the system and indirect dependencies are routine or low-impact, and when was this classification last reviewed?',
       'What changes or new dependencies would trigger reclassification or mandatory human escalation?'
@@ -66,11 +83,16 @@
     }));
     const governance=selection.governance||'unknown';
     if(governance==='advisory')applicable.push({...governanceAdvisory});
-    if(governance==='modify')applicable.push({...governanceFinding});
+    if(governance==='execute')applicable.push({...governanceExecute});
+    if(governance==='self-authorize')applicable.push({...governanceSelfAuthorize});
     const authorities=[...new Set(applicable.map(s=>s.authority))];
     const context=selection.context||'unassessed';
     const questions=additionalQuestions(context,applicable);
     if(governance==='unknown' && applicable.length)questions.push('Verify whether any AI agent can directly or indirectly change protected governance rules, identities or enforcement settings.');
+    // Declared absence of governance authority must be checked against effective
+    // tool permissions when an agent can modify code, workflows, or configuration.
+    if(governance==='none' && selection.develop==='execution')
+      questions.push('Can this coding agent edit protected CI workflows, approval policies, ruleset configuration or policy-as-code? Verify effective path protections and administrative separation before concluding governance access is absent.');
     return {applicable,authorities,context,governance,questions};
 
   }
