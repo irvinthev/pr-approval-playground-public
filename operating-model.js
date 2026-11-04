@@ -12,8 +12,26 @@
     {id:'monitor',label:'Monitor / remediate',options:[['conventional','Conventional monitoring or human-led response'],['advisory','AI recommends investigation or response'],['autonomous','AI can execute production remediation']],authority:'Advisory or production response',concern:'Missed signals, unsafe remediation, cascading actions and insufficient containment.',safeguard:'Bound response permissions, define rollback and escalation, monitor independent telemetry and suspension triggers.',evidence:'Monitoring coverage, incident actions, effective remediation privileges, recovery drill results.',control:'P03',rcm:'AI-13'}
   ]);
   const meaningful = Object.freeze({develop:['advisory','execution'],review:['advisory','gating'],approve:['delegated'],deploy:['ai'],monitor:['advisory','autonomous']});
+  // Stage participation is not equivalent to authority. The selected capability
+  // determines the delegated trust boundary and any incremental safeguards.
+  const capabilityOverrides = Object.freeze({
+    develop: {
+      advisory:{authority:'Advisory',concern:'AI-suggested code may introduce defects or insecure dependencies; human review can over-rely on suggestions.',safeguard:'Review generated suggestions and run relevant tests before accepting changes.',evidence:'Reviewed code changes, test results and reviewer accountability.'},
+      execution:{authority:'Execution'}
+    },
+    review: {
+      advisory:{authority:'Advisory',concern:'AI reviewer can miss defects or produce misleading findings; relying on recommendations may create automation bias.',safeguard:'Evaluate AI review quality and require qualified humans or independently approved controls to make authorization decisions.',evidence:'Review outputs, reviewer validation results and human authorization evidence.'},
+      gating:{authority:'Decision gate',concern:'False passes, timeouts or bypass of a mandatory AI review check can affect whether a change progresses.',safeguard:'Protect required checks and versions; fail closed on missing, malformed, stale or failing verdicts; test authorized bypass routes.',evidence:'Effective ruleset, required-check and bypass settings; exact-revision check status, negative tests and reviewer validation.'}
+    },
+    monitor: {
+      advisory:{authority:'Advisory',concern:'AI monitoring may miss or mischaracterize anomalies; humans may over-rely on inaccurate recommendations.',safeguard:'Confirm monitoring coverage, human triage ownership, alert quality and escalation paths.',evidence:'Alert inventory, independent telemetry, triage records and detection-quality evaluations.'},
+      autonomous:{authority:'Production',concern:'An AI agent may initiate unsafe remediation or create cascading production changes.',safeguard:'Bound remediation privileges and allowed operations; independently enforce containment, escalation and rollback conditions.',evidence:'Effective production remediation permissions, denied-action tests, response execution logs, rollback and recovery drills.'}
+    }
+  });
   function explain(selection){
-    const applicable=stageDefinitions.filter(s=>meaningful[s.id].includes(selection[s.id]));
+    const applicable=stageDefinitions.filter(s=>meaningful[s.id].includes(selection[s.id])).map(s=>({
+      ...s,...(capabilityOverrides[s.id]?.[selection[s.id]]||{})
+    }));
     const authorities=[...new Set(applicable.map(s=>s.authority))];
     return {applicable,authorities,context:selection.context||'unassessed'};
   }
