@@ -94,3 +94,72 @@ test('all UI capability choices correspond to the operating-model definitions',(
    for(const [value] of stage.options)assert.ok(select.includes('value="'+value+'"'),stage.id+' / '+value);
  }
 });
+
+test('governance autonomy is separate from execution and exposes independent enforcement questions',()=>{
+ const result=explain({...base,develop:'execution',governance:'self-authorize'});
+ assert.ok(result.authorities.includes('Execution'));
+ assert.ok(result.authorities.includes('Governance authorization'));
+ const g=result.applicable.find(s=>s.id==='governance');
+ assert.ok(g);
+ assert.match(g.safeguard,/independently restrict|independent/i);
+ assert.match(g.evidence,/administrative grants|permissions/i);
+});
+test('governance recommendations remain advisory, not autonomous administration',()=>{
+ const x=explain({...base,governance:'advisory'});
+ assert.deepEqual(x.applicable.map(s=>s.id),['governance']);
+ assert.deepEqual(x.authorities,['Advisory']);
+ assert.match(x.applicable[0].safeguard,/human/i);
+});
+test('criticality introduces contextual challenge questions without changing to a risk score',()=>{
+ const unassessed=explain({...base,approve:'delegated'});
+ const critical=explain({...base,approve:'delegated',context:'critical'});
+ const routine=explain({...base,approve:'delegated',context:'routine'});
+ assert.deepEqual(critical.applicable.map(s=>s.id),unassessed.applicable.map(s=>s.id));
+ assert.ok(critical.questions.length>unassessed.questions.length);
+ assert.match(critical.questions.join(' '),/dependency|critical/i);
+ assert.match(routine.questions.join(' '),/reclassification/i);
+ assert.ok(!('riskScore' in critical));
+ assert.ok(!('authorized' in critical));
+});
+test('governance selector and contextual questions have matching HTML hooks',()=>{
+ const html=fs.readFileSync(path.join(root,'ai-sdlc-risk.html'),'utf8');
+ for(const value of ['unknown','none','advisory','execute','self-authorize'])assert.match(html,new RegExp('<option value="'+value+'">'));
+ assert.match(html,/name="governance"/);
+ assert.match(html,/id="operating-model-questions"/);
+});
+
+test('unspecified governance status stays unknown and receives a verification question',()=>{
+ const result=explain({...base,review:'gating'});
+ assert.equal(result.governance,'unknown');
+ assert.ok(result.questions.some(q=>/governance rules|enforcement settings/i.test(q)));
+ assert.ok(!result.authorities.includes('Governance'));
+});
+
+test('authorized governance execution differs from AI self-authorization',()=>{
+ const executed=explain({...base,governance:'execute'});
+ const self=explain({...base,governance:'self-authorize'});
+ assert.deepEqual(executed.authorities,['Governance execution']);
+ assert.deepEqual(self.authorities,['Governance authorization']);
+ assert.match(executed.applicable[0].safeguard,/independently approved/i);
+ assert.match(self.applicable[0].concern,/without an independent gate/i);
+});
+test('developer execution with declared no-governance access prompts effective policy boundary verification',()=>{
+ const x=explain({...base,develop:'execution',governance:'none'});
+ assert.deepEqual(x.applicable.map(s=>s.id),['develop']);
+ assert.ok(!x.authorities.some(a=>a.includes('Governance')));
+ assert.match(x.questions.join(' '),/CI workflows|policy-as-code/i);
+});
+test('advisory-only review of a critical system does not imply AI approval or production authority',()=>{
+ const x=explain({...base,context:'critical',review:'advisory',governance:'none'});
+ assert.deepEqual(x.applicable.map(s=>s.id),['review']);
+ assert.ok(!x.questions.some(q=>/required approval\/check status|release\/remediation privileges/i.test(q)));
+ assert.ok(x.questions.some(q=>/criticality classification/i.test(q)));
+});
+test('critical-system questions follow the selected delegated authority',()=>{
+ const authorization=explain({...base,context:'critical',approve:'delegated',governance:'none'});
+ const production=explain({...base,context:'critical',deploy:'ai',governance:'none'});
+ assert.match(authorization.questions.join(' '),/approval\/check status/i);
+ assert.doesNotMatch(authorization.questions.join(' '),/release\/remediation privileges/i);
+ assert.match(production.questions.join(' '),/release\/remediation privileges/i);
+ assert.doesNotMatch(production.questions.join(' '),/approval\/check status/i);
+});

@@ -28,14 +28,75 @@
       autonomous:{authority:'Production',concern:'An AI agent may initiate unsafe remediation or create cascading production changes.',safeguard:'Bound remediation privileges and allowed operations; independently enforce containment, escalation and rollback conditions.',evidence:'Effective production remediation permissions, denied-action tests, response execution logs, rollback and recovery drills.'}
     }
   });
+  const governanceOptions=Object.freeze([
+    ['unknown','Not assessed'],
+    ['none','AI cannot propose or change governance settings'],
+    ['advisory','AI suggests governance changes; humans authorize and apply them'],
+    ['execute','AI executes governance changes only after independent authorization'],
+    ['self-authorize','AI can authorize or change governing rules without an independent approval']
+  ]);
+  const governanceExecute=Object.freeze({
+    id:'governance',label:'Authorized governance execution',authority:'Governance execution',
+    concern:'AI executes a governance change, potentially applying a larger or different configuration change than independently authorized.',
+    safeguard:'Require independently approved, revision-bound governance changes; restrict execution to the authorized policy/configuration and preserve protected enforcement.',
+    evidence:'Authorized governance diff and revision, independent approver, effective admin privileges, execution logs and negative tests.',
+    control:'G02',rcm:'AI-15'
+  });
+  const governanceSelfAuthorize=Object.freeze({
+    id:'governance',label:'Independent AI governance authorization',authority:'Governance authorization',
+    concern:'AI can alter or authorize policies, credentials, model settings or approval enforcement without an independent gate, permitting self-expansion of authority or control bypass.',
+    safeguard:'Separately protect the governing rules and privileged credentials; require independent authorization and enforce fail-closed boundaries against self-modification.',
+    evidence:'Effective administrative grants, ruleset history, bypass and credential inventory, protected workflow tests and independent approvals.',
+    control:'G02',rcm:'AI-15'
+  });
+  const governanceAdvisory=Object.freeze({
+    id:'governance',label:'Governance change recommendations',authority:'Advisory',
+    concern:'An inaccurate AI-generated recommendation could weaken protected policy if accepted without evaluation.',
+    safeguard:'Require independently authorized human assessment, tests and change approval before policy changes take effect.',
+    evidence:'Recommendations, policy diff, validation and qualified independent approvals.',
+    control:'G02',rcm:'AI-15'
+  });
+  function additionalQuestions(context,applicable){
+    const has=id=>applicable.some(s=>s.id===id);
+    if(context==='critical'){
+      const questions=[
+        'Which financially significant, security-sensitive or otherwise critical processes depend on the affected services, repositories or shared components?',
+        'Who validated the protected scope and indirect dependencies, and what evidence supports the criticality classification?'
+      ];
+      if(has('approve')||has('review')&&applicable.some(s=>s.id==='review'&&s.authority==='Decision gate'))
+        questions.push('How are required approval/check status, eligibility exclusions and exception routes independently enforced for critical changes?');
+      if(has('deploy')||has('monitor')&&applicable.some(s=>s.id==='monitor'&&s.authority==='Production'))
+        questions.push('What release/remediation privileges, artifact integrity requirements and containment evidence protect production actions in critical systems?');
+      if(has('develop'))questions.push('How are changes generated or suggested by AI independently tested against critical business and security requirements?');
+      if(has('governance'))questions.push('What independent restrictions protect control administration and policy changes affecting critical systems?');
+      return questions;
+    }
+    if(context==='routine')return [
+      'Who substantiated that the system and indirect dependencies are routine or low-impact, and when was this classification last reviewed?',
+      'What changes or new dependencies would trigger reclassification or mandatory human escalation?'
+    ];
+    return ['Identify and substantiate system criticality, affected business processes and indirect dependencies before deciding which scope-specific safeguards apply.'];
+  }
   function explain(selection){
     const applicable=stageDefinitions.filter(s=>meaningful[s.id].includes(selection[s.id])).map(s=>({
       ...s,...(capabilityOverrides[s.id]?.[selection[s.id]]||{})
     }));
+    const governance=selection.governance||'unknown';
+    if(governance==='advisory')applicable.push({...governanceAdvisory});
+    if(governance==='execute')applicable.push({...governanceExecute});
+    if(governance==='self-authorize')applicable.push({...governanceSelfAuthorize});
     const authorities=[...new Set(applicable.map(s=>s.authority))];
-    return {applicable,authorities,context:selection.context||'unassessed'};
+    const context=selection.context||'unassessed';
+    const questions=additionalQuestions(context,applicable);
+    if(governance==='unknown' && applicable.length)questions.push('Verify whether any AI agent can directly or indirectly change protected governance rules, identities or enforcement settings.');
+    // Declared absence of governance authority must be checked against effective
+    // tool permissions when an agent can modify code, workflows, or configuration.
+    if(governance==='none' && selection.develop==='execution')
+      questions.push('Can this coding agent edit protected CI workflows, approval policies, ruleset configuration or policy-as-code? Verify effective path protections and administrative separation before concluding governance access is absent.');
+    return {applicable,authorities,context,governance,questions};
+
   }
-  if(typeof module!=='undefined' && module.exports)module.exports={stageDefinitions,explain};
+  if(typeof module!=='undefined' && module.exports)module.exports={stageDefinitions,governanceOptions,explain};
   if(typeof document==='undefined')return;
   const form=document.getElementById('operating-model-form');
   const results=document.getElementById('operating-model-results');
@@ -44,19 +105,22 @@
   const summary=document.getElementById('operating-model-summary');
   const contextEl=document.getElementById('operating-model-context');
   const reset=document.getElementById('operating-model-reset');
+  const questionsEl=document.getElementById('operating-model-questions');
   function add(tag,content,parent,cls){
     const el=document.createElement(tag);if(cls)el.className=cls;
     if(content!==null)el.textContent=content;
     parent.append(el);return el;
   }
   function render(){
-    const selection={context:contextEl.value};
+    const selection={context:contextEl.value,governance:form.elements.governance.value};
     for(const s of stageDefinitions)selection[s.id]=form.elements[s.id].value;
-    const {applicable,authorities,context}=explain(selection);
+    const {applicable,authorities,context,questions}=explain(selection);
     outputList.replaceChildren();
+    questionsEl.replaceChildren();
     let contextNote=context==='unassessed'?'Business/system criticality has not been evaluated.':context==='critical'?'Financially significant, security-sensitive or otherwise critical systems require explicit scope and authorization decisions.':'Routine/low-impact scope is user-declared and not verified.';
     summary.textContent=(applicable.length?applicable.length+' AI-involved activity/activities identified.':'No AI involvement selected. Conventional SDLC safeguards still apply.')+
-      ' Authority dimensions in scope: '+(authorities.length?authorities.join('; '):'none identified')+'. '+contextNote;
+      ' Authority dimensions in scope: '+(authorities.length?authorities.join('; '):'none identified')+'. '+contextNote+
+      (selection.governance==='unknown'?' Governance authority has not been assessed.':'');
     for(const s of applicable){
       const article=add('article',null,outputList,'operating-finding');
       add('h3',s.label+' — '+s.authority,article);
@@ -69,6 +133,7 @@
       const b=add('a','RCM '+s.rcm,links);b.href='./rcm-view.html';
     }
     if(!applicable.length)add('p','Choose an AI-enabled activity to display the corresponding risk and assurance questions.',outputList);
+    for(const q of questions)add('li',q,questionsEl);
     results.hidden=false;
   }
   form.addEventListener('change',render);
