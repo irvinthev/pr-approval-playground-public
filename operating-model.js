@@ -112,6 +112,14 @@
   const summary=document.getElementById('operating-model-summary');
   const reset=document.getElementById('operating-model-reset');
   const questionsEl=document.getElementById('operating-model-questions');
+  const takeaways=document.getElementById('operating-model-takeaways');
+  const resultsHeading=document.getElementById('operating-model-results-heading');
+  const evidencePanel=document.querySelector('.operating-evidence');
+  const prefersReducedMotion=()=>typeof window!=='undefined'&&window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function revealResults(){
+    resultsHeading.focus({preventScroll:true});
+    results.scrollIntoView?.({block:'start',behavior:prefersReducedMotion()?'auto':'smooth'});
+  }
   function add(tag,content,parent,cls){
     const el=document.createElement(tag);if(cls)el.className=cls;
     if(content!==null)el.textContent=content;
@@ -129,7 +137,7 @@
     if(!selection)return;
     for(const [key,value] of Object.entries(selection))form.elements[key].value=value;
     render(model);
-    results.scrollIntoView?.({block:'start',behavior:'smooth'});
+    revealResults();
   }
   function render(model){
     const selection=selected();
@@ -139,9 +147,36 @@
     outputList.replaceChildren();
     questionsEl.replaceChildren();
     const contextNote=context==='unassessed'?'Business/system criticality has not been evaluated.':context==='critical'?'Critical scope is user-declared and requires verification.':'Routine/low-impact scope is user-declared and not verified.';
-    summary.textContent=(applicable.length?applicable.length+' AI-involved activity/activities identified.':'No AI involvement selected. Conventional SDLC safeguards still apply.')+
-      ' Authority dimensions: '+(authorities.length?authorities.join('; '):'none identified')+'. '+contextNote+
-      (selection.governance==='unknown'?' Governance authority has not been assessed.':'');
+    summary.textContent=contextNote+(selection.governance==='unknown'?' Governance authority is not assessed.':'');
+    takeaways.replaceChildren();
+    const detail={
+      assist:{
+        change:'AI supplies suggestions and code-review findings. People retain execution and change authorization.',
+        failure:'Incorrect suggestions, missed defects or over-reliance on AI review can introduce unsafe changes.',
+        safeguard:'Human validation of changes, meaningful tests, and scoped AI tool access.'
+      },
+      approval:{
+        change:'AI review becomes a required check and its outcome can qualify selected changes for automated authorization.',
+        failure:'A false pass, stale verdict or bypassed policy can allow an unsafe merge.',
+        safeguard:'Independent eligibility enforcement, protected required checks, exact-revision validation and tested bypass handling.'
+      },
+      autonomous:{
+        change:'AI can change source, initiate a release or execute production remediation.',
+        failure:'Unsafe autonomous action or excessive privileges can propagate a defect into production.',
+        safeguard:'Constrained privileges, independent release enforcement, monitoring, containment and rollback.'
+      }
+    };
+    const sections=model&&detail[model]?detail[model]:{
+      change:authorities.length?'This model includes '+authorities.join(', ')+'.':'No AI-involved SDLC capabilities were selected.',
+      failure:applicable.length?applicable.map(item=>item.concern).join(' '):'Confirm the scope, permissions and applicable non-AI SDLC risks.',
+      safeguard:applicable.length?applicable.map(item=>item.safeguard).join(' '):'Apply normal change and release governance.'
+    };
+    for(const [title,text] of [['What changes?',sections.change],['What could fail?',sections.failure],['What safeguards matter?',sections.safeguard]]){
+      const card=add('section',null,takeaways);
+      add('h4',title,card);
+      add('p',text,card);
+    }
+    evidencePanel.open=false;
     for(const item of applicable){
       const article=add('article',null,outputList,'operating-finding');
       add('h3',item.label+' — '+item.authority,article);
@@ -159,7 +194,7 @@
   }
   for(const button of buttons)button.addEventListener('click',()=>selectModel(button.dataset.model));
   form.addEventListener('change',()=>render(null));
-  form.addEventListener('submit',event=>{event.preventDefault();render(null);results.scrollIntoView?.({block:'start',behavior:'smooth'});});
+  form.addEventListener('submit',event=>{event.preventDefault();render(null);revealResults();});
   reset.addEventListener('click',()=>{
     form.reset();
     for(const button of buttons)button.setAttribute('aria-pressed','false');
