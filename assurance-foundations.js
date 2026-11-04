@@ -32,8 +32,9 @@ foundations.forEach((item,i)=>{
   const p=el('p',null,undefined,body);el('strong',null,label+': ',p);p.appendChild(document.createTextNode(value));
  }
 });
-const initial=Number(new URLSearchParams(location.search).get('failure'));
-let active=Number.isInteger(initial)&&initial>=0&&initial<scenarios.length?initial:2;
+const query=new URLSearchParams(location.search);
+const initial=Number(query.get('failure'));
+let active=query.has('failure')&&Number.isInteger(initial)&&initial>=0&&initial<scenarios.length?initial:2;
 function render(){
  choices.replaceChildren();
  scenarios.forEach((s,i)=>{
