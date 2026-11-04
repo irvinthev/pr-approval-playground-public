@@ -163,3 +163,57 @@ test('critical-system questions follow the selected delegated authority',()=>{
  assert.match(production.questions.join(' '),/release\/remediation privileges/i);
  assert.doesNotMatch(production.questions.join(' '),/approval\/check status/i);
 });
+
+test('three example models are illustrative, non-exclusive and preserve distinct authority pathways',()=>{
+  const {examples}=require('../operating-model.js');
+  assert.deepEqual(Object.keys(examples),['assist','approval','autonomous']);
+  const assist=explain(examples.assist);
+  assert.ok(assist.applicable.some(s=>s.id==='develop'&&s.authority==='Advisory'));
+  assert.ok(!assist.authorities.includes('Delegated decision'));
+  const approval=explain(examples.approval);
+  assert.ok(approval.authorities.includes('Decision gate'));
+  assert.ok(approval.authorities.includes('Delegated decision'));
+  assert.ok(!approval.authorities.includes('Production'));
+  const autonomous=explain(examples.autonomous);
+  assert.ok(autonomous.authorities.includes('Production'));
+  assert.ok(autonomous.authorities.includes('Execution'));
+  for(const e of Object.values(examples))assert.equal(e.governance,'unknown');
+});
+test('example cards precede advanced questionnaire and preserve input labels',()=>{
+  const html=fs.readFileSync(path.join(root,'ai-sdlc-risk.html'),'utf8');
+  assert.match(html,/data-model="assist"/);
+  assert.match(html,/data-model="approval"/);
+  assert.match(html,/data-model="autonomous"/);
+  assert.match(html,/<details id="operating-model-advanced"/);
+  assert.ok(html.indexOf('data-model="assist"')<html.indexOf('id="operating-model-form"'));
+  assert.match(html,/id="operating-model-results"[^>]*hidden/);
+  for(const name of ['develop','review','approve','deploy','monitor','governance','context'])
+    assert.match(html,new RegExp('name="'+name+'"'),name);
+});
+
+test('advisory example description agrees with evaluator authority',()=>{
+ const html=fs.readFileSync(path.join(root,'ai-sdlc-risk.html'),'utf8');
+ const {examples}=require('../operating-model.js');
+ assert.equal(examples.assist.develop,'advisory');
+ assert.ok(explain(examples.assist).authorities.every(a=>a==='Advisory'));
+ const card=html.slice(html.indexOf('data-model="assist"'),html.indexOf('</button>',html.indexOf('data-model="assist"')));
+ assert.match(card,/AI suggests code/);
+ assert.doesNotMatch(card,/AI suggests or writes code/);
+});
+test('results expose concise takeaways with detailed findings collapsed',()=>{
+ const html=fs.readFileSync(path.join(root,'ai-sdlc-risk.html'),'utf8');
+ const script=fs.readFileSync(path.join(root,'operating-model.js'),'utf8');
+ assert.match(html,/id="operating-model-takeaways"/);
+ assert.match(html,/<details class="operating-evidence">/);
+ assert.ok(html.indexOf('id="operating-model-takeaways"')<html.indexOf('id="operating-model-findings"'));
+ for(const label of ['What changes?','What could fail?','What safeguards matter?']) assert.ok(script.includes(label));
+ assert.match(script,/evidencePanel\.open=false/);
+});
+test('example results support focus management and reduced motion',()=>{
+ const html=fs.readFileSync(path.join(root,'ai-sdlc-risk.html'),'utf8');
+ const script=fs.readFileSync(path.join(root,'operating-model.js'),'utf8');
+ assert.match(html,/id="operating-model-results-heading" tabindex="-1"/);
+ assert.match(script,/resultsHeading\.focus\(\{preventScroll:true\}\)/);
+ assert.match(script,/prefers-reduced-motion: reduce/);
+ assert.match(script,/revealResults\(\)/);
+});
