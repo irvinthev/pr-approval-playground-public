@@ -96,14 +96,13 @@
     return {applicable,authorities,context,governance,questions};
 
   }
-  if(typeof module!=='undefined' && module.exports)module.exports={stageDefinitions,governanceOptions,explain};
-  if(typeof document==='undefined')return;
   const examples=Object.freeze({
     assist:Object.freeze({develop:'advisory',review:'advisory',approve:'human',deploy:'deterministic',monitor:'conventional',governance:'unknown',context:'unassessed'}),
     approval:Object.freeze({develop:'human',review:'gating',approve:'delegated',deploy:'deterministic',monitor:'conventional',governance:'unknown',context:'unassessed'}),
     autonomous:Object.freeze({develop:'execution',review:'human',approve:'human',deploy:'ai',monitor:'autonomous',governance:'unknown',context:'unassessed'})
   });
-  if(typeof module!=='undefined' && module.exports)module.exports.examples=examples;
+  if(typeof module!=='undefined' && module.exports)module.exports={stageDefinitions,governanceOptions,explain,examples};
+  if(typeof document==='undefined')return;
   const form=document.getElementById('operating-model-form');
   const results=document.getElementById('operating-model-results');
   if(!form||!results)return;
