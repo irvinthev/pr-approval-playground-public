@@ -77,3 +77,20 @@ test('advisory reviewer is not represented as required gate',()=>{
   assert.equal(advisory.authority,'Advisory');
   assert.doesNotMatch(advisory.safeguard,/required gate/i);
 });
+
+test('governance or criticality must not be silently converted into a low-risk authorization',()=>{
+  const x=explain({...base,context:'critical',approve:'delegated'});
+  assert.equal(x.context,'critical');
+  assert.ok(x.applicable.some(s=>s.id==='approve'));
+  assert.ok(!('riskScore' in x));
+  assert.ok(!('authorized' in x));
+});
+test('all UI capability choices correspond to the operating-model definitions',()=>{
+ const html=fs.readFileSync(path.join(root,'ai-sdlc-risk.html'),'utf8');
+ for(const stage of stageDefinitions){
+   const start=html.indexOf('name="'+stage.id+'"');
+   assert.ok(start>=0,stage.id);
+   const select=html.slice(start,html.indexOf('</select>',start));
+   for(const [value] of stage.options)assert.ok(select.includes('value="'+value+'"'),stage.id+' / '+value);
+ }
+});
