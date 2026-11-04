@@ -39,3 +39,14 @@
 @media(max-width:1000px){.assurance-path{grid-template-columns:repeat(2,minmax(0,1fr))}.foundation-grid{grid-template-columns:1fr}.safeguard-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.assurance-path{grid-template-columns:1fr 1fr;gap:7px}.assurance-path a{padding:10px;min-height:76px}.assurance-path strong{font-size:12px}.assurance-path small{font-size:11px}.foundation-panel{padding:14px}.foundation-item summary{padding:11px;gap:8px}.foundation-num{flex-basis:30px;width:30px;height:30px}.foundation-body{padding:12px}.safeguard-tiles{grid-template-columns:1fr}.safeguard-tiles a{min-height:0}}
 @media(prefers-reduced-motion:reduce){.foundation-item summary::after{transition:none}}
+
+/* Four-step Assurance journey, with failure selection in its own step. */
+.failure-grid{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:16px;align-items:stretch}
+.failure-grid>.foundation-panel{height:100%}
+.failure-grid .challenge-result{min-height:250px}
+.challenge-stage-link{display:inline-flex;margin-top:16px;color:#b9e7fc;font-size:13px;font-weight:750;text-decoration:underline;text-underline-offset:3px}
+.challenge-stage-link:hover,.challenge-stage-link:focus-visible{color:#fff}
+.assurance-path a:first-child{border-color:#80cfc2;background:#17413f}
+.foundation-shell .foundation-panel{width:100%}
+#foundational-controls,#test-approval,#failure-scenarios,#document-assessment{scroll-margin-top:24px}
+@media(max-width:900px){.failure-grid{grid-template-columns:1fr}}
