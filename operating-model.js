@@ -98,12 +98,19 @@
   }
   if(typeof module!=='undefined' && module.exports)module.exports={stageDefinitions,governanceOptions,explain};
   if(typeof document==='undefined')return;
+  const examples=Object.freeze({
+    assist:Object.freeze({develop:'advisory',review:'advisory',approve:'human',deploy:'deterministic',monitor:'conventional',governance:'unknown',context:'unassessed'}),
+    approval:Object.freeze({develop:'human',review:'gating',approve:'delegated',deploy:'deterministic',monitor:'conventional',governance:'unknown',context:'unassessed'}),
+    autonomous:Object.freeze({develop:'execution',review:'human',approve:'human',deploy:'ai',monitor:'autonomous',governance:'unknown',context:'unassessed'})
+  });
+  if(typeof module!=='undefined' && module.exports)module.exports.examples=examples;
   const form=document.getElementById('operating-model-form');
   const results=document.getElementById('operating-model-results');
   if(!form||!results)return;
+  const buttons=[...document.querySelectorAll('[data-model]')];
+  const exampleLabel=document.getElementById('operating-model-example-label');
   const outputList=document.getElementById('operating-model-findings');
   const summary=document.getElementById('operating-model-summary');
-  const contextEl=document.getElementById('operating-model-context');
   const reset=document.getElementById('operating-model-reset');
   const questionsEl=document.getElementById('operating-model-questions');
   function add(tag,content,parent,cls){
@@ -111,33 +118,52 @@
     if(content!==null)el.textContent=content;
     parent.append(el);return el;
   }
-  function render(){
-    const selection={context:contextEl.value,governance:form.elements.governance.value};
+  function selected(){
+    const selection={};
     for(const s of stageDefinitions)selection[s.id]=form.elements[s.id].value;
+    selection.context=form.elements.context.value;
+    selection.governance=form.elements.governance.value;
+    return selection;
+  }
+  function selectModel(model){
+    const selection=examples[model];
+    if(!selection)return;
+    for(const [key,value] of Object.entries(selection))form.elements[key].value=value;
+    render(model);
+    results.scrollIntoView?.({block:'start',behavior:'smooth'});
+  }
+  function render(model){
+    const selection=selected();
     const {applicable,authorities,context,questions}=explain(selection);
+    for(const button of buttons)button.setAttribute('aria-pressed',String(button.dataset.model===model));
+    exampleLabel.textContent=model?'Illustrative model: '+buttons.find(b=>b.dataset.model===model).querySelector('strong').textContent:'Customized operating model (illustrative)';
     outputList.replaceChildren();
     questionsEl.replaceChildren();
-    let contextNote=context==='unassessed'?'Business/system criticality has not been evaluated.':context==='critical'?'Financially significant, security-sensitive or otherwise critical systems require explicit scope and authorization decisions.':'Routine/low-impact scope is user-declared and not verified.';
+    const contextNote=context==='unassessed'?'Business/system criticality has not been evaluated.':context==='critical'?'Critical scope is user-declared and requires verification.':'Routine/low-impact scope is user-declared and not verified.';
     summary.textContent=(applicable.length?applicable.length+' AI-involved activity/activities identified.':'No AI involvement selected. Conventional SDLC safeguards still apply.')+
-      ' Authority dimensions in scope: '+(authorities.length?authorities.join('; '):'none identified')+'. '+contextNote+
+      ' Authority dimensions: '+(authorities.length?authorities.join('; '):'none identified')+'. '+contextNote+
       (selection.governance==='unknown'?' Governance authority has not been assessed.':'');
-    for(const s of applicable){
+    for(const item of applicable){
       const article=add('article',null,outputList,'operating-finding');
-      add('h3',s.label+' — '+s.authority,article);
-      add('p','What could go wrong: '+s.concern,article);
-      add('p','Illustrative safeguard: '+s.safeguard,article);
-      add('p','Evidence to request: '+s.evidence,article);
+      add('h3',item.label+' — '+item.authority,article);
+      add('p','What could fail: '+item.concern,article);
+      add('p','Safeguard: '+item.safeguard,article);
+      add('p','Evidence: '+item.evidence,article);
       const links=add('p',null,article);
-      const a=add('a','Control '+s.control,links);a.href='./control-matrix.html#control-'+s.control;
+      const a=add('a','Control '+item.control,links);a.href='./control-matrix.html#control-'+item.control;
       add('span',' · ',links);
-      const b=add('a','RCM '+s.rcm,links);b.href='./rcm-view.html';
+      const link=add('a','RCM '+item.rcm,links);link.href='./rcm-view.html';
     }
-    if(!applicable.length)add('p','Choose an AI-enabled activity to display the corresponding risk and assurance questions.',outputList);
-    for(const q of questions)add('li',q,questionsEl);
+    if(!applicable.length)add('p','Choose an example above or adjust advanced authority settings to see relevant safeguards.',outputList);
+    for(const question of questions)add('li',question,questionsEl);
     results.hidden=false;
   }
-  form.addEventListener('change',render);
-  form.addEventListener('submit',e=>{e.preventDefault();render();});
-  reset.addEventListener('click',()=>{form.reset();render();});
-  render();
+  for(const button of buttons)button.addEventListener('click',()=>selectModel(button.dataset.model));
+  form.addEventListener('change',()=>render(null));
+  form.addEventListener('submit',event=>{event.preventDefault();render(null);results.scrollIntoView?.({block:'start',behavior:'smooth'});});
+  reset.addEventListener('click',()=>{
+    form.reset();
+    for(const button of buttons)button.setAttribute('aria-pressed','false');
+    results.hidden=true;
+  });
 })();
