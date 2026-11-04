@@ -39,3 +39,27 @@ test('risk assessment explains capability-specific authority without claiming a 
  assert.match(html,/management/i);
 });
 
+
+test('engineering build remains primary while monitoring is a dedicated chapter',()=>{
+ const engineering=fs.readFileSync(path.join(root,'engineering-blueprint.html'),'utf8');
+ const monitoring=fs.readFileSync(path.join(root,'continuous-monitoring.html'),'utf8');
+ assert.match(engineering,/href="\.\/continuous-monitoring\.html#monitoring-guide"/);
+ assert.match(monitoring,/id="monitoring-guide"/);
+ assert.match(engineering,/id="view-monitor"[^>]*hidden/);
+ assert.match(engineering,/Engineering stage explorer/);
+ assert.match(engineering,/Implementation/);
+});
+test('assurance entry presents task-led choices with optional detailed matrix',()=>{
+ const html=fs.readFileSync(path.join(root,'independent-assurance.html'),'utf8');
+ assert.match(html,/Explore the controls/);
+ assert.match(html,/Test a fictional change/);
+ assert.match(html,/href="\.\/rcm-view\.html"/);
+ assert.match(html,/href="\.\/auditor-view\.html"/);
+ assert.match(html,/href="#test-approval"/);
+ assert.ok(html.indexOf('Explore the controls')<html.indexOf('Risk, Control &amp; Testing Matrix'));
+});
+test('advisory example avoids claiming execution authority',()=>{
+ const html=fs.readFileSync(path.join(root,'ai-sdlc-risk.html'),'utf8');
+ assert.match(html,/01 \/ Advisory assistance/);
+ assert.doesNotMatch(html,/01 \/ Advisory and execution/);
+});
