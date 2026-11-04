@@ -1,6 +1,6 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const read=name=>fs.readFileSync(path.join(__dirname,'..',name),'utf8');
-test('four chapter footers advance from Risks and Controls to Assurance',()=>{
+test('archived references still point to Assurance while current Assurance footer follows Monitoring',()=>{
  const risks=read('risk-controls.html'),matrix=read('control-matrix.html'),assurance=read('independent-assurance.html');
  for(const [file,html] of [['Risks',risks],['Control Matrix',matrix]]){
   const footer=html.slice(html.lastIndexOf('<footer'),html.indexOf('</footer>',html.lastIndexOf('<footer'))+9);
@@ -8,8 +8,8 @@ test('four chapter footers advance from Risks and Controls to Assurance',()=>{
   assert.doesNotMatch(footer,/href="\.\/continuous-monitoring\.html"/,file+' must not loop to Monitoring');
  }
  const footer=assurance.slice(assurance.lastIndexOf('<footer'),assurance.indexOf('</footer>',assurance.lastIndexOf('<footer'))+9);
- assert.match(footer,/href="\.\/risk-controls\.html"/);
- assert.doesNotMatch(footer,/href="\.\/continuous-monitoring\.html"/);
+ assert.match(footer,/href="\.\/continuous-monitoring\.html"/);
+ assert.doesNotMatch(footer,/href="\.\/risk-controls\.html"/);
 });
 test('advanced Monitoring investigations and working interactions migrated into unified page',()=>{
  const page=read('engineering-blueprint.html'),renderer=read('unified-monitoring.js');
