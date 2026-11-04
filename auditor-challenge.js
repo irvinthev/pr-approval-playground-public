@@ -17,7 +17,7 @@ function evaluate(key){
  const scenario=scenarios[key];
  const map=copy(F.registry);
  map.version=key==='known'||key==='split'?'demo-map-1':'demo-map-'+(key==='omitted'?'unverified-2':'missing-2');
- if(key==='omitted')map.nodes.dedup.consumers=[];
+ if(key==='omitted'){map.nodes.dedup.consumers=[];map.nodes.dedup.financial=false;} // Fictional registry falsely marks the orphan library nonfinancial.
  if(key==='incomplete')delete map.nodes.usage;
  const change=F.makeChange('shared',{sha:'fictional-revision-A',author:'fictional-contributor',repoAllowlisted:true,ci:true,reviewA:'low',reviewB:key==='split'?'high':'low'});
  // Ground truth is separate from the supplied, potentially incomplete mapping.
@@ -36,7 +36,7 @@ function evaluate(key){
   HUMAN_REVIEW_REQUIRED:'The dependency map identifies a protected financial consumer, so the automatic route is not authorized.'
  };
  const event={
-  record_type:'FICTIONAL_MODEL_EVALUATION',run_id:'LAB-'+key.toUpperCase(),reference_case:'shared-library',
+  record_type:'FICTIONAL_MODEL_EVALUATION',run_id:'LAB-'+key.toUpperCase(),reference_case:'shared-library',test_oracle:'Independent fictional reference registry (not observed production evidence)',
   source_revision:change.sha,policy_version:map.policyVersion,mapping_version:map.version,
   changed_files:change.files,reviewers:{reviewer_a:'LOW_RISK',reviewer_b:key==='split'?'HIGH_RISK':'LOW_RISK'},
   supplied_mapping:{status:mappedImpact.status,components:mappedImpact.components,unknown:mappedImpact.unknown,required_role:mappedImpact.requiredRole},
@@ -54,7 +54,7 @@ function evaluate(key){
   event:JSON.stringify(event,null,2)
  };
  const corroboration=[
- {name:'Dependency inventory completeness',source:'Service ownership and dependency inventory',reported:key==='omitted'?'No financial consumer identified':mappedImpact.status,verification:'Independently trace shared-library consumers and validate mapping versions against service owners.',status:key==='omitted'?'CONTRADICTED':'NOT_VERIFIED'},
+ {name:'Dependency inventory completeness',source:'Service ownership and dependency inventory',reported:key==='omitted'?'Supplied map says nonfinancial; fictional oracle contradicts it':mappedImpact.status,verification:'Independently trace shared-library consumers and validate mapping versions against service owners.',status:key==='omitted'?'CONTRADICTED':'NOT_VERIFIED'},
  {name:'AI classification evidence',source:'Reviewer service outputs',reported:key==='split'?'Low / High':'Low / Low',verification:'Inspect source inputs, independent labels, prompt/model versions, and correlated failure tests.',status:'NOT_VERIFIED'},
  {name:'Effective authorization',source:'Policy engine and GitHub controls',reported:authorization.route,verification:'Corroborate current SHA, policy version, bot rights, required status checks, bypass paths and administrator independence.',status:'NOT_VERIFIED'},
  {name:'Deployment integrity',source:'Build and deployment systems',reported:'Not evaluated',verification:'Trace approved source to build digest, release authorization and production deployment population.',status:'NOT_EVALUATED'}
