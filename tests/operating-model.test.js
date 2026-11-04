@@ -123,7 +123,14 @@ test('criticality introduces contextual challenge questions without changing to 
 });
 test('governance selector and contextual questions have matching HTML hooks',()=>{
  const html=fs.readFileSync(path.join(root,'ai-sdlc-risk.html'),'utf8');
- for(const value of ['none','advisory','modify'])assert.match(html,new RegExp('<option value="'+value+'">'));
+ for(const value of ['unknown','none','advisory','modify'])assert.match(html,new RegExp('<option value="'+value+'">'));
  assert.match(html,/name="governance"/);
  assert.match(html,/id="operating-model-questions"/);
+});
+
+test('unspecified governance status stays unknown and receives a verification question',()=>{
+ const result=explain({...base,review:'gating'});
+ assert.equal(result.governance,'unknown');
+ assert.ok(result.questions.some(q=>/governance rules|enforcement settings/i.test(q)));
+ assert.ok(!result.authorities.includes('Governance'));
 });
