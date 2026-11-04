@@ -217,3 +217,14 @@ test('example results support focus management and reduced motion',()=>{
  assert.match(script,/prefers-reduced-motion: reduce/);
  assert.match(script,/revealResults\(\)/);
 });
+
+test('risk examples link to real engineering and assurance anchors with scope caveat',()=>{
+ const risk=fs.readFileSync(path.join(root,'ai-sdlc-risk.html'),'utf8');
+ const engineering=fs.readFileSync(path.join(root,'engineering-blueprint.html'),'utf8');
+ const assurance=fs.readFileSync(path.join(root,'independent-assurance.html'),'utf8');
+ assert.match(risk,/href="\.\/engineering-blueprint\.html#engineering-build-plan"/);
+ assert.match(engineering,/id="engineering-build-plan"/);
+ assert.match(risk,/href="\.\/independent-assurance\.html#test-approval"/);
+ assert.match(assurance,/id="test-approval"/);
+ assert.match(risk,/do not fully cover every operating model/i);
+});
