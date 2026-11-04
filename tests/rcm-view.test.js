@@ -7,7 +7,7 @@ test('RCM view includes complete proposed inventory and seven domains',()=>{
 });
 test('Assurance entry and Auditor View preserve both views and testing guide',()=>{
  const landing=read('independent-assurance.html'),auditor=read('auditor-view.html');
- assert.match(landing,/href="\.\/rcm-view\.html"/);assert.match(landing,/href="\.\/auditor-view\.html"/);
+ assert.match(landing,/href="\.\/rcm-view\.html#[^"]+"/);assert.match(landing,/href="\.\/auditor-view\.html"/);
  assert.match(landing,/id="test-approval"/);assert.match(landing,/id="assurance-matrix-body"/);
  assert.match(landing,/id="matrix-details"/);assert.match(landing,/id="matrix-download"/);
  assert.match(landing,/src="\.\/assurance-matrix\.js\?v=1"/);
