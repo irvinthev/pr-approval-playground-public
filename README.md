@@ -91,6 +91,16 @@ On the main Pipeline page, choose **Shared library · connected case** or **Foll
 The overview links to `experience.html?example=shared`, which starts a fresh case only when no fragment exists. Existing case fragments take priority and invalid fragments remain rejected. The ordinary Pipeline entry retains its existing default walkthrough. The bounded learning pass adds no case actions or evaluator/schema changes; dependency-removal and artifact-substitution challenges are not added to the connected case.
 
 
+## Seven-domain shared assurance trace
+
+On **Assurance → Follow the change through seven risk domains**, examine the same fictional shared-library update across (1) change eligibility and downstream impact, (2) AI classification quality, (3) human authorization and independence, (4) policy/configuration governance, (5) security and agent trust boundaries, (6) CI/build/deployment integrity, and (7) independent monitoring and management response.
+
+This is a **risk-first walkthrough**, not a new decision engine or a new set of unrelated scenarios. The view calls `SharedCase.evaluateCase()` from `case-model.js` for all modeled statuses and carries the same bounded, validated `#case=` action history through Pipeline, Monitoring and Assurance. It offers checkpoints (initial, two LOW reviewers, independent human-authorized release and missing mapping) and failure injections (mapping missing, stale policy or revision, uncovered deployment). The shared fictional dependency path is **dedup → usage → billing → reporting**; two LOW reviews do not satisfy mandatory independent financial review.
+
+Each of seven cards distinguishes the risk, expected preventive/detective/human safeguard, actual simulated observation, evidence a real organization would need, and the **limited** assurance conclusion. It explicitly marks prompt injection, actual token permissions, the independent quality of AI risk classifications, real-world dependency-map completeness, and actual GitHub/deployment enforcement as **not demonstrated**. The existing separate Auditor View falsely omitted mapping challenge is linked rather than silently conflated with a genuinely missing mapping.
+
+Source: `shared-assurance-trace.js` (presentation/projection only). It does not modify `case-model.js`, grant approval, use vendor APIs, or create real evidence. The trace is fictional and client-side; do not interpret any passing indicator as a production or SOX control conclusion.
+
 ## Auditor View
 
 The **Auditor Control Validation Lab** first presents a fictional shared-library/billing change with four conditions: a correctly identified downstream financial consumer, a falsely omitted consumer, a detected incomplete map, and an AI-reviewer split. Each selection recalculates a modeled decision using the same financial-impact and authorization functions consumed by `case-model.js` (via `financial-engine.js`). It displays fictional policy/mapping examples, illustrative GitHub/CI configuration, a generated event JSON, and bounded assurance questions. The omission test intentionally demonstrates unsafe automatic eligibility when the supplied map falsely asserts that the shared library is nonfinancial. This does **not** grant real authorization, run any GitHub workflow, or establish control effectiveness.
