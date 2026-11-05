@@ -55,49 +55,6 @@
 @media(max-width:880px){.challenge-domains{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:620px){.challenge-domains{grid-template-columns:1fr}.challenge-case-grid{grid-template-columns:1fr;gap:6px}.challenge-case summary{padding:14px 12px}.challenge-case-body{padding:0 12px 16px}}
 
-/* Shared-case trace: consumes case-model.js, never reimplements approval evaluation. */
-.shared-change-trace{margin:32px 0;padding:24px;border:1px solid #49677e;border-radius:16px;background:#0d2737;scroll-margin-top:25px;color:#e8f5f7}
-.shared-change-trace .trace-kicker{color:#9de6d6;letter-spacing:.1em;font-size:11px;font-weight:800}
-.shared-change-trace h2{color:#f4fbfb;font-size:clamp(23px,3vw,30px);margin:8px 0}
-.shared-change-trace .trace-intro{color:#c0d5e0;line-height:1.65;max-width:1020px;font-size:14px}
-.shared-change-trace .trace-presets,.shared-change-trace .trace-actions,.shared-change-trace .trace-links{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
-.shared-change-trace .trace-button{background:#183e51;border:1px solid #598094;color:#e5f6f8;border-radius:9px;padding:10px 14px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
-.shared-change-trace .trace-button:hover,.shared-change-trace .trace-button:focus-visible{background:#2a5870;border-color:#9de6d6}
-.shared-change-trace .trace-button[aria-pressed=true]{background:#266653;border-color:#a4eddb;color:#f3fff9}
-.shared-change-trace .trace-failure{border-color:#bc8f7e;background:#49352f}
-.shared-change-trace .trace-failure:hover,.shared-change-trace .trace-failure:focus-visible{background:#664c41}
-.shared-change-trace .trace-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:19px 0}
-.shared-change-trace .trace-meta>div{padding:12px 14px;border:1px solid #4c6b80;background:#15374a;border-radius:10px;min-width:0}
-.shared-change-trace .trace-meta span{display:block;font-size:11px;color:#c0d9e5;text-transform:uppercase;margin-bottom:4px}
-.shared-change-trace .trace-meta strong{font-size:13px;color:#eef8fb;overflow-wrap:anywhere}
-.shared-change-trace .trace-core{padding:12px 15px;background:#23423c;border-left:4px solid #92dfb0;color:#edf9f1;font-size:13px;line-height:1.6}
-.shared-change-trace .trace-controls{border:1px solid #4d7080;padding:16px 18px;border-radius:11px;margin:19px 0 25px;background:#163345}
-.shared-change-trace .trace-controls h3{color:#eaf8f9;margin:0;font-size:17px}
-.shared-change-trace .trace-inject{border-top:1px solid #436274;padding-top:10px}
-.shared-change-trace .trace-inject summary{cursor:pointer;font-weight:700;color:#f3ded4}
-.shared-change-trace .trace-small{font-size:12px;color:#c4d7e2;line-height:1.6}
-.shared-change-trace .trace-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin:20px 0}
-.shared-change-trace .trace-domain{background:#163a4f;border:1px solid #547388;border-radius:12px;padding:17px;min-width:0;scroll-margin-top:16px}
-.shared-change-trace .trace-domain-top{display:flex;align-items:flex-start;gap:12px}
-.shared-change-trace .trace-domain h3{color:#f0fbfa;font-size:17px;line-height:1.28;margin:0}
-.shared-change-trace .trace-step{color:#a8e9db;font-size:16px;font-weight:800;letter-spacing:.05em}
-.shared-change-trace .trace-status{background:#264e59;display:inline-block;padding:5px 9px;border-radius:5px;color:#e2f7f3;font-weight:800;font-size:11px;margin:13px 0 4px}
-.shared-change-trace .trace-kind{font-size:12px;color:#bed3de;margin:3px 0 14px}
-.shared-change-trace .trace-fields{margin:0}
-.shared-change-trace .trace-fields>div{border-top:1px solid #426176;padding:10px 0}
-.shared-change-trace .trace-fields dt{font-size:11px;font-weight:800;color:#a7e0d6;text-transform:uppercase;letter-spacing:.03em}
-.shared-change-trace .trace-fields dd{font-size:13px;line-height:1.58;color:#e1edf1;margin:5px 0 0}
-.shared-change-trace .trace-records{margin:10px 0 0;font-size:12px;color:#cfdee8}
-.shared-change-trace .trace-records summary{cursor:pointer;font-weight:700}
-.shared-change-trace .trace-records li{margin:5px 0;overflow-wrap:anywhere}
-.shared-change-trace .trace-boundary{border-left:4px solid #b9c4d0;padding:12px 16px;background:#243b50;border-radius:6px;font-size:13px;line-height:1.64}
-.shared-change-trace .trace-boundary strong{color:#eff8f7}
-.shared-change-trace .trace-boundary p{margin:7px 0}
-.shared-change-trace .trace-boundary a,.shared-change-trace .trace-links a{color:#a8f0df}
-.shared-change-trace .trace-links a{padding:8px 13px;border:1px solid #527b83;border-radius:8px;font-size:13px}
-.shared-change-trace .trace-error{color:#ffe0d0;padding:13px;background:#5b3236;border-radius:7px}
-@media(max-width:860px){.shared-change-trace .trace-grid{grid-template-columns:1fr}}
-@media(max-width:630px){.shared-change-trace{padding:14px}.shared-change-trace .trace-meta{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style><link rel="stylesheet" href="./ui-polish.css?v=1"><link rel="stylesheet" href="./assurance-foundations.css?v=1"></head>
 <body><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a><a class="site-experiments" href="./playground.html">Advanced experiments ↗</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html">Overview</a><a href="./ai-sdlc-risk.html">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html" aria-current="page">Assurance</a></nav></header>
 <header class="hero" id="main-content" tabindex="-1"><span class="eyebrow">ASSURANCE / EVIDENCE &amp; TESTING</span><h1>From AI Approval to Audit Evidence</h1><p class="lead">Explore proposed safeguards, then challenge their operation through fictional engineering evidence and practical audit procedures.</p></header>
@@ -247,9 +204,6 @@
 <p class="challenge-boundary"><strong>Boundary:</strong> All workflow examples on this public playground are fictional. External descriptions are condensed paraphrases, not exact prescriptions, proof of a deficiency, or vendor endorsements of autonomous authorization. Applicable law, security policy and SOX obligations are evaluated separately.</p>
 <p class="challenge-response"><strong>Engineering response options:</strong> demonstrate an existing safeguard; demonstrate an effective alternative; establish evidence-based non-applicability; or document a properly authorized residual-risk decision where permitted. <strong>“Not a SOX violation” alone does not address the engineering risk.</strong></p>
 </section>
-<section class="shared-change-trace" id="shared-change-trace" aria-labelledby="shared-trace-heading">
-<div class="shared-trace-inner"><span class="eyebrow">ONE CHANGE · SEVEN RISK DOMAINS</span><noscript><p>Enable JavaScript to work through the fictional shared-library change. The published engineering benchmark questions above remain available without it.</p></noscript></div>
-</section>
 <section class="assurance-matrix-shell" aria-label="Seven-stage risk control and testing matrix">
 <div class="assurance-matrix-head"><div><span class="eyebrow">END-TO-END ASSURANCE</span><h2>What could fail — and how would we know?</h2><p>Risk → control objective → supporting testing → evidence. The overview is illustrative; a stage may contain multiple risk and control mappings in the details below.</p></div><button class="matrix-download" id="matrix-download" type="button">↓ Download complete procedures (CSV)</button></div>
 <div class="matrix-scroll" role="region" aria-label="Risk control and testing overview (scroll horizontally on smaller screens)" tabindex="0"><table class="assurance-matrix"><thead><tr><th>Pipeline stage<small>What happens?</small></th><th>Key risk<small>What could go wrong?</small></th><th>Control objective<small>What must be achieved?</small></th><th>Primary testing focus<small>How would we test?</small></th><th>Evidence considerations<small>What to inspect?</small></th></tr></thead><tbody id="assurance-matrix-body"></tbody></table></div>
@@ -274,7 +228,7 @@
 
 
 <footer class="site-footer"><nav aria-label="Chapter navigation"><a href="./continuous-monitoring.html">← 3 · Monitoring &amp; Operations</a><a href="./ai-sdlc-risk.html">Review the AI operating model →</a></nav><p>Fictional learning examples. Adapt and validate the design before operational use; this guide does not establish control effectiveness.</p></footer>
-</main><script src="./assurance-data.js?v=shared-1"></script><script src="./assurance-matrix.js?v=1"></script><script src="./financial-engine.js?v=shared-1"></script><script src="./case-model.js?v=shared-1"></script><script src="./case-ui.js?v=learning-1"></script><script src="./shared-assurance-trace.js?v=1"></script><script src="./assurance-foundations.js?v=1"></script><script>
+</main><script src="./assurance-data.js?v=shared-1"></script><script src="./assurance-matrix.js?v=1"></script><script src="./financial-engine.js?v=shared-1"></script><script src="./case-model.js?v=shared-1"></script><script src="./case-ui.js?v=learning-1"></script><script src="./assurance-foundations.js?v=1"></script><script>
 (function(){
 'use strict';
 // Preserve older links while moving duplicate previews into stage-level details.
