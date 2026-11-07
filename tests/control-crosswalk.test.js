@@ -26,7 +26,7 @@ test('shared Pipeline status rendering tolerates a removed optional caption',()=
  vm.runInNewContext(fn+';refreshPipeline();',context);
  assert.equal(nodes[3].dataset.state,'blocked');assert.equal(nodes[3].status.textContent,'Failed / stale');assert.match(elements.route.textContent,/case-revision-B/);
 });
-test('historical RCM export retains source-qualified legacy identifiers without being misrepresented as the active catalog',()=>{
+test('current web RCM export includes its source namespace without renumbering legacy IDs',()=>{
  const rcm=fs.readFileSync('rcm-view.html','utf8');
  const {buildRows}=require('../rcm-export'),crosswalk=require('../control-crosswalk');
  const sample={id:'AI-03',domain:'Access',title:'Approval Authority & SoD',risk:'Illustrative',activity:'Proposed',evidence:'Requested',test:'Illustrative',framework:'Example',scenario:'pass'};
@@ -34,7 +34,8 @@ test('historical RCM export retains source-qualified legacy identifiers without 
  assert.equal(row[head.indexOf('Source namespace')],'WEB15');
  assert.equal(row[head.indexOf('Qualified ID')],'WEB15:AI-03');
  assert.equal(row[head.indexOf('ID')],'AI-03');
- assert.match(rcm,/Previous inventories/);
- assert.match(rcm,/historical reconciliation/);
- assert.match(rcm,/assurance-catalog\.js/);
+ assert.match(rcm,/RcmExport\.buildRows\(controls,window\.ControlCrosswalk\)/);
+ assert.ok(rcm.indexOf('control-crosswalk.js?v=inventory-1')<rcm.indexOf('rcm-export.js?v=dp06-1'));
+ assert.match(rcm,/id="inventory-crosswalk"/);
+ const ui=fs.readFileSync('control-crosswalk-ui.js','utf8');assert.match(ui,/textContent=text/);assert.doesNotMatch(ui,/innerHTML\s*=/);
 });
