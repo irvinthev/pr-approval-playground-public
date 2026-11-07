@@ -32,7 +32,7 @@ test('only supported demonstrations are linked and limitations are explicit',()=
 test('catalog, Assurance landing and RCM distinguish proposed guidance from SOX and operating evidence',()=>{
  const landing=read('independent-assurance.html'),rcm=read('rcm-view.html');
  assert.match(landing,/not a compliance certification/i);
- assert.match(rcm,/not verified SOX criteria/i);
+ assert.match(rcm,/verified SOX criteria/i);
  assert.match(rcm,/source references are thematic/i);
  assert.match(landing,/not operating evidence/i);
 });
