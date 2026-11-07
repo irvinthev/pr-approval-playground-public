@@ -29,9 +29,11 @@ test('exports never present simulation as actual evidence or assessed implementa
  assert.equal(r[h.indexOf('Verified implementation status')],'Not assessed');
  assert.match(r[h.indexOf('Retention and population completeness limitation')],/not established/i);
 });
-test('RCM download wires crosswalk before new export script and does not overwrite workbook',()=>{
+test('new draft catalog is independently exportable and does not overwrite historical workbook',()=>{
  const html=fs.readFileSync('rcm-view.html','utf8');
- assert.match(html,/RcmExport\.buildRows\(controls,window\.ControlCrosswalk\)/);
- assert.ok(html.indexOf('control-crosswalk.js?v=inventory-1')<html.indexOf('rcm-export.js?v=dp06-1'));
- assert.match(html,/Existing 16-control workbook|inventory-crosswalk/);
+ assert.match(html,/assurance-catalog\.js/);
+ assert.match(html,/id="export"/);
+ assert.match(html,/Assurance_Draft_Control_Catalog\.csv/);
+ assert.match(html,/Previous inventories/);
+ assert.match(html,/not superseded as an audited record/);
 });
