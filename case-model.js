@@ -61,7 +61,7 @@ function evaluateCase(c){
  for(const d of c.deployments){
   const issue=(id,status,detail)=>monitoringFindings.push({id,status,detail});
   const gaps=[];let knownFailure=false;if(![d.recordId,d.revision,d.policyVersion,d.mappingVersion].every(identity))gaps.push('Deployment record identity or source context is incomplete.');
-  if(!c.evidence.coveredRoutes.includes(d.route)||d.inFeed!==true){evidenceGaps.push('Uncovered production route: '+String(d.route));issue('uncovered-route','EVIDENCE_GAP','A known '+String(d.route)+' deployment is absent from covered telemetry. Investigate; this alone does not prove unauthorized change.');}
+  if(!c.evidence.coveredRoutes.includes(d.route)||d.inFeed!==true){gaps.push('Deployment route coverage or telemetry is incomplete.');evidenceGaps.push('Uncovered production route: '+String(d.route));issue('uncovered-route','EVIDENCE_GAP','A known '+String(d.route)+' deployment is absent from covered telemetry. Investigate; this alone does not prove unauthorized change.');}
   const a=c.authorizations.find(a=>a.recordId===d.authorizationId),b=c.builds.find(b=>b.recordId===d.buildId);
   if(!a){gaps.push('Deployment authorization linkage is missing.');issue('approval-link','UNRESOLVED','Obtain the approval/source/artifact linkage before concluding authorization.');}
   else if(![d.revision,d.policyVersion,d.mappingVersion,a.sha,a.policyVersion,a.mappingVersion,a.actor,a.role].every(identity))gaps.push('Deployment authorization identity is incomplete.');
