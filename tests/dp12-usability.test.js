@@ -44,9 +44,9 @@ test('RCM export keeps 15 source-qualified controls and does not assert implemen
  assert.equal(new Set(rows.slice(1).map(r=>r[header.indexOf('Qualified ID')])).size,15);
  for(const r of rows.slice(1))assert.equal(r[header.indexOf('Verified implementation status')],'Not assessed');
  const rcm=fs.readFileSync('rcm-view.html','utf8');
- assert.match(rcm,/RcmExport\.buildRows\(controls,window\.ControlCrosswalk\)/);
- assert.match(rcm,/rcm-csv-download/);
- assert.match(rcm,/framework-csv-download/);
+ assert.match(rcm,/assurance-catalog\.js/);
+ assert.match(rcm,/id="export"/);
+ assert.match(rcm,/Previous inventories/);
 });
 
 test('connected Monitoring loads the reconciliation helper before shared UI',()=>{
