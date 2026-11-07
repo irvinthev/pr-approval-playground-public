@@ -30,18 +30,24 @@ test('Foundational controls and selectable scenario content remain intact and fi
  assert.match(script,/challenge-stage-link/);
  assert.match(page,/Educational test specifications only/);
 });
-test('new control catalog has source-qualified identity while historical stage matrix remains available',()=>{
+test('RCM and seven-stage matrix retain integrated control and framework mappings',()=>{
  const rcm=read('rcm-view.html'),page=read('assurance-procedures-reference.html'),matrix=read('assurance-matrix.js');
- const catalog=read('assurance-catalog.js');
- assert.match(rcm,/assurance-catalog\.js/);
- assert.match(rcm,/id="framework-crosswalk"/);
- assert.match(rcm,/id="catalog"/);
- assert.match(rcm,/draft catalog|Draft control architecture/i);
- assert.match(catalog,/const controls=/);
- assert.match(catalog,/evidence/);
+ const match=rcm.match(/const controls=(\[[\s\S]*?\]);\s*const crosswalk=/);
+ assert.ok(match,'15-control catalog available');
+ const controls=JSON.parse(match[1]);
+ assert.equal(controls.length,15);
+ const ids=new Set(controls.map(c=>c.id));
+ assert.equal(ids.size,15);
+ const refs=[...matrix.matchAll(/id:'(AI-\d{2})'/g)].map(x=>x[1]);
+ for(const id of refs)assert.ok(ids.has(id),id);
+ assert.deepEqual([...new Set(refs)].sort(),['AI-01','AI-03','AI-05','AI-07','AI-10','AI-12']);
  assert.match(matrix,/Control examples — risk, safeguard, evidence and challenge/);
+ assert.match(matrix,/Framework guidance for this stage/);
+ assert.match(rcm,/id="framework-crosswalk"/);
+ assert.match(rcm,/id="rcm-csv-download"/);
+ assert.match(rcm,/id="framework-csv-download"/);
  assert.match(page,/Legacy example workbook/);
- assert.match(page,/rcm-preview-list/);
+ assert.match(page,/rcm-preview-list/); // legacy deep link remains supported
 });
 test('Assurance JavaScript parses',()=>{
  for(const name of ['assurance-foundations.js','assurance-matrix.js']){
