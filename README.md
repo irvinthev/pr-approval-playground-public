@@ -78,6 +78,10 @@ To reduce duplicated experiences before consolidating the shared simulation engi
 
 The main stage-gate presentation and Risk-to-Control Explorer remain distinct entry points. Follow-up work should remove legacy code only after regression tests cover replacements.
 
+## Logic ownership and terminology (DP-11)
+
+The [shared logic and terminology map](./docs/SHARED-LOGIC-AND-TERMINOLOGY.md) names the connected-case evaluator, separates mandatory policy, evidence completeness, authorization, release and risk acceptance, and distinguishes control objectives, proposed safeguards, tests, and evidence. It also labels legacy/alternate engines without asserting their algorithms are interchangeable. This is documentation and contract testing, not an engine consolidation or control endorsement.
+
 ## Connected case slice
 
 On the main Pipeline page, choose **Shared library · connected case** or **Follow the shared-library case**. This bounded deterministic case carries revision-bound evidence and policy/mapping versions into the existing Monitoring and Assurance pages. Use the case links to preserve the editable action history. No role lenses or new lab were added.
