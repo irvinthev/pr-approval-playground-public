@@ -68,18 +68,19 @@ test('engineering build remains primary while monitoring is a dedicated chapter'
  assert.match(engineering,/Engineering stage explorer/);
  assert.match(engineering,/Implementation/);
 });
-test('Assurance presents three core sections and links to detailed testing and live lab',()=>{
+test('replacement Assurance presents three evidence phases with source limits and connected case',()=>{
  const html=fs.readFileSync(path.join(root,'independent-assurance.html'),'utf8');
  const markers=['id="foundational-controls"','id="test-approval"','id="document-assessment"'];
  for(const marker of markers)assert.equal(html.split(marker).length-1,1,marker);
  assert.ok(markers.every((marker,i)=>i===0||html.indexOf(marker)>html.indexOf(markers[i-1])));
- for(const objective of ['Change eligibility','AI reliability','Authorization','Policy integrity','Deployment integrity','Continuous monitoring'])assert.ok(html.includes('<td>'+objective+'</td>'),objective);
- for(const conclusion of ['Design','Implementation','Operation over time'])assert.ok(html.includes('<strong>'+conclusion+'</strong>'),conclusion);
- assert.match(html,/href="\.\/rcm-view\.html#download-current-rcm"/);
+ for(const phrase of ['What must already work?','How do we challenge the safeguards?','What does the evidence actually establish?'])assert.ok(html.includes(phrase),phrase);
+ assert.match(html,/not a compliance certification/i);
+ assert.match(html,/href="\.\/rcm-view\.html#catalog"/);
  assert.match(html,/href="\.\/auditor-view\.html#billing-challenge-lab"/);
  assert.match(html,/href="\.\/assurance-procedures-reference\.html#testing-guide"/);
  assert.match(html,/id="shared-case-root" hidden/);
- assert.doesNotMatch(html,/<strong>Framework references<\/strong>|<strong>Control previews<\/strong>/);
+ assert.match(html,/href="\.\/case\.css/);
+ assert.match(html,/src="\.\/case-model\.js/);
 });
 test('advisory example avoids claiming execution authority',()=>{
  const html=fs.readFileSync(path.join(root,'ai-sdlc-risk.html'),'utf8');
