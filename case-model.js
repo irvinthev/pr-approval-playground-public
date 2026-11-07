@@ -2,11 +2,11 @@
 (function(root){
 'use strict';
 const F=typeof module!=='undefined'&&module.exports?require('./financial-engine'):root.FinancialDemo;
-const ACTIONS=['CHECKS','APPROVE','PUSH','MAP_CHANGE','POLICY_CHANGE','MAP_MISSING','MAP_RESTORE','BUILD','RELEASE_CHECKS','DEPLOY','UNCOVERED_ROUTE','CORROBORATE','ACCEPT_RISK'];
+const ACTIONS=['CHECKS','APPROVE','PUSH','MAP_CHANGE','POLICY_CHANGE','MAP_MISSING','MAP_RESTORE','BUILD','RELEASE_CHECKS','DEPLOY','UNCOVERED_ROUTE','CORROBORATE','ACCEPT_RISK','SUBSTITUTE_ARTIFACT','RESTORE_ARTIFACT','CANARY_FAIL','CANARY_PASS','HUMAN_CONTAIN','LOSE_DEPLOYMENT_LINK'];
 const MAX_EVENTS=64,MAX_FRAGMENT=12000;
 const clone=x=>JSON.parse(JSON.stringify(x));
 const identity=x=>typeof x==='string'&&x.trim().length>0&&x.length<=160;
-function initial(){return {schemaVersion:1,caseId:'shared-library',change:{repository:'demo/shared-components',repoAllowlisted:true,author:'demo-contributor',revision:'case-revision-A',files:['lib/dedup/key.js']},versions:{policy:'demo-policy-1',mapping:'demo-map-1'},mappingKnown:true,technical:{ci:null,reviewA:null,reviewB:null},authorizations:[],build:null,release:null,deployments:[],riskAcceptances:[],evidence:{populationCorroborated:false,coveredRoutes:['standard']},events:[]};}
+function initial(){return {schemaVersion:1,caseId:'shared-library',change:{repository:'demo/shared-components',repoAllowlisted:true,author:'demo-contributor',revision:'case-revision-A',files:['lib/dedup/key.js']},versions:{policy:'demo-policy-1',mapping:'demo-map-1'},mappingKnown:true,technical:{ci:null,reviewA:null,reviewB:null},authorizations:[],build:null,builds:[],releaseCandidateDigest:null,release:null,deployments:[],rollouts:[],riskAcceptances:[],evidence:{populationCorroborated:false,coveredRoutes:['standard']},events:[]};}
 function validateCase(c){
  const keys=Object.keys(initial());
  if(!c||typeof c!=='object'||Array.isArray(c)||Object.keys(c).some(k=>!keys.includes(k))||keys.some(k=>!(k in c)))return false;
@@ -14,8 +14,9 @@ function validateCase(c){
  if(typeof c.change.repoAllowlisted!=='boolean')return false;
  if(!Array.isArray(c.change.files)||!c.change.files.length||c.change.files.some(f=>!identity(f)))return false;
  if(typeof c.mappingKnown!=='boolean'||typeof c.evidence.populationCorroborated!=='boolean'||!Array.isArray(c.evidence.coveredRoutes))return false;
- for(const k of ['authorizations','deployments','riskAcceptances','events'])if(!Array.isArray(c[k])||c[k].length>MAX_EVENTS)return false;
+ for(const k of ['authorizations','builds','deployments','rollouts','riskAcceptances','events'])if(!Array.isArray(c[k])||c[k].length>MAX_EVENTS)return false;
  if(c.events.some(e=>!ACTIONS.includes(e)))return false;
+ if(c.builds.some(b=>!b||typeof b!=='object')||c.rollouts.some(r=>!r||typeof r!=='object'))return false;
  if(c.authorizations.some(a=>!a||typeof a!=='object')||c.deployments.some(d=>!d||typeof d!=='object'))return false;
  return true;
 }
@@ -48,32 +49,61 @@ function evaluateCase(c){
  rel('artifact-lineage',!build?'PENDING':build.revision!==revision||build.policyVersion!==policyVersion||build.mappingVersion!==mappingVersion?'FAIL':!identity(build.digest)||!identity(build.recordId)?'UNKNOWN':'PASS','Build must bind the current authorized revision and versions to an identified artifact.');
  const release=c.release;
  rel('release-checks',!release?'PENDING':!build?'FAIL':![release.revision,release.digest,release.policyVersion,release.mappingVersion,release.buildId,release.recordId].every(identity)?'UNKNOWN':release.digest!==build.digest||release.revision!==revision||release.policyVersion!==policyVersion||release.mappingVersion!==mappingVersion||release.buildId!==build.recordId?'FAIL':release.passed!==true?'FAIL':'PASS','Mandatory release validation must pass for the same source, artifact, build and applicable versions.');
+ rel('release-artifact',!build?'PENDING':!identity(c.releaseCandidateDigest)||!identity(build.digest)?'UNKNOWN':c.releaseCandidateDigest!==build.digest?'FAIL':'PASS','The release candidate must match the verified build digest; favorable authorization cannot permit a different artifact.');
+ const artifactIntegrity=releasePredicates.find(p=>p.id==='release-artifact').status;
  const releaseEligibility=aggregate(releasePredicates)==='PASS'?'ELIGIBLE':aggregate(releasePredicates)==='PENDING'?'PENDING':'BLOCKED';
  const evidenceGaps=predicates.filter(p=>['UNKNOWN','PENDING'].includes(p.status)).map(p=>p.reason);
  for(const p of releasePredicates)if(['UNKNOWN','PENDING'].includes(p.status)&&p.id!=='policy')evidenceGaps.push(p.reason);
  const monitoringFindings=[];
  if(authorizationStatus==='STALE')monitoringFindings.push({id:'stale-approval',status:'EXCEPTION',detail:'Authorization refers to an earlier revision or policy/mapping version.'});
  if(!c.evidence.populationCorroborated)evidenceGaps.push('Production population has not been independently corroborated within this simulation.');
+ const deploymentChecks=[];
  for(const d of c.deployments){
-  if(!c.evidence.coveredRoutes.includes(d.route)||d.inFeed!==true){evidenceGaps.push('Uncovered production route: '+String(d.route));monitoringFindings.push({id:'uncovered-route',status:'EVIDENCE_GAP',detail:'A known '+String(d.route)+' deployment is absent from covered telemetry. Investigate; this alone does not prove unauthorized change.'});}
-  const a=c.authorizations.find(a=>a.recordId===d.authorizationId);
-  if(!a){evidenceGaps.push('Deployment authorization linkage is missing.');monitoringFindings.push({id:'approval-link',status:'UNRESOLVED',detail:'Obtain the approval/source/artifact linkage before concluding authorization.'});}
-  else if(a.sha!==d.revision||a.policyVersion!==d.policyVersion||a.mappingVersion!==d.mappingVersion)monitoringFindings.push({id:'deployment-mismatch',status:'EXCEPTION',detail:'Recorded deployment conflicts with its linked authorization.'});
+  const issue=(id,status,detail)=>monitoringFindings.push({id,status,detail});
+  const gaps=[];let knownFailure=false;if(![d.recordId,d.revision,d.policyVersion,d.mappingVersion].every(identity))gaps.push('Deployment record identity or source context is incomplete.');
+  if(!c.evidence.coveredRoutes.includes(d.route)||d.inFeed!==true){evidenceGaps.push('Uncovered production route: '+String(d.route));issue('uncovered-route','EVIDENCE_GAP','A known '+String(d.route)+' deployment is absent from covered telemetry. Investigate; this alone does not prove unauthorized change.');}
+  const a=c.authorizations.find(a=>a.recordId===d.authorizationId),b=c.builds.find(b=>b.recordId===d.buildId);
+  if(!a){gaps.push('Deployment authorization linkage is missing.');issue('approval-link','UNRESOLVED','Obtain the approval/source/artifact linkage before concluding authorization.');}
+  else if(![d.revision,d.policyVersion,d.mappingVersion,a.sha,a.policyVersion,a.mappingVersion,a.actor,a.role].every(identity))gaps.push('Deployment authorization identity is incomplete.');
+  else if(a.sha!==d.revision||a.policyVersion!==d.policyVersion||a.mappingVersion!==d.mappingVersion||a.actor!=='demo-independent-reviewer'||a.role!=='financial-reviewer'){knownFailure=true;issue('deployment-mismatch','EXCEPTION','Recorded deployment conflicts with its historical authorization or qualified authority.');}
+  if(!b||![d.digest,d.buildId,b.digest,b.revision,b.policyVersion,b.mappingVersion].every(identity)){gaps.push('Deployment artifact/build linkage is missing or incomplete.');issue('deployment-artifact','UNRESOLVED','Obtain the historical build and actual deployed digest; missing evidence is not a known artifact mismatch.');}
+  else if(d.digest!==b.digest||d.revision!==b.revision||d.policyVersion!==b.policyVersion||d.mappingVersion!==b.mappingVersion){knownFailure=true;issue('deployment-artifact','EXCEPTION','The observed artifact or source context conflicts with the retained historical build.');}
+  evidenceGaps.push(...gaps);deploymentChecks.push({recordId:d.recordId,status:knownFailure?'FAIL':gaps.length?'UNKNOWN':'PASS'});
  }
+ const deploymentIntegrity=deploymentChecks.length?aggregate(deploymentChecks):'PENDING';
+ const rollout=c.rollouts.at(-1)||null,observed=rollout&&c.deployments.find(d=>d.recordId===rollout.deploymentId);
+ const rolloutBound=!!(rollout&&observed&&[rollout.deploymentId,rollout.revision,rollout.digest,observed.digest].every(identity)&&rollout.revision===observed.revision&&rollout.digest===observed.digest);
+ const rolloutLink=observed&&deploymentChecks.find(d=>d.recordId===observed.recordId)?.status;
+ const response=rollout?.response;
+ const responseValid=!!(rolloutBound&&response&&[response.actor,response.role,response.deploymentId,response.revision,response.digest,response.rationale,response.recordId].every(identity)&&response.actor==='demo-incident-responder'&&response.role==='incident-responder'&&response.deploymentId===rollout.deploymentId&&response.revision===rollout.revision&&response.digest===rollout.digest);
+ const humanResponse=rollout?.health==='FAIL'?(responseValid?'RECORDED':'REQUIRED'):'NOT_REQUIRED';
+ let rolloutStatus=!rollout?'NOT_STARTED':!rolloutBound?'EVIDENCE_UNRESOLVED':rollout.health==='FAIL'?(responseValid?'CONTAINMENT_RECORDED':'HALTED_HUMAN_REQUIRED'):rolloutLink!=='PASS'?'EVIDENCE_UNRESOLVED':rollout.health==='PASS'?'CANARY_PASSED':rollout.health==='PENDING'?'CANARY_PENDING':'EVIDENCE_UNRESOLVED';
+ const promotionEligibility=rolloutStatus==='CANARY_PASSED'?'ELIGIBLE':!rollout||rolloutStatus==='CANARY_PENDING'?'PENDING':'BLOCKED';
+ if(rollout&&(!rolloutBound||!['PASS','FAIL','PENDING'].includes(rollout.health))){evidenceGaps.push('Canary result is not bound to an identified deployment and artifact.');monitoringFindings.push({id:'canary-link','status':'UNRESOLVED',detail:'Resolve the deployment and canary record before drawing a rollout conclusion.'});}
+ if(rollout?.health==='FAIL')monitoringFindings.push({id:'canary-failure',status:responseValid?'CONTAINMENT_RECORDED':'HUMAN_REQUIRED',detail:responseValid?'Human containment is recorded. Promotion remains blocked; rollback, data repair and safe restart are not established.':'Canary failed. Halt promotion and obtain designated human response. Prior approval is retained; do not resubmit the incident for AI approval.'});
  const nextValidActions=[];
  const base=aggregate(predicates.filter(p=>p.id!=='independent-authorization'));
- if(!c.mappingKnown)nextValidActions.push('MAP_RESTORE');
+ if(humanResponse==='REQUIRED'&&rolloutBound)nextValidActions.push('HUMAN_CONTAIN');
+ else if(!c.mappingKnown)nextValidActions.push('MAP_RESTORE');
  else if(identities&&['ci','reviewA','reviewB'].some(f=>check(f)!=='PASS'))nextValidActions.push('CHECKS');
  else if(base==='PASS'&&authorizationStatus!=='VALID')nextValidActions.push('APPROVE');
  else if(policyStatus==='PASS'&&releasePredicates[1].status!=='PASS')nextValidActions.push('BUILD');
+ else if(artifactIntegrity==='FAIL')nextValidActions.push('RESTORE_ARTIFACT');
  else if(policyStatus==='PASS'&&releasePredicates[2].status!=='PASS')nextValidActions.push('RELEASE_CHECKS');
- else if(releaseEligibility==='ELIGIBLE'&&!c.deployments.some(d=>d.revision===revision&&d.route==='standard'))nextValidActions.push('DEPLOY');
- return {caseId:c.caseId,evaluatedRevision:revision,policyVersion,mappingVersion,dependencyAssessment:scope,technical,authorizationStatus,policyStatus,predicates,failedPredicates:predicates.filter(p=>p.status==='FAIL'),releasePredicates,releaseEligibility,evidenceCompleteness:evidenceGaps.length?'INCOMPLETE':'COMPLETE_IN_MODELED_SCOPE',evidenceGaps,monitoringFindings,riskAcceptance:c.riskAcceptances.length?'RECORDED_NOT_AUTHORIZATION':'NOT_RECORDED',nextValidActions};
+ else if(releaseEligibility==='ELIGIBLE'&&!c.rollouts.some(r=>r.health==='FAIL')&&!c.deployments.some(d=>d.revision===revision&&d.route==='standard'))nextValidActions.push('DEPLOY');
+ if(rolloutBound&&rollout.health==='PENDING'&&humanResponse!=='REQUIRED')nextValidActions.push('CANARY_PASS','CANARY_FAIL');
+ return {caseId:c.caseId,evaluatedRevision:revision,policyVersion,mappingVersion,dependencyAssessment:scope,technical,authorizationStatus,policyStatus,predicates,failedPredicates:predicates.filter(p=>p.status==='FAIL'),releasePredicates,releaseEligibility,artifactIntegrity,deploymentIntegrity,rolloutStatus,promotionEligibility,humanResponse,evidenceCompleteness:evidenceGaps.length?'INCOMPLETE':'COMPLETE_IN_MODELED_SCOPE',evidenceGaps,monitoringFindings,riskAcceptance:c.riskAcceptances.length?'RECORDED_NOT_AUTHORIZATION':'NOT_RECORDED',nextValidActions};
 }
 function transition(c,action){
  if(!ACTIONS.includes(action))throw new TypeError('Unknown case action');
  const e=evaluateCase(c);if(c.events.length>=MAX_EVENTS)throw new RangeError('Case action limit reached');
  if(['CHECKS','APPROVE','BUILD','RELEASE_CHECKS','DEPLOY','MAP_RESTORE'].includes(action)&&!e.nextValidActions.includes(action))throw new Error('Action is not valid for this case state');
+ const activeRollout=c.rollouts.at(-1),latestDeployment=c.deployments.at(-1);
+ if(action==='SUBSTITUTE_ARTIFACT'&&(e.releaseEligibility!=='ELIGIBLE'||c.deployments.some(d=>d.revision===c.change.revision&&d.route==='standard')))throw new Error('A checked release candidate is required before substitution.');
+ if(action==='RESTORE_ARTIFACT'&&!e.nextValidActions.includes(action))throw new Error('No mismatched release candidate to restore.');
+ if(['CANARY_PASS','CANARY_FAIL'].includes(action)&&(!activeRollout||activeRollout.health!=='PENDING'||!e.nextValidActions.includes(action)))throw new Error('A pending, linked canary is required.');
+ if(action==='HUMAN_CONTAIN'&&!e.nextValidActions.includes(action))throw new Error('Human response requires an identified failed canary.');
+ if(action==='LOSE_DEPLOYMENT_LINK'&&(!latestDeployment||latestDeployment.route!=='standard'||!latestDeployment.authorizationId))throw new Error('A linked standard deployment is required.');
  const n=clone(c),revision=n.change.revision;
  if(action==='CHECKS')for(const field of ['ci','reviewA','reviewB'])n.technical[field]={recordId:field+':'+revision,revision,status:'PASS',actor:field==='ci'?'demo-ci':field,modelVersion:'demo-model-1',promptVersion:'demo-prompt-1'};
  if(action==='APPROVE')n.authorizations.push({...F.approve({...n.change,sha:revision},e.dependencyAssessment),recordId:'approval:'+n.events.length,rationale:'Reviewed shared-library dependency impact and tests for this exact revision.'});
@@ -82,9 +112,15 @@ function transition(c,action){
  if(action==='POLICY_CHANGE')n.versions.policy='demo-policy-'+(2+n.events.filter(x=>x==='POLICY_CHANGE').length);
  if(action==='MAP_MISSING')n.mappingKnown=false;
  if(action==='MAP_RESTORE')n.mappingKnown=true;
- if(action==='BUILD')n.build={revision,policyVersion:n.versions.policy,mappingVersion:n.versions.mapping,digest:'demo-digest:'+revision,recordId:'build:'+n.events.length};
+ if(action==='BUILD'){n.build={revision,policyVersion:n.versions.policy,mappingVersion:n.versions.mapping,digest:'demo-digest:'+revision,recordId:'build:'+n.events.length};n.builds.push(clone(n.build));n.releaseCandidateDigest=n.build.digest;}
  if(action==='RELEASE_CHECKS')n.release={revision,policyVersion:n.versions.policy,mappingVersion:n.versions.mapping,buildId:n.build.recordId,digest:n.build.digest,passed:true,recordId:'release-check:'+n.events.length};
- if(action==='DEPLOY')n.deployments.push({revision,policyVersion:n.versions.policy,mappingVersion:n.versions.mapping,digest:n.build.digest,authorizationId:n.authorizations.at(-1).recordId,route:'standard',inFeed:true});
+ if(action==='DEPLOY'){const recordId='deployment:'+n.events.length;n.deployments.push({recordId,revision,policyVersion:n.versions.policy,mappingVersion:n.versions.mapping,digest:n.releaseCandidateDigest,buildId:n.build.recordId,authorizationId:n.authorizations.at(-1).recordId,route:'standard',inFeed:true});n.rollouts.push({deploymentId:recordId,revision,digest:n.releaseCandidateDigest,health:'PENDING',response:null});}
+ if(action==='SUBSTITUTE_ARTIFACT')n.releaseCandidateDigest='demo-substituted-artifact';
+ if(action==='RESTORE_ARTIFACT'){n.releaseCandidateDigest=n.build.digest;n.release=null;}
+ if(action==='LOSE_DEPLOYMENT_LINK')n.deployments.at(-1).authorizationId=null;
+ if(action==='CANARY_FAIL')n.rollouts.at(-1).health='FAIL';
+ if(action==='CANARY_PASS')n.rollouts.at(-1).health='PASS';
+ if(action==='HUMAN_CONTAIN'){const r=n.rollouts.at(-1);r.response={actor:'demo-incident-responder',role:'incident-responder',deploymentId:r.deploymentId,revision:r.revision,digest:r.digest,recordId:'response:'+n.events.length,rationale:'Promotion halted and designated human containment recorded. Data repair and restart require separate assessment.'};}
  if(action==='UNCOVERED_ROUTE')n.deployments.push({revision,policyVersion:n.versions.policy,mappingVersion:n.versions.mapping,digest:'demo-manual-artifact',authorizationId:null,route:'manual',inFeed:false});
  if(action==='CORROBORATE')n.evidence.populationCorroborated=true;
  if(action==='ACCEPT_RISK')n.riskAcceptances.push({owner:'demo-risk-owner',revision,rationale:'Residual-risk discussion recorded; mandatory predicates remain applicable.'});
