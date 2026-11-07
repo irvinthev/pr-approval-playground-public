@@ -16,7 +16,9 @@ test('four named fixed scenario choices remain identifiable and separate from co
 test('all four fixed presets have the same explanation fields without altering scenario payloads',()=>{
  assert.ok(fixed&&briefs);
  const context={};
- vm.runInNewContext(fixed[0]+'\n'+briefs[0]+'\nthis.fixture={scenarios,scenarioBriefs};',context);
+ const source=html.match(/const headSha = [^\n]+\nconst priorSha = [^\n]+\nconst policyVersion = [^\n]+\nconst mappingVersion = [^\n]+/);
+ assert.ok(source,'fixture identities must be supplied from actual scenario definitions');
+ vm.runInNewContext(source[0]+'\n'+fixed[0]+'\n'+briefs[0]+'\nthis.fixture={scenarios,scenarioBriefs};',context);
  const scenarios=context.fixture.scenarios,notes=context.fixture.scenarioBriefs;
  assert.deepEqual(Object.keys(notes).sort(),['canary','pass','scope','split']);
  for(const key of Object.keys(notes)){
