@@ -77,7 +77,7 @@ test('Assurance presents three core sections and links to detailed testing and l
  for(const conclusion of ['Design','Implementation','Operation over time'])assert.ok(html.includes('<strong>'+conclusion+'</strong>'),conclusion);
  assert.match(html,/href="\.\/rcm-view\.html#download-current-rcm"/);
  assert.match(html,/href="\.\/auditor-view\.html#billing-challenge-lab"/);
- assert.match(html,/href="\.\/assurance-procedures-reference\.html#testing-guide"/);
+ assert.doesNotMatch(html,/href="\.\/assurance-procedures-reference\.html#testing-guide"/);
  assert.match(html,/id="shared-case-root" hidden/);
  assert.doesNotMatch(html,/<strong>Framework references<\/strong>|<strong>Control previews<\/strong>/);
 });
