@@ -28,7 +28,14 @@ test('shared Pipeline status rendering tolerates a removed optional caption',()=
 });
 test('current web RCM export includes its source namespace without renumbering legacy IDs',()=>{
  const rcm=fs.readFileSync('rcm-view.html','utf8');
- assert.match(rcm,/'Source namespace','Qualified ID'/);assert.match(rcm,/c\.scenario,'WEB15','WEB15:'\+c\.id/);
+ const {buildRows}=require('../rcm-export'),crosswalk=require('../control-crosswalk');
+ const sample={id:'AI-03',domain:'Access',title:'Approval Authority & SoD',risk:'Illustrative',activity:'Proposed',evidence:'Requested',test:'Illustrative',framework:'Example',scenario:'pass'};
+ const [head,row]=buildRows([sample],crosswalk);
+ assert.equal(row[head.indexOf('Source namespace')],'WEB15');
+ assert.equal(row[head.indexOf('Qualified ID')],'WEB15:AI-03');
+ assert.equal(row[head.indexOf('ID')],'AI-03');
+ assert.match(rcm,/RcmExport\\.buildRows\\(controls,window\\.ControlCrosswalk\\)/);
+ assert.ok(rcm.indexOf('control-crosswalk.js?v=inventory-1')<rcm.indexOf('rcm-export.js?v=dp06-1'));
  assert.match(rcm,/id="inventory-crosswalk"/);
  const ui=fs.readFileSync('control-crosswalk-ui.js','utf8');assert.match(ui,/textContent=text/);assert.doesNotMatch(ui,/innerHTML\s*=/);
 });
