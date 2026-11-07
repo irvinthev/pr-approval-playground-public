@@ -103,3 +103,9 @@ Below the lab, the previous four fixed fictional scenarios remain available as d
 `rcm-view.html#inventory-crosswalk` reconciles 14 objectives, 15 web safeguards and 16 workbook controls using source-qualified aliases. The CSV preserves workbook row references and related-intent limitations; it does not replace existing IDs or select a canonical inventory. Current web RCM CSV exports include the WEB15 namespace and qualified ID. See [the reconciliation record](docs/CONTROL-INVENTORY-CROSSWALK.md) for extraction, coverage distinctions and baseline test disposition.
 
 The shared-case mount is restored on Assurance. Pipeline, Monitoring and Assurance recompute the same fragment using the existing evaluator. Pipeline tolerates its removed optional caption. Neither repair changes approval policy or model behavior.
+
+## Connected release integrity and canary response
+
+Continue the shared-library case through qualified review, trusted build and release checks. **Substitute release artifact** demonstrates a blocked release without deleting approval history. After **Simulate standard deployment**, choose a failed canary to halt promotion and require designated human containment, or **Hide deployment approval linkage** to demonstrate an unresolved evidence gap. A healthy canary cannot repair missing linkage. Pipeline, Monitoring and Assurance recompute the same record.
+
+Pre-deployment release eligibility and post-deployment promotion are separate. Containment does not establish rollback success, data repair or safe restart; promotion remains blocked after a canary failure in this bounded slice. No original fixed scenarios or production controls are changed. See [release integrity and canary response](docs/RELEASE-INTEGRITY-SLICE.md).

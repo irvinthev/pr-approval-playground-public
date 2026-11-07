@@ -57,10 +57,14 @@
       'Authorization: ' + x.authorizationStatus + '. Applicable policy: ' + x.policyVersion + '; mapping: ' + x.mappingVersion + '.',
       'Artifact lineage: ' + x.releasePredicates.find(p => p.id === 'artifact-lineage').status + '. Authorization alone does not establish a trusted build.',
       'Release checks: ' + x.releasePredicates.find(p => p.id === 'release-checks').status + '. Release eligibility: ' + x.releaseEligibility + '.',
-      'Evidence: ' + x.evidenceCompleteness + '. The model reports ' + x.monitoringFindings.length + ' monitoring finding(s); that count does not establish complete coverage.'
+      'Rollout: ' + (x.rolloutStatus || 'Not modeled') + '; promotion: ' + (x.promotionEligibility || 'Not modeled') + '; human response: ' + (x.humanResponse || 'Not modeled') + '. Evidence: ' + x.evidenceCompleteness + '. The model reports ' + x.monitoringFindings.length + ' monitoring finding(s); that count does not establish complete coverage.'
     ];
     let why = 'Inspect the current facts and required conditions before continuing.';
-    if (x.dependencyAssessment.status === 'UNRESOLVED') why = 'Resolve missing mapping evidence first. Human approval or risk acceptance cannot substitute for establishing scope.';
+    if (x.humanResponse === 'REQUIRED') why = 'The canary failed. Halt promotion and obtain designated human containment; retained approval is not a new AI approval request.';
+    else if (x.rolloutStatus === 'CONTAINMENT_RECORDED') why = 'Containment is recorded, but promotion stays blocked. Rollback success, data repair and restart require separate assessment.';
+    else if (x.artifactIntegrity === 'FAIL') why = 'A substituted artifact cannot use the prior release checks. Restore the verified candidate and rerun artifact-bound release validation.';
+    else if (x.rolloutStatus === 'EVIDENCE_UNRESOLVED') why = 'Missing deployment linkage is unresolved evidence. A passing canary or risk acceptance cannot establish authorization for that deployment.';
+    else if (x.dependencyAssessment.status === 'UNRESOLVED') why = 'Resolve missing mapping evidence first. Human approval or risk acceptance cannot substitute for establishing scope.';
     else if (x.authorizationStatus === 'STALE') why = 'Prior authorization covers different code or applicable versions. Renew the required evidence and review; do not reuse that approval.';
     else if (next === 'CHECKS') why = 'Current technical evidence is pending or stale. Record fresh checks; the protected financial dependency will still require independent review.';
     else if (next === 'APPROVE') why = 'The technical conditions hold, but this example’s protected dependency rule still requires independent authorization.';
