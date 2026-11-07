@@ -95,6 +95,10 @@ On the main Pipeline page, choose **Shared library · connected case** or **Foll
 The overview links to `experience.html?example=shared`, which starts a fresh case only when no fragment exists. Existing case fragments take priority and invalid fragments remain rejected. The ordinary Pipeline entry retains its existing default walkthrough. The bounded learning pass adds no case actions or evaluator/schema changes; dependency-removal and artifact-substitution challenges are not added to the connected case.
 
 
+## Four-scenario consistency (DP-10)
+
+The Auditor View's four **fixed, historical** pipeline examples now each display the same four learning questions: trigger, mandatory boundary, next route and evidence limit. The additional explanations do not modify the underlying event JSON, mock workpapers, tests or outcomes. They are separate from the connected shared-library evaluator and do not imply a unified state model. In particular, the fixed canary preset models verified rollback while the connected case only records human containment; neither is real evidence of recovery.
+
 ## Auditor View
 
 The **Auditor Control Validation Lab** first presents a fictional shared-library/billing change with four conditions: a correctly identified downstream financial consumer, a falsely omitted consumer, a detected incomplete map, and an AI-reviewer split. Each selection recalculates a modeled decision using the same financial-impact and authorization functions consumed by `case-model.js` (via `financial-engine.js`). It displays fictional policy/mapping examples, illustrative GitHub/CI configuration, a generated event JSON, and bounded assurance questions. The omission test intentionally demonstrates unsafe automatic eligibility when the supplied map falsely asserts that the shared library is nonfinancial. This does **not** grant real authorization, run any GitHub workflow, or establish control effectiveness.
