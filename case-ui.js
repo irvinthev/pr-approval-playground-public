@@ -68,7 +68,28 @@ function render(focus=false){
  const statuses=el('div',null,'case-outcomes');for(const [label,value]of [['Release artifact',x.artifactIntegrity],['Deployment linkage',x.deploymentIntegrity],['Production rollout',x.rolloutStatus],['Promotion eligibility',x.promotionEligibility],['Human response',x.humanResponse]]){const box=el('div');box.append(el('strong',label),el('p',friendly[value]||value));statuses.append(box);}production.append(statuses,el('p','Pre-deployment release eligibility is separate from post-deployment promotion. A failed canary retains approval history and requires human response. Containment does not prove successful rollback or repair.','case-note'));
  const trace=el('p','Expected build digest: '+(current.build?.digest||'Not built')+' · Release candidate: '+(current.releaseCandidateDigest||'Not identified')+' · Retained approvals: '+current.authorizations.length,'case-context');production.append(trace);const observed=current.deployments.at(-1);if(observed)production.append(el('p','Observed deployment: '+(observed.recordId||'Identity missing')+' · revision '+observed.revision+' · digest '+(observed.digest||'Missing')+'. Evaluate this historical deployment against its retained build, not a later source revision.','case-note'));const response=current.rollouts.at(-1)?.response;if(response)production.append(el('p','Human response: '+response.actor+' · '+response.role+' · '+response.rationale,'case-note'));evidence.append(production);
 
- if(isMonitoring){evidence.append(el('h3','Monitoring this same case'));const list=el('ul');for(const f of x.monitoringFindings)list.append(el('li',f.status+' · '+f.detail));if(!x.monitoringFindings.length)list.append(el('li','No exception identified from the available case records. Evidence completeness is assessed separately.'));evidence.append(list);}
+ if(isMonitoring){
+ evidence.append(el('h3','Monitoring this same case'));
+ const list=el('ul');for(const f of x.monitoringFindings)list.append(el('li',f.status+' · '+f.detail));
+ if(!x.monitoringFindings.length)list.append(el('li','No exception identified from the available case records. Evidence completeness is assessed separately.'));
+ evidence.append(list);
+ if(window.PopulationDemo){
+  const lab=el('section',null,'case-production'),heading=el('h3','Challenge monitoring population completeness');
+  const intro=el('p','Compare invented independent-source and monitoring-feed records. Even a matching sample is not independent confirmation that all production routes were captured.','case-note');
+  const label=el('label','Choose a fictional reconciliation condition');label.htmlFor='case-population-choice';
+  const select=el('select');select.id='case-population-choice';select.setAttribute('aria-label','Fictional population reconciliation');
+  for(const [id,text] of Object.entries(window.PopulationDemo.SCENARIOS)){const opt=el('option',text);opt.value=id;select.append(opt);}
+  const output=el('div');output.id='case-population-result';
+  function show(){
+   const r=window.PopulationDemo.simulate(current,select.value),comp=r.comparison;
+   output.replaceChildren();
+   output.append(el('p','Sample comparison: '+r.comparisonStatus+' · Overall population conclusion: '+r.populationConclusion,'case-context'));
+   if(comp)output.append(el('p','Source records: '+comp.sourceCount+' · Feed records: '+comp.feedCount+' · Missing: '+comp.missing.join(', ')+' · Unmatched: '+comp.unmatched.join(', ')+' · Duplicate: '+comp.duplicates.join(', ')+' · Conflicting digests: '+comp.mismatches.join(', '),'case-note'));
+   output.append(el('p','Proposed response: '+r.action,'case-note'),el('p','Proposed responsibility: '+r.proposedAuthority,'case-note'),el('p',r.limitation,'case-note'));
+  }
+  select.addEventListener('change',show);lab.append(heading,intro,label,select,output);evidence.append(lab);show();
+ }
+}
  else if(!isJourney)evidence.append(el('h3','Assurance of this same case'),el('p','Reperform the predicates below and inspect the linked revision/version evidence. A simulated result does not establish real control effectiveness.'));
  const details=el('details');details.open=!isJourney;details.append(el('summary','Predicates and evidence gaps'));
  const table=el('table',null,'case-predicates'),head=el('thead'),tr=el('tr');for(const label of ['Predicate','Status','Reason / record'])tr.append(el('th',label));head.append(tr);table.append(head);const body=el('tbody');
