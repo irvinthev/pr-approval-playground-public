@@ -1,9 +1,12 @@
 const test=require('node:test');const assert=require('node:assert/strict');const fs=require('node:fs');const path=require('node:path');const read=p=>fs.readFileSync(path.join(__dirname,'..',p),'utf8');
-test('RCM view includes complete proposed inventory and seven domains',()=>{
- const page=read('rcm-view.html');const match=page.match(/const controls=(\[[\s\S]*?\]);\s*const crosswalk=/);assert.ok(match,'control registry exists');
- const controls=JSON.parse(match[1]);assert.equal(controls.length,15);assert.equal(new Set(controls.map(x=>x.id)).size,15);assert.equal(new Set(controls.map(x=>x.domain)).size,7);
- for(const c of controls){for(const k of ['risk','activity','evidence','test','framework','scenario'])assert.ok(c[k],c.id+' missing '+k);assert.match(c.id,/^AI-\d{2}$/);assert.ok(['pass','split','scope','canary'].includes(c.scenario))}
- assert.match(page,/textContent=text/,'dynamic control content uses textContent');
+test('new RCM viewer loads the single canonical catalog and documents scope of illustrative controls',()=>{
+ const page=read('rcm-view.html'),catalog=read('assurance-catalog.js');
+ assert.match(page,/src="\.\/assurance-catalog\.js"/);
+ assert.match(page,/window\.AssuranceCatalog/);
+ assert.match(page,/id="catalog"/);
+ assert.match(page,/No directly connected demonstration yet/);
+ assert.match(catalog,/const controls=/);
+ assert.match(page,/not ten implemented controls/i);
 });
 test('Assurance entry and Auditor View preserve both views and testing guide',()=>{
  const landing=read('independent-assurance.html'),reference=read('assurance-procedures-reference.html'),auditor=read('auditor-view.html');
@@ -15,11 +18,13 @@ test('Assurance entry and Auditor View preserve both views and testing guide',()
  assert.doesNotMatch(landing,/id="stage-pickers"|id="test-detail"/,'replaced stage selector is no longer rendered');
  assert.match(auditor,/href="\.\/rcm-view\.html"/);assert.match(auditor,/initialScenario/);
 });
-test('RCM detail cells wrap and the skip link targets the focusable content intro',()=>{
+test('replacement RCM has responsive detail layout, focusable skip link and explicit export',()=>{
  const page=read('rcm-view.html');
- assert.match(page,/\.rcm-table td:nth-child\(1\):not\(\[colspan\]\)[^{]*\{[^}]*white-space:nowrap/);
+ assert.match(page,/\.detail\{display:none/);
+ assert.match(page,/@media\(max-width:800px\)/);
  assert.match(page,/<a class="site-skip" href="#main-content">Skip to content<\/a>/);
- assert.match(page,/<header class="rcm-intro" id="main-content" tabindex="-1">/);
+ assert.match(page,/<header id="main-content" class="intro" tabindex="-1">/);
+ assert.match(page,/id="export"/);
 });
 
 test('Assurance matrix preserves all seven stages, full procedure text and stage mappings',()=>{
