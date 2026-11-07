@@ -46,7 +46,7 @@ test('RCM export keeps 15 source-qualified controls and does not assert implemen
  const rcm=fs.readFileSync('rcm-view.html','utf8');
  assert.match(rcm,/RcmExport\.buildRows\(controls,window\.ControlCrosswalk\)/);
  assert.match(rcm,/rcm-csv-download/);
- assert.match(rcm,/framework-csv-download/);
+ assert.doesNotMatch(rcm,/framework-csv-download/);
 });
 
 test('connected Monitoring loads the reconciliation helper before shared UI',()=>{
