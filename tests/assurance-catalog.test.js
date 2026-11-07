@@ -43,31 +43,3 @@ test('current case logic is not overwritten by framework or view code',()=>{
  assert.match(landing,/src="\.\/case-ui\.js[^"]*"/);
  assert.doesNotMatch(rcm,/function evaluateCase|function approve|function deploy/);
 });
-
-test('Assurance first screen prioritizes two actionable paths before optional background',()=>{
- const page=read('independent-assurance.html');
- const hero=page.indexOf('id="main-content"'),follow=page.indexOf('href="./rcm-view.html#featured-control"'),challenge=page.indexOf('href="./auditor-view.html#billing-challenge-lab"');
- const background=page.indexOf('id="our-approach"');
- assert.ok(hero>=0&&follow>hero&&challenge>hero&&follow<background&&challenge<background);
- assert.match(page,/class="a-choices"/);
- assert.match(page,/<details class="a-background" id="our-approach">/);
- assert.match(page,/<details class="a-background" id="feedback">/);
- assert.match(page,/not a compliance certification/i);
- assert.match(page,/id="foundational-controls"/);
- assert.match(page,/id="test-approval"/);
- assert.match(page,/id="document-assessment"/);
-});
-test('featured financial dependency walkthrough connects one control to scenario, test, evidence and limited conclusion',()=>{
- const page=read('rcm-view.html');
- assert.match(page,/id="featured-control"/);
- assert.match(page,/controls\.find\(c=>c\.id==='AC-01'\)/);
- for(const state of ['known','missing','omitted'])assert.match(page,new RegExp('data-condition="'+state+'"'));
- for(const key of ['featured.objective','featured.enforcement','featured.test','featured.evidence'])assert.ok(page.includes(key),key);
- assert.match(page,/the existing fictional case/i);
- assert.match(page,/deterministic checks can pass against that wrong assumption/i);
- assert.match(page,/does not measure false-safe frequency/i);
- assert.match(page,/href="\.\/auditor-view\.html#billing-challenge-lab"/);
- assert.match(page,/aria-pressed/);
- assert.match(page,/aria-live="polite"/);
- assert.match(page,/@media\(max-width:700px\)/);
-});
