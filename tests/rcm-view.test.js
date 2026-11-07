@@ -6,11 +6,12 @@ test('RCM view includes complete proposed inventory and seven domains',()=>{
  assert.match(page,/textContent=text/,'dynamic control content uses textContent');
 });
 test('Assurance entry and Auditor View preserve both views and testing guide',()=>{
- const landing=read('independent-assurance.html'),auditor=read('auditor-view.html');
- assert.match(landing,/href="\.\/rcm-view\.html#[^"]+"/);assert.match(landing,/href="\.\/auditor-view\.html"/);
- assert.match(landing,/id="test-approval"/);assert.match(landing,/id="assurance-matrix-body"/);
- assert.match(landing,/id="matrix-details"/);assert.match(landing,/id="matrix-download"/);
- assert.match(landing,/src="\.\/assurance-matrix\.js\?v=1"/);
+ const landing=read('independent-assurance.html'),reference=read('assurance-procedures-reference.html'),auditor=read('auditor-view.html');
+ assert.match(landing,/href="\.\/rcm-view\.html#[^"]+"/);assert.match(landing,/href="\.\/auditor-view\.html#billing-challenge-lab"/);
+ assert.match(landing,/href="\.\/assurance-procedures-reference\.html#testing-guide"/);
+ assert.match(landing,/id="test-approval"/);assert.match(reference,/id="assurance-matrix-body"/);
+ assert.match(reference,/id="matrix-details"/);assert.match(reference,/id="matrix-download"/);
+ assert.match(reference,/src="\.\/assurance-matrix\.js\?v=1"/);
  assert.doesNotMatch(landing,/id="stage-pickers"|id="test-detail"/,'replaced stage selector is no longer rendered');
  assert.match(auditor,/href="\.\/rcm-view\.html"/);assert.match(auditor,/initialScenario/);
 });
@@ -33,3 +34,4 @@ test('Assurance matrix preserves all seven stages, full procedure text and stage
  assert.match(matrix,/a\.steps\.forEach\(\(step,n\)=>rows\.push/,'CSV uses the same full procedure library');
  for(let i=0;i<data.stages.length;i++)assert.ok(data.areas.some(a=>a.stages.includes(i)),'stage '+(i+1)+' has supporting areas');
 });
+

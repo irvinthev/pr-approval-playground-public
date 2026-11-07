@@ -6,8 +6,8 @@ const path=require('node:path');
 const vm=require('node:vm');
 const root=path.resolve(__dirname,'..');
 const read=name=>fs.readFileSync(path.join(root,name),'utf8');
-test('Assurance follows foundation, pipeline, scenarios and assessment',()=>{
- const page=read('independent-assurance.html');
+test('detailed Assurance reference retains foundation, pipeline, scenarios and assessment',()=>{
+ const page=read('assurance-procedures-reference.html');
  const order=['id="foundational-controls"','id="test-approval"','id="failure-scenarios"','id="document-assessment"'];
  for(const id of order)assert.equal(page.split(id).length-1,1,id+' appears once');
  const positions=order.map(id=>page.indexOf(id));
@@ -21,7 +21,7 @@ test('Assurance follows foundation, pipeline, scenarios and assessment',()=>{
  assert.match(page,/id="matrix-details"/);
 });
 test('Foundational controls and selectable scenario content remain intact and fictional',()=>{
- const page=read('independent-assurance.html');
+ const page=read('assurance-procedures-reference.html');
  const script=read('assurance-foundations.js');
  const css=read('assurance-foundations.css');
  for(const text of [page,script,css])assert.doesNotMatch(text,/Braze|Appboy|braze\.com/i);
@@ -31,7 +31,7 @@ test('Foundational controls and selectable scenario content remain intact and fi
  assert.match(page,/Educational test specifications only/);
 });
 test('RCM and seven-stage matrix retain integrated control and framework mappings',()=>{
- const rcm=read('rcm-view.html'),page=read('independent-assurance.html'),matrix=read('assurance-matrix.js');
+ const rcm=read('rcm-view.html'),page=read('assurance-procedures-reference.html'),matrix=read('assurance-matrix.js');
  const match=rcm.match(/const controls=(\[[\s\S]*?\]);\s*const crosswalk=/);
  assert.ok(match,'15-control catalog available');
  const controls=JSON.parse(match[1]);
@@ -53,8 +53,9 @@ test('Assurance JavaScript parses',()=>{
  for(const name of ['assurance-foundations.js','assurance-matrix.js']){
  new vm.Script(read(name),{filename:name});
  }
- for(const name of ['independent-assurance.html','rcm-view.html']){
+ for(const name of ['independent-assurance.html','assurance-procedures-reference.html','rcm-view.html']){
  const inline=[...read(name).matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(m=>m[1]).filter(Boolean);
  for(const [i,source] of inline.entries())new vm.Script(source,{filename:name+'-inline-'+i});
  }
 });
+

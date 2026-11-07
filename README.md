@@ -96,3 +96,10 @@ The overview links to `experience.html?example=shared`, which starts a fresh cas
 The **Auditor Control Validation Lab** first presents a fictional shared-library/billing change with four conditions: a correctly identified downstream financial consumer, a falsely omitted consumer, a detected incomplete map, and an AI-reviewer split. Each selection recalculates a modeled decision using the same financial-impact and authorization functions consumed by `case-model.js` (via `financial-engine.js`). It displays fictional policy/mapping examples, illustrative GitHub/CI configuration, a generated event JSON, and bounded assurance questions. The omission test intentionally demonstrates unsafe automatic eligibility when the supplied map falsely asserts that the shared library is nonfinancial. This does **not** grant real authorization, run any GitHub workflow, or establish control effectiveness.
 
 Below the lab, the previous four fixed fictional scenarios remain available as distinct educational examples. They do not mutate the connected shared-library case. The historical ITGC labels in those legacy workpapers are not the current canonical 15-control RCM identifiers. No proprietary configurations, real pipeline evidence or model calls are included.
+
+
+## Inventory crosswalk and connected Assurance
+
+`rcm-view.html#inventory-crosswalk` reconciles 14 objectives, 15 web safeguards and 16 workbook controls using source-qualified aliases. The CSV preserves workbook row references and related-intent limitations; it does not replace existing IDs or select a canonical inventory. Current web RCM CSV exports include the WEB15 namespace and qualified ID. See [the reconciliation record](docs/CONTROL-INVENTORY-CROSSWALK.md) for extraction, coverage distinctions and baseline test disposition.
+
+The shared-case mount is restored on Assurance. Pipeline, Monitoring and Assurance recompute the same fragment using the existing evaluator. Pipeline tolerates its removed optional caption. Neither repair changes approval policy or model behavior.
