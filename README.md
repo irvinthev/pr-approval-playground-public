@@ -112,6 +112,10 @@ Below the lab, the previous four fixed fictional scenarios remain available as d
 
 The shared-case mount is restored on Assurance. Pipeline, Monitoring and Assurance recompute the same fragment using the existing evaluator. Pipeline tolerates its removed optional caption. Neither repair changes approval policy or model behavior.
 
+## DP-08 — Fictional population reconciliation
+
+The connected Monitoring view offers a bounded source-to-monitoring-feed exercise with matching samples, missing events, unmatched feed records, duplicates, conflicting artifact identifiers, and unknown source completeness. `population-reconciliation.js` is a pure helper used only for presentation: it neither changes the case's revision-bound approval decisions nor establishes the true production population. Each condition remains **population unresolved**, including a matching sample. Proposed investigation, escalation and suspension responsibilities are illustrative, not assigned or authorized. Real evidence requires independently established deployment routes, full extraction parameters, retention, ownership and reconciliation.
+
 ## Connected release integrity and canary response
 
 Continue the shared-library case through qualified review, trusted build and release checks. **Substitute release artifact** demonstrates a blocked release without deleting approval history. After **Simulate standard deployment**, choose a failed canary to halt promotion and require designated human containment, or **Hide deployment approval linkage** to demonstrate an unresolved evidence gap. A healthy canary cannot repair missing linkage. Pipeline, Monitoring and Assurance recompute the same record.
