@@ -56,7 +56,7 @@ Browser verification found a second rendering regression: Pipeline's adapter unc
 
 ## Baseline test disposition
 
-The original complete suite had 171 tests: 159 passed, 12 failed. The shared-case mount failure is an in-scope regression repaired here. The final complete suite has 175 tests: 164 passed, 11 failed. The other 11 failures already existed and are retained; no assertions were deleted to make the suite green.
+The original complete suite had 171 tests: 159 passed, 12 failed. The shared-case mount failure is an in-scope regression repaired here. The initial draft suite had 175 tests: 164 passed, 11 failed. Those 11 failures were reproduced in both push and pull-request CI jobs. The follow-up below resolves them; the table records their original disposition.
 
 | Baseline group | Disposition | Follow-up |
 | --- | --- | --- |
@@ -70,3 +70,14 @@ The original complete suite had 171 tests: 159 passed, 12 failed. The shared-cas
 ## Remaining decisions
 
 Confirm source-qualified naming and canonical relationship semantics; review proposed many-to-many mappings; decide whether to elevate dedicated workbook evidence/IPE/shutdown/exception activities into standalone web safeguards. No renumbering, consolidated control definition, management ownership, timeline, SOX conclusion or external-auditor concurrence is inferred.
+
+## CI follow-up: both failed checks resolved
+
+Both failed GitHub checks ran the same regression suite, once on push and once on pull_request. Their logs confirmed the same 11 failures.
+
+- Restored Assurance’s active primary-navigation marker and semantic chapter footer with a Monitoring return link. Added a direct link to the existing detailed-procedure reference.
+- Preserved the former four-step/matrix/scenario assertions and retargeted them to `assurance-procedures-reference.html`, where those features remain. The main Assurance page is tested for its current three-section order, six assurance objectives, three evidence conclusions, shared-case mount and correct destinations.
+- Auditor entry assertions now require the actual billing-challenge fragment. This tests the intended destination instead of demanding an outdated bare URL.
+- The local-link checker executes the existing bounded Assurance redirect handler for legacy aliases, then verifies the final file and anchor. A new negative test confirms nonexistent pages/fragments still fail and shared-case fragments are not redirected.
+
+Local verification after follow-up: all 176 tests pass, no failures, skips or cancellations. All root JavaScript files pass `node --check`. No checks were disabled, skipped or made optional; the workflow still runs the full suite on both events. Remote CI status must be read for the new head commit before claiming the GitHub checks pass.
