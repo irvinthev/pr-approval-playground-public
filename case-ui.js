@@ -3,7 +3,7 @@
 'use strict';
 const C=window.SharedCase,root=document.getElementById('shared-case-root');if(!root)return;
 const isJourney=location.pathname.endsWith('experience.html'),isMonitoring=location.pathname.endsWith('continuous-monitoring.html');
-let current=C.initial(),active=false,error='';
+let current=C.initial(),active=false,error='',populationChoice='unverified';
 const reflections={};
 const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text)n.textContent=text;if(cls)n.className=cls;return n;};
 const start=el('button','Follow the shared-library case','case-button');start.type='button';root.append(start);
@@ -79,7 +79,8 @@ function render(focus=false){
   const label=el('label','Choose a fictional reconciliation condition');label.htmlFor='case-population-choice';
   const select=el('select');select.id='case-population-choice';select.setAttribute('aria-label','Fictional population reconciliation');
   for(const [id,text] of Object.entries(window.PopulationDemo.SCENARIOS)){const opt=el('option',text);opt.value=id;select.append(opt);}
-  const output=el('div');output.id='case-population-result';
+  select.value=Object.prototype.hasOwnProperty.call(window.PopulationDemo.SCENARIOS,populationChoice)?populationChoice:'unverified';
+  const output=el('div');output.id='case-population-result';output.setAttribute('role','status');output.setAttribute('aria-live','polite');output.setAttribute('aria-atomic','true');
   function show(){
    const r=window.PopulationDemo.simulate(current,select.value),comp=r.comparison;
    output.replaceChildren();
@@ -87,7 +88,7 @@ function render(focus=false){
    if(comp)output.append(el('p','Source records: '+comp.sourceCount+' · Feed records: '+comp.feedCount+' · Missing: '+comp.missing.join(', ')+' · Unmatched: '+comp.unmatched.join(', ')+' · Duplicate: '+comp.duplicates.join(', ')+' · Conflicting digests: '+comp.mismatches.join(', '),'case-note'));
    output.append(el('p','Proposed response: '+r.action,'case-note'),el('p','Proposed responsibility: '+r.proposedAuthority,'case-note'),el('p',r.limitation,'case-note'));
   }
-  select.addEventListener('change',show);lab.append(heading,intro,label,select,output);evidence.append(lab);show();
+  select.addEventListener('change',()=>{populationChoice=select.value;show();});lab.append(heading,intro,label,select,output);evidence.append(lab);show();
  }
 }
  else if(!isJourney)evidence.append(el('h3','Assurance of this same case'),el('p','Reperform the predicates below and inspect the linked revision/version evidence. A simulated result does not establish real control effectiveness.'));
