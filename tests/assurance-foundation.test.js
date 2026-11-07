@@ -45,7 +45,9 @@ test('RCM and seven-stage matrix retain integrated control and framework mapping
  assert.match(matrix,/Framework guidance for this stage/);
  assert.match(rcm,/id="framework-crosswalk"/);
  assert.match(rcm,/id="rcm-csv-download"/);
- assert.match(rcm,/id="framework-csv-download"/);
+ assert.doesNotMatch(rcm,/id="framework-csv-download"/);
+ assert.match(rcm,/id="archived-testing"/);
+ assert.match(rcm,/id="framework-crosswalk"/);
  assert.match(page,/Legacy example workbook/);
  assert.match(page,/rcm-preview-list/); // legacy deep link remains supported
 });
