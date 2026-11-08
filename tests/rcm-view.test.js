@@ -35,3 +35,22 @@ test('Assurance matrix preserves all seven stages, full procedure text and stage
  for(let i=0;i<data.stages.length;i++)assert.ok(data.areas.some(a=>a.stages.includes(i)),'stage '+(i+1)+' has supporting areas');
 });
 
+
+test('AI-07 alone uses the concise four-field order, with framework retained as context',()=>{
+ const page=read('rcm-view.html');
+ const simplified=page.match(/if\(c\.id==='AI-07'\)\{([\s\S]*?)\}else\{/);
+ assert.ok(simplified,'AI-07 has an isolated simplified renderer');
+ const ui=simplified[1];
+ const labels=['Risk','Engineering safeguard','Audit test','Evidence required'];
+ const positions=labels.map(x=>ui.indexOf("'"+x+"'"));
+ assert.ok(positions.every(x=>x>=0),'all four labels exist');
+ assert.ok(positions.every((x,i)=>i===0||x>positions[i-1]),'risk > safeguard > audit test > evidence order');
+ for(const key of ['c.risk','c.activity','c.test','c.evidence'])assert.ok(ui.includes(key),key);
+ assert.match(ui,/c\.framework/,'original framework source stays visible');
+ assert.match(ui,/rcm-framework-note/);
+ assert.doesNotMatch(ui,/Explore a fictional scenario/,'do not force a second journey into AI-07 detail');
+ assert.match(page,/\}else\{const grid=add\('div',null,detail,'rcm-detail-grid'\)/,'other controls keep their renderer');
+ assert.match(page,/@media\(max-width:700px\)\{\.rcm-detail--simple/,'single-column mobile expansion');
+ assert.match(page,/detailRow\.hidden=!open/,'existing expand-collapse preserved');
+ assert.match(page,/location\.hash==='#control-'\+c\.id/,'deep links preserved');
+});
