@@ -35,3 +35,14 @@ test('RCM download wires crosswalk before new export script and does not overwri
  assert.ok(html.indexOf('control-crosswalk.js?v=inventory-1')<html.indexOf('rcm-export.js?v=dp06-1'));
  assert.match(html,/Existing 16-control workbook|inventory-crosswalk/);
 });
+
+test('export provides conventional DevOps RCM fields before historical inventory metadata',()=>{
+ const c={...sample('AI-07','Independent Automated Authorization'),domain:'Change Management & Secure SDLC',engineeringArea:'Policy authorization',engineeringStage:'04 · Authorization',objective:'Only authorized and current changes are automatically approved.',nature:'Preventive',trigger:'On each decision',frameworkRelationship:'NIST SSDF supporting practice; audit applicability conditional',applicability:'Scope dependent'};
+ const rows=buildRows([c],crosswalk),h=rows[0],r=rows[1];
+ const expected=['Common control domain','Engineering area','Engineering SDLC stage','Risk statement','Control ID','Control name','Control objective','Control description / proposed engineering safeguard','Control nature','Trigger / cadence (illustrative)','Evidence / IPE','Testing procedure (illustrative)','Industry reference / qualified relationship','SOX / other applicability'];
+ assert.deepEqual(h.slice(0,expected.length),expected);
+ assert.equal(r[h.indexOf('Control objective')],c.objective);
+ assert.equal(r[h.indexOf('Engineering area')],c.engineeringArea);
+ assert.equal(r[h.indexOf('Industry reference / qualified relationship')],c.frameworkRelationship);
+ assert.equal(r[h.indexOf('Qualified ID')],'WEB15:AI-07');
+});
