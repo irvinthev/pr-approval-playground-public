@@ -109,7 +109,21 @@ test('current chapter footers do not send the main journey to archived perspecti
 test('Assurance step navigation targets its three current sections without duplicating the old selector',()=>{
  const assurance=read('independent-assurance.html');
  const nav=assurance.match(/<nav class="simple-steps"[^>]*>([\s\S]*?)<\/nav>/)?.[1];assert.ok(nav);
- assert.deepEqual([...nav.matchAll(/href="#([^"#]+)"/g)].map(m=>m[1]),['foundational-controls','test-approval','document-assessment']);
- for(const label of ['01 · Foundation','02 · Safeguards','03 · Evidence &amp; conclusion'])assert.ok(nav.includes(label),label);
+ assert.deepEqual([...nav.matchAll(/href="#([^"#]+)"/g)].map(m=>m[1]),['operating-model','foundational-controls','prelaunch-validation','operations-assurance','document-assessment']);
+ for(const label of ['01 · AI model','02 · Foundations','03 · Before go-live','04 · Operations','05 · Independent assurance'])assert.ok(nav.includes(label),label);
  assert.doesNotMatch(assurance,/<nav class="assurance-tools"|id="stage-pickers"|id="test-detail"/);
+});
+
+test('Assurance explains the AI assurance challenge without claiming verified operation',()=>{
+ const html=fs.readFileSync(path.join(root,'independent-assurance.html'),'utf8');
+ for(const term of ['Human developer','Deterministic eligibility','Two AI reviewers','AI sign-off and human merge','Non-AI release controls','Shared responsibility','CODEOWNERS','false-low-risk','parallel testing','Point-in-time','AI assurance challenger','practitioner feedback']){
+  assert.match(html,new RegExp(term,'i'),term);
+ }
+ for(const id of ['operating-model','foundational-controls','prelaunch-validation','operations-assurance','document-assessment'])assert.equal(html.split('id="'+id+'"').length-1,1,id);
+ assert.match(html,/not a prescription/i);
+ assert.match(html,/not claims of implemented controls/i);
+ assert.match(html,/independence, feasibility and cost remain open for discussion/i);
+ assert.match(html,/id="test-approval"/,'legacy deep link stays valid');
+ assert.match(html,/id="shared-case-root" hidden/,'existing case mount preserved');
+ assert.match(html,/src="\.\/case-model\.js/,'existing case engine preserved');
 });
