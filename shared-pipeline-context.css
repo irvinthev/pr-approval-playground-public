@@ -1,0 +1,21 @@
+/* Small, shared navigation: engineering retains its existing seven-stage explorer. */
+.shared-pipeline-context{box-sizing:border-box;margin:18px 0 25px;padding:15px 17px;border:1px solid #3d6075;border-radius:13px;background:#102338;color:#edf7ff;font:14px/1.5 Inter,system-ui,-apple-system,sans-serif}
+.shared-pipeline-context *{box-sizing:border-box}
+.shared-pipeline-context h2{font-size:17px;margin:0 0 5px;color:#f1f7ff}
+.shared-pipeline-context p{margin:0 0 10px;color:#bbd0df}
+.shared-pipeline-context .shared-stages{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin:10px 0}
+.shared-pipeline-context .shared-stage{min-height:46px;display:flex;align-items:center;justify-content:center;padding:7px 5px;font:600 11px/1.25 Inter,system-ui,sans-serif;text-align:center;color:#d5e5ee;background:#20344a;border:1px solid #46627b;border-radius:7px;cursor:pointer}
+.shared-pipeline-context .shared-stage[aria-pressed=true]{background:#2b5785;border-color:#93b8ea;color:#fff}
+.shared-pipeline-context button:focus-visible,.shared-pipeline-context a:focus-visible{outline:3px solid #a5efdb;outline-offset:3px}
+.shared-pipeline-context .shared-lenses{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}
+.shared-pipeline-context .shared-lenses a{display:inline-block;color:#b9e9e0;text-decoration:none;padding:7px 11px;border:1px solid #497b7d;border-radius:7px;font-size:12px}
+.shared-pipeline-context .shared-lenses a[aria-current=page]{background:#20504d;color:#f3fffa;font-weight:750}
+.shared-pipeline-context .shared-detail{border-top:1px solid #3d6075;padding-top:11px}
+.shared-pipeline-context .shared-detail strong{display:block;color:#ebf9ff;font-size:13px;margin:8px 0 3px}
+.shared-pipeline-context .shared-detail p{font-size:13px;line-height:1.6}
+.shared-pipeline-context .shared-rcm{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
+.shared-pipeline-context .shared-rcm a{font-size:12px;color:#b7f5df}
+.shared-pipeline-context .shared-note{font-size:11px;color:#afc4d1;margin:8px 0 0}
+.shared-pipeline-context .shared-stage-summary{font-size:12px}
+.shared-pipeline-context.compact .shared-stages{display:none}
+@media(max-width:780px){.shared-pipeline-context{padding:13px}.shared-pipeline-context .shared-stages{display:flex;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity;padding:0 0 7px}.shared-pipeline-context .shared-stage{flex:0 0 110px;scroll-snap-align:start;font-size:11px}.shared-pipeline-context .shared-lenses a{flex:1 1 120px;text-align:center}}
