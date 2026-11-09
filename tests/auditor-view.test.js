@@ -43,6 +43,6 @@ test('Auditor View rejects unknown states and escapes HTML in logs',()=>{
  const marked=vm.runInContext("highlightJson({value:'<img onerror=alert(1)>&'})",context);assert(!marked.includes('<img'));assert(marked.includes('&lt;img'));assert(marked.includes('&amp;'));
 });
 test('Assurance exposes Auditor View and both pages provide the RCM route',()=>{
- const guide=fs.readFileSync(path.join(__dirname,'../independent-assurance.html'),'utf8');assert.match(guide,/href="\.\/auditor-view\.html#billing-challenge-lab"/);assert.match(html,/aria-label="Assurance tools"/);assert.match(html,/href="\.\/auditor-view.html" aria-current="page"/);assert.match(html,/downloads\/AI_Approval_Example_RCM.xlsx/);assert.match(html,/four original preset scenarios remain separate, fixed illustrations/);assert.match(html,/id="billing-challenge-lab"/);
+ const guide=fs.readFileSync(path.join(__dirname,'../independent-assurance.html'),'utf8');assert.match(guide,/href="\.\/auditor-view\.html#billing-challenge-lab"/);assert.match(html,/aria-label="Assurance tools"/);assert.match(html,/href="\.\/auditor-view.html" aria-current="page"/);assert.match(html,/downloads\/AI_Approval_Example_RCM.xlsx/);assert.match(html,/original fixed-scenario dashboard are preserved below as optional deep dives/);assert.match(html,/id="billing-challenge-lab"/);
 });
 
