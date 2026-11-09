@@ -32,7 +32,7 @@ test('Foundational controls and selectable scenario content remain intact and fi
 });
 test('RCM and seven-stage matrix retain integrated control and framework mappings',()=>{
  const rcm=read('rcm-view.html'),page=read('assurance-procedures-reference.html'),matrix=read('assurance-matrix.js');
- const match=rcm.match(/const controls=(\[[\s\S]*?\]);\s*const domainEl=/);
+ const match=rcm.match(/const controls=(\[[\s\S]*?\]);\s*const searchEl=/);
  assert.ok(match,'15-control catalog available');
  const controls=JSON.parse(match[1]);
  assert.equal(controls.length,15);

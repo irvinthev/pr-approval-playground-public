@@ -1,9 +1,9 @@
 const test=require('node:test');const assert=require('node:assert/strict');const fs=require('node:fs');const path=require('node:path');const read=p=>fs.readFileSync(path.join(__dirname,'..',p),'utf8');
 test('RCM view includes complete proposed inventory and six common domains',()=>{
- const page=read('rcm-view.html');const match=page.match(/const controls=(\[[\s\S]*?\]);\s*const domainEl=/);assert.ok(match,'control registry exists');
+ const page=read('rcm-view.html');const match=page.match(/const controls=(\[[\s\S]*?\]);\s*const searchEl=/);assert.ok(match,'control registry exists');
  const controls=JSON.parse(match[1]);assert.equal(controls.length,15);assert.equal(new Set(controls.map(x=>x.id)).size,15);assert.equal(new Set(controls.map(x=>x.domain)).size,6);
  for(const c of controls){for(const k of ['risk','activity','evidence','test','framework','scenario'])assert.ok(c[k],c.id+' missing '+k);assert.match(c.id,/^AI-\d{2}$/);assert.ok(['pass','split','scope','canary'].includes(c.scenario))}
- assert.match(page,/textContent=text/,'dynamic control content uses textContent');
+ assert.match(page,/node.textContent=value/,'dynamic control content uses textContent');
 });
 test('Assurance entry and Auditor View preserve both views and testing guide',()=>{
  const landing=read('independent-assurance.html'),reference=read('assurance-procedures-reference.html'),auditor=read('auditor-view.html');
@@ -37,7 +37,7 @@ test('Assurance matrix preserves all seven stages, full procedure text and stage
 
 
 test('common-domain RCM retains stable IDs and separate risk, objective, description and testing',()=>{
- const page=read('rcm-view.html');const controls=JSON.parse(page.match(/const controls=(\[[\s\S]*?\]);\s*const domainEl=/)[1]);
+ const page=read('rcm-view.html');const controls=JSON.parse(page.match(/const controls=(\[[\s\S]*?\]);\s*const searchEl=/)[1]);
  assert.equal(controls.length,15);
  for(const c of controls){
   for(const field of ['domain','engineeringArea','engineeringStage','risk','objective','activity','nature','trigger','evidence','test','frameworkRelationship','applicability'])assert.ok(c[field],c.id+' missing '+field);
@@ -47,17 +47,31 @@ test('common-domain RCM retains stable IDs and separate risk, objective, descrip
  assert.match(page,/id="rcm-domain-cards"/);
  assert.match(page,/data-label/);
  assert.match(page,/How would we evaluate this\?/);
- assert.match(page,/risk, precise objective, engineering mechanism/);
- assert.match(page,/not industry-certified/i);
+ assert.match(page,/Explore common DevOps control domains/);
+ assert.match(page,/not a compliance determination/i);
  assert.match(page,/detailRow\.hidden=!open/,'expand/collapse preserved');
  assert.match(page,/location\.hash==='#control-'\+c\.id/,'control deep links preserved');
  assert.match(page,/@media\(max-width:700px\)/,'mobile card view');
 });
-test('AI-07 includes specific revision invalidation, implementation expectations and conclusion limits',()=>{
+test('compact RCM gives each control a distinct, specific testing procedure without duplicating its objective',()=>{
  const page=read('rcm-view.html');
- assert.match(page,/if\(c\.id==='AI-07'\)/);
+ const ids=JSON.parse(page.match(/const controls=(\[[\s\S]*?\]);\s*const searchEl=/)[1]).map(x=>x.id);
+ assert.match(page,/const controlTests=/);
+ const tests=JSON.parse(page.match(/const controlTests=(\{[\s\S]*?\});\s*function add/)[1]);
+ assert.deepEqual(Object.keys(tests).sort(),ids.sort());
+ for(const [id,steps] of Object.entries(tests)){assert.equal(steps.length,3,id);assert.ok(steps.every(x=>x.length>45),id)}
+ assert.match(page,/entry\(detail,'Engineering safeguard',c\.activity\)/);
+ assert.match(page,/entry\(detail,'Evidence \/ IPE',c\.evidence\)/);
+ assert.doesNotMatch(page,/entry\(grid,'Risk statement'/);
+ assert.doesNotMatch(page,/Existing test prompt/);
+ assert.doesNotMatch(page,/id="domain"/,'single domain selector is the card group');
+ assert.doesNotMatch(page,/rcm-domain-all"/,'no duplicate All Controls card');
+ assert.match(page,/id="rcm-clear-filter"/,'clear filter still available');
+ assert.match(page,/selectedDomain===name\?'':name/,'selecting a card twice clears selection');
+ assert.match(page,/A simulated rejection does not establish production enforcement/);
  assert.match(page,/approve revision A; push revision B; attempt merge with A/);
  assert.match(page,/Independently establish approval and policy-configuration populations/);
- assert.match(page,/A simulated rejection does not establish production enforcement/);
- assert.match(page,/Open related Engineering \/ Assurance example/);
+ assert.match(page,/Open related Engineering \/ Assurance example|Explore related Engineering \/ Assurance example/);
+ const control=JSON.parse(page.match(/const controls=(\[[\s\S]*?\]);\s*const searchEl=/)[1]).find(x=>x.id==='AI-09');
+ assert.equal(control.title,'Human Approval & Escalation');
 });
