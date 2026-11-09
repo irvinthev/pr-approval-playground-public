@@ -129,3 +129,10 @@ Pre-deployment release eligibility and post-deployment promotion are separate. C
 ## Enter, inspect and advance the connected case
 
 The homepage's **Follow one change** action opens the connected shared-library case directly, alongside the broader operating-model entry. In the connected journey, **Advance the simulation** sits above the pipeline; those actions change the fictional record. Stage selection stays in the inspector and is labeled **INSPECTING STAGE**. It never advances the case or grants approval. After a valid approval, **Push a new revision** is visible in the action area; it uses the existing PUSH transition and retains prior approval history. The default fixed walkthrough and evaluation rules remain unchanged.
+
+
+## Worked Engineering / Assurance examples
+
+Auditor View now features standard automated eligibility, hidden billing dependencies, approval-policy administration and missing deployment records. Each uses a common viewer with a condition selector, a simulated workflow outcome, selected evidence fields, an expandable record, three testing layers, and current WEB15 control links. Assurance and relevant RCM rows link directly to these examples.
+
+The adapter in `worked-examples.js` reuses the existing financial, dependency-challenge and population evaluators. These bounded examples have independent sample inputs; they do not mutate the connected journey. A missing dependency may expose unsafe eligibility, and matching population samples always leave completeness unresolved. No real approval, production control, or audit conclusion is established. Existing labs, fixed examples, control IDs and CSV semantics remain unchanged.
