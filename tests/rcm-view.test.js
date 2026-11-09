@@ -47,8 +47,8 @@ test('common-domain RCM retains stable IDs and separate risk, objective, descrip
  assert.match(page,/id="rcm-domain-cards"/);
  assert.match(page,/data-label/);
  assert.match(page,/How would we evaluate this\?/);
- assert.match(page,/risk, precise objective, engineering mechanism/);
- assert.match(page,/not industry-certified/i);
+ assert.match(page,/Explore common DevOps control domains/);
+ assert.match(page,/not a compliance determination/i);
  assert.match(page,/detailRow\.hidden=!open/,'expand/collapse preserved');
  assert.match(page,/location\.hash==='#control-'\+c\.id/,'control deep links preserved');
  assert.match(page,/@media\(max-width:700px\)/,'mobile card view');
