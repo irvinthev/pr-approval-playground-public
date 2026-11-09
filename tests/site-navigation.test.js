@@ -73,7 +73,8 @@ test('Assurance presents three core sections and links to detailed testing and l
  const markers=['id="foundational-controls"','id="test-approval"','id="document-assessment"'];
  for(const marker of markers)assert.equal(html.split(marker).length-1,1,marker);
  assert.ok(markers.every((marker,i)=>i===0||html.indexOf(marker)>html.indexOf(markers[i-1])));
- for(const objective of ['Change eligibility','AI reliability','Authorization','Policy integrity','Deployment integrity','Continuous monitoring'])assert.ok(html.includes('<td>'+objective+'</td>'),objective);
+ for(const item of ['Validate the configuration','Challenge the AI reviewers','Test the end-to-end workflow','Authorize go-live'])assert.ok(html.includes('<strong>'+item+'</strong>'),item);
+ assert.doesNotMatch(html,/class="assurance-table-scroll"|class="testing-details"/,'spreadsheet is removed from Assurance landing');
  for(const conclusion of ['Design','Implementation','Operation over time'])assert.ok(html.includes('<strong>'+conclusion+'</strong>'),conclusion);
  assert.match(html,/href="\.\/rcm-view\.html#download-current-rcm"/);
  assert.match(html,/href="\.\/auditor-view\.html#billing-challenge-lab"/);
@@ -152,4 +153,20 @@ test('Assurance mobile reading layout is constrained and audit conclusions avoid
  for(const label of ['Design','Implementation','Operation over time'])assert.match(html,new RegExp('<strong>'+label+'</strong>'));
  assert.match(html,/href="\.\/auditor-view\.html#billing-challenge-lab"/);
  assert.match(html,/href="\.\/rcm-view\.html#download-current-rcm"/);
+});
+
+test('Assurance Section 03 presents four go-live validations without an embedded matrix',()=>{
+ const page=read('independent-assurance.html');
+ const section=page.match(/<section class="simple-block" id="prelaunch-validation">([\s\S]*?)<\/section>/)?.[1];
+ assert.ok(section);
+ assert.match(section,/03 \/ BEFORE GO-LIVE/);
+ assert.match(section,/How would we validate this before enabling AI approval\?/);
+ for(const heading of ['Validate the configuration','Challenge the AI reviewers','Test the end-to-end workflow','Authorize go-live']){
+  assert.match(section,new RegExp('<strong>'+heading+'<\\/strong>'));
+ }
+ assert.equal((section.match(/<li>/g)||[]).length,4);
+ assert.doesNotMatch(section,/<table|<details|assurance-table-scroll/);
+ assert.match(section,/id="test-approval"/,'legacy testing anchor retained');
+ assert.match(section,/href="\.\/rcm-view\.html#download-current-rcm"/,'detailed testing stays linked');
+ assert.match(page,/\.simple-assurance\{max-width:960px;margin:18px auto 48px\}/,'landscape reading width centered');
 });
