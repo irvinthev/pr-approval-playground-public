@@ -142,3 +142,14 @@ test('Assurance first screen teaches shared-library deterministic exclusion befo
  assert.equal(html.split('class="assurance-example"').length-1,1,'one case only');
  assert.match(html,/id="shared-case-root" hidden/,'case model mount is retained');
 });
+
+test('Assurance mobile reading layout is constrained and audit conclusions avoid redundant card stacks',()=>{
+ const html=read('independent-assurance.html');
+ assert.match(html,/class="assurance-verdicts"/);
+ assert.doesNotMatch(html,/class="status-cards"/);
+ assert.match(html,/\.simple-assurance>section\{width:100%;max-width:100%;min-width:0\}/);
+ assert.match(html,/@media\(max-width:700px\)\{html,body\{width:100%;max-width:100%;margin:0\}/);
+ for(const label of ['Design','Implementation','Operation over time'])assert.match(html,new RegExp('<strong>'+label+'</strong>'));
+ assert.match(html,/href="\.\/auditor-view\.html#billing-challenge-lab"/);
+ assert.match(html,/href="\.\/rcm-view\.html#download-current-rcm"/);
+});
