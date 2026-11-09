@@ -127,3 +127,18 @@ test('Assurance explains the AI assurance challenge without claiming verified op
  assert.match(html,/id="shared-case-root" hidden/,'existing case mount preserved');
  assert.match(html,/src="\.\/case-model\.js/,'existing case engine preserved');
 });
+
+test('Assurance first screen teaches shared-library deterministic exclusion before the chapter navigation',()=>{
+ const html=read('independent-assurance.html');
+ const caseStart=html.indexOf('class="assurance-example"');
+ const navStart=html.indexOf('<nav class="simple-steps"');
+ assert.ok(caseStart>0&&caseStart<navStart,'case leads before chapter selector');
+ for(const phrase of ['START HERE / ONE FICTIONAL PR','shared-library','AI REVIEWER A','AI REVIEWER B','DETERMINISTIC ELIGIBILITY','Financial dependency identified','HUMAN REVIEW REQUIRED','human approval path','Illustrative result']){
+  assert.ok(html.includes(phrase),phrase);
+ }
+ assert.match(html,/href="\.\/auditor-view\.html#billing-challenge-lab">Challenge the decision/);
+ assert.match(html,/href="#foundational-controls">See what must be tested/);
+ assert.match(html,/href="\.\/rcm-view\.html#download-current-rcm">Inspect the proposed controls/);
+ assert.equal(html.split('class="assurance-example"').length-1,1,'one case only');
+ assert.match(html,/id="shared-case-root" hidden/,'case model mount is retained');
+});
