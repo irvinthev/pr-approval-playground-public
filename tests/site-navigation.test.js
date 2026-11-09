@@ -147,7 +147,7 @@ test('Assurance mobile reading layout is constrained and audit conclusions avoid
  const html=read('independent-assurance.html');
  assert.match(html,/class="assurance-verdicts"/);
  assert.doesNotMatch(html,/class="status-cards"/);
- assert.match(html,/\.simple-assurance>section\{width:100%;max-width:100%;min-width:0\}/);
+ assert.match(html,/\.simple-assurance>footer\{width:100%;max-width:100%;min-width:0\}/);
  assert.match(html,/@media\(max-width:700px\)\{html,body\{width:100%;max-width:100%;margin:0\}/);
  for(const label of ['Design','Implementation','Operation over time'])assert.match(html,new RegExp('<strong>'+label+'</strong>'));
  assert.match(html,/href="\.\/auditor-view\.html#billing-challenge-lab"/);
