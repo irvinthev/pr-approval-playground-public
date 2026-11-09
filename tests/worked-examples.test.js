@@ -30,3 +30,22 @@ test('viewer and Assurance expose the examples and related RCM controls have des
  for(const d of Object.values(W.definitions))for(const id of d.controls)assert.ok(read('rcm-view.html').includes('"id":"'+id+'"'));
  assert.match(read('rcm-view.html'),/example=population#worked-examples/);
 });
+
+test('revision-binding guard is explicitly scenario-adapter behavior, not an asserted shared-engine guarantee',()=>{
+ const src=fs.readFileSync(path.join(__dirname,'..','worked-examples.js'),'utf8');
+ assert.match(src,/Example-adapter guard only/);
+ assert.equal(W.evaluate('standard','stale').record.revisionGuardSource,'worked-example adapter; not the shared eligibility evaluator');
+});
+test('one primary workpaper and optional legacy deep dives retain distinct links',()=>{
+ const read=f=>fs.readFileSync(path.join(__dirname,'..',f),'utf8');
+ const html=read('auditor-view.html'),ui=read('worked-examples-ui.js');
+ assert.match(html,/id="dependency-deep-dive"/);
+ assert.match(html,/id="fixed-pipeline-deep-dive"/);
+ assert.match(ui,/Engineering observation/);
+ assert.match(ui,/Expected control behavior/);
+ assert.match(ui,/Observed simulation result/);
+ assert.match(ui,/Remaining independent verification/);
+ assert.match(ui,/Permissible conclusion/);
+ assert.match(ui,/Supporting safeguards & dependencies/);
+ assert.match(ui,/primary:\x27AI-07\x27/);
+});
