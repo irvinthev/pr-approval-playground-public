@@ -33,7 +33,7 @@ function addFact(parent,title,value,extra){const s=node('section',null,'we-fact'
 function render(announce=false){
  const x=W.evaluate(id,condition),story=frame[id][condition];
  const observation=story[0],challenge=story.length===5?story[1]:(condition==='baseline'?'Assess the initial eligible condition.':story[1]);
- const expected=story.length===5?story[2]:story.length===4?story[2]:'';
+ const expected=story.length===5?story[2]:story[1];
  const observed=story.length===5?story[3]:story[2];
  const verification=story.length===5?story[4]:story[3];
  host.replaceChildren();host.dataset.view=view;
