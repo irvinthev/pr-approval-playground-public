@@ -47,5 +47,5 @@ test('one primary workpaper and optional legacy deep dives retain distinct links
  assert.match(ui,/Remaining independent verification/);
  assert.match(ui,/Permissible conclusion/);
  assert.match(ui,/Supporting safeguards & dependencies/);
- assert.match(ui,/primary:\x27AI-07\x27/);
+ assert.match(ui,/standard:'AI-07'/);
 });
