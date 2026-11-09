@@ -5,3 +5,29 @@
 .we-decision{margin:18px 0;padding:18px;border-left:4px solid #3d6785;background:#edf3f8;border-radius:8px}.we-decision p:last-child{margin-bottom:0}.we-panes{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start;min-width:0}.we-panes>section{min-width:0;padding:22px;border-radius:13px}.we-engineering{background:#102330;color:#e7eff7}.we-engineering dl{display:grid;grid-template-columns:minmax(100px,1fr) minmax(0,1.4fr);gap:12px;font-size:14px}.we-engineering dt{color:#aac1d0}.we-engineering dd{margin:0;overflow-wrap:anywhere}.we-engineering details{border-top:1px solid #4d6678;padding-top:16px}.we-engineering pre{font-size:12px;line-height:1.6;overflow:auto;max-height:440px;max-width:100%;padding:12px;background:#081722;border-radius:8px}
 .we-assurance{background:#f8fafc;border:1px solid #d0dbe7}.we-assessment{font-weight:700;color:#4c6378}.we-assurance details{border:1px solid #bdd4cd;border-left:4px solid #25775a;border-radius:8px;background:#edf7f1;padding:15px}.we-assurance h4{margin:18px 0 4px}.we-controls{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}.we-controls strong{width:100%}#worked-examples a{color:#165ea2;font-weight:650}.we-footer{display:flex;flex-wrap:wrap;gap:18px;margin:22px 0}.we-boundary{font-size:13px;color:#53697c}.we-tabs{display:none}.we-sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
 @media(max-width:760px){#worked-examples{padding:16px;margin:20px 0 32px}.we-choices{grid-template-columns:1fr 1fr}.we-choices button{font-size:14px;text-align:left}.we-panes{grid-template-columns:1fr}.we-tabs{display:flex;gap:8px;margin:16px 0}.we-tabs button{flex:1;font-size:14px}.we-panes>section{padding:18px}#worked-examples[data-view=engineering] .we-assurance,#worked-examples[data-view=assurance] .we-engineering{display:none}.we-context select{font-size:16px}.we-footer{flex-direction:column}.we-engineering dl{grid-template-columns:1fr}.we-engineering dd{margin-bottom:10px}}
+
+/* Same dark Engineering / light Assurance split-screen design as the original workpaper. */
+#worked-examples{max-width:none;margin:22px 0 30px}
+#worked-examples .we-panes{align-items:stretch}
+#worked-examples .we-panes>.pane{padding:0;overflow:hidden;border-radius:14px;min-width:0}
+#worked-examples .we-engineering{background:#111c28;border-color:#233344;color:#e5edf6}
+#worked-examples .we-assurance{background:white;border:1px solid #d5deeb;color:#182633}
+#worked-examples .pane-header{padding:16px 20px;display:flex;align-items:center;justify-content:space-between}
+#worked-examples .pane-header h3{font-size:17px;margin:0}
+#worked-examples .we-engineering .pane-header{background:#152230;border-bottom:1px solid #2a394a}
+#worked-examples .we-assurance .pane-header{background:#fbfcfd;border-bottom:1px solid #d5deeb}
+#worked-examples .we-pane-body{padding:20px}
+#worked-examples .we-engineering .we-evidence-json{margin-top:18px;border-top:1px solid #425368;padding-top:14px}
+#worked-examples .we-fact{padding:12px 14px;margin:12px 0;border:1px solid #dce3eb;border-radius:8px;background:#f8fafc}
+#worked-examples .we-fact h4{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:#536478;margin:0 0 6px}
+#worked-examples .we-fact p{font-size:13px;line-height:1.55;margin:0}
+#worked-examples .we-limit{border-left:4px solid #ae7834;background:#fff8ed}
+#worked-examples .we-controls{display:block;margin-top:18px}
+#worked-examples .we-controls details{margin-top:10px;background:#f3f7fc;border-color:#d3dce6;border-left:3px solid #507ca6}
+#worked-examples .we-controls details a{display:inline-block;margin:8px 12px 0 0;font-size:12px}
+#worked-examples .we-primary{display:inline-flex;margin:6px 0}
+#worked-examples .we-testing{margin-top:16px}
+.legacy-experience{border:1px solid #cfdbe8;border-radius:12px;background:#fff;margin:18px 0 24px;padding:16px 18px}
+.legacy-experience>summary{font-size:15px;font-weight:750;color:#183a60;cursor:pointer;min-height:44px;padding:9px 2px}
+.legacy-experience>.legacy-intro{font-size:13px;color:#50637b;margin:0 0 15px}
+@media(max-width:760px){#worked-examples .we-panes{display:block}#worked-examples .we-panes>.pane{margin-top:0}#worked-examples .we-pane-body{padding:15px}}
