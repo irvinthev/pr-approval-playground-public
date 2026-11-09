@@ -30,7 +30,19 @@ function stageDetail(stage,where){
  const record=model.trace[stage.id];
  const title=element('strong','Stage '+String(stage.id+1).padStart(2,'0')+' · '+stage.title,where);
  title.className='shared-stage-summary';
- if(!record){element('p',stage.summary+' Detailed evidence expectations are currently illustrated for stages 02, 04 and 07.',where);return}
+ if(!record){
+ element('p',stage.summary+' Detailed assurance evidence mapping is currently illustrated for stages 02, 04 and 07.',where);
+ if(page==='assurance'){
+  const procedure=model.assuranceTests&&model.assuranceTests[stage.id];
+  if(procedure){
+   const details=element('details',null,where,'shared-ia-procedure');
+   element('summary','How IA tests it · procedures and expected results',details);
+   for(const [label,field] of [['Prepare & obtain','preparation'],['Execute / negative test','execution'],['Expected result','expected'],['Test operation over time','operation'],['Retain in workpaper','retain']]){
+    element('strong',label,details);element('p',procedure[field],details);
+   }
+  }
+ }return;
+}
  const lens=(engineering&&new URLSearchParams(root.location.search).get('view')==='monitor')?'monitoring':page;
  element('p',record.question,where);
  if(lens==='risk'){
@@ -45,6 +57,14 @@ function stageDetail(stage,where){
   element('strong','Independent assurance challenge',where);element('p',record.assurance,where);
   element('strong','Management evidence to request',where);element('p',record.evidence,where);
   element('strong','What records alone cannot establish',where);element('p',record.limitation,where);
+  const procedure=model.assuranceTests&&model.assuranceTests[stage.id];
+  if(procedure){
+   const details=element('details',null,where,'shared-ia-procedure');
+   const summary=element('summary','How IA tests it · procedures and expected results',details);
+   for(const [label,field] of [['Prepare & obtain','preparation'],['Execute / negative test','execution'],['Expected result','expected'],['Test operation over time','operation'],['Retain in workpaper','retain']]){
+    element('strong',label,details);element('p',procedure[field],details);
+   }
+  }
  }
  const links=element('div',null,where,'shared-rcm');
  for(const id of record.controls){const link=element('a',id,links);link.href='./rcm-view.html#control-'+id}
