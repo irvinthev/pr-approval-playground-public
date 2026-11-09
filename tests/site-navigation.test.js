@@ -170,3 +170,19 @@ test('Assurance Section 03 presents four go-live validations without an embedded
  assert.match(section,/href="\.\/rcm-view\.html#download-current-rcm"/,'detailed testing stays linked');
  assert.match(page,/\.simple-assurance\{max-width:960px;margin:18px auto 48px\}/,'landscape reading width centered');
 });
+
+test('Assurance differentiates authoritative source types and the integration challenge',()=>{
+ const html=read('independent-assurance.html');
+ const start=html.indexOf('id="guidance-map"');
+ const example=html.indexOf('class="assurance-example"');
+ assert.ok(start>0&&start<example,'guidance bridge appears before the illustrative PR');
+ const labels=['AI RISK MANAGEMENT','MANAGEMENT STANDARDS','TECHNICAL SECURITY &amp; SDLC','CONTROLS &amp; ASSESSMENTS','APPLICABLE AUDIT OBLIGATIONS'];
+ for(const label of labels)assert.ok(html.includes(label),label);
+ for(const domain of ['www.nist.gov','www.iso.org','genai.owasp.org','csrc.nist.gov','cloudsecurityalliance.org','pcaobus.org'])assert.ok(html.includes('https://'+domain),domain);
+ assert.equal((html.match(/class="guidance-tile"/g)||[]).length,5);
+ assert.match(html,/From established guidance to practical assurance/);
+ assert.match(html,/not a new regulatory standard, official mapping, certification/);
+ assert.match(html,/target="_blank" rel="noopener noreferrer"/);
+ assert.match(html,/@media\(max-width:620px\)\{\.simple-assurance \.guidance-map/,'source map has explicit mobile layout');
+ assert.match(html,/id="shared-case-root" hidden/);
+});
