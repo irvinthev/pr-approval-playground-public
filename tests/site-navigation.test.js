@@ -117,28 +117,30 @@ test('Assurance step navigation targets its three current sections without dupli
 
 test('Assurance explains the AI assurance challenge without claiming verified operation',()=>{
  const html=fs.readFileSync(path.join(root,'independent-assurance.html'),'utf8');
- for(const term of ['Human developer','Deterministic eligibility','Two AI reviewers','AI sign-off and human merge','Non-AI release controls','Shared responsibility','CODEOWNERS','false-low-risk','parallel testing','Point-in-time','AI assurance challenger','practitioner feedback']){
+ for(const term of ['Human developer','Deterministic eligibility','Two AI review mechanisms','AI sign-off and human merge','Non-AI release controls','Shared responsibility','CODEOWNERS','false-low-risk','parallel testing','Point-in-time','AI assurance challenger','practitioner feedback']){
   assert.match(html,new RegExp(term,'i'),term);
  }
  for(const id of ['operating-model','foundational-controls','prelaunch-validation','operations-assurance','document-assessment'])assert.equal(html.split('id="'+id+'"').length-1,1,id);
- assert.match(html,/not prescriptive/i);
- assert.match(html,/not claims of implemented controls/i);
- assert.match(html,/independence, feasibility and cost remain open for discussion/i);
+ assert.match(html,/not a prescribed architecture/i);
+ assert.match(html,/not verified descriptions of specific products/i);
+ assert.match(html,/Separate mechanisms do not by themselves establish independence/i);
+ assert.match(html,/Nothing on this page establishes production control effectiveness/i);
  assert.match(html,/id="test-approval"/,'legacy deep link stays valid');
  assert.match(html,/id="shared-case-root" hidden/,'existing case mount preserved');
  assert.match(html,/src="\.\/case-model\.js/,'existing case engine preserved');
 });
 
-test('Assurance first screen teaches shared-library deterministic exclusion before the chapter navigation',()=>{
+test('Assurance leads with the operating model and tests before the fictional example',()=>{
  const html=read('independent-assurance.html');
- const caseStart=html.indexOf('class="assurance-example"');
- const navStart=html.indexOf('<nav class="simple-steps"');
- assert.ok(caseStart>0&&caseStart<navStart,'case leads before chapter selector');
- for(const phrase of ['START HERE / ONE FICTIONAL PR','shared-library','AI REVIEWER A','AI REVIEWER B','DETERMINISTIC ELIGIBILITY','Financial dependency identified','HUMAN REVIEW REQUIRED','human approval path','Illustrative result']){
+ const anchors=['<nav class="simple-steps"','id="operating-model"','id="foundational-controls"','id="prelaunch-validation"','id="operations-assurance"','id="document-assessment"','class="guidance-map"','class="assurance-example"','id="worked-example-library"'];
+ const positions=anchors.map(anchor=>html.indexOf(anchor));
+ assert.ok(positions.every(position=>position>0),'all Assurance chapters and examples exist');
+ assert.ok(positions.every((position,i)=>i===0||position>positions[i-1]),'operating model, testing, guidance and examples appear in the intended order');
+ for(const phrase of ['SUPPORTING EXAMPLE / ONE FICTIONAL PR','shared-library','AI REVIEWER A','AI REVIEWER B','DETERMINISTIC ELIGIBILITY','Financial dependency identified','HUMAN REVIEW REQUIRED','human approval path','Illustrative result']){
   assert.ok(html.includes(phrase),phrase);
  }
  assert.match(html,/href="\.\/auditor-view\.html#billing-challenge-lab">Challenge the decision/);
- assert.match(html,/href="#foundational-controls">See what must be tested/);
+ assert.match(html,/href="#foundational-controls">Review what must be tested/);
  assert.match(html,/href="\.\/rcm-view\.html#download-current-rcm">Inspect the proposed controls/);
  assert.equal(html.split('class="assurance-example"').length-1,1,'one case only');
  assert.match(html,/id="shared-case-root" hidden/,'case model mount is retained');
