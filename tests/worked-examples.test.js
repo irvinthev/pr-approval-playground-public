@@ -28,7 +28,7 @@ test('viewer and Assurance expose the examples and related RCM controls have des
  assert.match(read('auditor-view.html'),/id="worked-examples"/);
  assert.match(read('independent-assurance.html'),/example=standard#worked-examples/);
  for(const d of Object.values(W.definitions))for(const id of d.controls)assert.ok(read('rcm-view.html').includes('"id":"'+id+'"'));
- assert.match(read('rcm-view.html'),/example=population#worked-examples/);
+ assert.match(read('rcm-view.html'),/AI-12':'population'/);
 });
 
 test('revision-binding guard is explicitly scenario-adapter behavior, not an asserted shared-engine guarantee',()=>{
