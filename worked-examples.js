@@ -18,10 +18,10 @@ function evaluate(id,condition='baseline'){
  if(id==='standard'){
   const change=F.makeChange('docs',{sha:condition==='stale'?'demo-revision-B':'demo-revision-A',ci:condition!=='failed'});
   const reviewedSha='demo-revision-A',technical=F.assessTechnicalEligibility(change),scope=F.assessFinancialImpact(change);
-  // Current-review identity is part of the review evidence supplied to the existing gate.
+  // Example-adapter guard only: simulate review/SHA binding before the shared authorization resolver.\n  // This does NOT demonstrate that assessTechnicalEligibility itself enforces reviewed SHA.
   if(change.sha!==reviewedSha){technical.eligible=false;technical.reasons.push('Review evidence belongs to revision A; revision B requires fresh review.');}
   const authorization=F.resolveAuthorization(technical,scope,change,null);
-  record={notice:'Fictional sample; no approval issued',change,reviewedSha,technical,scope,authorization,release:'Not evaluated'};
+  record={notice:'Fictional sample; no approval issued',revisionGuardSource:'worked-example adapter; not the shared eligibility evaluator',change,reviewedSha,technical,scope,authorization,release:'Not evaluated'};
   decision=authorization.allowed?'Automated route eligible':'Automated route blocked';why=authorization.reason;
   next=authorization.allowed?'Verify protected authorization and merge enforcement, then build and release requirements.':'Correct the failed condition and obtain current checks and authorization before merge.';
   assessment='Modeled decision only. No real approval, merge, deployment or operating effectiveness has been established.';
