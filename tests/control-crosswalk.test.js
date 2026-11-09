@@ -33,7 +33,7 @@ test('current web RCM export includes its source namespace without renumbering l
  const [head,row]=buildRows([sample],crosswalk);
  assert.equal(row[head.indexOf('Source namespace')],'WEB15');
  assert.equal(row[head.indexOf('Qualified ID')],'WEB15:AI-03');
- assert.equal(row[head.indexOf('ID')],'AI-03');
+ assert.equal(row[head.indexOf('Control ID')],'AI-03');
  assert.match(rcm,/RcmExport\.buildRows\(controls,window\.ControlCrosswalk\)/);
  assert.ok(rcm.indexOf('control-crosswalk.js?v=inventory-1')<rcm.indexOf('rcm-export.js?v=dp06-1'));
  assert.match(rcm,/id="inventory-crosswalk"/);
