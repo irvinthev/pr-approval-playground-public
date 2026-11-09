@@ -19,3 +19,10 @@
 .shared-pipeline-context .shared-stage-summary{font-size:12px}
 .shared-pipeline-context.compact .shared-stages{display:none}
 @media(max-width:780px){.shared-pipeline-context{padding:13px}.shared-pipeline-context .shared-stages{display:flex;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity;padding:0 0 7px}.shared-pipeline-context .shared-stage{flex:0 0 110px;scroll-snap-align:start;font-size:11px}.shared-pipeline-context .shared-lenses a{flex:1 1 120px;text-align:center}}
+
+/* Auditor execution steps are visible on Assurance, separate from management's evidence request. */
+.shared-pipeline-context .shared-ia-procedure{margin:14px 0 10px;border:1px solid #5b807f;border-radius:9px;padding:12px 15px;background:#142f3c}
+.shared-pipeline-context .shared-ia-procedure summary{cursor:pointer;font-size:14px;font-weight:800;color:#a4edda;line-height:1.4}
+.shared-pipeline-context .shared-ia-procedure[open] summary{padding-bottom:8px;border-bottom:1px solid #466671;margin-bottom:10px}
+.shared-pipeline-context .shared-ia-procedure strong{font-size:12px;color:#b6f1de}
+.shared-pipeline-context .shared-ia-procedure p{font-size:13px;margin:2px 0 9px;line-height:1.6;color:#e0ecf3}
