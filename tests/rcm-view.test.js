@@ -1,7 +1,7 @@
 const test=require('node:test');const assert=require('node:assert/strict');const fs=require('node:fs');const path=require('node:path');const read=p=>fs.readFileSync(path.join(__dirname,'..',p),'utf8');
-test('RCM view includes complete proposed inventory and seven domains',()=>{
+test('RCM view includes complete proposed inventory and six common domains',()=>{
  const page=read('rcm-view.html');const match=page.match(/const controls=(\[[\s\S]*?\]);\s*const domainEl=/);assert.ok(match,'control registry exists');
- const controls=JSON.parse(match[1]);assert.equal(controls.length,15);assert.equal(new Set(controls.map(x=>x.id)).size,15);assert.equal(new Set(controls.map(x=>x.domain)).size,7);
+ const controls=JSON.parse(match[1]);assert.equal(controls.length,15);assert.equal(new Set(controls.map(x=>x.id)).size,15);assert.equal(new Set(controls.map(x=>x.domain)).size,6);
  for(const c of controls){for(const k of ['risk','activity','evidence','test','framework','scenario'])assert.ok(c[k],c.id+' missing '+k);assert.match(c.id,/^AI-\d{2}$/);assert.ok(['pass','split','scope','canary'].includes(c.scenario))}
  assert.match(page,/textContent=text/,'dynamic control content uses textContent');
 });
@@ -36,21 +36,28 @@ test('Assurance matrix preserves all seven stages, full procedure text and stage
 });
 
 
-test('AI-07 alone uses the concise four-field order, with framework retained as context',()=>{
+test('common-domain RCM retains stable IDs and separate risk, objective, description and testing',()=>{
+ const page=read('rcm-view.html');const controls=JSON.parse(page.match(/const controls=(\[[\s\S]*?\]);\s*const domainEl=/)[1]);
+ assert.equal(controls.length,15);
+ for(const c of controls){
+  for(const field of ['domain','engineeringArea','engineeringStage','risk','objective','activity','nature','trigger','evidence','test','frameworkRelationship','applicability'])assert.ok(c[field],c.id+' missing '+field);
+  assert.notEqual(c.title,c.objective,c.id+' uses a label as objective');
+  assert.match(c.frameworkRelationship,/support|adapt|practice|principle|audit consideration|audit testing/i);
+ }
+ assert.match(page,/id="rcm-domain-cards"/);
+ assert.match(page,/data-label/);
+ assert.match(page,/How would we evaluate this\?/);
+ assert.match(page,/risk, precise objective, engineering mechanism/);
+ assert.match(page,/not industry-certified/i);
+ assert.match(page,/detailRow\.hidden=!open/,'expand/collapse preserved');
+ assert.match(page,/location\.hash==='#control-'\+c\.id/,'control deep links preserved');
+ assert.match(page,/@media\(max-width:700px\)/,'mobile card view');
+});
+test('AI-07 includes specific revision invalidation, implementation expectations and conclusion limits',()=>{
  const page=read('rcm-view.html');
- const simplified=page.match(/if\(c\.id==='AI-07'\)\{([\s\S]*?)\}else\{/);
- assert.ok(simplified,'AI-07 has an isolated simplified renderer');
- const ui=simplified[1];
- const labels=['Risk','Engineering safeguard','Audit test','Evidence required'];
- const positions=labels.map(x=>ui.indexOf("'"+x+"'"));
- assert.ok(positions.every(x=>x>=0),'all four labels exist');
- assert.ok(positions.every((x,i)=>i===0||x>positions[i-1]),'risk > safeguard > audit test > evidence order');
- for(const key of ['c.risk','c.activity','c.test','c.evidence'])assert.ok(ui.includes(key),key);
- assert.match(ui,/c\.framework/,'original framework source stays visible');
- assert.match(ui,/rcm-framework-note/);
- assert.doesNotMatch(ui,/Explore a fictional scenario/,'do not force a second journey into AI-07 detail');
- assert.match(page,/\}else\{const grid=add\('div',null,detail,'rcm-detail-grid'\)/,'other controls keep their renderer');
- assert.match(page,/@media\(max-width:700px\)\{\.rcm-detail--simple/,'single-column mobile expansion');
- assert.match(page,/detailRow\.hidden=!open/,'existing expand-collapse preserved');
- assert.match(page,/location\.hash==='#control-'\+c\.id/,'deep links preserved');
+ assert.match(page,/if\(c\.id==='AI-07'\)/);
+ assert.match(page,/approve revision A; push revision B; attempt merge with A/);
+ assert.match(page,/Independently establish approval and policy-configuration populations/);
+ assert.match(page,/A simulated rejection does not establish production enforcement/);
+ assert.match(page,/Open related Engineering \/ Assurance example/);
 });
