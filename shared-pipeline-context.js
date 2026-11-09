@@ -42,10 +42,62 @@ const trace={
   controls:['AI-10','AI-11','AI-12','AI-13']
  }
 };
+// Concrete, proposed audit procedures. A test-environment rejection is not operating-period evidence.
+const assuranceTests={
+ 0:{
+  preparation:'Obtain authoritative GitHub PR, commit and branch activity for the period, event-ingestion records, and the documented scope of repositories and actors.',
+  execution:'Select a PR, capture its original SHA, push revision B in an authorized test repository, then compare raw source-control events with screening events and any existing approval for revision A.',
+  expected:'Revision B is screened against its own SHA; stale approval or test results are invalidated. Missing or delayed events are detected and resolved before approval.',
+  operation:'Reconcile the full source-control PR/update population to screening/decision events; investigate unmatched SHAs, retries, bypasses and omitted repositories.',
+  retain:'Source-system PR and commit export, delivery events, screened-decision records, event IDs, timestamped effective configuration, exceptions and reconciliation.'
+ },
+ 1:{
+  preparation:'Obtain approved repository/path exclusions, effective eligibility policy and historical dependency-map snapshots; identify known billing consumers independently from service ownership/build manifests.',
+  execution:'In an authorized test repo, submit three PRs: (a) a shared-library change with a known billing consumer, (b) a deliberately unmapped/unknown consumer, and (c) a protected path; capture policy inputs, map version, evaluated SHA and gate outcomes.',
+  expected:'Each protected or unresolved case is excluded from automated approval and routed to an authorized human path. A failed mandatory CI check cannot pass through human fallback.',
+  operation:'Independently compare sampled eligible decisions with the policy and dependency map effective at each decision; test completeness by reconciling mapped consumers against independently sourced inventories and ownership data.',
+  retain:'Baseline and historical policy/map versions, reference consumer inventory, test PRs and SHAs, decision logs, CI checks, source-enforcement responses and exceptions.'
+ },
+ 2:{
+  preparation:'Obtain the adjudicated reviewer-validation corpus, expected outcomes, reviewer identities, effective model/prompt/tool versions and acceptance criteria.',
+  execution:'Submit known safe, unsafe, indirect financial-dependency and adversarial input cases to each reviewer; separately force a split verdict, malformed output, timeout and review for stale SHA.',
+  expected:'Unsafe false-low classifications are identified in validation; split, invalid, missing or stale assessments cannot satisfy the automated authorization route.',
+  operation:'Reperform selected validation cases and trace sampled approval decisions to complete reviewer outputs and then-effective configurations; review paired reviewer misses and material changes.',
+  retain:'Test inputs and adjudication, reviewer outputs, metrics and thresholds, model/prompt versions, SHA bindings, policy response and human escalations.'
+ },
+ 3:{
+  preparation:'Obtain the effective authorization decision policy, protected GitHub ruleset, authorized issuer grants, required check issuers, bypass actors and version history.',
+  execution:'Authorize revision A in an authorized test environment, push revision B, attempt reuse of A approval; repeat with a missing required check, malformed reviewer output and unauthorized issuer; inspect actual merge enforcement.',
+  expected:'Each stale, missing or unauthorized condition denies automated authorization/merge. Both AI LOW verdicts alone never grant approval authority; a human route cannot override nonwaivable gates.',
+  operation:'Establish an independently sourced merge population and reconcile approved automated decisions by SHA, issuer and effective policy version; investigate missing decisions and bypass events.',
+  retain:'Test PR/SHAs, check issuer and status, reviewer payloads, decision and denial events, effective ruleset/policy history, actor privileges, merge attempts and reconciliations.'
+ },
+ 4:{
+  preparation:'Obtain effective branch/ruleset and merge-queue protections, CI issuer restrictions, build workflow configuration and trusted provenance requirements.',
+  execution:'Attempt merge with a failed check and then a check from an untrusted issuer; push a new commit after qualifying review; attempt to substitute a build artifact or provenance reference.',
+  expected:'Enforcement prevents an invalid merge and rejects substituted or untraceable artifacts; successful build provenance identifies the authorized SHA and exact artifact digest.',
+  operation:'Select from independent merged-PR and build populations; trace required checks, issuer, effective rules, authorized revision, trusted build ID and digest including exception routes.',
+  retain:'Ruleset snapshots, merge and check events, trusted build logs, source SHA, provenance attestation, artifact digest and bypass investigations.'
+ },
+ 5:{
+  preparation:'Obtain production promotion policy, environment restrictions, preproduction test gates, artifact-digest verification rules and permitted deploy identities.',
+  execution:'Attempt preproduction promotion using a mismatched digest, failed environment check and unauthorized deploy identity; examine standard, manual and emergency entry points.',
+  expected:'Each invalid artifact, failed mandatory gate and unauthorized identity is blocked rather than silently promoted.',
+  operation:'For selected releases, trace effective gates, immutable artifacts, environment-check outcomes and authorized promotion actors, including exceptions and alternative routes.',
+  retain:'Promotion configuration and history, preproduction test results, artifact identifiers and digest comparisons, permitted actor grants, denials and releases.'
+ },
+ 6:{
+  preparation:'Obtain the independently sourced inventory of actual production deploys, runtime version/digest records, artifact provenance, release policy and canary thresholds.',
+  execution:'In an authorized controlled test, attempt an alternate release route or artifact-digest substitution, then trigger a canary threshold breach; inspect production gate and rollback responses.',
+  expected:'Unapproved artifacts/paths are blocked or flagged; a specified canary breach halts or rolls back rollout under the documented rule. A dashboard status alone is not proof of the deployed artifact.',
+  operation:'Reconcile the entire actual production deployment population to artifact digest, trusted build, authorized source SHA and release approval; investigate unmatched deployments, false-negative alerts and recovery exceptions.',
+  retain:'Source deployment inventory and runtime digests, provenance, approval and promotion events, alert/canary measurements, incident tickets, stop/rollback evidence and reconciliation.'
+ }
+};
 const urls={risk:'ai-sdlc-risk.html',engineering:'engineering-blueprint.html',monitoring:'continuous-monitoring.html',assurance:'independent-assurance.html'};
 function validStage(v){return typeof v==='string'&&/^[0-6]$/.test(v)?Number(v):null}
 function stageFromLocation(search){return validStage(new URLSearchParams(search||'').get('stage'))}
 function href(lens,stage){if(!Object.prototype.hasOwnProperty.call(urls,lens)||!Number.isInteger(stage)||stage<0||stage>6)throw new TypeError('Unknown perspective or stage');return './'+urls[lens]+'?stage='+stage+(lens==='engineering'?'#technical-requirements':lens==='monitoring'?'#technical-requirements':'#shared-pipeline-context')}
-const api=Object.freeze({stages:Object.freeze(stages),trace:Object.freeze(trace),urls:Object.freeze(urls),validStage,stageFromLocation,href});
+const api=Object.freeze({stages:Object.freeze(stages),trace:Object.freeze(trace),assuranceTests:Object.freeze(assuranceTests),urls:Object.freeze(urls),validStage,stageFromLocation,href});
 if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.SharedPipelineContext=api;
 })(typeof globalThis!=='undefined'?globalThis:this);
