@@ -35,7 +35,7 @@ function stageDetail(stage,where){
  if(page==='assurance'){
   const procedure=model.assuranceTests&&model.assuranceTests[stage.id];
   if(procedure){
-   const details=element('details',null,where,'shared-ia-procedure');
+   const details=element('details',null,where,'shared-ia-procedure');details.open=true;
    element('summary','How IA tests it · procedures and expected results',details);
    for(const [label,field] of [['Prepare & obtain','preparation'],['Execute / negative test','execution'],['Expected result','expected'],['Test operation over time','operation'],['Retain in workpaper','retain']]){
     element('strong',label,details);element('p',procedure[field],details);
@@ -59,7 +59,7 @@ function stageDetail(stage,where){
   element('strong','What records alone cannot establish',where);element('p',record.limitation,where);
   const procedure=model.assuranceTests&&model.assuranceTests[stage.id];
   if(procedure){
-   const details=element('details',null,where,'shared-ia-procedure');
+   const details=element('details',null,where,'shared-ia-procedure');details.open=true;
    const summary=element('summary','How IA tests it · procedures and expected results',details);
    for(const [label,field] of [['Prepare & obtain','preparation'],['Execute / negative test','execution'],['Expected result','expected'],['Test operation over time','operation'],['Retain in workpaper','retain']]){
     element('strong',label,details);element('p',procedure[field],details);
