@@ -1,9 +1,69 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Overview | AI-Enabled SDLC Risk & Assurance Field Guide</title><link rel="stylesheet" href="./site.css"><style>
 .field-hero{max-width:960px;padding:18px 0 32px}.field-hero h1{font-size:clamp(32px,5vw,60px);line-height:1.08;letter-spacing:-.035em;margin:12px 0}.field-hero p{max-width:860px;font-size:18px;color:var(--site-muted)}.field-kicker{font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--site-mint);font-size:12px}.field-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:14px;margin:18px 0 34px}.field-card{border:1px solid var(--site-border);border-radius:12px;padding:20px;background:var(--site-panel);color:var(--site-text);text-decoration:none;display:block}.field-card:hover,.field-card:focus-visible{border-color:var(--site-mint)}.field-card h3{margin:5px 0 10px;font-size:19px}.field-card p{margin:0;color:var(--site-muted);font-size:14px}.field-card small{color:var(--site-mint);font-weight:750;text-transform:uppercase;letter-spacing:.08em}.field-section{padding:26px 0;border-top:1px solid var(--site-border)}.field-section h2{font-size:25px;line-height:1.25;margin:0 0 12px}.field-section p,.field-section li{color:var(--site-muted)}.field-actions{display:flex;flex-wrap:wrap;gap:12px;margin:22px 0}.field-button{display:inline-block;border:1px solid var(--site-mint);color:#061c24;background:var(--site-mint);padding:11px 17px;border-radius:8px;font-weight:800;text-decoration:none}.field-secondary{display:inline-block;border:1px solid var(--site-border);color:var(--site-mint);padding:11px 17px;border-radius:8px;font-weight:700;text-decoration:none}.field-note{border-left:3px solid var(--site-mint);padding:12px 18px;background:var(--site-panel);font-size:14px;color:var(--site-muted);margin:24px 0}.field-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:9px;list-style:none;padding:0}.field-steps li{border:1px solid var(--site-border);border-radius:10px;padding:13px;background:var(--site-panel)}.field-steps li b{display:block;color:var(--site-text)}.field-steps li span{font-size:13px}.field-table{width:100%;border-collapse:collapse}.field-table th,.field-table td{padding:13px;border-bottom:1px solid var(--site-border);text-align:left;vertical-align:top;font-size:14px}.field-table th{color:var(--site-mint)}.field-table td{color:var(--site-muted)}.field-overflow{overflow-x:auto}.field-overflow table{min-width:620px}@media(max-width:620px){.field-hero p{font-size:16px}.field-table th,.field-table td{padding:10px}}
+
+/* Overview uses the same shared stage identifiers, with a single in-place walkthrough. */
+.overview-walkthrough{padding-top:25px}
+.overview-intro{max-width:940px;margin-bottom:18px}
+.overview-stage-choices{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:7px;margin:18px 0}
+.overview-stage-button{display:flex;flex-direction:column;gap:6px;text-align:left;padding:12px 9px;min-height:87px;background:#102738;color:#d7e8ef;border:1px solid #38556d;border-radius:10px;font:inherit;cursor:pointer}
+.overview-stage-number{font-size:12px;color:#9fe7d4;font-weight:800}
+.overview-stage-name{font-size:12px;line-height:1.35;font-weight:700}
+.overview-stage-button[aria-pressed="true"]{background:#204a53;border-color:#a4edda;box-shadow:inset 0 0 0 1px #a4edda;color:#fff}
+.overview-stage-button:hover{border-color:#a4edda}
+.overview-stage-button:focus-visible,.overview-walkthrough button:focus-visible,.overview-walkthrough a:focus-visible{outline:3px solid #a4edda;outline-offset:3px}
+.overview-workspace{border:1px solid #44657b;border-radius:13px;background:#102536;padding:19px}
+.overview-workspace-head{display:flex;align-items:start;justify-content:space-between;gap:12px;border-bottom:1px solid #355367;padding-bottom:13px}
+.overview-workspace-head h3{font-size:23px;margin:4px 0 0;color:#fff}
+.overview-progress{font-size:12px;color:#abcdd4}
+.overview-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;padding:17px 0}
+.overview-detail-grid>div{display:grid;gap:13px;align-content:start}
+.overview-detail-grid h4{font-size:12px;letter-spacing:.03em;color:#a4edda;margin:0 0 4px}
+.overview-detail-grid p{font-size:14px;line-height:1.55;color:#d6e4ec;margin:0}
+.overview-detail-evidence{border-left:1px solid #38566a;padding-left:22px}
+.overview-workspace-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding-top:13px;border-top:1px solid #355367}
+.overview-stage-move{display:flex;gap:8px}
+.overview-stage-move button{font:inherit;border-radius:7px;padding:9px 12px;border:1px solid #5f8792;background:#183b4a;color:#e5f4f8;cursor:pointer}
+.overview-stage-move button:disabled{opacity:.42;cursor:default}
+.overview-related-controls{display:flex;align-items:center;gap:7px;font-size:12px;color:#b7cedd}
+.overview-related-controls span[id]{display:flex;gap:8px;flex-wrap:wrap}
+.overview-related-controls a,.overview-stage-links a{color:#abeed9}
+.overview-stage-links{border-top:1px solid #355367;margin-top:13px;padding-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:12px;color:#b7cedd}
+.overview-stage-links nav{display:flex;gap:8px;flex-wrap:wrap}
+.overview-stage-links nav a{display:inline-block;padding:5px 8px;border:1px solid #476e78;border-radius:6px;text-decoration:none}
+@media(max-width:850px){.overview-stage-choices{display:flex;overflow-x:auto;padding:0 0 8px;scroll-snap-type:x proximity}.overview-stage-button{flex:0 0 124px;scroll-snap-align:start}}
+@media(max-width:650px){.overview-detail-grid{grid-template-columns:1fr;gap:13px}.overview-detail-evidence{border-left:0;border-top:1px solid #38566a;padding-left:0;padding-top:13px}.overview-workspace{padding:14px}.overview-stage-button{flex-basis:116px}.overview-workspace-head h3{font-size:21px}}
 </style></head>
 <body><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html" aria-current="page">Overview</a><a href="./ai-sdlc-risk.html">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Assurance</a></nav></header>
-<section id="main-content" class="field-hero" tabindex="-1"><div class="field-kicker">Engineering · Security · Risk · Assurance</div><h1>Assess AI across the software delivery lifecycle.</h1><p>Where does AI perform work? What authority has it been given? What could fail—and which independently enforced safeguards and evidence support using it responsibly?</p><p>This field guide connects architecture decisions with risk, engineering implementation, monitoring and assurance. AI-assisted PR approval is one important example, not the only possible operating model.</p><div class="field-actions"><a class="field-button" href="./ai-sdlc-risk.html">Start with the AI operating model →</a><a class="field-secondary" href="./experience.html?example=shared">Follow one change →</a><a class="field-secondary" href="#guide">Explore the guide ↓</a></div></section>
+<section id="main-content" class="field-hero" tabindex="-1"><div class="field-kicker">Engineering · Security · Risk · Assurance</div><h1>Assess AI across the software delivery lifecycle.</h1><p>Where does AI perform work? What authority has it been given? What could fail—and which independently enforced safeguards and evidence support using it responsibly?</p><p>This field guide connects architecture decisions with risk, engineering implementation, monitoring and assurance. AI-assisted PR approval is one important example, not the only possible operating model.</p><div class="field-actions"><a class="field-button" href="./ai-sdlc-risk.html">Start with the AI operating model →</a><a class="field-secondary" href="#overview-pipeline">Explore the seven-stage pipeline ↓</a><a class="field-secondary" href="#guide">Explore the guide ↓</a></div></section>
+<section class="field-section overview-walkthrough" id="overview-pipeline" aria-labelledby="overview-pipeline-heading">
+ <div class="field-kicker">Follow the change / seven stages</div>
+ <h2 id="overview-pipeline-heading">How AI-enabled approval works across the pipeline</h2>
+ <p class="overview-intro">Follow one illustrative shared-library change from PR to production. Click each stage to see what occurs, the decision boundary, what Engineering should demonstrate and how IA would challenge the evidence. The pipeline does not simulate or authorize changes.</p>
+ <div class="overview-stage-choices" id="overview-stage-choices" role="group" aria-label="Select a pipeline stage"></div>
+ <div class="overview-workspace" id="overview-stage-detail">
+  <header class="overview-workspace-head">
+   <div><span class="field-kicker" id="overview-stage-counter">01 / 07</span><h3 id="overview-stage-title">Pull request</h3></div>
+   <span class="overview-progress" id="overview-stage-progress">Stage 1 of 7</span>
+  </header>
+  <div class="overview-detail-grid">
+   <div class="overview-detail-main">
+    <div><h4>What happens</h4><p id="overview-action"></p></div>
+    <div><h4>What determines the route</h4><p id="overview-route"></p></div>
+    <div><h4>What could go wrong</h4><p id="overview-risk"></p></div>
+   </div>
+   <div class="overview-detail-evidence">
+    <div><h4>Management evidence expected</h4><p id="overview-evidence"></p></div>
+    <div><h4>How IA would challenge it</h4><p id="overview-verify"></p></div>
+   </div>
+  </div>
+  <div class="overview-workspace-footer">
+   <div class="overview-stage-move"><button type="button" id="overview-prev">← Previous</button><button type="button" id="overview-next">Next stage →</button></div>
+   <div class="overview-related-controls"><span>RCM:</span><span id="overview-rcm-links"></span></div>
+  </div>
+  <div class="overview-stage-links"><span>Inspect this stage:</span><nav id="overview-stage-links" aria-label="Open the current stage from another perspective"></nav></div>
+ </div>
+</section>
 <section class="field-section" id="guide"><div class="field-kicker">Five questions · One assessment journey</div><h2>What decision are you trying to make?</h2><div class="field-grid">
 <a class="field-card" href="./ai-sdlc-risk.html"><small>01 / Assess</small><h3>AI operating model & risk</h3><p>Identify where AI operates, the permissions and authority it holds, criticality, failure paths and management-defined tolerance.</p></a>
 <a class="field-card" href="./engineering-blueprint.html"><small>02 / Design</small><h3>Engineering & safeguards</h3><p>Examine protected decision boundaries, validation, eligibility, CI/CD enforcement and practical implementation options.</p></a>
@@ -14,4 +74,4 @@
 <section class="field-section"><h2>What this guide is—and is not</h2><p>It offers an illustrative assessment method and proposed safeguards informed by secure-development, AI-risk, software-supply-chain and assurance principles. It does not prescribe an architecture, certify tools, establish SOX compliance, or demonstrate that any organization's controls operate effectively.</p><p>Risk ratings and automated authorization are not generated from an arbitrary score. Management establishes risk tolerance and eligibility boundaries; Engineering implements and enforces them; assurance evaluates the evidence.</p></section>
 <section class="field-section" id="scenario-lab"><h2>Prior interactive experiments</h2><p>Fictional scenarios and simulations have been parked from the primary journey. The exact previous Overview and separate experimental pages remain available for historical reference, not as assessment evidence.</p><a href="./previous-overview.html">Open previous Overview →</a> · <a href="./playground.html">Advanced experiments →</a> · <a href="./experience.html">Pipeline simulator →</a></section>
 <footer class="field-note">Working educational field guide · Proposed methodology v0.2 · Reference/control-inventory reconciliation remains under review. No real AI approval or deployment is performed.</footer>
-</main></body></html>
+</main><script src="./shared-pipeline-context.js?v=1"></script><script src="./overview-pipeline.js?v=1"></script></body></html>
