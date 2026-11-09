@@ -110,7 +110,7 @@ test('Assurance step navigation targets its three current sections without dupli
  const assurance=read('independent-assurance.html');
  const nav=assurance.match(/<nav class="simple-steps"[^>]*>([\s\S]*?)<\/nav>/)?.[1];assert.ok(nav);
  assert.deepEqual([...nav.matchAll(/href="#([^"#]+)"/g)].map(m=>m[1]),['operating-model','foundational-controls','prelaunch-validation','operations-assurance','document-assessment']);
- for(const label of ['01 · AI model','02 · Foundations','03 · Before go-live','04 · Operations','05 · Independent assurance'])assert.ok(nav.includes(label),label);
+ for(const label of ['01 · The model','02 · Trust foundations','03 · Go-live tests','04 · Live monitoring','05 · Audit evidence'])assert.ok(nav.includes(label),label);
  assert.doesNotMatch(assurance,/<nav class="assurance-tools"|id="stage-pickers"|id="test-detail"/);
 });
 
@@ -120,7 +120,7 @@ test('Assurance explains the AI assurance challenge without claiming verified op
   assert.match(html,new RegExp(term,'i'),term);
  }
  for(const id of ['operating-model','foundational-controls','prelaunch-validation','operations-assurance','document-assessment'])assert.equal(html.split('id="'+id+'"').length-1,1,id);
- assert.match(html,/not a prescription/i);
+ assert.match(html,/not prescriptive/i);
  assert.match(html,/not claims of implemented controls/i);
  assert.match(html,/independence, feasibility and cost remain open for discussion/i);
  assert.match(html,/id="test-approval"/,'legacy deep link stays valid');
