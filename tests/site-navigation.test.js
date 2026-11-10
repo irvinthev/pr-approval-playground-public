@@ -107,20 +107,24 @@ test('current chapter footers do not send the main journey to archived perspecti
   assert.doesNotMatch(footer,/href="\.\/(?:experience|risk-controls)\.html"/);
  }
 });
-test('Assurance step navigation targets its three current sections without duplicating the old selector',()=>{
+test('Assurance step navigation targets five authority-to-evidence sections without duplicating the old selector',()=>{
  const assurance=read('independent-assurance.html');
  const nav=assurance.match(/<nav class="simple-steps"[^>]*>([\s\S]*?)<\/nav>/)?.[1];assert.ok(nav);
  assert.deepEqual([...nav.matchAll(/href="#([^"#]+)"/g)].map(m=>m[1]),['operating-model','foundational-controls','prelaunch-validation','operations-assurance','document-assessment']);
- for(const label of ['01 · The model','02 · Trust foundations','03 · Go-live tests','04 · Live monitoring','05 · Audit evidence'])assert.ok(nav.includes(label),label);
+ for(const label of ['01 · AI authority','02 · Enforcement','03 · Validation','04 · Monitoring','05 · Evidence'])assert.ok(nav.includes(label),label);
  assert.doesNotMatch(assurance,/<nav class="assurance-tools"|id="stage-pickers"|id="test-detail"/);
 });
 
 test('Assurance explains the AI assurance challenge without claiming verified operation',()=>{
  const html=fs.readFileSync(path.join(root,'independent-assurance.html'),'utf8');
- for(const term of ['Human developer','Deterministic eligibility','Two AI review mechanisms','AI sign-off and human merge','Non-AI release controls','Shared responsibility','CODEOWNERS','false-low-risk','parallel testing','Point-in-time','AI assurance challenger','practitioner feedback']){
+ for(const term of ['Human developer','Deterministic eligibility','Two AI review mechanisms','AI sign-off and human merge','Non-AI release controls','Shared responsibility','CODEOWNERS','false-low-risk','parallel testing','Point-in-time','AI assurance challenger','Applicable requirements']){
   assert.match(html,new RegExp(term,'i'),term);
  }
  for(const id of ['operating-model','foundational-controls','prelaunch-validation','operations-assurance','document-assessment'])assert.equal(html.split('id="'+id+'"').length-1,1,id);
+ assert.match(html,/not the required architecture or a description of any company's implementation/i);
+ assert.match(html,/Organizations may use one reviewer, multiple reviewers or deterministic automation/i);
+ assert.match(html,/Not every test applies to every operating model/i);
+ assert.match(html,/artifact repository or registry record/i);
  assert.match(html,/not a prescribed architecture/i);
  assert.match(html,/not verified descriptions of specific products/i);
  assert.match(html,/Separate mechanisms do not by themselves establish independence/i);
@@ -130,13 +134,13 @@ test('Assurance explains the AI assurance challenge without claiming verified op
  assert.match(html,/src="\.\/case-model\.js/,'existing case engine preserved');
 });
 
-test('Assurance leads with the operating model and tests before the fictional example',()=>{
+test('Assurance leads with the general methodology before the fictional example',()=>{
  const html=read('independent-assurance.html');
  const anchors=['<nav class="simple-steps"','id="operating-model"','id="foundational-controls"','id="prelaunch-validation"','id="operations-assurance"','id="document-assessment"','class="guidance-map"','class="assurance-example"','id="worked-example-library"'];
  const positions=anchors.map(anchor=>html.indexOf(anchor));
  assert.ok(positions.every(position=>position>0),'all Assurance chapters and examples exist');
  assert.ok(positions.every((position,i)=>i===0||position>positions[i-1]),'operating model, testing, guidance and examples appear in the intended order');
- for(const phrase of ['SUPPORTING EXAMPLE / ONE FICTIONAL PR','shared-library','AI REVIEWER A','AI REVIEWER B','DETERMINISTIC ELIGIBILITY','Financial dependency identified','HUMAN REVIEW REQUIRED','human approval path','Illustrative result']){
+ for(const phrase of ['SUPPORTING CASE STUDY / ONE FICTIONAL PR','shared-library','AI REVIEWER A','AI REVIEWER B','DETERMINISTIC ELIGIBILITY','Financial dependency identified','HUMAN REVIEW REQUIRED','human approval path','Illustrative result']){
   assert.ok(html.includes(phrase),phrase);
  }
  assert.match(html,/href="\.\/auditor-view\.html#billing-challenge-lab">Challenge the decision/);
@@ -161,7 +165,7 @@ test('Assurance Section 03 presents four go-live validations without an embedded
  const page=read('independent-assurance.html');
  const section=page.match(/<section class="simple-block" id="prelaunch-validation">([\s\S]*?)<\/section>/)?.[1];
  assert.ok(section);
- assert.match(section,/03 \/ BEFORE GO-LIVE/);
+ assert.match(section,/03 \/ VALIDATE THE IMPLEMENTATION/);
  assert.match(section,/How would we validate this before enabling AI approval\?/);
  for(const heading of ['Validate the configuration','Challenge the AI reviewers','Test the end-to-end workflow','Authorize go-live']){
   assert.match(section,new RegExp('<strong>'+heading+'<\\/strong>'));
