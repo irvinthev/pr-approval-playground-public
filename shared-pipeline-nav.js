@@ -12,7 +12,7 @@ const parent=host;
 let current=model.stageFromLocation(root.location.search);
 if(current===null)current=engineering?0:1;
 function element(tag,text,into,cls){
- const e=doc.createElement(tag);if(text!==null)e.textContent=(tag==='p'?'Qualified · ':'')+text;if(cls)e.className=cls;(into||parent).appendChild(e);return e;
+ const e=doc.createElement(tag);if(text!==null)e.textContent=text;if(cls)e.className=cls;(into||parent).appendChild(e);return e;
 }
 function clean(){host.replaceChildren()}
 function setStage(i,fromExisting){

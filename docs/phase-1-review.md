@@ -36,7 +36,7 @@ Baseline: 239/239 tests passed. Three initial post-edit failures were obsolete a
 
 ## Claim inventory
 
-See phase-1-claims.md for each added or revised claim and its tag. Static controls/table entries carry explicit inline tags; dynamic explanatory rendering uses text tags. No new risk or authorization evaluator is introduced.
+See phase-1-claims.md for each added or revised claim and its tag. Proposed controls, table entries and dynamic explanations inherit one page-level Qualified label. Strong and Tentative exceptions remain inline. No new risk or authorization evaluator is introduced.
 
 ## Executed checks
 
@@ -48,3 +48,14 @@ See phase-1-claims.md for each added or revised claim and its tag. Static contro
 - Newly used OWASP, GitHub behavior and statistics sources verified through primary documents. Other pre-existing external links/reference mappings were not exhaustively rechecked.
 
 Ready with qualifications for content review. Full /data compliance, runnable artifacts, private-overlay schema and Advanced reference/tag validation remain pending later approved work.
+
+## Presentation refinement before merge
+
+- One page-level Qualified label replaces repetitive paragraph/cell/task labels. Individual Strong/Tentative exceptions remain visible. Claim classifications are unchanged; the inventory records inherited support.
+- Authority → Enforcement → Evidence is the common reading sequence across the five primary pages, alongside the existing authority-first five-part assessment method.
+- Detailed approval-of-record/rubber-stamp tests, GitHub fail-closed behavior, sampling mathematics, reassessment queries, Stage 0 tests, canary designs and technical stage implementation remain available in native expandable sections. No content or technical test is removed.
+- Global scope disclaimers are consolidated on Limits. Specific evidence caveats (such as 24/24 versus 24/25, sampling assumptions and unknown versions) stay beside their examples.
+- Existing evaluator and model files are unchanged by this refinement. Renderer changes remove display prefixes; selection, decision and routing behavior is unchanged.
+- The one legacy Engineering test assertion about repeated GitHub-API disclaimer wording now verifies the shared Limits link and boundary instead.
+
+Presentation refinement verification: 239/239 regression tests passed; root/inline script syntax passed; local linked paths resolved. Desktop review confirmed the common reading sequence, collapsed detailed procedures, retained explicit exceptions, keyboard Enter expansion of approval-of-record and Engineering technical detail, and the Monitoring destination checklist. Core evaluator/model sources are byte-for-byte unchanged from the preceding PR commit. No complete mobile/screen-reader walkthrough was performed.

@@ -1,6 +1,6 @@
 # Phase 1 claim inventory
 
-Exact visible tagged statements in the review branch, including existing claims conservatively retagged. Qualified design/examples do not establish real implementation. Headings and navigation are not evidence claims. Dynamic paragraphs/tasks carry individual text tags.
+Claim support inventory for the review branch. Qualified entries inherit one page-level visible label; they are no longer repeated beside every paragraph, table cell or generated task. Strong and Tentative exceptions remain inline. Design/examples do not establish real implementation. Headings and navigation are not evidence claims. Expandable detail retains its original support classification.
 
 ## index.html
 
@@ -366,7 +366,7 @@ Exact visible tagged statements in the review branch, including existing claims 
 - Qualified · Browser simulations and downloaded example records are editable educational material. They are not authentic evidence, live configuration, immutable logs or production enforcement. Advanced experiments retain historical models; they do not supersede the authority-first method.
 - Qualified · Phase 1 changes content using the existing static architecture. Data-driven rendering, a documented private-overlay schema, runnable queries and exports remain deferred backlog work. The site currently serves no backend, accounts or external API calls.
 
-## Dynamic text tags
+## Dynamic explanations (inherit page-level Qualified)
 
 - Qualified: operating-model.js — each generated takeaway, safeguard, evidence paragraph and question.
 - Qualified: shared-pipeline-nav.js — each generated stage explanation, expectation, evidence limitation and test procedure.

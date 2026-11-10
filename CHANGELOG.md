@@ -11,3 +11,10 @@ Base: main at `518fea6`. Review branch: `v0.3/phase-1-content`.
 - Consolidated global disclaimers on Limits; preserved local evidence limitations. Legacy assertion updates follow the disclaimer relocation; no evaluator changes.
 
 Phase 2 has not started. No new dependencies, backend, data renderer, exports, fixtures or runner. Nothing is merged or deployed by this proposal.
+
+### Pre-merge presentation refinement
+
+- Use a page-level Qualified support label; keep Strong/Tentative exceptions beside their claims.
+- Make Authority → Enforcement → Evidence the common reading path.
+- Preserve deeper technical content in native expandable sections and consolidate global disclaimers on Limits.
+- No evaluator, fixture, authorization, scoring or release behavior changes.

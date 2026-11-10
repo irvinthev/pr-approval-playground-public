@@ -8,7 +8,8 @@ test('Engineering build plan is visible ahead of interactive stage selector',()=
  assert.equal((plan.match(/data-build-stage="[1-7]"/g)||[]).length,7);
  for(let i=0;i<7;i++)assert.ok(plan.includes('engineering-blueprint.html?stage='+i+'#technical-requirements'));
  for(const label of ['What Engineering implements','Done when','Automated approval','Human code review','Both routes rejoin','Human approval never waives mandatory CI'])assert.ok(plan.includes(label),label);
- assert.match(plan,/does not call GitHub APIs/);
+ assert.match(page,/href="\.\/limits\.html"/);
+ assert.match(fs.readFileSync(path.join(__dirname,'..','limits.html'),'utf8'),/not authentic evidence, live configuration/);
 });
 test('Build plan keeps accessible mobile summaries and original interactive chapters',()=>{
  assert.match(page,/build-plan__mobile-label/);

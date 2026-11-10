@@ -1,7 +1,7 @@
 (function(root){
  'use strict';
  const data=root.MonitoringData,$=id=>document.getElementById('mon-'+id);let active=0;
- function el(tag,text,cls){const n=document.createElement(tag);if(text)n.textContent=(tag==='p'?'Qualified · ':'')+text;if(cls)n.className=cls;return n;}
+ function el(tag,text,cls){const n=document.createElement(tag);if(text)n.textContent=text;if(cls)n.className=cls;return n;}
  function source(id){const ref=data.references[id],a=el('a',ref.label+' ↗','source-link');a.href=ref.url;return a;}
  function workedMonitor(key){
   const api=root.MonitoringExamples,example=api.examples.find(e=>e.key===key),box=el('section',null,'worked-monitor');
