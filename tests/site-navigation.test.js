@@ -121,10 +121,11 @@ test('Assurance explains the AI assurance challenge without claiming verified op
   assert.match(html,new RegExp(term,'i'),term);
  }
  for(const id of ['operating-model','foundational-controls','prelaunch-validation','operations-assurance','document-assessment'])assert.equal(html.split('id="'+id+'"').length-1,1,id);
- assert.match(html,/not a prescribed architecture/i);
+ assert.match(html,/href="\.\/limits\.html"/);
+ assert.match(read('limits.html'),/not a prescribed architecture/i);
  assert.match(html,/not verified descriptions of specific products/i);
  assert.match(html,/Separate mechanisms do not by themselves establish independence/i);
- assert.match(html,/Nothing on this page establishes production control effectiveness/i);
+ assert.match(read('limits.html'),/Nothing on this page establishes production control effectiveness/i);
  assert.match(html,/id="test-approval"/,'legacy deep link stays valid');
  assert.match(html,/id="shared-case-root" hidden/,'existing case mount preserved');
  assert.match(html,/src="\.\/case-model\.js/,'existing case engine preserved');
@@ -183,7 +184,7 @@ test('Assurance differentiates authoritative source types and the integration ch
  for(const domain of ['www.nist.gov','www.iso.org','genai.owasp.org','csrc.nist.gov','cloudsecurityalliance.org','pcaobus.org'])assert.ok(html.includes('https://'+domain),domain);
  assert.equal((html.match(/class="guidance-tile"/g)||[]).length,5);
  assert.match(html,/From established guidance to practical assurance/);
- assert.match(html,/not a new regulatory standard, official mapping, certification/);
+ assert.match(read('limits.html'),/not a new regulatory standard, official mapping, certification/);
  assert.match(html,/target="_blank" rel="noopener noreferrer"/);
  assert.match(html,/@media\(max-width:620px\)\{\.simple-assurance \.guidance-map/,'source map has explicit mobile layout');
  assert.match(html,/id="shared-case-root" hidden/);

@@ -1,0 +1,375 @@
+# Phase 1 claim inventory
+
+Exact visible tagged statements in the review branch, including existing claims conservatively retagged. Qualified design/examples do not establish real implementation. Headings and navigation are not evidence claims. Dynamic paragraphs/tasks carry individual text tags.
+
+## index.html
+
+- Qualified · Limits & claim tags · Try it / Advanced
+- Qualified · Where does AI perform work? What authority has it been given? What could fail—and which independently enforced safeguards and evidence support using it responsibly?
+- Qualified · This field guide connects architecture decisions with risk, engineering implementation, monitoring and assurance. AI-assisted PR approval is one important example, not the only possible operating model.
+- Qualified · Identify where AI operates, the permissions and authority it holds, criticality, failure paths and management-defined tolerance.
+- Qualified · Examine protected decision boundaries, validation, eligibility, CI/CD enforcement and practical implementation options.
+- Qualified · Understand coverage, drift, exceptions, suspension, rollback, and the evidence needed to assess ongoing operation.
+- Qualified · Examine proposed objectives, evidence requirements, negative testing and limits on reliance.
+- Qualified · ParticipationWhere AI assists or acts
+- Qualified · AuthorityWhat it can decide or execute
+- Qualified · ExposureWhat can go wrong and its impact
+- Qualified · SafeguardsWhat limits or detects failure
+- Qualified · ToleranceWhat management permits
+- Qualified · AI that writes code, AI that recommends a review decision, and AI that authorizes a production change introduce different risks. More agents do not necessarily provide independent authorization or lower residual risk.
+- Qualified · It offers an illustrative assessment method and proposed safeguards informed by secure-development, AI-risk, software-supply-chain and assurance principles. It does not prescribe an architecture, certify tools, establish SOX compliance, or demonstrate that any organization's controls operate effectively.
+- Qualified · Risk ratings and automated authorization are not generated from an arbitrary score. Management establishes risk tolerance and eligibility boundaries; Engineering implements and enforces them; assurance evaluates the evidence.
+- Qualified · Fictional scenarios and simulations have been parked from the primary journey. The exact previous Overview and separate experimental pages remain available for historical reference, not as assessment evidence.
+- Qualified · Write down what AI may execute, decide, release and change about its own rules.
+- Qualified · Name the independent enforcement point and owner for each limit.
+- Qualified · Identify source evidence and a negative test for each limit; leave unknowns undetermined.
+- Qualified · Engineering enforces; management monitors and accepts scope/tolerance; Internal Audit independently evaluates.
+
+## ai-sdlc-risk.html
+
+- Qualified · Limits & claim tags · Try it / Advanced
+- Qualified · Start with the operating model before evaluating individual changes. Identify which activities AI performs, which actions it may execute, and which decisions it may authorize—not merely how many agents are in the pipeline.
+- Qualified · Choose an example to see what could fail, what safeguards matter, and what evidence to examine. These are overlapping illustrations—not mutually exclusive risk classes or assessments of your environment.
+- Qualified · These linked pages currently focus on AI-assisted PR approval. Their engineering and assurance details do not fully cover every operating model shown above.
+- Qualified · Illustrative guidance, not authorization. Actual permissions, dependencies, system criticality and control operation must be verified. Management defines eligibility and tolerance. These control mappings remain illustrative pending full RCM reconciliation.
+- Qualified · Use this optional view for a mixed operating model or more precise permissions. Your selections replace the example, without changing any real system.
+- Qualified · For each stage, document whether activity is human-led, AI-assisted, AI-executed, or conventional deterministic automation. Then identify effective permissions and independent enforcement. These categories are descriptive—not a Low/Medium/High risk scale.
+- Qualified · Develop
+- Qualified · Can AI alter code, tests, dependencies or configuration?
+- Qualified · Execution; tool and repository permissions
+- Qualified · Review
+- Qualified · Does AI recommend findings or determine whether a required check passes?
+- Qualified · Decision influence; reviewer reliability
+- Qualified · Approve
+- Qualified · Can AI output authorize merge without a human?
+- Qualified · Delegated authorization; independent policy enforcement
+- Qualified · Deploy
+- Qualified · Does AI choose or initiate a release, or does deterministic CI/CD execute an approved release?
+- Qualified · Production execution and release decision
+- Qualified · Monitor / remediate
+- Qualified · Does AI only identify issues, or may it change production state?
+- Qualified · Advisory, remediation and containment permissions
+- Qualified · Source, tests, tools, configuration, and workflows.
+- Qualified · Review findings, eligibility, authorization.
+- Qualified · Deployments, rollbacks, autonomous remediation.
+- Qualified · Policies, thresholds, identities, prompts, models, enforcement.
+- Qualified · 1. MapActivities and effective authority
+- Qualified · 2. AssessCriticality, failure pathways and consequences
+- Qualified · 3. ChallengeApplicable safeguards and supporting evidence
+- Qualified · 4. DecideManagement tolerance and eligibility
+- Qualified · 5. EnforcePermit, human review, block or suspend
+- Qualified · Do not infer a residual-risk rating from AI participation alone. Missing reliability or enforcement evidence results in an undetermined conclusion—not a favorable default.
+- Qualified · AI develops; human approves
+- Qualified · Defects, unsafe tool use and automation bias
+- Qualified · Constrained execution, independent testing, meaningful review
+- Qualified · Human develops; AI authorizes
+- Qualified · False approvals, missed impact, stale verdicts
+- Qualified · Validated classification, protected eligibility, exact-revision enforcement
+- Qualified · AI develops, authorizes and deploys
+- Qualified · Common-mode errors and cross-stage propagation
+- Qualified · Independent enforcement, restricted production authority, containment and recovery
+- Qualified · These are illustrative comparisons. None establishes inherent likelihood, effective controls, or residual risk in a real environment.
+- Qualified · Use these as cumulative starting sets, then extend for exposure and management tolerance. They are recommendations for this guide, not regulatory minima. Match actual effective permissions; selecting an operating model does not establish implementation or permission to proceed.
+- Qualified · AI assists
+- Qualified · Scoped tools and data access; meaningful human authorization; independent tests; protected source/configuration; recorded AI participation.
+- Qualified · Inspect effective permissions, reviewed diff, tests and current human approval. Attempt an AI-only approval or production write; deny it.
+- Qualified · AI participates in approval
+- Qualified · All assistance controls, plus Stage 0 path inventory; independently owned eligibility/policy; exact-revision binding; protected bypass baseline; reviewer version/reliability validation; indeterminate-to-human fallback; retained decision trail; independent deployment reconciliation.
+- Qualified · Reperform eligibility/authorization from versioned inputs. Test stale SHA, unknown version, skipped reviewer, policy outage and a protected dependency; none may auto-authorize.
+- Qualified · AI operates autonomously
+- Qualified · All approval controls, plus independently enforced action/production limits; least-privilege release/remediation identities; artifact-to-approved-source verification; independent telemetry; tested suspension, containment and recovery; controlled scope changes and retrospective reassessment.
+- Qualified · Trace each executed action to its authorization and artifact. Attempt an out-of-bound action, substitute an artifact and disable telemetry; deny unsafe progression and invoke the approved response.
+- Qualified · Management owns the approved scope and boundaries; technical enforcement determines whether each condition holds. Keep these outcomes separate: eligible for conditional authorization, qualified human authorization required, blocked for failed mandatory conditions, and AI capability suspended when its control path is unreliable.
+- Qualified · For a deeper assessment of delegated AI approval authority, review thirteen engineering risks mapped to published OpenAI, Anthropic, Cursor, NIST and OWASP practices. These references support engineering challenge, not a new control requirement.
+- Qualified · Risk & Safeguards reference → · Assurance and evidence → · NIST AI RMF ↗ · NIST SSDF ↗
+- Qualified · Published frameworks inform the questions; they do not endorse this field guide or prescribe its assessment outcomes.
+- Qualified · Record participation, the four authority dimensions, exposure, safeguards and management tolerance.
+- Qualified · Select the minimum control set above and document exceptions and unresolved inputs.
+- Qualified · Record one outcome: eligible for conditional authorization, human authorization required, blocked or AI capability suspended.
+- Qualified · Name the enforcement point, evidence source, negative test, decision owner and reassessment trigger. No computed risk score.
+
+## engineering-blueprint.html
+
+- Qualified · Limits & claim tags · Try it / Advanced
+- Qualified · How would we build, validate, and operate this AI approval workflow?
+- Qualified · Use procured AI reviewers with a separately governed, company-controlled policy decision layer. A vendor platform that both classifies and authorizes concentrates both decisions in its own boundary. It does not establish independent authorization merely by using a second reviewer.
+- Qualified · If the policy layer is down, errors, or cannot verify its inputs, it must not issue automatic authorization. Route to qualified human review through an independently enforced fallback. If fallback cannot establish mandatory safeguards, keep merge and release blocked. Human review does not waive failed CI, protected scope or release integrity requirements.
+- Qualified · Give the policy layer a named owner separate from reviewer administration, protected credentials, its own change control and assurance scope. Retain policy changes, tests, effective versions, decisions and outage/fallback records.
+- Qualified · Inventory standard CI/CD, direct cloud/API changes, break-glass, infrastructure-as-code, feature flags, database migrations and configuration consoles. Record each path’s writable targets, authorized identities, enforcing gate, independent event source, owner and evidence retention. Classify what each event actually changes; not every cloud event is a deployment.
+- Qualified · Query intent: reconcile production write identities and observed changes to the approved path inventory; investigate every unmatched identity or path. Negative test: exercise an authorized nonstandard test path and confirm that enforcement and monitoring both capture it. Unknown coverage stays undetermined.
+- Qualified · Start with GitHub and the existing CI/CD platform. Keep AI code evaluation separate from deterministic authorization, and use one protected enforcement path for both automated and human approvals. The complete build plan is visible here; stage details remain below.
+- Qualified · GitHub protections, CI tests, build and release systems, artifact registry and observability.
+- Qualified · Use adapters and consistent revision-bound verdicts. Avoid commissioning new models first.
+- Qualified · Webhook intake, deterministic eligibility, protected approval authority and decision records.
+- Qualified · Known eligible scope, passing applicable CI, two qualifying current AI reviews and valid independent authorization.
+- Qualified · Protected, uncertain or nonqualifying scope. A qualified reviewer evaluates the code, requests changes where necessary and authorizes the current revision.
+- Qualified · Both routes rejoin at required checks → protected merge → build → release gate. Human approval never waives mandatory CI.
+- Qualified · Explore the seven implementation stages →
+- Qualified · Prove GitHub rules can distinguish bot-eligible from human-required changes. Reproduce a protected dependency, stale approval, failed CI and unauthorized policy/bypass attempt before connecting AI reviewers. Confirm whether native GitHub review rules support the desired dynamic routing.
+- Qualified · Illustrative design only. This public simulator does not call GitHub APIs, run models, grant approval or demonstrate a real deployment control.
+- Qualified · Each stage shows the implementation task and a concrete acceptance test. Select a stage name to inspect its interactive build, validation and monitoring details.
+- Qualified · 1 · Pull requestINTEGRATE
+- Qualified · What to implementReceive verified GitHub webhooks; record repository, PR, author, changed files and exact head SHA.
+- Qualified · Done whenA new commit invalidates prior evaluation; duplicate events do not create duplicate decisions.
+- Qualified · Evidence and queryRetain authenticated event IDs, source revision, fetched PR state and invalidation history. Query: for each current PR head, find evaluations with a different SHA that remain usable; expect zero. Also find source events without intake records.
+- Qualified · Negative testPush commit B while A is under review; replay the event. A must not authorize B; one logical decision per event/revision.
+- Qualified · 2 · Eligibility & CIBUILD + REUSE
+- Qualified · What to implementApply versioned repo, protected-path and dependency rules; collect applicable CI and security-check results.
+- Qualified · Done whenProtected or unknown downstream impact requires human review; failed mandatory checks cannot be waived.
+- Qualified · Evidence and queryRetain policy/map versions, rule matches, exact SHA and CI conclusions. Query: find automated authorizations whose eligibility is not eligible, whose mandatory checks failed, or whose input versions differ; expect zero.
+- Qualified · Negative testRemove a dependency mapping, alter a protected path and fail CI. Unknown impact routes to human; a mandatory failure stays blocked.
+- Qualified · 3 · AI code reviewINTEGRATE
+- Qualified · What to implementAdapt two existing reviewers to a structured schema: findings, risk verdict, current SHA, model and prompt versions.
+- Qualified · Done whenMissing evidence, elevated risk or disagreement cannot authorize the automated route.
+- Qualified · Evidence and queryRetain raw and normalized results, evaluated SHA, reviewer identity, model/prompt versions, time and seeded-canary outcomes. Query: find automated authorizations with missing, unknown-version, stale, neutral, skipped or errored reviewer inputs; expect zero.
+- Qualified · Negative testSuppress one reviewer, return unknown version, inject untrusted instructions and replay a known-unsafe canary. No indeterminate input may qualify.
+- Qualified · 4 · AuthorizationBUILD + CONFIGURE
+- Qualified · What to implementA separately governed policy decision checks eligibility, current CI, reviewer outputs and identity; bot or qualified human issues approval.
+- Qualified · Done whenOnly authorized actors can approve the exact current revision; changes to policy or SHA require reassessment.
+- Qualified · Evidence and queryRetain decision ID, SHA, policy/map versions, input references, authorized actor and approval-of-record. Query: join each authorization to all prerequisites at decision time; find missing, changed or untrusted inputs; expect zero automated authorizations.
+- Qualified · Negative testStop the policy layer, forge the decision issuer or change policy during review. Automatic authorization must stop; qualified human fallback still requires all mandatory safeguards.
+- Qualified · 5 · Merge & buildREUSE + CONFIGURE
+- Qualified · What to implementEnforce GitHub branch rules, required checks and reviewer requirements; link the merged source to a traceable build artifact.
+- Qualified · Done whenUnapproved or stale changes cannot merge; the built artifact has reliable provenance.
+- Qualified · Evidence and queryRetain effective rules, bypass baseline/history, review IDs, head and merge SHAs, build identity and artifact digest. Query: compare effective bypass actors/rules with the approved baseline and find builds without approved merge linkage; investigate every mismatch.
+- Qualified · Negative testPush after approval, use an unapproved bypass identity and substitute source in a build. Reject stale authority and unauthorized paths.
+- Qualified · 6 · Pre-production gateCONFIGURE
+- Qualified · What to implementUse the existing delivery system to validate artifact digest, approved-source linkage and release requirements.
+- Qualified · Done whenAn altered artifact or failed release check blocks production regardless of the approval route.
+- Qualified · Evidence and queryRetain release decision, artifact digest, approved merge SHA, environment and deploy identity. Query: anti-join release artifacts to approved build records by digest and source SHA; expect zero unmatched releases.
+- Qualified · Negative testSwap the artifact or omit approval linkage. Block release even when the PR was approved.
+- Qualified · 7 · Production rolloutINTEGRATE + VALIDATE
+- Qualified · What to implementRecord deployed artifact identity, canary/business signals, exceptions, containment and recovery actions.
+- Qualified · Done whenCanary failure stops promotion; monitoring accounts for standard and alternative production routes.
+- Qualified · Evidence and queryRetain runtime/deployment identity, all production routes, source extraction parameters, signals, alert delivery and response history. Query: reconcile independent production events to monitored deployments in both directions; investigate missing, duplicate and conflicting records.
+- Qualified · Negative testDeploy through an authorized test alternative route and suppress its feed event. Reconciliation must expose it; a failing canary must stop promotion.
+- Qualified · If a vendor cannot supply reviewer model or prompt version, retain the literal value “unknown version”. Treat the review as indeterminate and route to human authorization; a successful API response is insufficient. Record vendor version identifiers as reported, without assuming they identify immutable weights.
+- Tentative · Run a daily seeded canary of adjudicated safe, unsafe and excluded changes in an isolated test workflow using the deployed reviewer configuration. Retain seed/version, expected and observed verdict, configuration fingerprint, run time and missing-run alerts. Unexpected results or missed runs require investigation and suspension under management’s approved response policy. A clean canary does not override unknown version status.
+- Qualified · A black-box canary can reveal some behavior changes. It cannot prove unchanged internals or representative production accuracy. Keep rotating holdout cases and monitor test contamination. Daily cadence is a proposed starting design, not an established standard.
+- Qualified · Select a stage to inspect implementation requirements, acceptance tests, integration choices and the evidence Engineering should retain. To investigate operational exceptions, use the separate Monitoring page.
+- Qualified · Compare fictional records with example rules using the normal and exception sample controls.
+- Qualified · Is this an unauthorized change, a missing approval record, or incorrect linkage? Inspect the release and investigate before concluding.
+- Qualified · What changed, and how is it performing?
+- Qualified · Did the change satisfy the required policy?
+- Qualified · A feed can reconcile to itself while missing manual or alternative deployment routes. The figures below are a separate fictional daily population.
+- Qualified · Different measures: 22 of 24 monitored records initially satisfy the example evidence criteria; 24 of 24 is only the count reconciled within that monitored feed. Neither figure establishes completeness of all production deployment paths.
+- Qualified · Can we trust the evidence and monitoring coverage?
+- Qualified · All 24 records in the monitored feed are accounted for. The complete production population has not yet been independently established.
+- Qualified · Objective: Determine whether the monitoring population captures production deployments across authorized and alternative pathways—not merely whether the 24 records already in the feed reconcile to themselves.
+- Qualified · Establish the routes. Obtain the documented deployment architecture, production write permissions, CI/CD configuration and emergency procedures. Identify direct cloud/API, privileged service-account, manual, break-glass and infrastructure-as-code pathways.
+- Qualified · Develop an independent population. Obtain time-bounded production activity from an appropriate source independent of the monitored CI/CD feed (for example, cloud control-plane events, release or artifact records, and runtime version changes). Validate each source's scope, retention, filters and completeness.
+- Qualified · Reconcile both directions. Match deployments to monitored records using environment, timestamp, service, artifact digest or commit identifier; investigate unmatched, duplicated or altered records. Do not assume every infrastructure event equals a code deployment.
+- Qualified · Test alternative paths. Inspect bypass identities, credentials and permissions; examine actual use and approved negative-test results where feasible. Determine whether emergency and manual production changes generate monitored evidence.
+- Qualified · Evaluate exceptions. Establish whether missing events reflect authorized exceptions, source-collection gaps or potentially unapproved changes; verify remediation and retain the original exception trail.
+- Qualified · An independent release record reveals one manual deployment absent from the standard feed. The observed ratio becomes 24 of 25 known deployments. The discrepancy requires investigation; it does not alone prove an unauthorized change or establish the completeness of the expanded population.
+- Qualified · SOX relevance: Where deployments affect financial-reporting systems, an incomplete population can undermine reliance on change-authorization controls and the completeness of monitoring evidence.
+- Qualified · Assign investigation, shutdown and restart authority.
+- Qualified · Review unsafe approvals and unnecessary escalations separately.
+- Qualified · Test alerts, human fallback and recovery before expanding scope.
+- Qualified · For financially relevant change paths, incomplete production populations or broken links between the approved revision and deployed artifact can undermine evidence that changes were appropriately authorized. An exception requires investigation; a mismatch alone does not prove an unauthorized change.
+- Qualified · Same evidence, multiple uses. Deployment telemetry can support incident response, governance and assurance.
+- Qualified · Monitoring is not assurance. Independent validation must establish coverage, rule accuracy and the integrity of the evidence.
+- Qualified · Investigation status matters. Distinguish confirmed policy deviations, evidence-collection gaps and unresolved assessments.
+- Qualified · Reference designs, not vendor endorsements. Compare integration responsibilities; all options must enforce the same approval and release safeguards.
+- Qualified · Configure commercial AI review and approval capabilities; integrate with existing source-control and delivery gates. Validate vendor behavior first.
+- Qualified · Procure AI review capabilities but implement a separately governed policy decision layer for authorization.
+- Qualified · Own the review orchestration, policy decisions and integrations. Most flexibility, with greater engineering and operational responsibility.
+- Qualified · Technical depth lives here rather than in the visual pipeline walkthrough.
+- Qualified · Define a protected, risk-based matrix; not every check applies to every change. Applicable checks must pass on the current revision before merge, including through the human route.
+- Qualified · Unit tests (logic and boundaries); integration tests (service contracts); E2E tests (critical workflows); financial logic tests (amounts, rounding, entitlements, posting, reconciliation). Define owners, applicability, expected negative cases and required-check names.
+- Qualified · SAST, software composition/dependency analysis, secrets detection and IaC scanning. Define blocking severity, exception authority, coverage, versioned policies and what happens when a scanner is unavailable.
+- Qualified · Run CI and AI analysis in parallel where practical. The policy/merge gates recheck all applicable required results for the current SHA, without allowing reviewer scores or human approval to waive failed technical checks.
+- Qualified · Deliberately fail each applicable check; verify merge blocks. Disable or rename a required job, change CI configuration, update the PR SHA and attempt privileged bypass; verify the intended rejection or separately governed exception.
+- Qualified · Configure bounded traffic or service exposure; artifact identity; predefined observation window; automated stop/promotion rules; protected promotion authority; independently collected health and business signals.
+- Qualified · Track errors, latency and service health alongside relevant business outcome measures such as financial reconciliation and processing completeness. Define thresholds, baselines, minimum signal volume and escalation.
+- Qualified · On breach, stop promotion and contain impact. Execute rollback only if safe; confirm outcome, preserve the exact artifact and record incident ownership, recovery and restart authorization.
+- Qualified · For irreversible migrations, batch workflows and low-volume financial operations, use suitable alternatives such as staged schema changes, compatibility testing, parallel run or shadow evaluation. A green infrastructure canary does not prove financial correctness.
+- Qualified · Identify existing capabilities before commissioning custom components.
+- Qualified · Define: eligible changes, exclusions, owners and human fallback.
+- Qualified · Connect: reviewer outputs, protected approval policy, merge and release checks.
+- Qualified · Validate: unsafe cases and bypasses in shadow mode before a limited pilot.
+- Qualified · Inventory source-control, commercial agent, CI/CD and deployment capabilities and administrative permissions.
+- Qualified · Define low-risk eligibility, protected exclusions, unknown-impact behavior and ownership.
+- Qualified · Verify the procured reviewer interfaces, structured outcomes, versioning and missing-review behavior.
+- Qualified · Configure or develop a separately governed decision path and enforce it at merge.
+- Qualified · Trace approved revisions through builds, release checks and production deployments.
+- Qualified · Run negative and bypass tests, human fallback tests and source-to-artifact reconciliation.
+- Qualified · Evaluate shadow-mode results before a limited, reversible auto-approval pilot.
+- Qualified · Procurement does not establish control effectiveness; verify actual platform policies, service identities and enforced approval semantics.
+- Qualified · AI reviewers classify risk. An authorized and governed policy mechanism determines whether automatic approval is permitted.
+- Qualified · A human approval is not a bypass for failed CI or pre-production technical checks.
+- Qualified · Two reviewers sharing a vendor may share failure modes. Test known unsafe changes and model or prompt changes.
+- Qualified · All scenarios are hypothetical and use no organization-specific configuration or code.
+- Qualified · Define the population, processing window, threshold, owner and closure evidence. Combine event monitoring with periodic owner review; required preventive gates still apply.
+- Qualified · Set response thresholds from the risk and service context. Investigate severe individual cases; compare trends using explicit time windows, denominators and model/policy versions.
+- Qualified · Track false-low-risk approvals and unnecessary human escalations separately. A higher approval rate is not proof of better classification.
+- Qualified · Monitor collection delays, source outages, filters, duplicates, retention and access to logs. Reconcile critical populations against independent sources.
+- Qualified · Retain the original alert, investigation, disposition and remediation. Distinguish a confirmed deviation, a collection gap and an unresolved assessment.
+- Qualified · Define suspension, rollback and restart authority; exercise them. Correcting telemetry does not establish that an unapproved deployment was authorized.
+- Qualified · NIST AI RMF 1.0 · GOVERN 1.5, MANAGE 2.3–2.4 and 4.1–4.3 ↗ · PCAOB AS 1105 · .10 ↗
+- Qualified · Pre-merge: Compare protected required-check definitions to actual outcomes and merged revisions. Investigate failed or absent unit, integration, E2E, financial logic, SAST, SCA, secrets and IaC checks that nonetheless permit merge.
+- Qualified · Canary: Correlate rollout phases and artifact identity with technical error budgets, business reconciliation, promotion decisions, failed rollback and manually initiated releases. Alert when promotion proceeds after a breached threshold or when canary coverage is insufficient.
+- Qualified · Population integrity: Reconcile against independent merge and deployment sources; a complete alert feed cannot be inferred from a green dashboard.
+- Qualified · Illustrative signals, not production-configured monitors. Rollout design →
+- Qualified · DevSecOps application:
+- Qualified · Fictional learning examples. Adapt and validate the design before operational use; this guide does not establish control effectiveness.
+- Qualified · Complete Stage 0 before asserting production-path coverage.
+- Qualified · For each of the seven stages, retain the stated evidence and adapt the query intent to the actual source schema. These are query specifications, not runnable SQL.
+- Qualified · Run each negative test in an authorized test environment; retain observed results and input/configuration versions.
+- Qualified · Verify independently enforced human fallback and suspension. A policy outage cannot become implicit permission.
+- Qualified · Reconcile every known production path against independent sources in both directions.
+- Qualified · Retain source scope, extraction times, filters, retention, joins and unexplained differences.
+- Qualified · 24/24 within a feed is not population completeness. A newly found missing deployment changes the known comparison to 24/25; expanded population completeness remains unresolved.
+- Qualified · Test missing events and alert delivery; assign investigation, suspension and restart authority to management.
+
+## continuous-monitoring.html
+
+- Qualified · Limits & claim tags · Try it / Advanced
+- Qualified · Follow the same seven stages. Connect each risk to the signals, evidence and owner response needed to keep the two-AI-reviewer workflow under control.
+- Qualified · Monitoring agentic CI/CD needs to connect code, agent findings, authorization and what actually reaches production. For SOX-relevant changes, a missing event or an unowned exception can undermine the evidence that financially relevant changes followed the required controls.
+- Qualified · Coverage: Are all revisions, approval routes and production paths represented?
+- Qualified · Judgment: Are unsafe approvals, model changes and human-review backlogs being challenged?
+- Qualified · Response: Who investigates, suspends automation and authorizes recovery?
+- Qualified · Our approach: Apply NIST AI RMF and SSDF, OWASP and SLSA principles to the two-AI-reviewer workflow we are demonstrating. PCAOB evidence principles inform the SOX lens. The signals and responses below are targeted examples, not monitoring rules prescribed by those sources.
+- Qualified · Management owns monitoring and response. Independent assurance evaluates whether the monitoring and underlying evidence can be relied upon.
+- Qualified · Both approval paths remain in view: Human review and approval joins 5 · Merge + build. Expected escalation is not itself a control failure; bypassing it or leaving it unresolved may require action.
+- Qualified · DevSecOps application:
+- Qualified · Each worked monitor compares fictional records against an example rule. Switch between normal and exception samples; expand the supporting explanation or test approach when needed.
+- Qualified · Is this an unauthorized change, a missing approval record, or incorrect linkage? Inspect the release and investigate before concluding.
+- Qualified · What changed, and how is it performing?
+- Qualified · Did the change satisfy the required policy?
+- Qualified · A feed can reconcile to itself while missing manual or alternative deployment routes. The figures below are a separate fictional daily population.
+- Qualified · Different measures: 22 of 24 monitored records initially satisfy the example evidence criteria; 24 of 24 is only the count reconciled within that monitored feed. Neither figure establishes completeness of all production deployment paths.
+- Qualified · Can we trust the evidence and monitoring coverage?
+- Qualified · All 24 records in the monitored feed are accounted for. The complete production population has not yet been independently established.
+- Qualified · Objective: Determine whether the monitoring population captures production deployments across authorized and alternative pathways—not merely whether the 24 records already in the feed reconcile to themselves.
+- Qualified · Establish the routes. Obtain the documented deployment architecture, production write permissions, CI/CD configuration and emergency procedures. Identify direct cloud/API, privileged service-account, manual, break-glass and infrastructure-as-code pathways.
+- Qualified · Develop an independent population. Obtain time-bounded production activity from an appropriate source independent of the monitored CI/CD feed (for example, cloud control-plane events, release or artifact records, and runtime version changes). Validate each source's scope, retention, filters and completeness.
+- Qualified · Reconcile both directions. Match deployments to monitored records using environment, timestamp, service, artifact digest or commit identifier; investigate unmatched, duplicated or altered records. Do not assume every infrastructure event equals a code deployment.
+- Qualified · Test alternative paths. Inspect bypass identities, credentials and permissions; examine actual use and approved negative-test results where feasible. Determine whether emergency and manual production changes generate monitored evidence.
+- Qualified · Evaluate exceptions. Establish whether missing events reflect authorized exceptions, source-collection gaps or potentially unapproved changes; verify remediation and retain the original exception trail.
+- Qualified · An independent release record reveals one manual deployment absent from the standard feed. The observed ratio becomes 24 of 25 known deployments. The discrepancy requires investigation; it does not alone prove an unauthorized change or establish the completeness of the expanded population.
+- Qualified · SOX relevance: Where deployments affect financial-reporting systems, an incomplete population can undermine reliance on change-authorization controls and the completeness of monitoring evidence.
+- Qualified · Assign investigation, shutdown and restart authority.
+- Qualified · Review unsafe approvals and unnecessary escalations separately.
+- Qualified · Test alerts, human fallback and recovery before expanding scope.
+- Qualified · For financially relevant change paths, incomplete production populations or broken links between the approved revision and deployed artifact can undermine evidence that changes were appropriately authorized. An exception requires investigation; a mismatch alone does not prove an unauthorized change.
+- Qualified · Same evidence, multiple uses. Deployment telemetry can support incident response, governance and assurance.
+- Qualified · Monitoring is not assurance. Independent validation must establish coverage, rule accuracy and the integrity of the evidence.
+- Qualified · Investigation status matters. Distinguish confirmed policy deviations, evidence-collection gaps and unresolved assessments.
+- Qualified · Define the population, processing window, threshold, owner and closure evidence. Combine event monitoring with periodic owner review; required preventive gates still apply.
+- Qualified · Set response thresholds from the risk and service context. Investigate severe individual cases; compare trends using explicit time windows, denominators and model/policy versions.
+- Qualified · Track false-low-risk approvals and unnecessary human escalations separately. A higher approval rate is not proof of better classification.
+- Qualified · Monitor collection delays, source outages, filters, duplicates, retention and access to logs. Reconcile critical populations against independent sources.
+- Qualified · Retain the original alert, investigation, disposition and remediation. Distinguish a confirmed deviation, a collection gap and an unresolved assessment.
+- Qualified · Define suspension, rollback and restart authority; exercise them. Correcting telemetry does not establish that an unapproved deployment was authorized.
+- Qualified · NIST AI RMF 1.0 · GOVERN 1.5, MANAGE 2.3–2.4 and 4.1–4.3 ↗ · PCAOB AS 1105 · .10 ↗
+- Qualified · Pre-merge: Compare protected required-check definitions to actual outcomes and merged revisions. Investigate failed or absent unit, integration, E2E, financial logic, SAST, SCA, secrets and IaC checks that nonetheless permit merge.
+- Qualified · Canary: Correlate rollout phases and artifact identity with technical error budgets, business reconciliation, promotion decisions, failed rollback and manually initiated releases. Alert when promotion proceeds after a breached threshold or when canary coverage is insufficient.
+- Qualified · Population integrity: Reconcile against independent merge and deployment sources; a complete alert feed cannot be inferred from a green dashboard.
+- Qualified · Illustrative signals, not production-configured monitors. Rollout design →
+- Qualified · Fictional learning examples. Adapt and validate the design before operational use; this guide does not establish control effectiveness.
+- Qualified · Reconcile every known production path against independent sources in both directions.
+- Qualified · Retain source scope, extraction times, filters, retention, joins and unexplained differences.
+- Qualified · 24/24 within a feed is not population completeness. A newly found missing deployment changes the known comparison to 24/25; expanded population completeness remains unresolved.
+- Qualified · Test missing events and alert delivery; assign investigation, suspension and restart authority to management.
+
+## independent-assurance.html
+
+- Qualified · Limits & claim tags · Try it / Advanced
+- Qualified · AI may generate code, review changes, recommend approval or exercise approval authority. Those are different operating models—and they require different assurance approaches. Practitioners need to understand the AI’s autonomy, the company/vendor responsibility boundaries, and the safeguards surrounding its decisions.
+- Qualified · This field guide explores one proposed model: human-developed code, company-controlled eligibility rules, two AI review mechanisms operating under different responsibility arrangements, AI sign-off, human merge, and existing non-AI deployment controls. Production monitoring connects deployed changes to their originating PR, artifact and deployment job, while controlled feedback improves future safeguards.
+- Qualified · We show how we would evaluate that model: establish foundational controls and trusted inputs, validate the solution before launch, assess ongoing configuration changes and monitoring, and identify the evidence internal and external auditors would need.
+- Qualified · A reviewer is not a developer; a sign-off is not a deployment. In this illustration, humans write code and merge PRs. AI contributes review and a qualifying sign-off; non-AI controls enforce the rest.
+- Qualified · Human developer creates a PR → Deterministic eligibility checks protected scope → Two AI review mechanisms assess an eligible change → AI sign-off and human merge remain separate actions → Non-AI release controls enforce deployment and traceability.
+- Qualified · The proposed pair combines a vendor-managed review service with a company-configured reviewer using a vendor model/runtime. These are illustrative responsibility arrangements, not verified descriptions of specific products. For each mechanism, establish who controls the model, runtime, prompts, reviewer code, policies, permissions and input data—and what the company can inspect, test or change.
+- Qualified · Separate mechanisms do not by themselves establish independence. Shared models, inputs, administrators or credentials may create common failure paths. Review available provider assurance for its actual scope, exceptions and customer responsibilities; validate company-controlled integration and enforcement separately. If vendor internals are unavailable, identify the limit and test observable behavior and surrounding safeguards.
+- Qualified · An AI code generator calls for testing generated changes through the development and review process. An advisory reviewer calls for testing recommendation quality and how humans use it. An AI approval mechanism also calls for testing eligibility boundaries, approval credentials, revision binding, bypasses and escalation. Human merge remains a distinct action; its presence alone does not establish that a substantive human review occurred.
+- Qualified · Determine who or what had authority under the effective policy before looking at who clicked merge. The table is a proposed test model, not a claim about default GitHub behavior.
+- Qualified · Protected policy delegates conditional authorization; valid current decision; human only merges
+- Qualified · Governed policy decision and its authorized service identity. Human merge is execution.
+- Qualified · Join decision ID, policy version, exact reviewed SHA, review inputs, merge actor and merge SHA. Remove valid policy authority: merge must be denied.
+- Qualified · Policy requires substantive human authorization; qualified human reviews current diff and explicitly approves
+- Qualified · The qualified human approval for that revision. AI remains advisory.
+- Qualified · Retain review ID, authorized reviewer, current SHA and substantive review evidence. A merge click alone must not satisfy required human approval.
+- Qualified · AI sign-off followed by a human merge, but no established policy delegation or qualified human approval
+- Qualified · Undetermined. Neither the AI label nor merge actor establishes authority.
+- Qualified · Inspect effective policy and enforcement at that time; suspend automatic eligibility until the authorization path is established.
+- Qualified · Mandatory safeguards fail, or authority is stale, missing or unverifiable
+- Qualified · No valid authorization established.
+- Qualified · Known mandatory failure: blocked. Unverifiable inputs: human review, with merge/release held until required conditions are established.
+- Tentative · Rubber-stamp test: join AI sign-off time, human approval/merge time, reviewed SHA and available human review activity. Flag merges shortly after AI sign-off with no recorded diff view or substantive review comment. Management defines the interval before testing. Inspect a sample and interview reviewers; a short interval or absent comment is an investigation signal, not proof of no review. Diff-view telemetry may be unavailable and is not assumed to exist in GitHub.
+- Qualified · For this approval model, governance, security and trusted inputs must be in place before go-live. Test what constrains the AI and what could undermine the decision: a bot changing its own rules, an administrator bypassing protection, or an incorrect dependency map.
+- Qualified · Global branch protection, CODEOWNERS, required checks, emergency routes and direct-to-production access.
+- Qualified · Independent ownership of approval policy, bot logic and deployment paths; service-account privileges and access reviews.
+- Qualified · Shared responsibility, SOC report scope, tool permissions, prompt injection and restrictions on bot self-modification.
+- Qualified · Repository classification, labels, tagging and dependency mappings: provenance, completeness and who can alter them.
+- Qualified · Do not rely on native status-check requirements alone for the stricter policy. Configure the governed decision layer to validate actual reviewer execution, complete outputs and the current revision. It should issue success only when every required condition holds.
+- Qualified · For this proposed authorization policy, skipped, neutral, missing or errored review means indeterminate, never a pass. Route to qualified human authorization and keep automatic authorization unavailable. A failed mandatory safeguard remains blocked; an unreliable AI control path may require capability suspension.
+- Strong · GitHub native required status checks can accept success, skipped and neutral. A skipped job can report success. GitHub required-check behavior.
+- Qualified · Negative test: feed skipped, neutral, missing, errored and unknown-version results to the policy layer. Reperform its decision from retained inputs. Expect no automatic authorization; test that an absent policy decision cannot be bypassed.
+- Qualified · Before testing, management approves eligible scope, failure definitions, maximum unsafe-authorization and escalation rates, sample size and selection method, subgroup coverage, observation period, escalation capacity and stop/restart criteria. Retain the frozen plan, human-adjudicated expected results, observed decisions and exceptions. Set thresholds before seeing the results. Passing this plan supports a bounded management decision; it is not blanket assurance.
+- Qualified · For zero observed failures in n independent, representative trials with a stable failure probability, the approximate one-sided 95% upper confidence bound is 3/n (rule of three). The exact binomial bound is 1 − 0.05^(1/n). At n = 300 it is about 0.994%, so roughly 300 clean samples supports only “under about 1%” for the tested population and conditions. Fritz Scholz, University of Washington: binomial confidence bounds.
+- Qualified · Repeated canaries, correlated PRs, cherry-picked examples, changing versions or different change types do not establish those assumptions. Count distinct trials, record exclusions and report subgroup gaps. A seeded negative-test suite challenges design; it is not a representative accuracy sample. Reperform counts and confidence bounds; reject exit if the pre-agreed plan or any mandatory negative test fails.
+- Qualified · Before AI can approve changes, Engineering should demonstrate that the configuration, security safeguards, AI review behavior and escalation paths work as intended.
+- Qualified · GitHub protections, agent permissions, model settings, exclusion rules, dependency mapping and approved baselines.
+- Qualified · Known-good and known-bad PRs, incorrect labels, false-low-risk cases, correlated errors and human adjudication.
+- Qualified · Parallel testing, failed checks, reviewer disagreements, protected changes, human escalation and downstream deployment gates.
+- Qualified · Document test results, acceptance criteria, limitations, responsible owners, sign-offs and rollback procedures.
+- Qualified · Six proposed assurance objectives, expected outcomes and evidence requirements are available in the RCM and reference testing library.
+- Qualified · Configuration drift: Changes to rulesets, CODEOWNERS, model or prompt versions, permissions, labels and dependency data must be identified and governed.
+- Qualified · Behavioral checks: Repeated negative tests, reviewer disagreement, skipped evaluations and false-low-risk misses need expected outcomes and escalation.
+- Qualified · Production traceability: Reconcile deployed code to deployment job, build artifact, source SHA and PR; tie incidents back to decisions and govern subsequent fixes.
+- Qualified · Alert health: Monitor data freshness, missing events, alert delivery, exception ownership and the ability to suspend autonomous approval.
+- Qualified · Ownership: First line operates and remediates; second line challenges thresholds and exceptions; third line independently evaluates control evidence. Use deterministic reperformance queries first. An AI assurance challenger is advisory, outside the evidence chain and unable to issue an assurance conclusion or repair missing evidence. Its feasibility and value remain unverified.
+- Qualified · When a dependency or scope mapping changes, identify historical approvals that consumed the affected mapping. Re-evaluate them under the corrected scope without rewriting the original decision. Record the original decision ID, old/new mapping versions, effective time (when the mapping applies), observed time (when the change became known), reassessment time, new conclusion and response owner.
+- Qualified · Query intent: join changed mapping entries to approvals using those entries and effective intervals; anti-join to reassessment records to find omissions. Negative test: discover a protected downstream dependency after deployment. Preserve the original approval, produce a linked reassessment and investigate affected releases. Historical re-evaluation cannot retroactively authorize an unapproved change.
+- Qualified · Management monitoring detects issues and produces records for response and evaluation. Available records still need checks for completeness, accuracy and retention; independent assurance evaluates whether they support the intended conclusion. Monitoring does not independently verify its own evidence. An auditor still needs complete source populations, effective historical configurations, reperformance, exception resolution and period-appropriate testing. Point-in-time testing cannot establish operation over an entire period by itself.
+- Qualified · Design — Is the control architecture appropriate for the AI's authority and risk?
+- Qualified · Implementation — Do the enforced settings and independent negative tests actually work?
+- Qualified · Operation over time — Can complete, reliable evidence substantiate execution, exceptions and approved changes throughout the period?
+- Qualified · Compliance evaluation addresses applicable control and reporting requirements; broader risk management also considers model reliability, vendor exposure, security and operational resilience. The sufficiency of each requires its own judgment.
+- Qualified · Would you trust this architecture? What would you test differently, what would you exclude, and what existing engineering controls could replace what we've proposed? We welcome practitioner feedback and alternatives.
+- Qualified · AI risk, secure software delivery, vendor responsibilities and financial-reporting audits are not the same discipline. These sources contribute different pieces; none alone determines whether this particular AI approval design can be relied upon.
+- Qualified · Identify AI roles, authority, consequences and governance objectives.
+- Qualified · Set organizational responsibilities and management-system expectations for AI and information security.
+- Qualified · Apply AI security threat guidance and secure software-development practices.
+- Qualified · Use cloud and AI control frameworks, implementation and auditing guidance, and vendor questionnaires.
+- Qualified · Apply relevant SOX/ICFR requirements and auditing standards within the actual audit scope.
+- Strong · The intended agentic-security reference is OWASP Top 10 for Agentic Applications 2026, published December 9, 2025. It is separate from the LLM Top 10. This page uses the explicitly named Agentic Applications reference for agent authority and action risks; it does not treat the two lists as interchangeable.
+- Qualified · The challenge is not a lack of frameworks. It is translating their different purposes into a practical, defensible way to evaluate AI authority inside software delivery.
+- Qualified · Here, AI risk guidance frames the concern, security guidance informs the threat, Engineering demonstrates a safeguard, management monitors its operation, and Audit independently evaluates the evidence.
+- Qualified · A downstream billing dependency makes the change ineligible for AI approval—even when both reviewers call it low risk.
+- Qualified · The company-governed eligibility rule excludes financially relevant changes from this illustrative low-risk approval route. Agreement between reviewers cannot override that rule. The change moves to the human approval path; this is not a failed deployment.
+- Qualified · This financial-dependency example is an adversarial counterfactual: the two fictional AI verdicts illustrate why their agreement could not override the earlier deterministic exclusion. An excluded PR would be routed to human review without needing AI sign-off.
+- Qualified · Compare Engineering evidence with an Assurance assessment. Change a condition to see what fails, what remains unknown and what to test next.
+- Qualified · Design: establish delegated authority, independent policy ownership and the approval of record.
+- Qualified · Implementation: inspect effective settings; execute the negative tests and fallback tests against exact revisions.
+- Qualified · Operation over time: reconcile full populations, reperform historical decisions with effective versions, inspect exceptions and linked reassessments.
+- Qualified · Retain source extracts, extraction parameters, queries, expected/actual results and reviewer conclusion. Advisory AI output stays outside the evidence chain.
+
+## limits.html
+
+- Qualified · Limits & claim tags · Try it / Advanced
+- Qualified · This is a public, generic field guide. This is not a prescribed architecture and not a new regulatory standard, official mapping, certification or conclusion of effectiveness. Nothing on this page establishes production control effectiveness, SOX compliance or external-auditor reliance. Proposed controls and fictional examples require environment-specific evaluation.
+- Qualified · Strong
+- Qualified · Native, directly relevant evidence supports the stated claim; not a conclusion of effectiveness.
+- Qualified · Qualified
+- Qualified · Supports a narrower or conditional claim. Proposed safeguards and fictional examples use this tag; it does not mean they were tested.
+- Qualified · Tentative
+- Qualified · Plausible but unverified. Validate before relying on it.
+- Qualified · Unsupported
+- Qualified · Insufficient evidence to assert the claim. Do not treat it as a control or decision basis.
+- Qualified · Tags attach to each claim, control or example. Recommendations describe proposed behavior. Example numbers and records are fictional unless an external source is explicitly cited. Unknown evidence is undetermined, not a favorable default.
+- Qualified · Frameworks inform reasoning; they do not endorse this architecture. Earlier reference mappings and product snippets have not all been revalidated. Items awaiting validation are recorded in open validations. Exact product behavior, plan availability and settings must be tested in the target environment.
+- Qualified · The four outcomes are eligible for conditional authorization, human authorization required, blocked and AI capability suspended. Eligibility is not authorization; authorization is not release eligibility; risk acceptance cannot waive mandatory safeguards.
+- Qualified · Browser simulations and downloaded example records are editable educational material. They are not authentic evidence, live configuration, immutable logs or production enforcement. Advanced experiments retain historical models; they do not supersede the authority-first method.
+- Qualified · Phase 1 changes content using the existing static architecture. Data-driven rendering, a documented private-overlay schema, runnable queries and exports remain deferred backlog work. The site currently serves no backend, accounts or external API calls.
+
+## Dynamic text tags
+
+- Qualified: operating-model.js — each generated takeaway, safeguard, evidence paragraph and question.
+- Qualified: shared-pipeline-nav.js — each generated stage explanation, expectation, evidence limitation and test procedure.
+- Qualified: unified-monitoring.js — each generated monitor rule, owner response, evidence purpose, test and fictional result.
+- Qualified: Engineering inline renderer — build tasks, evidence lists, tests, worked examples, sourcing and design questions.
+- Existing references in generated panels remain Unverified mappings until source checks in open-validations.md are resolved.

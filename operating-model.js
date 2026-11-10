@@ -122,7 +122,7 @@
   }
   function add(tag,content,parent,cls){
     const el=document.createElement(tag);if(cls)el.className=cls;
-    if(content!==null)el.textContent=content;
+    if(content!==null)el.textContent=(['p','li'].includes(tag)?'Qualified · ':'')+content;
     parent.append(el);return el;
   }
   function selected(){
