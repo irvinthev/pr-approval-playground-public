@@ -138,6 +138,42 @@
 .overview .scenario-inline-outcome .sim-actions{margin-top:12px}
 @media(max-width:850px){.overview .scenario-inline .scenario-picker{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:520px){.overview .scenario-inline{padding:10px}.overview .scenario-inline .scenario-picker button{min-height:56px;font-size:12px}}
+
+/* Overview architecture anchor / PR #126: illustrative, independent of evaluator logic. */
+.authority-map{margin:20px 0 24px;padding:22px;border:1px solid #517e86;border-radius:13px;background:#102d3b;color:#eff9f6;scroll-margin-top:16px}
+.authority-map *{box-sizing:border-box}
+.authority-map-heading h2{margin:4px 0 7px;font-size:clamp(20px,2.6vw,28px);color:#f0faf7}
+.authority-map-heading p{max-width:920px;margin:0 0 17px;color:#ccdee5;font-size:14px;line-height:1.55}
+.authority-map-flow,.authority-map-merge{display:grid;grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr) 28px minmax(0,1.3fr);align-items:stretch;gap:7px}
+.authority-map-node{min-width:0;border:1px solid #5a8793;border-radius:9px;background:#1a3b4b;padding:12px 13px;display:flex;flex-direction:column;gap:4px}
+.authority-map-node strong{font-size:15px;color:#f0faf7;line-height:1.25}.authority-map-node small{font-size:12px;line-height:1.42;color:#c3d8df}
+.authority-map-icon{font-size:19px;color:#a9e5d3}
+.authority-map-policy{background:#18493f;border-color:#6ab3a0}.authority-map-agent{background:#233f61;border-color:#7ba6d0}
+.authority-map-chip{align-self:flex-start;margin-top:auto;color:#d5f8e8;font-size:10px;font-weight:800;letter-spacing:.025em}
+.authority-map-arrow{display:grid;place-items:center;font-size:22px;color:#8cd7bd}
+.authority-map-external{margin:10px 0 17px;display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 0 0 13px}
+.authority-map-agent-control,.authority-map-external-model{padding:10px 13px;border-left:3px solid #72b5da;background:#193849;border-radius:5px;display:flex;flex-direction:column;gap:4px}
+.authority-map-external-model{border-color:#efbf7b;background:#453b32}
+.authority-map-external strong{color:#f3faf5;font-size:13px}.authority-map-external span{font-size:12px;line-height:1.45;color:#d2e2e5}
+.authority-map-routes{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:10px 0 18px;padding-top:18px}
+.authority-map-routes:before{content:'ELIGIBILITY AND AI OUTPUTS INFORM THE ROUTE; POLICY AUTHORIZES IT';position:absolute;top:0;left:0;right:0;color:#b3d8d0;font-size:10px;letter-spacing:.05em;font-weight:800;text-align:center}
+.authority-map-route{border:1px solid #7e99bc;border-radius:9px;padding:12px 14px;background:#23374a;display:flex;flex-direction:column;gap:5px}
+.authority-map-human{border-color:#7ea6d4}.authority-map-auto{background:#1a483e;border-color:#79c3a8}
+.authority-map-route-label{font-size:10px;font-weight:800;letter-spacing:.05em;color:#c3dbfa}
+.authority-map-auto .authority-map-route-label{color:#b4eed6}.authority-map-route strong{font-size:15px;color:#f0faf7}.authority-map-route small{color:#cadfe5;font-size:12px;line-height:1.45}
+.authority-map-merge{padding-top:15px;border-top:1px dashed #598590}
+.authority-map-footer{margin-top:15px}.authority-map-footer p{font-size:12px;line-height:1.55;color:#c8dce0;margin:0 0 10px}.authority-map-footer strong{color:#e8f8f1}
+.authority-map-links{display:flex;flex-wrap:wrap;gap:9px 18px}.authority-map-links a{font-size:12px;font-weight:750;color:#afead7}
+.authority-map a:focus-visible{outline:2px solid #d6ffed;outline-offset:3px}
+@media(max-width:760px){
+.authority-map{padding:16px;margin:15px 0 18px}
+.authority-map-flow,.authority-map-merge{grid-template-columns:1fr;gap:5px}
+.authority-map-arrow{font-size:18px;line-height:1;min-height:18px;transform:rotate(90deg)}
+.authority-map-node{padding:10px 12px}.authority-map-node strong{font-size:14px}
+.authority-map-external{grid-template-columns:1fr;padding:0;margin:10px 0 18px}
+.authority-map-routes{grid-template-columns:1fr;padding-top:30px;gap:7px}.authority-map-routes:before{text-align:left}
+.authority-map-links{flex-direction:column;gap:8px}
+}
 </style><link rel="stylesheet" href="./ui-polish.css?v=1"><link rel="stylesheet" href="./guided-investigation.css"></head>
 <body class="overview"><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a><a class="site-experiments" href="./playground.html">Advanced experiments ↗</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html" aria-current="page">Overview</a><a href="./ai-sdlc-risk.html">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Assurance</a></nav></header>
 
@@ -147,6 +183,48 @@
 <p class="lead">AI can help review and classify changes in CI/CD. As teams consider giving it more responsibility, Engineering, Risk, leadership, and auditors need a shared understanding of clear decision authority: what AI may decide, what independently enforces that limit, and what evidence can demonstrate the design.</p>
 <p class="lead">This field guide follows <strong>one fictional approach</strong> from pull request to production. It is a discussion and demonstration tool—not a comprehensive assessment method or a required architecture, and not a conclusion of control effectiveness.</p>
 <div class="hero-actions"><a class="guide-action" href="./index.html?journey=rr02#guided-investigation">Start guided investigation →</a><a class="secondary-action" href="#workflow">Explore delivery pipeline →</a><a class="secondary-action" href="./engineering-blueprint.html">Engineering &amp; safeguards →</a></div>
+</section>
+
+<section class="authority-map" id="overview-authority-map" aria-labelledby="authority-map-title">
+  <div class="authority-map-heading">
+    <span class="section-kicker">ARCHITECTURE / AUTHORITY AT A GLANCE</span>
+    <h2 id="authority-map-title">One change. Several decision boundaries.</h2>
+    <p>AI agents can analyze a proposed change, but model output is not approval authority. Follow the distinct routes from scope checks to protected merge. This is one fictional design, not a claim about any deployed system.</p>
+  </div>
+  <div class="authority-map-flow" role="group" aria-label="Illustrative change flow with eligibility, AI-assisted review, separate approval paths and protected merge">
+    <div class="authority-map-node authority-map-pr"><span class="authority-map-icon" aria-hidden="true">⌘</span><strong>Pull request</strong><small>Code, context, exact revision</small></div>
+    <div class="authority-map-arrow" aria-hidden="true">→</div>
+    <div class="authority-map-node authority-map-policy"><span class="authority-map-icon" aria-hidden="true">◇</span><strong>Eligibility policy</strong><small>Scope, dependencies, exclusions</small><span class="authority-map-chip">Deterministic</span></div>
+    <div class="authority-map-arrow" aria-hidden="true">→</div>
+    <div class="authority-map-node authority-map-agent"><span class="authority-map-icon" aria-hidden="true">✳</span><strong>AI agent + reviewers</strong><small>Prompts, context, tools, model calls</small><span class="authority-map-chip">Analysis, not approval</span></div>
+  </div>
+  <div class="authority-map-external" aria-label="AI dependency and control distinction">
+    <div class="authority-map-agent-control"><strong>Agent configuration</strong><span>Tool permissions, context access, instructions and orchestration can be governed by Engineering.</span></div>
+    <div class="authority-map-external-model"><strong>Externally managed model</strong><span>Opaque weights, provider-side updates, variable outputs and availability may be outside direct control.</span></div>
+  </div>
+  <div class="authority-map-routes" role="group" aria-label="Separate human and automated authorization routes">
+    <div class="authority-map-route authority-map-human">
+      <span class="authority-map-route-label">EXCLUDED · UNCERTAIN · SENSITIVE</span>
+      <strong>Authorized human review</strong>
+      <small>No AI-based approval substitution. Shadow analysis may observe, but cannot authorize.</small>
+    </div>
+    <div class="authority-map-route authority-map-auto">
+      <span class="authority-map-route-label">ELIGIBLE · REQUIRED CONDITIONS SATISFIED</span>
+      <strong>Policy-authorized automation</strong>
+      <small>Only within an approved scope; AI agreement alone is insufficient.</small>
+    </div>
+  </div>
+  <div class="authority-map-merge" role="group" aria-label="Protected merge, deployment and subsequent monitoring">
+    <div class="authority-map-node authority-map-policy"><strong>Protected merge</strong><small>Branch rules, required checks, current-SHA validity and restricted bypass</small></div>
+    <div class="authority-map-arrow" aria-hidden="true">→</div>
+    <div class="authority-map-node"><strong>Build &amp; deploy</strong><small>Release and artifact integrity</small></div>
+    <div class="authority-map-arrow" aria-hidden="true">→</div>
+    <div class="authority-map-node"><strong>Monitor &amp; evaluate</strong><small>Signals, evidence and independent testing</small></div>
+  </div>
+  <div class="authority-map-footer">
+    <p><strong>Where authority lives:</strong> Eligibility and protected merge restrictions must be independently enforced; the AI layer supplies assessments, not authority. An incomplete policy inventory can still produce an incorrect deterministic outcome.</p>
+    <div class="authority-map-links"><a href="./engineering-blueprint.html#rr02-negative-test">Challenge a missed dependency →</a><a href="./ai-sdlc-risk.html?risk=RR-02#risk-explorer">Explore the related risk →</a></div>
+  </div>
 </section>
 <section class="overview-method" aria-label="Why this field guide exists and how to use it">
 <p><strong>Why this guide exists:</strong> AI-assisted development is increasingly familiar; delegating change-approval authority is a separate decision. Traditional SDLC safeguards remain essential, but AI-generated risk judgments introduce questions about scope, failure modes, and evidence.</p>
