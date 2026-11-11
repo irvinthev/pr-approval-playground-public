@@ -72,15 +72,15 @@
 
 <section class="hero" id="main-content" tabindex="-1">
 <span class="eyebrow">ENGINEERING · SECURITY · RISK · ASSURANCE</span>
-<h1>AI-enabled software delivery, explained through one approval workflow.</h1>
-<p class="lead">How much authority should AI have in software delivery, what independently limits it, and what evidence would justify relying on those safeguards?</p>
-<p class="lead">Start with a fictional low-risk pull-request approval example, follow code through production, and compare Engineering decisions with risk and assurance questions. AI code generation and advisory review require different levels of authority and testing.</p>
-<div class="hero-actions"><a class="guide-action" href="#workflow">Follow the workflow →</a><a class="secondary-action" href="#scenario-lab">Test four outcomes ↗</a><a class="secondary-action" href="./ai-sdlc-risk.html">Assess another AI operating model →</a></div>
+<h1>How should AI participate in software delivery?</h1>
+<p class="lead">Explore how Engineering can use AI to accelerate code review and delivery while defining clear decision authority, safeguards, and evidence to operate responsibly.</p>
+<p class="lead">Follow one illustrative change from pull request to production. See the components Engineering would build, the decisions humans and AI make, and how teams monitor and evaluate the workflow. The example is one possible approach, not a prescribed architecture.</p>
+<div class="hero-actions"><a class="guide-action" href="#workflow">Explore the delivery pipeline →</a><a class="secondary-action" href="./engineering-blueprint.html">Engineering &amp; safeguards →</a></div>
 </section>
-<section class="overview-method" aria-label="Assessment method"><p><strong>One method · Different levels of authority.</strong> Establish where AI participates, what it can authorize, which rules independently enforce that limit, and what evidence demonstrates the result. Management owns scope and risk tolerance; Engineering implements controls; assurance independently evaluates the evidence.</p><div class="overview-method-links"><a href="./ai-sdlc-risk.html">AI model &amp; risk →</a><a href="./engineering-blueprint.html">Engineering &amp; safeguards →</a><a href="./continuous-monitoring.html">Monitoring &amp; operations →</a><a href="./independent-assurance.html">Assurance →</a></div></section><section class="workflow-map" id="workflow" aria-labelledby="workflow-title">
-<div class="section-kicker">01 / The common workflow</div>
-<h2 class="section-heading" id="workflow-title">Follow a change from code to production</h2>
-<p class="section-intro">This eight-touchpoint conceptual journey illustrates one AI-approval model. Select a stage to compare what Engineering would build with what assurance would verify. Scenario selection changes the illustrated state, not the architecture. The detailed pipeline simulator uses a different seven-stage grouping.</p>
+<section class="overview-method" aria-label="Three guide questions"><p><strong>What is possible?</strong> Explore AI-assisted review, risk classification, and narrowly scoped automation. <strong>How would it work?</strong> Follow the delivery path, including human decisions and independently enforced permissions. <strong>How do we build confidence?</strong> Examine monitoring, testing, and evidence without confusing AI recommendations with authorization.</p></section><section class="workflow-map" id="workflow" aria-labelledby="workflow-title">
+<div class="section-kicker">01 / How it works</div>
+<h2 class="section-heading" id="workflow-title">Explore the path from code to production</h2>
+<p class="section-intro">This eight-touchpoint journey illustrates how AI, ordinary engineering checks, authorization, and production delivery can work together. Select a stage to see the implementation responsibility and the evidence it produces. The detailed pipeline simulator uses a different seven-stage grouping.</p>
 <div class="workflow-stages" id="workflow-stages" aria-label="Eight workflow stages">
 <button class="workflow-stage" type="button" data-stage="0" aria-pressed="true"><span class="stage-number">01 · ENTRY</span><strong>Pull request</strong><p>Identify the change and exact commit.</p><span class="stage-state">Modeled pass</span></button>
 <button class="workflow-stage" type="button" data-stage="1" aria-pressed="false"><span class="stage-number">02 · RULES</span><strong>Deterministic gates</strong><p>Check eligibility, paths, dependencies, and exclusions.</p><span class="stage-state">Modeled pass</span></button>
@@ -98,10 +98,23 @@
 </div>
 <p class="workflow-note">Illustrative model only: the eight touchpoints are not a required architecture or a one-to-one match with the detailed seven-stage simulator. Stages may run concurrently. AI classification, approval-of-record, enforced merge, and production release eligibility remain separate decisions.</p>
 </section>
+<section class="build-section" aria-labelledby="build-title">
+<div class="section-kicker">02 / Engineering implementation</div><h2 class="section-heading" id="build-title">What makes this workflow possible?</h2>
+<p class="section-intro">In this fictional automated-approval design, Engineering would need more than AI risk scores. Existing CI/CD and authorization controls may provide simpler alternatives; these are possible responsibilities, not a prescribed stack.</p>
+<div class="build-grid">
+<div class="build-item"><strong>Policy &amp; dependency engine</strong><p>Evaluate scoped repositories, protected paths, service dependencies, and mandatory exclusions.</p></div>
+<div class="build-item"><strong>CI validation &amp; code review</strong><p>Run builds, tests, security checks, and applicable human review independently of AI risk scoring.</p></div>
+<div class="build-item"><strong>AI reviewer services</strong><p>Invoke model reviewers on the same revision, record results, and handle uncertainty or disagreement.</p></div>
+<div class="build-item"><strong>Authorization service</strong><p>Combine valid evidence with approved rules and restricted identities; invalidate stale approvals.</p></div>
+<div class="build-item"><strong>GitHub &amp; deployment enforcement</strong><p>Require protected merge conditions and verify build provenance and production release routes.</p></div>
+<div class="build-item"><strong>Observability &amp; governance</strong><p>Retain decision traces, monitor exceptions, version rules and models, and support suspension or rollback.</p></div>
+</div>
+<p><a class="guide-action" href="./engineering-blueprint.html">Explore the engineering implementation →</a></p>
+</section>
 <section class="scenario-section" id="scenario-lab" aria-labelledby="scenario-title">
-<div class="section-kicker">02 / Interactive simulation</div>
-<h2 class="section-heading" id="scenario-title">One fictional workflow. Four outcomes.</h2>
-<p class="section-intro">Choose a fictional scenario. The workflow above updates to show the path, while this panel explains the decision and next action.</p>
+<div class="section-kicker">03 / Optional exploration</div>
+<h2 class="section-heading" id="scenario-title">Explore how different changes move through the pipeline</h2>
+<p class="section-intro">Start with the routine low-risk path, or explore disagreement, exclusions, and production response. These examples illustrate different operating outcomes—not four failures to discover. Selecting one updates the pipeline above.</p>
 <div class="scenario-picker" role="group" aria-label="Simulation scenarios">
 <button type="button" data-scenario="pass" aria-pressed="true">✅ Standard low-risk pass</button>
 <button type="button" data-scenario="split" aria-pressed="false">🔀 AI split decision</button>
@@ -115,22 +128,9 @@
 <div class="sim-actions"><a class="guide-action" href="./engineering-blueprint.html">Explore engineering implementation →</a><a class="secondary-action" href="./auditor-view.html">Challenge the decision in Auditor View →</a></div>
 <p class="illustrative-note">These scenario results are fixed, fictional teaching examples—not live model outputs, real approval events, or verified controls. Deep-dive pages have their own simulations; the selected Overview scenario is not transferred.</p>
 </section>
-<section class="build-section" aria-labelledby="build-title">
-<div class="section-kicker">03 / Implementation</div><h2 class="section-heading" id="build-title">What would Engineering need to build for this example?</h2>
-<p class="section-intro">In this fictional automated-approval design, Engineering would need more than AI risk scores. Existing CI/CD and authorization controls may provide simpler alternatives; these are possible responsibilities, not a prescribed stack.</p>
-<div class="build-grid">
-<div class="build-item"><strong>Policy &amp; dependency engine</strong><p>Evaluate scoped repositories, protected paths, service dependencies, and mandatory exclusions.</p></div>
-<div class="build-item"><strong>CI validation &amp; code review</strong><p>Run builds, tests, security checks, and applicable human review independently of AI risk scoring.</p></div>
-<div class="build-item"><strong>AI reviewer services</strong><p>Invoke model reviewers on the same revision, record results, and handle uncertainty or disagreement.</p></div>
-<div class="build-item"><strong>Authorization service</strong><p>Combine valid evidence with approved rules and restricted identities; invalidate stale approvals.</p></div>
-<div class="build-item"><strong>GitHub &amp; deployment enforcement</strong><p>Require protected merge conditions and verify build provenance and production release routes.</p></div>
-<div class="build-item"><strong>Observability &amp; governance</strong><p>Retain decision traces, monitor exceptions, version rules and models, and support suspension or rollback.</p></div>
-</div>
-<p><a class="guide-action" href="./engineering-blueprint.html">Explore the engineering implementation →</a></p>
-</section>
 <section class="lens-section" aria-labelledby="lenses-title">
-<div class="section-kicker">04 / Investigate</div><h2 class="section-heading" id="lenses-title">Different questions. The same workflow.</h2>
-<p class="section-intro">These are alternative perspectives on the same risk and delivery problem—not four workflows to follow in order. Choose the question relevant to your role.</p>
+<div class="section-kicker">04 / Explore the field guide</div><h2 class="section-heading" id="lenses-title">Explore implementation, operations, risk, and assurance</h2>
+<p class="section-intro">These are complementary perspectives on one delivery system—not separate workflows or chapters that must be followed in order. Choose the area most useful to your work.</p>
 <div class="lens-grid">
 <a class="lens-card" href="./engineering-blueprint.html"><strong>Engineering &amp; Operations</strong><p>How do we implement, validate, enforce, and operate this workflow?</p><span>Open implementation guide →</span></a>
 <a class="lens-card" href="./ai-sdlc-risk.html"><strong>Security &amp; Risk</strong><p>Where could policy, model behavior, privileges, or deployment pathways fail?</p><span>Challenge safeguards →</span></a>
@@ -147,7 +147,7 @@
 <a href="https://pcaobus.org/oversight/standards/auditing-standards/details/AS2201" target="_blank" rel="noopener noreferrer">PCAOB AS 2201 ↗</a>
 <a href="./rcm-view.html">Current RCM and control objectives →</a>
 </div></details>
-<footer class="overview-boundary"><p>This is an illustrative educational field guide. All scenarios, reviewer outputs, approval decisions, and deployment events are fictional. They do not represent an organization's implemented controls, actual authorizations, or conclusions about compliance or operating effectiveness. <a href="./previous-overview.html">See archived previous Overview →</a></p></footer>
+<footer class="overview-boundary"><p>Illustrative educational model: fictional scenarios and simulated decisions are not implemented controls or evidence of compliance. <a href="./previous-overview.html">See archived previous Overview →</a></p></footer>
 
 <script>
 (function () {
