@@ -126,12 +126,27 @@ async function runCase(label, path, viewportName, viewport, scenario) {
       check(await sample.isVisible(), 'Engineering negative test missing');
       check(await page.locator('#rr02-test-result').isHidden(), 'Test result should not be predetermined on screen');
       if (missed) await sample.locator('input[value="missed"]').check();
+      // Capture the Engineering input state before execution; the final runCase
+      // capture happens after navigation on the Assurance page.
+      await capture(page, label + '-engineering-before', response, [...checks, 'Engineering fixture selected before execution']);
       await page.locator('#rr02-run-negative-test').click();
       check(await page.locator('#rr02-test-result').isVisible(), 'Simulation result did not appear');
       const actual = await page.locator('#rr02-observed').innerText();
       check(actual === (missed ? 'Auto-approval eligible (unsafe)' : 'Human review required'), 'Incorrect policy simulation result: ' + actual);
       check(await page.locator('#rr02-assurance-handoff').getAttribute('href') === './independent-assurance.html?rr02fixture=' + (missed ? 'missed' : 'covered') + '#rr02-negative-evidence', 'Incorrect Assurance handoff link');
       checks.push('Selected dependency fixture produces expected simulated outcome');
+      // Preserve the Engineering outcome before the Assurance link changes pages.
+      if (viewportName === 'mobile') {
+        const widths = await page.evaluate(() => ({
+          windowWidth: window.innerWidth,
+          documentWidth: document.documentElement.scrollWidth,
+          bodyWidth: document.body.scrollWidth,
+        }));
+        check(Math.max(widths.documentWidth, widths.bodyWidth) - widths.windowWidth <= 2,
+          label + ': Engineering result has horizontal overflow');
+      }
+      await capture(page, label + '-engineering-result', response,
+        [...checks, 'Engineering result visible before Assurance navigation', ...(viewportName === 'mobile' ? ['No Engineering result horizontal overflow'] : [])]);
       await Promise.all([
         page.waitForURL(url => url.pathname.endsWith('/independent-assurance.html') && url.searchParams.get('rr02fixture') === (missed ? 'missed' : 'covered') && url.hash === '#rr02-negative-evidence'),
         page.locator('#rr02-assurance-handoff').click()
