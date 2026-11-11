@@ -73,3 +73,21 @@ body.risk-dashboard{background:#f1f5fb;color:#172844}
 .risk-dashboard .field-note{color:#405a76;background:#eaf2fc}
 @media(max-width:920px){.risk-dashboard .rmf-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.risk-dashboard .risk-main-hero{grid-template-columns:1fr}}
 @media(max-width:620px){.risk-dashboard .rmf-cards,.risk-dashboard .governance-grid,.risk-dashboard .governance-form,.risk-dashboard .register-filters{grid-template-columns:1fr}.risk-dashboard .risk-frame,.risk-dashboard .field-section{padding:17px}.risk-dashboard .risk-tabs button{padding:12px;font-size:13px}.risk-dashboard .governance-form label.full{grid-column:auto}.risk-dashboard .risk-main-hero{padding:6px}}
+
+/* Risk demo v0.5: example-first, progressive disclosure. */
+.risk-dashboard .governance-example-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:16px}
+.risk-dashboard .governance-example-card{border:1px solid #cddbee;border-radius:12px;background:#f7faff;padding:19px;min-width:0}
+.risk-dashboard .governance-example-kicker{color:#215fa9;letter-spacing:.08em;font-size:11px;font-weight:800}
+.risk-dashboard .governance-example-card h3{font-size:19px;line-height:1.25;color:#193854;margin:10px 0 8px}
+.risk-dashboard .governance-example-card p{font-size:13px;line-height:1.55;color:#45607a;margin:4px 0 12px}
+.risk-dashboard .governance-example-card dl{display:grid;grid-template-columns:1fr 1fr;gap:9px 13px;margin:15px 0}
+.risk-dashboard .governance-example-card dt{font-size:12px;color:#526983}
+.risk-dashboard .governance-example-card dd{margin:0;font-size:13px;font-weight:700;color:#1d3957;overflow-wrap:anywhere}
+.risk-dashboard .governance-example-card details{border-top:1px solid #dae5f1;padding:11px 0 4px}
+.risk-dashboard .governance-example-card details summary,.risk-dashboard .governance-editor summary{cursor:pointer;color:#1e5ca4;font-weight:750;font-size:14px;line-height:1.45;min-height:44px;display:flex;align-items:center}
+.risk-dashboard .governance-example-card details strong{display:block;color:#244d79;font-size:12px;margin-top:10px}
+.risk-dashboard .governance-example-card details p{margin-top:3px}
+.risk-dashboard .governance-template-button{background:white;border:1px solid #a7bfdc;color:#1d5ba4;border-radius:8px;font:inherit;font-size:13px;font-weight:750;padding:10px 12px;margin-top:8px;min-height:42px;cursor:pointer}
+.risk-dashboard .governance-editor{margin-top:12px;border-top:1px solid #d7e2ed;padding-top:8px}
+.risk-dashboard .governance-editor .governance-form{margin-top:10px}
+@media(max-width:760px){.risk-dashboard .governance-example-grid{grid-template-columns:1fr}}
