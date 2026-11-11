@@ -55,6 +55,24 @@ async function runCase(label, path, viewportName, viewport, scenario) {
     check((await page.locator('h1').count()) > 0, label + ': missing primary heading');
 
     const checks = ['HTTP ' + response.status(), 'h1 present'];
+    if (scenario === 'cross-page-rr02') {
+      await page.locator('[data-scenario="excluded"]').click();
+      const related = page.locator('#overview-related-risk');
+      check(await related.isVisible(), 'Related risk link not visible in excluded scenario');
+      await Promise.all([
+        page.waitForURL(url => url.pathname.endsWith('/ai-sdlc-risk.html') && url.searchParams.get('risk') === 'RR-02' && url.hash === '#risk-explorer'),
+        related.locator('a').click(),
+      ]);
+      check((await page.locator('#risk-selected-id').innerText()).includes('RR-02'), 'RR-02 was not restored from URL');
+      check(await page.locator('[data-featured-risk="RR-02"]').getAttribute('aria-pressed') === 'true', 'RR-02 button did not reflect selection');
+      checks.push('Overview exclusion → related RR-02 selected on Risk page');
+      await Promise.all([
+        page.waitForURL(url => url.pathname.endsWith('/engineering-blueprint.html') && url.hash === '#technical-requirements'),
+        page.locator('#risk-engineering-next').click(),
+      ]);
+      check((await page.locator('#technical-requirements').count()) === 1, 'Engineering target missing');
+      checks.push('Risk Management → Engineering technical requirements');
+    }
     if (scenario === 'risk-rr02') {
       const selected = page.locator('#risk-selected-id');
       const initialTitle = await page.locator('#risk-selected-title').innerText();
@@ -105,6 +123,7 @@ try {
     }
     await runCase('risk-rr02-expanded-' + viewportName, 'ai-sdlc-risk.html', viewportName, viewport, 'risk-rr02');
     await runCase('assurance-evidence-expanded-' + viewportName, 'independent-assurance.html', viewportName, viewport, 'assurance-expanded');
+    await runCase('cross-page-rr02-' + viewportName, 'index.html', viewportName, viewport, 'cross-page-rr02');
   }
 } finally { await browser.close(); }
 const summary = {
