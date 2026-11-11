@@ -22,17 +22,7 @@
 .classification-evidence-bridge .classification-evidence-conclusion{margin:11px 0;padding:8px 0;border-top:1px solid #466b79}
 .classification-evidence-links{display:flex;flex-wrap:wrap;gap:9px 22px}.classification-evidence-links a{color:#b9eddf;font-weight:750}
 @media(max-width:700px){.classification-evidence-grid{grid-template-columns:1fr;gap:9px}.classification-evidence-bridge{padding:14px 12px}.classification-evidence-grid>div{padding:6px 12px}}
-</style><link rel="stylesheet" href="./guided-investigation.css"><style>
-.rr02-negative-evidence{padding:18px 21px;margin:17px 0;border:1px solid #537e87;background:#133441;border-radius:12px;scroll-margin-top:20px}
-.rr02-negative-evidence h2{font-size:clamp(20px,2.5vw,25px);margin:8px 0}
-.rr02-negative-evidence p{font-size:13px;line-height:1.6;color:#cddfe8}
-.rr02-evidence-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:15px 0}
-.rr02-evidence-grid>div{border-left:2px solid #73b9a7;padding:7px 12px;background:#193c4c}
-.rr02-evidence-grid strong{color:#eaf8f2;font-size:13px}.rr02-evidence-grid p{margin:5px 0 0}
-.rr02-negative-evidence .rr02-evidence-limit{padding:9px 12px;background:#1b4250;border-left:3px solid #a5ddcb}
-.rr02-negative-evidence a{color:#b5f0dc;font-weight:700}
-@media(max-width:700px){.rr02-evidence-grid{grid-template-columns:1fr}.rr02-negative-evidence{padding:15px}}
-</style></head>
+</style><link rel="stylesheet" href="./guided-investigation.css"></head>
 <body><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html">Overview</a><a href="./ai-sdlc-risk.html">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html" aria-current="page">Assurance</a></nav></header>
 <article class="simple-assurance">
 <header id="main-content" tabindex="-1" class="assurance-hero">
@@ -71,19 +61,6 @@
 </div>
 <p class="classification-evidence-conclusion"><strong>Limit of reliance:</strong> One alert or successful test cannot establish complete detection or effective controls across all changes. Record unresolved pathways separately.</p>
 <p class="classification-evidence-links"><a href="./continuous-monitoring.html#classification-monitoring-bridge">← Return to the monitoring signal</a> <a href="#document-assessment">Explore the detailed evidence methodology →</a></p>
-</section>
-<section class="rr02-negative-evidence" id="rr02-negative-evidence" aria-labelledby="rr02-negative-evidence-title">
-<span class="simple-eyebrow">RR-02 / MANAGEMENT-TO-AUDITOR DEMONSTRATION</span>
-<h2 id="rr02-negative-evidence-title">What would establish the expected rule was actually enforced?</h2>
-<p id="rr02-evidence-fixture">The Engineering example is a predetermined simulation, not a test of an implemented control. Choose either test fixture there to examine a hypothetical observed result.</p>
-<div class="rr02-evidence-grid">
-<div><strong>Expected behavior</strong><p>The protected shared-library dependency must require qualified human review even when both AI reviewers return low risk.</p></div>
-<div><strong>Observed result to verify</strong><p id="rr02-evidence-observed">A real assessment needs the actual policy evaluation and rejected or permitted approval attempt—not the simulated UI result.</p></div>
-<div><strong>Management demonstration</strong><p>Show the effective dependency inventory and policy version, test PR and commit SHA, input snapshot, reviewer outputs, GitHub ruleset and CODEOWNERS configuration, check events, and authorized approval and merge records.</p></div>
-<div><strong>Independent challenge</strong><p>Reperform positive and negative cases, test missing or manipulated dependency metadata, validate coverage and alternate merge paths, and confirm who can change or bypass the policy. Separate a failed policy decision from evidence of a completed merge.</p></div>
-</div>
-<p class="rr02-evidence-limit"><strong>Limit:</strong> Neither a successful demonstration nor a single negative test establishes population completeness, sustained operation, or external-auditor reliance. Management owns the design and evidence; auditors independently evaluate the implementation and sufficiency of that evidence.</p>
-<p><a href="./engineering-blueprint.html#rr02-negative-test">← Return to the Engineering negative test</a> · <a href="#classification-evidence-bridge">View the wider RR-02 evidence questions →</a></p>
 </section>
 <details class="assurance-method-expanded" id="assurance-methodology"><summary><span class="simple-eyebrow">DEEPER METHOD / FIVE PARTS</span><strong>Explore authority, enforcement, validation, monitoring and evidence</strong><span>Full practical methodology, pipeline context, and testing references.</span></summary><div class="assurance-method-body"><nav class="simple-steps" aria-label="Assurance page sections"><a href="#operating-model">01 · AI authority</a><a href="#foundational-controls">02 · Enforcement</a><a href="#prelaunch-validation">03 · Validation</a><a href="#operations-assurance">04 · Monitoring</a><a href="#document-assessment">05 · Evidence</a></nav>
 
@@ -176,13 +153,4 @@
 <script>
 (function(){'use strict';const old=['rcm-preview-list','assurance-safeguards','rcm-dependencies','rcm-binding','rcm-independence','rcm-artifacts','testing-guide','example-rcm','framework-crosswalk'];function redirect(){const fragment=location.hash.slice(1);if(old.includes(fragment)){location.replace('./rcm-view.html#download-current-rcm');}else if(fragment==='failure-scenarios'){location.replace('./auditor-view.html#billing-challenge-lab');}else if(fragment==='industry-challenge'||fragment.startsWith('challenge-domain-')){location.replace('./engineering-challenge-reference.html#industry-challenge');}}redirect();window.addEventListener('hashchange',redirect);})();
 </script>
-<script src="./financial-engine.js?v=shared-1"></script><script src="./case-model.js?v=release-integrity-1"></script><script src="./case-ui.js?v=case-ux-1"></script><script src="./shared-pipeline-context.js?v=1"></script><script src="./shared-pipeline-nav.js?v=1"></script><script src="./stage-journey.js?v=1"></script><script>(function(){'use strict';const id="authorization-evidence-case";function reveal(){if(location.hash==='#'+id){const panel=document.getElementById(id);if(panel)panel.open=true;}}reveal();window.addEventListener('hashchange',reveal);})();</script><script>(function(){'use strict';function revealNestedTarget(){const hash=decodeURIComponent(location.hash.slice(1));if(!hash)return;const target=document.getElementById(hash);if(!target)return;const d=target.closest('details.assurance-method-expanded,details.assurance-support-expanded');if(d&&!d.open){d.open=true;requestAnimationFrame(()=>target.scrollIntoView({block:'start'}));}}revealNestedTarget();window.addEventListener('hashchange',revealNestedTarget);})();</script><script src="./guided-investigation.js"></script><script>(function(){'use strict';
-const fixture=new URLSearchParams(location.search).get('rr02fixture');
-if(fixture!=='covered'&&fixture!=='missed')return;
-document.getElementById('rr02-evidence-fixture').textContent=fixture==='covered'
-?'Selected Engineering fixture: complete dependency coverage. The simulated policy required human review; this is the expected policy outcome, not evidence of an actual blocked merge.'
-:'Selected Engineering fixture: missing dependency coverage. The simulated policy incorrectly allowed auto-approval eligibility; this is an observed modelled failure, not evidence of an actual merge.';
-document.getElementById('rr02-evidence-observed').textContent=fixture==='covered'
-?'Simulated result: human review required. Verify the actual gate response, rejection of unauthorized approval, and exact-commit linkage with real implementation records.'
-:'Simulated result: auto-approval eligible (unsafe). The result conflicts with the expected human-review route. Verify whether actual GitHub controls denied or permitted merge; do not infer a completed deployment.';
-})();</script></body></html>
+<script src="./financial-engine.js?v=shared-1"></script><script src="./case-model.js?v=release-integrity-1"></script><script src="./case-ui.js?v=case-ux-1"></script><script src="./shared-pipeline-context.js?v=1"></script><script src="./shared-pipeline-nav.js?v=1"></script><script src="./stage-journey.js?v=1"></script><script>(function(){'use strict';const id="authorization-evidence-case";function reveal(){if(location.hash==='#'+id){const panel=document.getElementById(id);if(panel)panel.open=true;}}reveal();window.addEventListener('hashchange',reveal);})();</script><script>(function(){'use strict';function revealNestedTarget(){const hash=decodeURIComponent(location.hash.slice(1));if(!hash)return;const target=document.getElementById(hash);if(!target)return;const d=target.closest('details.assurance-method-expanded,details.assurance-support-expanded');if(d&&!d.open){d.open=true;requestAnimationFrame(()=>target.scrollIntoView({block:'start'}));}}revealNestedTarget();window.addEventListener('hashchange',revealNestedTarget);})();</script><script src="./guided-investigation.js"></script></body></html>
