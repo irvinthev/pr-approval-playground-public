@@ -60,14 +60,14 @@ async function runCase(label, path, viewportName, viewport, scenario) {
       const related = page.locator('#overview-related-risk');
       check(await related.isVisible(), 'Related risk link not visible in excluded scenario');
       await Promise.all([
-        page.waitForURL(/ai-sdlc-risk\\.html\\?risk=RR-02#risk-explorer/),
+        page.waitForURL(url => url.pathname.endsWith('/ai-sdlc-risk.html') && url.searchParams.get('risk') === 'RR-02' && url.hash === '#risk-explorer'),
         related.locator('a').click(),
       ]);
       check((await page.locator('#risk-selected-id').innerText()).includes('RR-02'), 'RR-02 was not restored from URL');
       check(await page.locator('[data-featured-risk="RR-02"]').getAttribute('aria-pressed') === 'true', 'RR-02 button did not reflect selection');
       checks.push('Overview exclusion → related RR-02 selected on Risk page');
       await Promise.all([
-        page.waitForURL(/engineering-blueprint\\.html#technical-requirements/),
+        page.waitForURL(url => url.pathname.endsWith('/engineering-blueprint.html') && url.hash === '#technical-requirements'),
         page.locator('#risk-engineering-next').click(),
       ]);
       check((await page.locator('#technical-requirements').count()) === 1, 'Engineering target missing');
