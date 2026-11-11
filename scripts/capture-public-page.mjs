@@ -55,6 +55,29 @@ async function runCase(label, path, viewportName, viewport, scenario) {
     check((await page.locator('h1').count()) > 0, label + ': missing primary heading');
 
     const checks = ['HTTP ' + response.status(), 'h1 present'];
+    if (scenario === 'guided-journey') {
+      await Promise.all([
+        page.waitForURL(url => url.pathname.endsWith('/index.html') && url.searchParams.get('journey') === 'rr02'),
+        page.locator('a[href*="journey=rr02#guided-investigation"]').first().click()
+      ]);
+      check(await page.locator('#guided-investigation').isVisible(), 'Guided journey not visible on Overview');
+      check(await page.locator('[data-scenario="excluded"]').getAttribute('aria-pressed') === 'true', 'Overview scenario not selected');
+      const expected = ['Change', 'Risk', 'Safeguards', 'Monitoring', 'Assurance'];
+      for (let i = 0; i < expected.length; i++) {
+        const current = page.locator('.guided-steps a[aria-current="step"]');
+        check(await current.count() === 1, 'Missing current chapter at step ' + i);
+        check((await current.innerText()).includes(expected[i]), 'Wrong chapter at step ' + i);
+        check(await page.locator('.guided-local').count() === 1, 'Local content action missing at step ' + i);
+        if (i === 1) check((await page.locator('#risk-selected-id').innerText()).includes('RR-02'), 'Risk scenario context not preserved');
+        if (i < expected.length - 1) {
+          await page.locator('.guided-next').click();
+          await page.locator('#guided-investigation').waitFor({state:'visible'});
+        }
+      }
+      check((await page.locator('.guided-completion').innerText()).includes('No actual company configuration'), 'Illustrative conclusion missing');
+      check((await page.locator('.guided-steps a')).count() === 5, 'Five chapters not retained');
+      checks.push('Full five-page guided investigation, RR-02 and illustrative conclusion');
+    }
     if (scenario === 'cross-page-rr02') {
       await page.locator('[data-scenario="excluded"]').click();
       const related = page.locator('#overview-related-risk');
@@ -151,6 +174,7 @@ try {
     await runCase('assurance-evidence-deep-link-' + viewportName, 'independent-assurance.html', viewportName, viewport, 'assurance-deep-link');
     await runCase('cross-page-rr02-' + viewportName, 'index.html', viewportName, viewport, 'cross-page-rr02');
     await runCase('monitoring-assurance-rr02-' + viewportName, 'continuous-monitoring.html', viewportName, viewport, 'monitoring-assurance-rr02');
+    await runCase('guided-investigation-' + viewportName, 'index.html', viewportName, viewport, 'guided-journey');
   }
 } finally { await browser.close(); }
 const summary = {
