@@ -75,3 +75,20 @@ test('compact RCM gives each control a distinct, specific testing procedure with
  const control=JSON.parse(page.match(/const controls=(\[[\s\S]*?\]);\s*const searchEl=/)[1]).find(x=>x.id==='AI-09');
  assert.equal(control.title,'Human Approval & Escalation');
 });
+
+
+test('RCM authority focus is non-exclusive and preserves export, deep links and existing control inventory',()=>{
+ const page=read('rcm-view.html');
+ const registry=JSON.parse(page.match(/const controls=(\[[\s\S]*?\]);\s*const searchEl=/)[1]);
+ assert.equal(registry.length,15);
+ for(const key of ['foundation','review','automated'])assert.ok(page.includes("value=\\\""+key+"\\\""));
+ const m=page.match(/const authorityFocus=Object\.freeze\((\{[^;]+\})\);/);
+ assert.ok(m,'authority focus mapping exists');
+ const focus=Function('return ('+m[1]+')')();
+ assert.deepEqual(Object.keys(focus).sort(),registry.map(c=>c.id).sort());
+ for(const value of Object.values(focus))assert.ok(value.length&&value.every(x=>['foundation','review','automated'].includes(x)));
+ assert.deepEqual(focus['AI-05'],['review','automated']);
+ assert.ok(focus['AI-10'].includes('foundation'));
+ assert.ok(page.includes('authorityEl.addEventListener(\'change\',render)'));
+ assert.ok(page.includes("authorityEl.value='all';render()"),'deep-linked controls should be exposed regardless of filter');
+});
