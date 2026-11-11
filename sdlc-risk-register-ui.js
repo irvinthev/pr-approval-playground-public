@@ -28,7 +28,6 @@ function render(){
   for(const [label,val] of fields){const row=n('section');row.append(n('h4',label),n('p',val));body.append(row);}
   const related=n('p',undefined,'register-related');related.append(n('strong','Illustrative RCM mapping · '));
   r.rcm.forEach((id,i)=>{if(i)related.append(document.createTextNode(' · '));related.append(link('WEB15:'+id,'./rcm-view.html#control-'+id));});
-  if(r.id==='RR-01'){const investigate=n('p',undefined,'register-related');investigate.append(link('Investigate reviewer independence, management demo and evidence →','#authorization-case'));body.append(investigate);}
   body.append(related,n('p','Not assessed: no likelihood, impact, control effectiveness, or residual risk has been determined.','register-unknown'));article.append(body);list.append(article);
  }
  if(location.hash.startsWith('#risk-')){const target=list.querySelector('[id="'+location.hash.slice(1)+'"]');if(target)target.open=true;}
