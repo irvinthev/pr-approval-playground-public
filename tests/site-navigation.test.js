@@ -33,7 +33,7 @@ function supportedRedirect(file,fragment){
 function localDestinationExists(file,fragment){
  if(!fs.existsSync(path.join(root,file)))return false;
  if(!fragment||read(file).includes('id="'+fragment+'"'))return true;
- if(fragment==='guided-investigation'&&primary.includes(file)&&read(file).includes('src="./guided-investigation.js"')&&fs.readFileSync(path.join(root,'guided-investigation.js'),'utf8').includes("root.id = 'guided-investigation'"))return true;
+ if(fragment==='guided-investigation'&&primary.includes(file)&&fs.readFileSync(path.join(root,file),'utf8').includes('src="./guided-investigation.js"')&&fs.readFileSync(path.join(root,'guided-investigation.js'),'utf8').includes("root.id = 'guided-investigation'"))return true;
  const redirect=supportedRedirect(file,fragment);if(!redirect)return false;
  const target=new URL(redirect,'https://example.test/'+file),destination=decodeURIComponent(target.pathname.slice(1));
  return target.origin==='https://example.test'&&fs.existsSync(path.join(root,destination))&&(!target.hash||read(destination).includes('id="'+decodeURIComponent(target.hash.slice(1))+'"'));
