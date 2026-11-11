@@ -19,9 +19,9 @@ test('Engineering build plan is visible ahead of interactive stage selector',()=
 test('Build plan keeps accessible mobile summaries and original interactive chapters',()=>{
  assert.match(page,/build-plan__mobile-label/);
  assert.match(page,/@media\(max-width:800px\)/);
- for(const id of ['view-build','view-monitor','technical-requirements','monitor-view','supporting-resources','required-ci','progressive-rollout'])assert.ok(page.includes('id="'+id+'"'),id);
+ for(const id of ['technical-requirements','build-view','stage-monitor-link','supporting-resources','required-ci','progressive-rollout'])assert.ok(page.includes('id="'+id+'"'),id);
  assert.match(page,/<h2>Engineering stage explorer<\/h2>/);
  assert.match(page,/<summary>Full implementation checklist/);
- const mode=page.indexOf('id="view-build"'),stageButtons=page.indexOf('id="stages"');
- assert.ok(mode>=0&&stageButtons>mode,'Build/Operate modes precede stage selection');
+ const link=page.indexOf('id="stage-monitor-link"'),stageButtons=page.indexOf('id="stages"');
+ assert.ok(link>=0&&stageButtons>link,'Dedicated Monitoring link precedes stage selection');
 });
