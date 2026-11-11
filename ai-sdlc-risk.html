@@ -2,17 +2,38 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI SDLC Risk Assessment | Field Guide</title><link rel="stylesheet" href="./site.css"><style>
 .field-hero{max-width:960px;padding:18px 0 32px}.field-hero h1{font-size:clamp(32px,5vw,60px);line-height:1.08;letter-spacing:-.035em;margin:12px 0}.field-hero p{max-width:860px;font-size:18px;color:var(--site-muted)}.field-kicker{font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--site-mint);font-size:12px}.field-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:14px;margin:18px 0 34px}.field-card{border:1px solid var(--site-border);border-radius:12px;padding:20px;background:var(--site-panel);color:var(--site-text);text-decoration:none;display:block}.field-card:hover,.field-card:focus-visible{border-color:var(--site-mint)}.field-card h3{margin:5px 0 10px;font-size:19px}.field-card p{margin:0;color:var(--site-muted);font-size:14px}.field-card small{color:var(--site-mint);font-weight:750;text-transform:uppercase;letter-spacing:.08em}.field-section{padding:26px 0;border-top:1px solid var(--site-border)}.field-section h2{font-size:25px;line-height:1.25;margin:0 0 12px}.field-section p,.field-section li{color:var(--site-muted)}.field-actions{display:flex;flex-wrap:wrap;gap:12px;margin:22px 0}.field-button{display:inline-block;border:1px solid var(--site-mint);color:#061c24;background:var(--site-mint);padding:11px 17px;border-radius:8px;font-weight:800;text-decoration:none}.field-secondary{display:inline-block;border:1px solid var(--site-border);color:var(--site-mint);padding:11px 17px;border-radius:8px;font-weight:700;text-decoration:none}.field-note{border-left:3px solid var(--site-mint);padding:12px 18px;background:var(--site-panel);font-size:14px;color:var(--site-muted);margin:24px 0}.field-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:9px;list-style:none;padding:0}.field-steps li{border:1px solid var(--site-border);border-radius:10px;padding:13px;background:var(--site-panel)}.field-steps li b{display:block;color:var(--site-text)}.field-steps li span{font-size:13px}.field-table{width:100%;border-collapse:collapse}.field-table th,.field-table td{padding:13px;border-bottom:1px solid var(--site-border);text-align:left;vertical-align:top;font-size:14px}.field-table th{color:var(--site-mint)}.field-table td{color:var(--site-muted)}.field-overflow{overflow-x:auto}.field-overflow table{min-width:620px}@media(max-width:620px){.field-hero p{font-size:16px}.field-table th,.field-table td{padding:10px}}
 
-/* One linked risk-to-assurance investigation; existing register remains source of risk definitions. */
-.connected-investigation{border:1px solid #426779;border-radius:12px;background:#102c3c;margin:14px 0 23px}
-.connected-investigation summary{cursor:pointer;padding:16px 18px;color:#eaf8f7;display:grid;gap:5px;min-height:58px}
-.connected-investigation summary:focus-visible{outline:2px solid var(--site-mint);outline-offset:3px}
-.connected-investigation summary strong{font-size:18px}.ci-kicker{font-size:11px;font-weight:800;letter-spacing:.07em;color:var(--site-mint)}
-.ci-summary-hint{color:#b8d2dd;font-size:13px}.ci-content{padding:3px 18px 18px}.ci-context,.ci-footnote{color:#bad0da;font-size:13px;line-height:1.6}
-.ci-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.ci-grid section{border:1px solid #3e6173;border-radius:9px;background:#183849;padding:14px}
-.ci-grid h3{font-size:13px;color:#b7f1e2;margin:0 0 7px}.ci-grid p{font-size:13px;line-height:1.6;color:#e1edf1;margin:0}
-.ci-actions{display:flex;gap:10px 22px;flex-wrap:wrap}.ci-actions a{color:var(--site-mint);font-weight:750;font-size:13px}
-@media(max-width:650px){.ci-grid{grid-template-columns:1fr}.connected-investigation summary{padding:14px}.ci-content{padding:3px 14px 14px}}
+
+/* Scenario-first risk investigation. Sources: existing public risk register and illustrative risk-management context. */
+.risk-story{border:1px solid #42677a;background:#102836;border-radius:14px;padding:clamp(14px,2.4vw,22px);margin:4px 0 31px;scroll-margin-top:22px}
+.risk-story-heading h2{font-size:clamp(22px,2.8vw,30px);line-height:1.24;margin:8px 0 9px;color:#f1fafb}
+.risk-story-heading p{max-width:890px;font-size:14px;color:#c5d8e0;line-height:1.6;margin:0 0 17px}
+.risk-context{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:9px;margin-bottom:11px}
+.risk-context>div{padding:13px;background:#173849;border:1px solid #446578;border-radius:9px}
+.risk-context strong{display:block;font-size:13px;line-height:1.55;color:#e6f4f5;margin-top:5px}
+.risk-small{display:block;color:#b6eedd;font-weight:800;font-size:10px;letter-spacing:.07em;line-height:1.5}
+.risk-rmf-note{padding:9px 12px;border-left:3px solid #8edbc7;background:#163341;font-size:12px!important;line-height:1.6;color:#c9dde4!important;margin:0 0 19px}
+.risk-story-select{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:0 0 15px}
+.risk-story-select button{font:inherit;text-align:left;padding:13px;border:1px solid #526f80;border-radius:8px;background:#193447;color:#ebf8f8;cursor:pointer;min-height:79px}
+.risk-story-select button strong{display:block;font-size:13px;line-height:1.5;margin-top:5px}
+.risk-story-select button[aria-pressed=true]{border-color:#9ff0d9;background:#215048;box-shadow:inset 0 0 0 1px #9ff0d9}
+.risk-story-select button:focus-visible{outline:2px solid #e5fff4;outline-offset:3px}
+.risk-story-workspace{border:1px solid #4c7180;border-radius:10px;padding:14px;background:#122b3b}
+.risk-story-selected{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
+.risk-story-selected h3{font-size:20px;color:#f0faf9;margin:4px 0}.risk-story-selected p{font-size:13px;color:#cadae3;margin:0}
+.risk-selected-state{font-size:11px;white-space:nowrap;color:#bfe4dd;padding:6px 8px;border:1px solid #5a8186;border-radius:6px}
+.risk-story-map{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:15px}
+.risk-story-map>div{padding:14px;background:#18394b;border:1px solid #4d7382;border-radius:9px;position:relative;min-width:0}
+.risk-story-map>div:not(:last-child):after{content:"→";position:absolute;right:-13px;top:42%;font-size:18px;color:#a5f0dc;z-index:1}
+.risk-story-map strong{display:block;font-size:14px;color:#ebf8f7;margin:7px 0 4px}
+.risk-story-map p{font-size:12px;color:#cadce4;line-height:1.5;margin:0}
+.risk-story-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.risk-story-grid section{padding:14px;border:1px solid #416479;border-radius:9px;background:#173448;min-width:0}
+.risk-story-grid h4{font-size:15px;color:#effafa;margin:5px 0 8px}
+.risk-story-grid p{font-size:13px;line-height:1.58;color:#d4e5ea;margin:0}
+.risk-story-footer{padding-top:13px}.risk-story-footer p{font-size:12px;color:#bdd2dc;line-height:1.5;margin:0 0 12px}
+.risk-story-links{display:flex;gap:8px 20px;flex-wrap:wrap}.risk-story-links a{font-size:13px;color:#aaf1dc;font-weight:750}
+@media(max-width:800px){.risk-context{grid-template-columns:1fr}.risk-story-map>div:not(:last-child):after{display:none}}
+@media(max-width:650px){.risk-story-select{grid-template-columns:1fr}.risk-story-select button{min-height:56px}.risk-story-map{grid-template-columns:1fr}.risk-story-grid{grid-template-columns:1fr}.risk-story-selected{display:block}.risk-selected-state{display:inline-block;margin-top:9px}}
 </style><style>
 .operating-panel{border:1px solid #486a7b;background:#102b3b;border-radius:15px;padding:20px;margin:20px 0 32px}.operating-panel h2{margin-top:0}.operating-note{color:#bdd3de;font-size:14px;line-height:1.6}.operating-fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:20px 0}.operating-fields label{display:flex;flex-direction:column;gap:8px;color:#e6f4f5;font-weight:700;font-size:14px}.operating-fields select{width:100%;max-width:100%;color:#edf8fa;background:#17394b;border:1px solid #7294a2;border-radius:7px;padding:11px;font:inherit;min-height:48px}.operating-fields select:focus-visible,.operating-panel button:focus-visible{outline:3px solid #9de8d4;outline-offset:2px}.operating-controls{display:flex;gap:12px;flex-wrap:wrap}.operating-controls button{cursor:pointer;border:1px solid #9de8d4;border-radius:8px;background:#9de8d4;color:#06212a;padding:11px 16px;font-weight:800}.operating-controls button[type=button]{background:transparent;color:#b0f1df}.operating-results{border-top:1px solid #466778;margin-top:22px;padding-top:22px}.operating-results h3{font-size:20px}.operating-finding{border:1px solid #456678;border-radius:10px;padding:16px;margin:12px 0;background:#143347}.operating-finding h3{font-size:17px;margin:0 0 10px}.operating-finding p{color:#d1e3e9;font-size:14px;margin:8px 0;line-height:1.6}.operating-finding a{color:#9de8d4}
 .operating-examples{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:22px 0}.operating-example{min-width:0;min-height:194px;text-align:left;display:flex;flex-direction:column;align-items:flex-start;gap:9px;background:#143448;color:#e9f8ff;border:1px solid #526f80;border-radius:12px;padding:19px;cursor:pointer;font:inherit;line-height:1.45}.operating-example strong{font-size:20px;line-height:1.2}.operating-example span:not(.operating-example-kicker):not(.operating-example-action){color:#c8dae3;font-size:14px}.operating-example-kicker{color:#a4edda;font-size:11px;letter-spacing:.07em;text-transform:uppercase;font-weight:800}.operating-example-action{color:#a4edda;font-size:13px;font-weight:800;margin-top:auto}.operating-example:hover,.operating-example[aria-pressed=true]{border-color:#a4edda;background:#1a4353}.operating-example:focus-visible{outline:3px solid #a4edda;outline-offset:3px}.operating-advanced{margin-top:20px;border-top:1px solid #466778;padding-top:16px}.operating-advanced summary{cursor:pointer;color:#a4edda;font-weight:800;padding:9px 0}.operating-advanced[open] summary{margin-bottom:8px}.operating-results{scroll-margin-top:16px}.operating-results h3:focus{outline:3px solid var(--site-mint);outline-offset:4px}.operating-takeaways{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:14px 0}.operating-takeaways section{padding:14px;background:#143448;border:1px solid #456678;border-radius:10px}.operating-takeaways h4{margin:0 0 9px;color:#a4edda;font-size:14px}.operating-takeaways p{margin:0;color:#d1e3e9;font-size:14px;line-height:1.6}.operating-evidence{margin:18px 0;border-top:1px solid #466778;padding-top:14px}.operating-evidence summary{cursor:pointer;color:#a4edda;font-weight:800;padding:10px 0}@media(max-width:820px){.operating-takeaways{grid-template-columns:1fr}}@media(max-width:820px){.operating-examples{grid-template-columns:1fr}.operating-example{min-height:0}.operating-example strong{font-size:18px}}.operating-next{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}.operating-next a{display:flex;flex-direction:column;gap:5px;padding:14px 16px;border:1px solid var(--site-border);border-radius:10px;background:#143448;text-decoration:none;color:var(--site-mint)}.operating-next a span{font-size:13px;line-height:1.5;color:#d1e3e9}.operating-next a:hover,.operating-next a:focus-visible{border-color:var(--site-mint)}@media(max-width:820px){.operating-next{grid-template-columns:1fr}}</style><link rel="stylesheet" href="./shared-pipeline-context.css?v=1"><style>
@@ -44,6 +65,39 @@
 <button type="button" role="tab" id="tab-guidance" aria-controls="risk-tab-guidance" aria-selected="false" data-risk-tab="guidance">Guidance &amp; References</button>
 </div>
 <section class="risk-tab-panel" id="risk-tab-register" role="tabpanel" aria-labelledby="tab-register">
+
+<section class="risk-story" id="risk-story" aria-labelledby="risk-story-title">
+  <div class="risk-story-heading"><span class="field-kicker">EXPLORE / BUSINESS RISK TO MANAGEMENT DECISION</span><h2 id="risk-story-title">Where does AI introduce risk into software delivery?</h2><p>Start with a business objective, follow a concrete failure scenario through the delivery system, then consider exposure and risk treatment. Three featured examples draw from the existing nine-scenario register.</p></div>
+  <div class="risk-context" aria-label="Illustrative risk governance context">
+    <div><span class="risk-small">BUSINESS OBJECTIVE</span><strong>Deliver software faster without compromising authorized, reliable production changes.</strong></div>
+    <div><span class="risk-small">AI AUTHORITY</span><strong>Review, classify or conditionally authorize a change.</strong></div>
+    <div><span class="risk-small">RISK BOUNDARY</span><strong>Management defines tolerances; AI classification does not grant approval authority.</strong></div>
+  </div>
+  <p class="risk-rmf-note"><strong>NIST AI RMF lens:</strong> Govern (decision rights and tolerance) · Map (system, assets and scenarios) · Measure (likelihood, impact and uncertainty) · Manage (treatment and monitoring). These functions overlap; they are not prescribed sequential gates.</p>
+  <div class="risk-story-select" role="group" aria-label="Featured AI SDLC risk scenarios">
+    <button type="button" data-featured-risk="RR-02" aria-pressed="true"><span class="risk-small">01 / INPUTS &amp; CLASSIFICATION</span><strong>Unsafe change appears low risk</strong></button>
+    <button type="button" data-featured-risk="RR-01" aria-pressed="false"><span class="risk-small">02 / APPROVAL AUTHORITY</span><strong>Unauthorized automated approval</strong></button>
+    <button type="button" data-featured-risk="RR-04" aria-pressed="false"><span class="risk-small">03 / PRODUCTION RELEASE</span><strong>Deployment bypasses approval</strong></button>
+  </div>
+  <div class="risk-story-workspace">
+    <div class="risk-story-selected"><div><span class="risk-small" id="risk-selected-id">RR-02 / FEATURED SCENARIO</span><h3 id="risk-selected-title">Unsafe change misclassified as low impact</h3><p id="risk-selected-event">AI incorrectly treats a high-impact or prohibited change as safe.</p></div><span class="risk-selected-state">Illustrative · Not assessed</span></div>
+    <div class="risk-story-map" aria-label="Selected risk propagation">
+      <div><span class="risk-small">INTRODUCED</span><strong id="risk-introduced">Incomplete dependency inputs</strong><p id="risk-introduced-desc">Relevant impact is missing from the evaluation.</p></div>
+      <div><span class="risk-small">EXPOSED</span><strong id="risk-exposed">Incorrect eligibility</strong><p id="risk-exposed-desc">An unsafe change may enter the automated route.</p></div>
+      <div><span class="risk-small">POTENTIALLY MITIGATED</span><strong id="risk-mitigated">Independent gates</strong><p id="risk-mitigated-desc">Exclusions and human escalation limit authority.</p></div>
+    </div>
+    <div class="risk-story-grid">
+      <section><span class="risk-small">01 / BUSINESS CONSEQUENCE</span><h4>Why this matters</h4><p id="risk-impact"></p></section>
+      <section><span class="risk-small">02 / RISK IDENTIFICATION</span><h4>How it can fail</h4><p id="risk-failure"></p></section>
+      <section><span class="risk-small">03 / SAFEGUARD OPTIONS</span><h4>What might reduce exposure</h4><p id="risk-safeguard"></p></section>
+      <section><span class="risk-small">04 / GOVERNANCE</span><h4>What management must decide</h4><p id="risk-management"></p></section>
+      <section><span class="risk-small">05 / MEASUREMENT</span><h4>What needs assessing</h4><p id="risk-assessment"></p></section>
+      <section><span class="risk-small">06 / TREATMENT</span><h4>How the organization could respond</h4><p id="risk-treatment"></p></section>
+    </div>
+    <div class="risk-story-footer"><p><strong>Assessment status:</strong> No actual likelihood, impact level, control effectiveness, or residual-risk conclusion is assigned here. Risk appetite, acceptance authority and treatment must be defined for the real environment.</p><div class="risk-story-links"><a href="#risk-register" id="risk-register-link">Explore all nine risks ↓</a><a href="./engineering-blueprint.html">Explore safeguards in Engineering →</a><a href="./independent-assurance.html#foundational-controls">Evaluate safeguard evidence in Assurance →</a></div></div>
+  </div>
+</section>
+
 <div class="risk-frame" aria-labelledby="rmf-approach-title"><h2 id="rmf-approach-title">NIST AI RMF: A practical approach</h2>
 <p>Use four connected functions to structure assessment, from governance and risk identification through validation and ongoing response.</p>
 <div class="rmf-cards">
@@ -58,19 +112,6 @@
 <p>This example library generalizes nine failure scenarios from our working risk-control map. Filter by AI authority or illustrative AI RMF function, inspect a proposed control objective and suggested evidence, then export the catalog for independent assessment. The mappings are analytical suggestions, not a claim that any risk is currently present or mitigated.</p>
 <div id="sdlc-risk-register"></div>
 
-<details class="connected-investigation" id="authorization-case">
-<summary><span class="ci-kicker">CONNECTED INVESTIGATION · RR-01</span><strong>Can a contributor influence their own approval?</strong><span class="ci-summary-hint">Explore safeguards, failure scenario and assurance evidence</span></summary>
-<div class="ci-content">
-<p class="ci-context">Follow this fictional authorization failure across the workflow. The risk register provides the control objective; the assurance example shows what management could demonstrate and what an independent evaluator would challenge.</p>
-<div class="ci-grid">
-<section><h3>What's needed</h3><p>Independently governed approval policy, appropriate CODEOWNERS enforcement for protected changes, restricted administration and merge-bypass permissions.</p></section>
-<section><h3>What management should demonstrate</h3><p>Show a protected-path PR, effective branch rules, the eligible approval identity, who may edit those rules, and a rejected unauthorized approval or merge.</p></section>
-<section><h3>Risk scenario</h3><p>A PR author can change reviewer requirements or satisfy approval through an unauthorized actor; a passing AI check disguises the missing independent authorization.</p></section>
-<section><h3>What auditors should evaluate</h3><p>Test author/reviewer independence, effective CODEOWNERS settings, policy-admin rights, bypass actors, negative outcomes, and the exact approved SHA.</p></section>
-</div>
-<p class="ci-actions"><a href="./independent-assurance.html#authorization-evidence-case">Follow the management demo and evidence test →</a><a href="#risk-register">Open the existing RR-01 risk record →</a><a href="./index.html#trust-boundaries">Return to the workflow boundary →</a></p>
-<p class="ci-footnote">Illustrative risk-control relationship, not an implemented control, a real configuration, or a finding. CODEOWNERS is one potential mechanism; actual enforcement depends on effective policies and privileges.</p>
-</div>
 </details>
 
 </section>
@@ -158,4 +199,52 @@
 <section class="field-section"><h2>Independent engineering challenge</h2><p>For a deeper assessment of delegated AI approval authority, review thirteen engineering risks mapped to published OpenAI, Anthropic, Cursor, NIST and OWASP practices. These references support engineering challenge, not a new control requirement.</p><div class="field-actions"><a class="field-button" href="./engineering-challenge-reference.html#industry-challenge">Explore 13 risk-first engineering challenges →</a></div></section><section class="field-section"><h2>Supporting materials</h2><p><a href="./risk-controls.html">Risk & Safeguards reference →</a> · <a href="./independent-assurance.html">Assurance and evidence →</a> · <a href="https://airc.nist.gov/airmf-resources/airmf/" target="_blank" rel="noopener noreferrer">NIST AI RMF ↗</a> · <a href="https://csrc.nist.gov/pubs/sp/800/218/final" target="_blank" rel="noopener noreferrer">NIST SSDF ↗</a></p><p>Published frameworks inform the questions; they do not endorse this field guide or prescribe its assessment outcomes.</p></section>
 
 </section>
-<footer class="field-note">Proposed qualitative risk method and fictional examples. No computed AI risk score, externally persisted inventory, management acceptance, automated production authorization, or control-effectiveness determination is provided.</footer></main><script src="./risk-governance-worksheet.js"></script><script src="./sdlc-risk-register.js"></script><script src="./risk-governance-ui.js"></script><script src="./risk-dashboard-tabs.js"></script><script src="./sdlc-risk-register-ui.js"></script><script src="./operating-model.js"></script><script src="./shared-pipeline-context.js?v=1"></script><script src="./shared-pipeline-nav.js?v=1"></script><script>(function(){'use strict';const id="authorization-case";function reveal(){if(location.hash==='#'+id){const panel=document.getElementById(id);if(panel)panel.open=true;}}reveal();window.addEventListener('hashchange',reveal);})();</script></body></html>
+<footer class="field-note">Proposed qualitative risk method and fictional examples. No computed AI risk score, externally persisted inventory, management acceptance, automated production authorization, or control-effectiveness determination is provided.</footer></main><script src="./risk-governance-worksheet.js"></script><script src="./sdlc-risk-register.js"></script><script src="./risk-governance-ui.js"></script><script src="./risk-dashboard-tabs.js"></script><script src="./sdlc-risk-register-ui.js"></script><script src="./operating-model.js"></script><script src="./shared-pipeline-context.js?v=1"></script><script src="./shared-pipeline-nav.js?v=1"></script><script>
+(function(){'use strict';
+const lib=window.SdlcRiskRegister,host=document.getElementById('risk-story');
+if(!lib||!host)return;
+const stories={
+'RR-02':{
+ introduced:['Missing impact context','Incomplete dependency mapping, misleading PR content or incorrect labels distort what the reviewer sees.'],
+ exposed:['False low-impact decision','An unsafe change could be treated as eligible despite affecting a protected service.'],
+ mitigated:['Independent eligibility gates','Deterministic exclusions, tested classification boundaries and escalation on uncertainty.'],
+ impact:'An inappropriate change may reach a consequential service or introduce a defect; severity depends on the affected assets and actual release path.',
+ management:'Define protected changes and exclusion criteria; determine how unknown dependencies and disagreement are routed.',
+ assessment:'Examine impact to relevant services, mislabeled and known-bad test cases, missing-input frequency, reviewer error rates and uncertainty.',
+ treatment:'Constrain the eligible change scope, require human review for unknown impact, improve trusted inputs and validate classification before expanding automation.'
+},
+'RR-01':{
+ introduced:['Mutable authority rules','A contributor or administrator can influence approval logic, credentials or exceptions.'],
+ exposed:['Approval authority compromised','A change may satisfy approval without a genuinely independent authorized decision.'],
+ mitigated:['Independent enforcement','Protected policy administration, role boundaries and required checks on the current revision.'],
+ impact:'Unauthorized software changes could undermine service integrity, security or financially relevant processing.',
+ management:'Choose which changes may receive automated authorization, the independent policy owner and which bypasses are permitted.',
+ assessment:'Evaluate effective policy-administration privileges, authorization identity, bypass routes, SoD, scope and plausible business impact.',
+ treatment:'Restrict policy administration and bot rights, enforce authorized review, route sensitive changes to humans or suspend automation until independence is credible.'
+},
+'RR-04':{
+ introduced:['Alternate release authority','Manual deployments, emergency paths or privileged build routes may not inherit merge authorization.'],
+ exposed:['Production delivery bypass','An unauthorized artifact may reach production even if the pull request workflow was protected.'],
+ mitigated:['Release provenance controls','Constrain release routes, bind artifacts to authorized revisions and monitor exceptional deployments.'],
+ impact:'Unreviewed changes could reach production, disrupt operations or alter critical business processing.',
+ management:'Define acceptable release paths, who may trigger emergency changes and how exceptions are approved and reconciled.',
+ assessment:'Inventory release routes, inspect artifact lineage, compare independent production deployment records and evaluate bypass privileges.',
+ treatment:'Limit privileged release paths, require provenance validation and independent exception review; pause unsafe deployment routes where needed.'
+}
+};
+const ids=['RR-02','RR-01','RR-04'];const buttons=[...host.querySelectorAll('[data-featured-risk]')];
+function put(id,value){document.getElementById(id).textContent=value;}
+function show(id){
+ const record=lib.risks.find(r=>r.id===id),story=stories[id];if(!record||!story)return;
+ buttons.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.featuredRisk===id)));
+ put('risk-selected-id',id+' / FEATURED SCENARIO');put('risk-selected-title',record.title);
+ put('risk-selected-event',record.event);
+ for(const key of ['introduced','exposed','mitigated']){put('risk-'+key,story[key][0]);put('risk-'+key+'-desc',story[key][1]);}
+ put('risk-impact',story.impact);put('risk-failure',record.failure);
+ put('risk-safeguard',record.safeguard);put('risk-management',story.management);
+ put('risk-assessment',story.assessment);put('risk-treatment',story.treatment);
+}
+buttons.forEach(b=>b.addEventListener('click',()=>show(b.dataset.featuredRisk)));
+show(ids[0]);
+})();
+</script></body></html>
