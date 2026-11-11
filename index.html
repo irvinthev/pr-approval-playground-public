@@ -180,6 +180,7 @@
 <div class="result-panel"><h3>Illustrative pipeline state</h3><ul id="scenario-facts"><li>Select one of the four scenarios to see how the pipeline responds.</li></ul></div>
 <div class="result-panel" id="decision-panel" data-tone="neutral"><h3>Decision and explanation</h3><p class="decision-label" id="decision-label">SELECT A SCENARIO</p><p id="decision-reason">Explore mode explains the workflow without asserting any outcome.</p><p class="next-action" id="decision-action">Choose a fictional case above to run the simulation.</p></div>
 </div>
+<p id="overview-related-risk" hidden class="illustrative-note"><strong>Related risk to investigate:</strong> This example shows a hard gate correctly excluding a financial dependency. RR-02 explores the different failure where unsafe scope is incorrectly classified as eligible. <a href="./ai-sdlc-risk.html?risk=RR-02#risk-explorer">Explore RR-02 in Risk Management →</a></p>
 <div class="sim-actions"><a class="guide-action" href="./engineering-blueprint.html">Explore engineering implementation →</a><a class="secondary-action" href="./auditor-view.html">Challenge the decision in Auditor View →</a></div>
 <p class="illustrative-note">Synthetic teaching examples, not live decisions or implemented controls. Selecting another scenario updates this workflow.</p>
 </div>
@@ -317,7 +318,7 @@
   function resetExplore(){
     scenarioButtons.forEach(button=>button.setAttribute("aria-pressed","false"));
     stageButtons.forEach(button=>{delete button.dataset.state;button.querySelector(".stage-state").textContent="Explore stage";});
-    scenarioOutput.hidden=true;
+    scenarioOutput.hidden=true;document.getElementById("overview-related-risk").hidden=true;
     mode.textContent="Explore mode · No scenario selected";clearButton.hidden=true;
     document.getElementById("scenario-facts").replaceChildren();
     const item=document.createElement("li");item.textContent="Select one of the four scenarios to see how the pipeline responds.";document.getElementById("scenario-facts").appendChild(item);
@@ -332,7 +333,7 @@
     scenarioButtons.forEach(button=>button.setAttribute("aria-pressed",String(button.dataset.scenario===key)));
     const selected=scenarioButtons.find(button=>button.dataset.scenario===key);
     mode.textContent="Simulation mode · "+selected.textContent.trim();
-    clearButton.hidden=false;scenarioOutput.hidden=false;
+    clearButton.hidden=false;scenarioOutput.hidden=false;document.getElementById("overview-related-risk").hidden=(key!=="excluded");
     stageButtons.forEach((button,index)=>{
       const state=data.states[index];
       button.dataset.state=state;
