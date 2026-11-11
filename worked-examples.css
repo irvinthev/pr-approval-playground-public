@@ -31,3 +31,12 @@
 .legacy-experience>summary{font-size:15px;font-weight:750;color:#183a60;cursor:pointer;min-height:44px;padding:9px 2px}
 .legacy-experience>.legacy-intro{font-size:13px;color:#50637b;margin:0 0 15px}
 @media(max-width:760px){#worked-examples .we-panes{display:block}#worked-examples .we-panes>.pane{margin-top:0}#worked-examples .we-pane-body{padding:15px}}
+
+/* Separate simulated reviewer output, enforcement result and assurance reliance. */
+#worked-examples .we-interpretation{padding:16px;border:1px solid #b8cbdc;border-radius:12px;background:#f2f7fb;margin-bottom:18px}
+#worked-examples .we-interpretation h4{margin:0 0 14px;font-size:15px;color:#18354b}
+#worked-examples .we-interpretation-item{border-top:1px solid #d1dfea;padding:10px 0}
+#worked-examples .we-interpretation-item strong{font-size:12px;color:#315d76}
+#worked-examples .we-interpretation-item p{margin:4px 0 0;font-size:13px;line-height:1.55}
+#worked-examples .we-interpretation-evidence,#worked-examples .we-interpretation-links{font-size:13px;line-height:1.55;margin:12px 0 0}
+#worked-examples .we-interpretation-links a{display:inline-block;margin-right:4px}
