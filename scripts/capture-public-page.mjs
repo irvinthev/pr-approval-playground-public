@@ -87,6 +87,12 @@ async function runCase(label, path, viewportName, viewport, scenario) {
       check((await page.locator('#risk-safeguard').innerText()).length > 15, 'Risk safeguard missing');
       checks.push('Risk safeguards expanded');
     }
+    if (scenario === 'assurance-deep-link') {
+      await page.goto(new URL('independent-assurance.html#document-assessment', base).toString(), { waitUntil: 'networkidle' });
+      check(await page.locator('#assurance-methodology').getAttribute('open') !== null, 'Deep-linked methodology was not opened');
+      check(await page.locator('#document-assessment').isVisible(), 'Deep-linked evidence section is hidden');
+      checks.push('Direct evidence deep link reveals expanded methodology');
+    }
     if (scenario === 'assurance-expanded') {
       const details = page.locator('#authorization-evidence-case');
       await details.locator('summary').click();
@@ -123,6 +129,7 @@ try {
     }
     await runCase('risk-rr02-expanded-' + viewportName, 'ai-sdlc-risk.html', viewportName, viewport, 'risk-rr02');
     await runCase('assurance-evidence-expanded-' + viewportName, 'independent-assurance.html', viewportName, viewport, 'assurance-expanded');
+    await runCase('assurance-evidence-deep-link-' + viewportName, 'independent-assurance.html', viewportName, viewport, 'assurance-deep-link');
     await runCase('cross-page-rr02-' + viewportName, 'index.html', viewportName, viewport, 'cross-page-rr02');
   }
 } finally { await browser.close(); }
