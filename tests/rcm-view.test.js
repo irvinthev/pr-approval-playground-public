@@ -81,7 +81,7 @@ test('RCM authority focus is non-exclusive and preserves export, deep links and 
  const page=read('rcm-view.html');
  const registry=JSON.parse(page.match(/const controls=(\[[\s\S]*?\]);\s*const searchEl=/)[1]);
  assert.equal(registry.length,15);
- for(const key of ['foundation','review','automated'])assert.ok(page.includes("value=\\\""+key+"\\\""));
+ for(const key of ['foundation','review','automated'])assert.ok(page.includes('value="'+key+'"'));
  const m=page.match(/const authorityFocus=Object\.freeze\((\{[^;]+\})\);/);
  assert.ok(m,'authority focus mapping exists');
  const focus=Function('return ('+m[1]+')')();
