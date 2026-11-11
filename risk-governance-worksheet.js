@@ -13,6 +13,7 @@ function inventoryRecord(fields,index){
  provider:clean(fields.provider)||'Unknown',authority:clean(fields.authority)||'Not assessed',
  dataClass,crownJewel:['Yes','No','Unknown'].includes(fields.crownJewel)?fields.crownJewel:'Unknown',
  criticalAsset:clean(fields.criticalAsset)||'Not identified',dataFlow:clean(fields.dataFlow)||'Not documented',
+ dataTypes:clean(fields.dataTypes)||'Not documented',dataAccess:clean(fields.dataAccess)||'Not documented',
  classificationBasis:clean(fields.classificationBasis)||'Not documented',
  reviewStatus:'Draft — not verified'};
 }
@@ -27,11 +28,12 @@ function riskRecord(fields,index,inventoryIds){
  return {id:'AI-RISK-'+String(index).padStart(3,'0'),assetId,event,owner,
  impact:clean(fields.impact)||'Not assessed',likelihood:clean(fields.likelihood)||'Not assessed',
  safeguard:clean(fields.safeguard)||'Not documented',evidence:clean(fields.evidence)||'Not supplied',
- treatment,proposedDecisionMaker:approver||'Not identified',
+ treatment,actionPlan:clean(fields.actionPlan)||'Not documented',actionOwner:clean(fields.actionOwner)||'Not assigned',targetDate:clean(fields.targetDate)||'Not scheduled',
+ proposedDecisionMaker:approver||'Not identified',
  acceptanceRationale:rationale||'Not supplied',conditions:conditions||'Not specified',
  nextReview:reviewDate||'Not scheduled',
  acceptanceStatus:wantsAcceptance?'Proposed — decision not evidenced':'Not requested',
- riskStatus:'Open — unverified',residualRisk:'Not determined'};
+ riskStatus:['Draft — open','Draft — treatment planned','Draft — monitoring planned'].includes(fields.riskStatus)?fields.riskStatus:'Draft — open',residualRisk:'Not determined'};
 }
 function exportData(assets,risks){return JSON.stringify({notice:'Illustrative local worksheet; not a validated inventory, signed risk acceptance, or production evidence.',exportedAt:'Date not recorded in this illustrative export',inventory:assets,risks},null,2);}
 const api={inventoryRecord,riskRecord,exportData,classes};
