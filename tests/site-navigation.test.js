@@ -57,6 +57,8 @@ test('homepage reconciles the interactive approval illustration with the broader
  assert.match(html,/AI classification, approval-of-record, enforced merge, and production release eligibility remain separate decisions/);
  assert.match(html,/detailed seven-stage simulator/i);
  assert.doesNotMatch(html,/QualityBot|RiskBot/);
+ const archived=read('previous-overview.html');
+ assert.doesNotMatch(archived,/QualityBot|RiskBot|Braze|Appboy/i);
 });
 test('risk assessment explains capability-specific authority without claiming a validated risk score',()=>{
  const html=read('ai-sdlc-risk.html');
