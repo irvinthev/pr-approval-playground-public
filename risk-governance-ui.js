@@ -5,6 +5,19 @@
 const root=document.getElementById('risk-governance-workspace'),D=window.RiskGovernanceWorksheet,R=window.SdlcRiskRegister;
 if(!root||!D||!R)return;
 const assets=[],risks=[];
+const sampleCases=[
+ {inventory:{name:'Fictional PR review assistant',owner:'Engineering lead (fictional)',purpose:'Suggest review findings; human reviewers retain authorization',provider:'External model API (illustrative)',authority:'Advisory',dataClass:'Internal',classificationBasis:'Illustrative internal-data assumption, not verified',dataTypes:'PR diffs, source comments and review metadata',dataAccess:'Code excerpts sent to an illustrative external model service',crownJewel:'Unknown',criticalAsset:'Engineering source repositories',dataFlow:'Repository diff → advisory AI → human reviewer'},
+  risk:{event:'AI reviewer overlooks a security-sensitive change or provides misleading review findings.',owner:'Engineering risk owner (fictional)',impact:'Not assessed',likelihood:'Not assessed',safeguard:'Qualified human review and required security checks remain in force.',evidence:'Independent negative tests and reviewer overrides not yet provided.',treatment:'Mitigate',actionPlan:'Validate unsafe-change examples before considering any expanded authority.',actionOwner:'Engineering lead (fictional)',riskStatus:'Draft — treatment planned'}},
+ {inventory:{name:'Fictional low-risk PR approval gate',owner:'Platform owner (fictional)',purpose:'Conditionally authorize narrowly scoped PRs under independent deterministic policy',provider:'Company policy engine plus fictional AI review service',authority:'Automated approval',dataClass:'Confidential',classificationBasis:'Illustrative source-data classification, not verified',dataTypes:'Code diffs, dependency maps and policy results',dataAccess:'AI reviews source metadata; independently governed policy controls authorization',crownJewel:'Yes',criticalAsset:'Shared billing dependency (hypothetical crown jewel)',dataFlow:'PR → eligibility and CI → AI signals → independent authorization → protected merge'},
+  risk:{event:'A shared-library billing dependency is missing from the map and an unsafe change enters automatic approval.',owner:'Platform risk owner (fictional)',impact:'Not assessed',likelihood:'Not assessed',safeguard:'Deterministic financial exclusions, owner-validated dependency mappings and human fallback.',evidence:'Independent mapping completeness and negative-test evidence remain outstanding.',treatment:'Avoid or restrict',actionPlan:'Exclude financial dependencies pending validated maps and explicit owner authorization.',actionOwner:'Platform owner (fictional)',riskStatus:'Draft — treatment planned'}}
+];
+for(const example of sampleCases){
+ const asset=D.inventoryRecord(example.inventory,assets.length+1);
+ const risk=D.riskRecord({...example.risk,assetId:asset.id},risks.length+1,[asset.id]);
+ assets.push(asset);risks.push(risk);
+}
+let examplesVisible=true;
+
 const n=(tag,content,cls)=>{const x=document.createElement(tag);if(content!==undefined&&content!==null)x.textContent=content;if(cls)x.className=cls;return x;};
 const makeField=(label,key,type='text',options=null,full=false)=>{
  const wrapper=n('label',label,full?'full':'');let el;
@@ -13,6 +26,11 @@ const makeField=(label,key,type='text',options=null,full=false)=>{
  el.name=key;wrapper.append(el);return wrapper;
 };
 const formValues=f=>Object.fromEntries(new FormData(f).entries());
+const exampleSection=n('section',null,'risk-frame governance-examples');
+exampleSection.append(n('h2','Two fictional assessments — start here'),n('p','Two completed sample records illustrate the workflow: advisory AI reviewed by people, and automated approval with a hypothetical crown-jewel dependency. Both are unverified teaching examples, not real inventory or assessed residual risk.'));
+const exampleCards=n('div',null,'governance-example-grid');
+exampleSection.append(exampleCards);
+root.append(exampleSection);
 const inventorySection=n('section',null,'risk-frame');
 inventorySection.append(n('h2','01 / AI system inventory'),n('p','First establish the AI capability and the owner accountable for its use. Record its intended use, effective authority, provider, data touched and the business asset it could affect. Crown-jewel status describes asset criticality; it is not the same thing as information classification.'));
 const inventoryForm=n('form',null,'governance-form');
@@ -32,8 +50,9 @@ const inventoryButtons=n('div',null,'governance-actions');const addAsset=n('butt
  const fields={name:'Example AI PR reviewer',owner:'Engineering lead (fictional)',purpose:'Review a documentation-only PR and recommend an eligibility decision',provider:'Third-party model runtime',authority:'Review gate',dataClass:'Internal',classificationBasis:'Example company information policy',dataTypes:'PR source code and static analysis output',dataAccess:'Engineering-managed service to vendor model API',crownJewel:'Unknown',criticalAsset:'Shared billing library (potential downstream consumer)',dataFlow:'PR diff → vendor model API → evaluation → independent policy gate'};
  for(const [key,value] of Object.entries(fields)){const input=inventoryForm.elements.namedItem(key);if(input)input.value=value;}
 });
-inventoryButtons.append(addAsset,demo);inventoryForm.append(inventoryButtons);inventorySection.append(inventoryForm);
-const inventoryCount=n('p',null,'governance-summary'),inventoryTable=n('div',null,'field-overflow');inventorySection.append(inventoryCount,inventoryTable);
+inventoryButtons.append(addAsset,demo);inventoryForm.append(inventoryButtons);
+const inventoryEditor=n('details',null,'governance-editor');inventoryEditor.append(n('summary','Add another AI system / edit a sample template'),inventoryForm);inventorySection.append(inventoryEditor);
+const inventoryCount=n('p',null,'governance-summary'),inventoryTable=n('div',null,'field-overflow');const inventoryList=n('details',null,'governance-editor');inventoryList.append(n('summary','View complete inventory register'),inventoryTable);inventorySection.append(inventoryCount,inventoryList);
 const riskSection=n('section',null,'risk-frame');
 riskSection.append(n('h2','02 / Track risk and propose treatment'),n('p','Associate a credible failure scenario with an inventoried AI capability, identify safeguards and unresolved evidence, and document management’s intended response. Any acceptance here remains a proposal unless separately approved through an authorized organizational process.'));
 const riskForm=n('form',null,'governance-form');
@@ -56,8 +75,9 @@ riskForm.append(makeField('Acceptance rationale (required if proposing acceptanc
 riskForm.append(makeField('Conditions and compensating safeguards','conditions','textarea',null,true));
 riskForm.append(makeField('Proposed authorized decision-maker','approver'));
 riskForm.append(makeField('Proposed review / expiration date','reviewDate','date'));
-const riskButtons=n('div',null,'governance-actions'),addRisk=n('button','Add risk draft');addRisk.type='submit';riskButtons.append(addRisk);riskForm.append(riskButtons);riskSection.append(riskForm);
-const riskCount=n('p',null,'governance-summary'),riskTable=n('div',null,'field-overflow');riskSection.append(riskCount,riskTable);
+const riskButtons=n('div',null,'governance-actions'),addRisk=n('button','Add risk draft');addRisk.type='submit';riskButtons.append(addRisk);riskForm.append(riskButtons);
+const riskEditor=n('details',null,'governance-editor');riskEditor.append(n('summary','Add another risk / draft treatment or acceptance'),riskForm);riskSection.append(riskEditor);
+const riskCount=n('p',null,'governance-summary'),riskTable=n('div',null,'field-overflow');const riskList=n('details',null,'governance-editor');riskList.append(n('summary','View all recorded risk drafts'),riskTable);riskSection.append(riskCount,riskList);
 const status=n('p',null,'governance-note');status.setAttribute('role','status');status.setAttribute('aria-live','polite');
 const actions=n('div',null,'governance-actions'),download=n('button','Export draft worksheets (.json)','governance-export');download.type='button';
 download.addEventListener('click',()=>{
@@ -66,7 +86,7 @@ download.addEventListener('click',()=>{
  status.textContent='Local draft exported. No approval, risk acceptance, or external storage has occurred.';
 });
 const clear=n('button','Clear session drafts','secondary');clear.type='button';clear.addEventListener('click',()=>{
- assets.splice(0);risks.splice(0);render();status.textContent='Session drafts cleared in this page. Previously downloaded files are unaffected.';
+ assets.splice(0);risks.splice(0);examplesVisible=false;render();status.textContent='Session drafts cleared in this page. Previously downloaded files are unaffected.';
 });actions.append(download,clear);
 root.append(inventorySection,riskSection,actions,status,n('p','Session-only: this browser page does not save, submit, sign or authorize inventory entries or risk acceptance. Do not enter confidential or production information in this public demonstration.','governance-note'));
 function table(headers,values){const t=n('table',null,'governance-table'),thead=n('thead'),tr=n('tr');
@@ -74,6 +94,29 @@ function table(headers,values){const t=n('table',null,'governance-table'),thead=
  const body=n('tbody');for(const row of values){const tr=n('tr');row.forEach(val=>tr.append(n('td',val)));body.append(tr);}t.append(body);return t;
 }
 function render(){
+ exampleCards.replaceChildren();
+ if(examplesVisible)for(let i=0;i<Math.min(2,assets.length);i++){
+  const asset=assets[i],risk=risks.find(x=>x.assetId===asset.id);
+  if(!risk)continue;
+  const card=n('article',null,'governance-example-card');
+  card.append(n('span','FICTIONAL EXAMPLE '+(i+1),'governance-example-kicker'),n('h3',asset.name),n('p',asset.purpose));
+  const quick=n('dl');
+  for(const [label,value] of [['AI authority',asset.authority],['Data classification',asset.dataClass+' (unverified)'],['Crown-jewel exposure',asset.crownJewel+' (hypothetical)'],['Risk response',risk.treatment+' — proposed']]){
+   quick.append(n('dt',label),n('dd',value));
+  }
+  card.append(quick);
+  const detail=n('details');detail.append(n('summary','View risk, safeguard and evidence'));
+  for(const [label,value] of [['Risk scenario',risk.event],['Potentially affected asset',asset.criticalAsset],['Proposed safeguard',risk.safeguard],['Evidence gap',risk.evidence],['Next action',risk.actionPlan],['Owner',risk.owner]]){
+   const block=n('div');block.append(n('strong',label),n('p',value));detail.append(block);
+  }
+  card.append(detail);
+  const template=n('button','Use as inventory template','governance-template-button');template.type='button';template.addEventListener('click',()=>{
+   const sample=sampleCases[i].inventory;
+   for(const [key,value] of Object.entries(sample)){const input=inventoryForm.elements.namedItem(key);if(input)input.value=value;}
+   inventoryEditor.open=true;inventoryEditor.scrollIntoView({block:'start',behavior:'smooth'});
+  });
+  card.append(template);exampleCards.append(card);
+ }
  inventoryCount.textContent=assets.length+' draft AI inventory entries · No verified systems';
  inventoryTable.replaceChildren(table(['ID','AI capability / owner','Data classification','Crown-jewel exposure','Authority','State'],assets.map(x=>[x.id,x.name+' / '+x.owner,x.dataClass,x.crownJewel,x.authority,x.reviewStatus])));
  riskCount.textContent=risks.length+' draft risks · Zero authorized acceptances';
