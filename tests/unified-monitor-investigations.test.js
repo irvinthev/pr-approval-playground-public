@@ -22,18 +22,18 @@ test('advanced Monitoring investigations and working interactions migrated into 
  assert.match(renderer,/if\(active!==6\)investigations\.open=false/);
  assert.match(page,/document\.querySelector\('\[data-event="0"\]'\)\.click\(\)/);
 });
-test('legacy deep link opens migrated exercises at stage 7 and shared case links stay on legacy page',()=>{
+test('Monitoring is a standalone interactive chapter with stage-specific cases and deep links',()=>{
  const page=read('continuous-monitoring.html');
- assert.match(page,/if\(location\.hash\.startsWith\('#case='\)\)return/);
- assert.match(page,/\['#worked-examples','#monitoring-use-notes','#ci-canary-monitoring'\]\.includes\(location\.hash\)/);
- assert.match(page,/if\(fragment==='#worked-examples'\)stage='6'/);
- assert.match(page,/location\.replace\('\.\/engineering-blueprint\.html\?stage='\+stage\+'&view=monitor'\+fragment\)/);
+ for(const id of ['stage-pickers','monitoring-guide','worked-examples','monitoring-use-notes','ci-canary-monitoring','eng-data','event-detail'])assert.ok(page.includes('id="'+id+'"'),id);
+ for(const phrase of ['Operate the approval process','Detect','Respond','Learn','Approved demo-01. Deployed demo-02.'])assert.ok(page.includes(phrase),phrase);
+ assert.match(page,/src="\.\/monitoring\.js\?v=shared-1"/);
+ assert.doesNotMatch(page,/location\.replace\('\.\/engineering-blueprint\.html\?stage='/);
 });
-
-test('remaining monitoring setup and CI/canary guidance are retained with deep links',()=>{
- const page=read('engineering-blueprint.html'),legacy=read('continuous-monitoring.html');
- for(const id of ['monitoring-use-notes','ci-canary-monitoring']){assert.ok(page.includes('id="'+id+'"'));assert.ok(legacy.includes("'#"+id+"'"));}
+test('monitoring setup and CI/canary guidance remain reachable in both reference paths',()=>{
+ const page=read('engineering-blueprint.html'),monitor=read('continuous-monitoring.html');
+ for(const id of ['monitoring-use-notes','ci-canary-monitoring']){assert.ok(page.includes('id="'+id+'"'));assert.ok(monitor.includes('id="'+id+'"'));}
  for(const phrase of ['Define the population, processing window, threshold, owner and closure evidence','Reconcile against independent merge and deployment sources','Required CI and canary outcomes'])assert.ok(page.includes(phrase),phrase);
+ assert.match(monitor,/href="\.\/engineering-blueprint\.html\?stage=0#technical-requirements"/);
 });
 test('coverage warning has readable foreground and navigation discards stale monitoring fragments',()=>{
  const page=read('engineering-blueprint.html');
