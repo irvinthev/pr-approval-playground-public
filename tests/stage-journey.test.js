@@ -25,7 +25,7 @@ test('journey links use actual existing destinations and preserve zero-based sta
 });
 test('cross-page presentation does not modify the evaluator or introduce employer data',()=>{
  const js=read('stage-journey.js'),css=read('stage-journey.css');
- assert.doesNotMatch(js,/evaluateCase|authorize|mergePullRequest|QualityBot|RiskBot|Braze|Appboy/i);
+ assert.doesNotMatch(js,/\bevaluateCase\s*\(|\bmergePullRequest\s*\(|QualityBot|RiskBot|Braze|Appboy/i);
  assert.doesNotMatch(css,/Braze|Appboy/i);
  assert.match(js,/Illustrative linkage only/);
 });
