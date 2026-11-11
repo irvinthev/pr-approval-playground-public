@@ -88,6 +88,27 @@
 .investigation-note{color:#acc2d0;font-size:12px;line-height:1.6;margin:13px 0 0}
 @media(max-width:750px){.boundary-grid{grid-template-columns:1fr 1fr}.investigation-tabs{grid-template-columns:1fr 1fr}}
 @media(max-width:480px){.boundary-explorer{padding:15px}.boundary-grid{grid-template-columns:1fr}.boundary-choice{min-height:65px}}
+
+/* Integrate control investigation into the eight-stage journey without adding another long page section. */
+.overview .workflow-map{margin-bottom:16px}
+.overview .path-branch{margin:13px 0;padding:12px;border:1px solid #426477;border-radius:9px;background:#142b3a}
+.overview .path-branch-title{font-size:13px;font-weight:800;color:#e2f6f1;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.overview .path-branch-title span{color:#b5cbd4;font-size:12px;font-weight:400}
+.overview .path-branch-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.overview .path-branch-lane{background:#1b3849;border:1px solid #496b7d;border-radius:7px;padding:10px}
+.overview .path-branch-lane strong{display:block;font-size:13px;color:#eaf8f8}.overview .path-branch-lane span{display:block;font-size:12px;color:#bfd1da;line-height:1.5;margin-top:3px}
+.overview .path-branch-join{font-size:12px;color:#aee8d8;text-align:center}
+.overview .stage-inspector-toggle{margin:10px 0}.overview .stage-inspector-toggle>summary{color:#cce8e5;cursor:pointer;font-size:13px;padding:9px 3px}
+.overview .stage-inspector-toggle .stage-inspector{margin-top:6px}
+.overview .boundary-explorer{margin:12px 0;padding:12px;border:1px solid #456579;background:#132e3d}
+.overview .boundary-explorer h3{font-size:17px;margin:5px 0}.overview .boundary-intro{margin:4px 0;font-size:12px;line-height:1.55}
+.overview .boundary-grid{margin:10px 0 0;gap:7px}.overview .boundary-choice{min-height:66px;padding:10px}
+.overview .boundary-details{margin-top:9px}.overview .boundary-details>summary{cursor:pointer;min-height:44px;padding:11px 12px;border:1px solid #496b80;border-radius:7px;font-size:13px;font-weight:700;color:#d2f1e7}
+.overview .boundary-details>summary span{float:right}
+.overview .investigation-header{margin:12px 0 8px}.overview .investigation-header h3{font-size:16px}
+.overview .investigation-tabs{margin:11px 0 7px}.overview .investigation-panel{min-height:95px}
+.overview .investigation-links{margin-top:10px}.overview .investigation-note{margin-bottom:0}
+@media(max-width:520px){.overview .path-branch-grid{grid-template-columns:1fr 1fr}.overview .path-branch-title span{display:block}.overview .path-branch-lane{padding:8px}.overview .path-branch-lane strong{font-size:12px}.overview .path-branch-lane span{font-size:11px}}
 </style><link rel="stylesheet" href="./ui-polish.css?v=1"></head>
 <body class="overview"><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a><a class="site-experiments" href="./playground.html">Advanced experiments ↗</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html" aria-current="page">Overview</a><a href="./ai-sdlc-risk.html">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Assurance</a></nav></header>
 
@@ -112,24 +133,28 @@
 <button class="workflow-stage" type="button" data-stage="6" aria-pressed="false"><span class="stage-number">07 · DELIVERY</span><strong>Build &amp; deploy</strong><p>Bind released artifact to the authorized revision.</p><span class="stage-state">Modeled pass</span></button>
 <button class="workflow-stage" type="button" data-stage="7" aria-pressed="false"><span class="stage-number">08 · OPERATIONS</span><strong>Monitor &amp; respond</strong><p>Observe health, exceptions, and rollback triggers.</p><span class="stage-state">Modeled pass</span></button>
 </div>
-<div class="route-note"><strong>↘ Human authorization path</strong><span>Ineligible, uncertain, or conflicting cases leave automated approval and require an authorized human decision. Human approval is an alternative route, not a second AI submission. A post-release failure is handled as an operational incident.</span></div>
-<div class="stage-inspector" id="stage-inspector" aria-live="polite">
+<div class="path-branch" role="group" aria-label="Human and AI approval routes">
+<div class="path-branch-title">Authorization routes <span>Different review paths · shared enforcement</span></div>
+<div class="path-branch-grid">
+<div class="path-branch-lane"><strong>Human review</strong><span>Qualified reviewer authorizes the current change</span></div>
+<div class="path-branch-lane"><strong>AI-assisted review</strong><span>Policy-bound eligibility and separate authorization</span></div>
+</div>
+<div class="path-branch-join">↓ Both require protected merge and release controls</div>
+</div><details class="stage-inspector-toggle"><summary>Selected stage: Engineering and assurance details</summary><div class="stage-inspector" id="stage-inspector" aria-live="polite">
 <div><h3>Engineering · What must work?</h3><p id="stage-engineering">Bind each assessment to the exact changed revision.</p></div>
 <div><h3>Assurance · What must be demonstrated?</h3><p id="stage-assurance">Confirm the change and commit being evaluated are unambiguous.</p></div>
 </div>
-<p class="workflow-note">Illustrative model only: the eight touchpoints are not a required architecture or a one-to-one match with the detailed seven-stage simulator. Stages may run concurrently. AI classification, approval-of-record, enforced merge, and production release eligibility remain separate decisions.</p>
-</section>
-
-<section class="boundary-explorer" id="trust-boundaries" aria-labelledby="boundary-title">
-<div class="section-kicker">02 / Between the stages</div>
-<h2 id="boundary-title">Where does authority change hands?</h2>
-<p class="boundary-intro">The workflow shows <em>what happens</em>. These boundaries reveal <em>who can influence, authorize, enforce, or bypass a decision</em>. Select a relationship to investigate the controls and evidence it needs.</p>
+</details>
+<div class="boundary-explorer" id="trust-boundaries" aria-labelledby="boundary-title">
+<div class="section-kicker">TRUST BOUNDARIES / BETWEEN STAGES</div>
+<h3 id="boundary-title">Where does authority change hands?</h3>
+<p class="boundary-intro">Choose a boundary to inspect who can review, authorize, enforce, or bypass a change.</p>
 <div class="boundary-grid" role="group" aria-label="Trust boundary examples">
 <button class="boundary-choice" type="button" data-boundary="review" aria-pressed="true"><strong>PR author → code review</strong><span>Reviewer independence · CODEOWNERS · SoD</span></button>
 <button class="boundary-choice" type="button" data-boundary="ai" aria-pressed="false"><strong>AI review → authorization</strong><span>Classification versus approval authority</span></button>
 <button class="boundary-choice" type="button" data-boundary="merge" aria-pressed="false"><strong>Approval → protected merge</strong><span>Policy enforcement · bypass restrictions</span></button>
 </div>
-<div class="investigation-header" aria-live="polite">
+<details class="boundary-details" id="boundary-details"><summary>Inspect the selected boundary <span aria-hidden="true">▾</span></summary><div class="investigation-header" aria-live="polite">
 <h3 id="investigation-title">Reviewer independence and code ownership</h3>
 <p id="investigation-summary">A change author must not be able to satisfy or quietly weaken the required independent review.</p>
 </div>
@@ -144,7 +169,10 @@
 </div>
 <div class="investigation-links"><a href="./engineering-blueprint.html">Implementation patterns →</a><a href="./ai-sdlc-risk.html">Related risks →</a><a href="./independent-assurance.html">Assurance and evidence →</a><a href="./rcm-view.html">RCM →</a></div>
 <p class="investigation-note">Illustrative, synthetic examples only. These are potential control designs and evaluation questions, not evidence that a specific organization has implemented them. Human approval is an independent authorization route, not a retry of failed AI review.</p>
+</div></details></div>
+<p class="workflow-note">Illustrative model only: the eight touchpoints are not a required architecture or a one-to-one match with the detailed seven-stage simulator. Stages may run concurrently. AI classification, approval-of-record, enforced merge, and production release eligibility remain separate decisions.</p>
 </section>
+
 <section class="build-section" aria-labelledby="build-title">
 <div class="section-kicker">02 / Engineering implementation</div><h2 class="section-heading" id="build-title">What makes this workflow possible?</h2>
 <p class="section-intro">In this fictional automated-approval design, Engineering would need more than AI risk scores. Existing CI/CD and authorization controls may provide simpler alternatives; these are possible responsibilities, not a prescribed stack.</p>
@@ -315,7 +343,7 @@ function render(){
  document.getElementById("investigation-text").textContent=record[perspective];
  document.getElementById("investigation-panel").setAttribute("aria-labelledby","investigation-tab-"+perspective);
 }
-choices.forEach(b=>b.addEventListener("click",()=>{boundary=b.dataset.boundary;perspective="needed";render();}));
+choices.forEach(b=>b.addEventListener("click",()=>{boundary=b.dataset.boundary;perspective="needed";document.getElementById("boundary-details").open=true;render();}));
 tabs.forEach((t,i)=>{t.addEventListener("click",()=>{perspective=t.dataset.perspective;render();});t.addEventListener("keydown",e=>{if(!["ArrowRight","ArrowLeft","Home","End"].includes(e.key))return;e.preventDefault();const n=e.key==="Home"?0:e.key==="End"?tabs.length-1:(i+(e.key==="ArrowRight"?1:-1)+tabs.length)%tabs.length;perspective=tabs[n].dataset.perspective;render();tabs[n].focus();});});
 render();
 })();
