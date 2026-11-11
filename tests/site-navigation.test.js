@@ -44,12 +44,18 @@ test('legacy Assurance redirects are bounded and missing destinations still fail
  assert.equal(localDestinationExists('missing-page.html',''),false);
  assert.equal(supportedRedirect('independent-assurance.html','case=%7B%7D'),null);
 });
-test('homepage makes assessment the primary path and parks simulations',()=>{
+test('homepage reconciles the interactive approval illustration with the broader AI-SDLC journey',()=>{
  const html=read('index.html');
- assert.match(html,/href="\.\/ai-sdlc-risk\.html">Start with the AI operating model/);
- assert.match(html,/href="\.\/previous-overview\.html">Open previous Overview/);
- assert.doesNotMatch(html,/class="workflow-stage"/);
- assert.doesNotMatch(html,/data-scenario="/);
+ assert.match(html,/href="\.\/ai-sdlc-risk\.html">Assess another AI operating model/);
+ assert.match(html,/href="\.\/previous-overview\.html">See archived previous Overview/);
+ assert.match(html,/different levels of authority/i);
+ assert.match(html,/not a required architecture/i);
+ assert.match(html,/not Braze implementation records/i);
+ assert.deepEqual([...html.matchAll(/<button class="workflow-stage"[^>]*data-stage="(\d+)"/g)].map(x=>Number(x[1])),[0,1,2,3,4,5,6,7]);
+ assert.deepEqual([...html.matchAll(/<button type="button" data-scenario="([^"]+)"/g)].map(x=>x[1]),['pass','split','excluded','canary']);
+ assert.match(html,/AI classification, approval-of-record, enforced merge, and production release eligibility remain separate decisions/);
+ assert.match(html,/detailed seven-stage simulator/i);
+ assert.doesNotMatch(html,/QualityBot|RiskBot/);
 });
 test('risk assessment explains capability-specific authority without claiming a validated risk score',()=>{
  const html=read('ai-sdlc-risk.html');
