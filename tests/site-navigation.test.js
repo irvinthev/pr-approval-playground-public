@@ -223,5 +223,5 @@ test('Overview PNG handoff keeps accessible HTML fallback and separate human/aut
  assert.match(html,/id="overview-authority-map"/);
  assert.match(html,/The model|AI assessment is not approval authority/);
  assert.match(html,/high risk, disagreement, or uncertainty/i);
- assert.match(html,/className='overview-map-details'/);
+ assert.match(fs.readFileSync(path.join(root,'index.html'),'utf8'),/className='overview-map-details'/);
 });
