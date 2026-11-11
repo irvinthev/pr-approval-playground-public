@@ -75,7 +75,7 @@ async function runCase(label, path, viewportName, viewport, scenario) {
         }
       }
       check((await page.locator('.guided-completion').innerText()).includes('No actual company configuration'), 'Illustrative conclusion missing');
-      check((await page.locator('.guided-steps a')).count() === 5, 'Five chapters not retained');
+      check(await page.locator('.guided-steps a').count() === 5, 'Five chapters not retained');
       checks.push('Full five-page guided investigation, RR-02 and illustrative conclusion');
     }
     if (scenario === 'cross-page-rr02') {
