@@ -1,0 +1,19 @@
+/* Guided investigation is opt-in; default page layouts remain unchanged. */
+.guided-investigation{max-width:1120px;margin:16px auto 24px;padding:18px 21px;border:1px solid #4f7a85;border-radius:12px;background:#102f3f;color:#eaf7f6;scroll-margin-top:14px;font:14px/1.55 Inter,system-ui,sans-serif}
+.guided-investigation *{box-sizing:border-box}
+.guided-head{max-width:900px}.guided-kicker{display:block;font-size:11px;font-weight:800;color:#a4edd9;letter-spacing:.08em;margin-bottom:6px}
+.guided-head>strong{display:block;font-size:clamp(19px,2.2vw,24px);line-height:1.32}
+.guided-head p{margin:5px 0 12px;color:#c9dce6;font-size:13px}
+.guided-steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));padding:0;margin:11px 0 13px;list-style:none;gap:6px}
+.guided-steps li{min-width:0}
+.guided-steps a{display:flex;align-items:center;gap:7px;padding:8px 7px;min-height:42px;border:1px solid #496e7b;border-radius:7px;color:#cde5eb;text-decoration:none;font-size:12px;font-weight:700;white-space:normal}
+.guided-steps a[aria-current=step]{background:#255248;border-color:#a2e5cc;color:white}
+.guided-step-number{flex:none;display:grid;place-items:center;border:1px solid #779eaa;border-radius:50%;height:22px;width:22px;font-size:11px}
+.guided-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.guided-actions a{font-size:13px;font-weight:750}
+.guided-actions .guided-local{color:#bbebdc}
+.guided-actions .guided-next{margin-left:auto;padding:9px 13px;border:1px solid #92d6c4;border-radius:7px;background:#23564d;color:white;text-decoration:none}
+.guided-actions a:hover,.guided-actions a:focus-visible{outline:2px solid #a6f1dc;outline-offset:2px}
+.guided-completion{max-width:820px;margin:9px 0 2px;padding:12px 14px;border-left:3px solid #91d8c1;background:#1a4150}
+.guided-completion strong{font-size:14px}.guided-completion p{font-size:12px;color:#cbdde4;margin:4px 0 7px}.guided-completion a{color:#bdf0df}
+@media(max-width:700px){.guided-investigation{padding:15px;margin:12px 0 20px}.guided-steps{grid-template-columns:repeat(5,minmax(0,1fr));gap:3px}.guided-steps a{padding:7px 1px;flex-direction:column;text-align:center;font-size:10px;line-height:1.15;min-height:55px}.guided-step-number{height:21px;width:21px}.guided-actions{flex-direction:column;align-items:stretch}.guided-actions .guided-next{margin:0;text-align:center}}

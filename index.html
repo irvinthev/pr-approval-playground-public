@@ -138,7 +138,7 @@
 .overview .scenario-inline-outcome .sim-actions{margin-top:12px}
 @media(max-width:850px){.overview .scenario-inline .scenario-picker{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:520px){.overview .scenario-inline{padding:10px}.overview .scenario-inline .scenario-picker button{min-height:56px;font-size:12px}}
-</style><link rel="stylesheet" href="./ui-polish.css?v=1"></head>
+</style><link rel="stylesheet" href="./ui-polish.css?v=1"><link rel="stylesheet" href="./guided-investigation.css"></head>
 <body class="overview"><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a><a class="site-experiments" href="./playground.html">Advanced experiments ↗</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html" aria-current="page">Overview</a><a href="./ai-sdlc-risk.html">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Assurance</a></nav></header>
 
 <section class="hero" id="main-content" tabindex="-1">
@@ -146,7 +146,7 @@
 <h1>How should AI participate in software delivery?</h1>
 <p class="lead">Explore how Engineering can use AI to accelerate code review and delivery while defining clear decision authority, safeguards, and evidence to operate responsibly.</p>
 <p class="lead">Follow one illustrative change from pull request to production. See the components Engineering would build, the decisions humans and AI make, and how teams monitor and evaluate the workflow. The example is one possible approach, not a prescribed architecture.</p>
-<div class="hero-actions"><a class="guide-action" href="#workflow">Explore the delivery pipeline →</a><a class="secondary-action" href="./engineering-blueprint.html">Engineering &amp; safeguards →</a></div>
+<div class="hero-actions"><a class="guide-action" href="./index.html?journey=rr02#guided-investigation">Start guided investigation →</a><a class="secondary-action" href="#workflow">Explore delivery pipeline →</a><a class="secondary-action" href="./engineering-blueprint.html">Engineering &amp; safeguards →</a></div>
 </section>
 <section class="overview-method" aria-label="Three guide questions"><p><strong>What is possible?</strong> Explore AI-assisted review, risk classification, and narrowly scoped automation. <strong>How would it work?</strong> Follow the delivery path, including human decisions and independently enforced permissions. <strong>How do we build confidence?</strong> Examine monitoring, testing, and evidence without confusing AI recommendations with authorization.</p></section><section class="workflow-map" id="workflow" aria-labelledby="workflow-title">
 <div class="section-kicker">01 / How it works</div>
@@ -353,6 +353,7 @@
   clearButton.addEventListener("click",resetExplore);
   inspect(activeStage);
   resetExplore();
+  if(new URLSearchParams(location.search).get('journey')==='rr02') selectScenario('excluded');
 })();
 </script>
 <script>
@@ -403,4 +404,4 @@ tabs.forEach((t,i)=>{t.addEventListener("click",()=>{perspective=t.dataset.persp
 render();
 })();
 </script>
-</main></body></html>
+</main><script src="./guided-investigation.js"></script></body></html>
