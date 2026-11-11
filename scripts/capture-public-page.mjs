@@ -1,47 +1,120 @@
-// Optional demonstration: capture public pages with Playwright, no credentials.
-// Usage: npm install --no-save playwright && npx playwright install chromium
-//        node scripts/capture-public-page.mjs
+// PR visual QA: capture the checked-out site, not the deployed GitHub Pages site.
+// Locally: python3 -m http.server 4173 &
+//          npm install --no-save playwright && npx playwright install chromium
+//          SITE_BASE_URL=http://127.0.0.1:4173/ node scripts/capture-public-page.mjs
 import { chromium } from 'playwright';
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
-const base = 'https://irvinthev.github.io/pr-approval-playground-public/';
+const base = process.env.SITE_BASE_URL || 'http://127.0.0.1:4173/';
+const output = resolve('screenshots-demo');
 const pages = [
   ['overview', 'index.html'],
   ['risk-management', 'ai-sdlc-risk.html'],
   ['assurance', 'independent-assurance.html'],
 ];
-const out = resolve('screenshots-demo');
-await mkdir(out, { recursive: true });
+const viewports = [
+  ['desktop', { width: 1280, height: 900 }],
+  ['mobile', { width: 390, height: 844 }],
+];
+const records = [];
+const failures = [];
+await mkdir(output, { recursive: true });
 const browser = await chromium.launch({ headless: true });
-try {
-  for (const [name, file] of pages) {
-    const page = await browser.newPage({ viewport: { width: 1280, height: 900 }, deviceScaleFactor: 1 });
-    const errors = [];
-    page.on('pageerror', error => errors.push(error.message));
-    const url = new URL(file, base).toString();
-    const response = await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
-    if (!response || !response.ok()) throw new Error(`Could not load ${url}: HTTP ${response?.status()}`);
-    const screenshotFile = resolve(out, `${name}.png`);
-    await page.screenshot({ path: screenshotFile, fullPage: true, animations: 'disabled' });
-    const hash = createHash('sha256').update(await readFile(screenshotFile)).digest('hex');
-    const metadata = {
-      sourceUrl: url,
-      finalUrl: page.url(),
-      pageTitle: await page.title(),
-      httpStatus: response.status(),
-      capturedAtUtc: new Date().toISOString(),
-      viewport: { width: 1280, height: 900 },
-      screenshot: `${name}.png`,
-      sha256: hash,
-      pageErrors: errors,
-      limitation: 'Public demo capture only; not evidence of historical control operation.'
-    };
-    await writeFile(resolve(out, `${name}.json`), JSON.stringify(metadata, null, 2));
-    console.log(`Captured ${name}: ${hash.slice(0, 12)}...`);
-    await page.close();
-  }
-} finally {
-  await browser.close();
+const check = (ok, message) => { if (!ok) throw new Error(message); };
+
+async function capture(page, label, response, checks = []) {
+  const filename = label + '.png';
+  await page.screenshot({ path: resolve(output, filename), fullPage: true, animations: 'disabled' });
+  const hash = createHash('sha256').update(await readFile(resolve(output, filename))).digest('hex');
+  const item = {
+    name: label,
+    url: page.url(),
+    title: await page.title(),
+    capturedAtUtc: new Date().toISOString(),
+    viewport: page.viewportSize(),
+    httpStatus: response.status(),
+    screenshot: filename,
+    sha256: hash,
+    checks,
+  };
+  records.push(item);
+  await writeFile(resolve(output, label + '.json'), JSON.stringify(item, null, 2));
+  console.log('CAPTURED ' + label + ' ' + hash.slice(0, 12));
 }
+async function runCase(label, path, viewportName, viewport, scenario) {
+  const page = await browser.newPage({ viewport, deviceScaleFactor: 1, reducedMotion: 'reduce' });
+  const errors = [];
+  page.on('pageerror', e => errors.push(e.message));
+  let response;
+  try {
+    const url = new URL(path, base).toString();
+    response = await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
+    check(response?.ok(), label + ': HTTP ' + response?.status());
+    check((await page.locator('h1').count()) > 0, label + ': missing primary heading');
+
+    const checks = ['HTTP ' + response.status(), 'h1 present'];
+    if (scenario === 'risk-rr02') {
+      const selected = page.locator('#risk-selected-id');
+      const initialTitle = await page.locator('#risk-selected-title').innerText();
+      await page.locator('[data-featured-risk="RR-02"]').click();
+      check((await selected.innerText()).includes('RR-02'), 'RR-02 not selected');
+      check(await page.locator('[data-featured-risk="RR-02"]').getAttribute('aria-pressed') === 'true', 'RR-02 button not pressed');
+      check((await page.locator('#risk-selected-title').innerText()) !== initialTitle, 'Scenario heading did not update');
+      check((await page.locator('#risk-treatment-question').innerText()).length > 15, 'Management decision did not update');
+      checks.push('RR-02 scenario updates title, pressed state and decision');
+      await page.locator('details.risk-deeper summary').click();
+      check(await page.locator('details.risk-deeper').getAttribute('open') !== null, 'Risk details did not expand');
+      check((await page.locator('#risk-safeguard').innerText()).length > 15, 'Risk safeguard missing');
+      checks.push('Risk safeguards expanded');
+    }
+    if (scenario === 'assurance-expanded') {
+      const details = page.locator('#authorization-evidence-case');
+      await details.locator('summary').click();
+      check(await details.getAttribute('open') !== null, 'Assurance example did not expand');
+      check((await details.locator('.aec-body').innerText()).length > 100, 'Assurance example empty');
+      checks.push('Authorization assurance example expanded');
+    }
+    if (viewportName === 'mobile') {
+      const size = await page.evaluate(() => ({
+        windowWidth: window.innerWidth,
+        documentWidth: document.documentElement.scrollWidth,
+        bodyWidth: document.body.scrollWidth
+      }));
+      const overflow = Math.max(size.documentWidth, size.bodyWidth) - size.windowWidth;
+      check(overflow <= 2, label + ': horizontal overflow ' + overflow + 'px');
+      checks.push('No document-level horizontal overflow');
+    }
+    check(errors.length === 0, label + ': uncaught browser errors: ' + errors.join(' | '));
+    checks.push('No uncaught page errors');
+    await capture(page, label, response, checks);
+  } catch (e) {
+    failures.push(label + ': ' + e.message);
+    console.error('FAILED ' + label + ': ' + e.message);
+    if (response?.ok()) {
+      // Preserve the broken state for visual investigation.
+      try { await capture(page, label + '-failure', response, ['FAILED: ' + e.message]); } catch {}
+    }
+  } finally { await page.close(); }
+}
+try {
+  for (const [viewportName, viewport] of viewports) {
+    for (const [name, path] of pages) {
+      await runCase(name + '-' + viewportName, path, viewportName, viewport, null);
+    }
+    await runCase('risk-rr02-expanded-' + viewportName, 'ai-sdlc-risk.html', viewportName, viewport, 'risk-rr02');
+    await runCase('assurance-evidence-expanded-' + viewportName, 'independent-assurance.html', viewportName, viewport, 'assurance-expanded');
+  }
+} finally { await browser.close(); }
+const summary = {
+  source: base,
+  reference: process.env.GITHUB_SHA || 'local',
+  capturedAtUtc: new Date().toISOString(),
+  captures: records.length,
+  failures,
+  note: 'Static-site PR visual QA. Screenshots are review aids, not historical control evidence.'
+};
+await writeFile(resolve(output, 'summary.json'), JSON.stringify(summary, null, 2));
+console.log(JSON.stringify(summary, null, 2));
+if (failures.length) process.exitCode = 1;
