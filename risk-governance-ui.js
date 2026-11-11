@@ -52,7 +52,7 @@ const inventoryButtons=n('div',null,'governance-actions');const addAsset=n('butt
 });
 inventoryButtons.append(addAsset,demo);inventoryForm.append(inventoryButtons);
 const inventoryEditor=n('details',null,'governance-editor');inventoryEditor.append(n('summary','Add another AI system / edit a sample template'),inventoryForm);inventorySection.append(inventoryEditor);
-const inventoryCount=n('p',null,'governance-summary'),inventoryTable=n('div',null,'field-overflow');inventorySection.append(inventoryCount,inventoryTable);
+const inventoryCount=n('p',null,'governance-summary'),inventoryTable=n('div',null,'field-overflow');const inventoryList=n('details',null,'governance-editor');inventoryList.append(n('summary','View complete inventory register'),inventoryTable);inventorySection.append(inventoryCount,inventoryList);
 const riskSection=n('section',null,'risk-frame');
 riskSection.append(n('h2','02 / Track risk and propose treatment'),n('p','Associate a credible failure scenario with an inventoried AI capability, identify safeguards and unresolved evidence, and document management’s intended response. Any acceptance here remains a proposal unless separately approved through an authorized organizational process.'));
 const riskForm=n('form',null,'governance-form');
@@ -77,7 +77,7 @@ riskForm.append(makeField('Proposed authorized decision-maker','approver'));
 riskForm.append(makeField('Proposed review / expiration date','reviewDate','date'));
 const riskButtons=n('div',null,'governance-actions'),addRisk=n('button','Add risk draft');addRisk.type='submit';riskButtons.append(addRisk);riskForm.append(riskButtons);
 const riskEditor=n('details',null,'governance-editor');riskEditor.append(n('summary','Add another risk / draft treatment or acceptance'),riskForm);riskSection.append(riskEditor);
-const riskCount=n('p',null,'governance-summary'),riskTable=n('div',null,'field-overflow');riskSection.append(riskCount,riskTable);
+const riskCount=n('p',null,'governance-summary'),riskTable=n('div',null,'field-overflow');const riskList=n('details',null,'governance-editor');riskList.append(n('summary','View all recorded risk drafts'),riskTable);riskSection.append(riskCount,riskList);
 const status=n('p',null,'governance-note');status.setAttribute('role','status');status.setAttribute('aria-live','polite');
 const actions=n('div',null,'governance-actions'),download=n('button','Export draft worksheets (.json)','governance-export');download.type='button';
 download.addEventListener('click',()=>{
