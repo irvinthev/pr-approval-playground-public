@@ -73,6 +73,25 @@ async function runCase(label, path, viewportName, viewport, scenario) {
       check((await page.locator('#technical-requirements').count()) === 1, 'Engineering target missing');
       checks.push('Risk Management → Engineering technical requirements');
     }
+    if (scenario === 'monitoring-assurance-rr02') {
+      const bridge = page.locator('#classification-monitoring-bridge');
+      check(await bridge.isVisible(), 'Monitoring RR-02 handoff is missing');
+      check((await bridge.innerText()).includes('false-low-risk'), 'Classification signal explanation missing');
+      await Promise.all([
+        page.waitForURL(url => url.pathname.endsWith('/independent-assurance.html') && url.hash === '#classification-evidence-bridge'),
+        bridge.locator('a[href*="classification-evidence-bridge"]').click()
+      ]);
+      const evidence = page.locator('#classification-evidence-bridge');
+      check(await evidence.isVisible(), 'Assurance evidence handoff is hidden');
+      check((await evidence.locator('.classification-evidence-grid > div').count()) === 3, 'Incomplete Assurance evidence questions');
+      checks.push('Monitoring RR-02 signal → Assurance population, validation and response evidence');
+      await Promise.all([
+        page.waitForURL(url => url.pathname.endsWith('/continuous-monitoring.html') && url.hash === '#classification-monitoring-bridge'),
+        evidence.locator('a[href*="classification-monitoring-bridge"]').click()
+      ]);
+      check(await page.locator('#classification-monitoring-bridge').isVisible(), 'Monitoring return link failed');
+      checks.push('Assurance → Monitoring return link');
+    }
     if (scenario === 'risk-rr02') {
       const selected = page.locator('#risk-selected-id');
       const initialTitle = await page.locator('#risk-selected-title').innerText();
@@ -131,6 +150,7 @@ try {
     await runCase('assurance-evidence-expanded-' + viewportName, 'independent-assurance.html', viewportName, viewport, 'assurance-expanded');
     await runCase('assurance-evidence-deep-link-' + viewportName, 'independent-assurance.html', viewportName, viewport, 'assurance-deep-link');
     await runCase('cross-page-rr02-' + viewportName, 'index.html', viewportName, viewport, 'cross-page-rr02');
+    await runCase('monitoring-assurance-rr02-' + viewportName, 'continuous-monitoring.html', viewportName, viewport, 'monitoring-assurance-rr02');
   }
 } finally { await browser.close(); }
 const summary = {
