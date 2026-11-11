@@ -120,6 +120,27 @@ async function runCase(label, path, viewportName, viewport, scenario) {
       check(await page.locator('#classification-monitoring-bridge').isVisible(), 'Monitoring return link failed');
       checks.push('Assurance → Monitoring return link');
     }
+    if (scenario === 'rr02-negative-test-covered' || scenario === 'rr02-negative-test-missed') {
+      const missed = scenario.endsWith('missed');
+      const sample = page.locator('#rr02-negative-test');
+      check(await sample.isVisible(), 'Engineering negative test missing');
+      check(await page.locator('#rr02-test-result').isHidden(), 'Test result should not be predetermined on screen');
+      if (missed) await sample.locator('input[value="missed"]').check();
+      await page.locator('#rr02-run-negative-test').click();
+      check(await page.locator('#rr02-test-result').isVisible(), 'Simulation result did not appear');
+      const actual = await page.locator('#rr02-observed').innerText();
+      check(actual === (missed ? 'Auto-approval eligible (unsafe)' : 'Human review required'), 'Incorrect policy simulation result: ' + actual);
+      check(await page.locator('#rr02-assurance-handoff').getAttribute('href') === './independent-assurance.html?rr02fixture=' + (missed ? 'missed' : 'covered') + '#rr02-negative-evidence', 'Incorrect Assurance handoff link');
+      checks.push('Selected dependency fixture produces expected simulated outcome');
+      await Promise.all([
+        page.waitForURL(url => url.pathname.endsWith('/independent-assurance.html') && url.searchParams.get('rr02fixture') === (missed ? 'missed' : 'covered') && url.hash === '#rr02-negative-evidence'),
+        page.locator('#rr02-assurance-handoff').click()
+      ]);
+      check(await page.locator('#rr02-negative-evidence').isVisible(), 'Assurance negative test evidence missing');
+      const observed = await page.locator('#rr02-evidence-observed').innerText();
+      check(observed.includes(missed ? 'auto-approval eligible (unsafe)' : 'human review required'), 'Assurance observation did not preserve selected fixture');
+      checks.push('Engineering-to-Assurance handoff preserves selected fixture and limitations');
+    }
     if (scenario === 'risk-rr02') {
       const selected = page.locator('#risk-selected-id');
       const initialTitle = await page.locator('#risk-selected-title').innerText();
@@ -180,6 +201,8 @@ try {
     await runCase('cross-page-rr02-' + viewportName, 'index.html', viewportName, viewport, 'cross-page-rr02');
     await runCase('monitoring-assurance-rr02-' + viewportName, 'continuous-monitoring.html', viewportName, viewport, 'monitoring-assurance-rr02');
     await runCase('guided-investigation-' + viewportName, 'index.html', viewportName, viewport, 'guided-journey');
+    await runCase('rr02-negative-test-covered-' + viewportName, 'engineering-blueprint.html', viewportName, viewport, 'rr02-negative-test-covered');
+    await runCase('rr02-negative-test-missed-' + viewportName, 'engineering-blueprint.html', viewportName, viewport, 'rr02-negative-test-missed');
   }
 } finally { await browser.close(); }
 const summary = {
