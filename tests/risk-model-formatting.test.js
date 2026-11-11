@@ -25,9 +25,14 @@ test('Risk tab formatting leaves risk assessment and reviewer logic untouched',(
  assert.doesNotMatch(css,/QualityBot|RiskBot|Braze|Appboy/);
 });
 
-test('mobile Risk Assessment light theme takes precedence over shared dark mobile shell',()=>{
- const base=read('site.css'),risk=read('risk-dashboard-v04.css'),html=read('ai-sdlc-risk.html');
- assert.match(base,/@media\(max-width:700px\)\{[\s\S]*?body\{background:#091321!important\}/);
- assert.match(risk,/@media\(max-width:700px\)\{body\.risk-dashboard\{background:#f1f5fb!important;color:#172844\}\}/);
- assert.match(html,/risk-dashboard-v04\.css\?v=mobile-contrast-1/);
+test('Risk Assessment uses the Engineering navy and mint palette on desktop and mobile',()=>{
+ const css=read('risk-dashboard-v04.css'),html=read('ai-sdlc-risk.html');
+ assert.match(css,/--risk-bg:#091321;--risk-panel:#102738/);
+ assert.match(css,/--risk-text:#eef5ff;--risk-muted:#b7ccd9;--risk-mint:#a4edda/);
+ assert.match(css,/body\.risk-dashboard\{background:var\(--risk-bg\)!important;color:var\(--risk-text\)\}/);
+ assert.match(css,/\.risk-dashboard \.risk-main-hero h1\{color:var\(--risk-text\)\}/);
+ assert.match(css,/\.risk-dashboard \.risk-frame,\.risk-dashboard \.field-section,\.risk-dashboard \.operating-panel\{/);
+ assert.match(css,/\.risk-dashboard #risk-tab-model \.shared-pipeline-context\{/);
+ assert.match(css,/@media\(max-width:700px\)\{body\.risk-dashboard\{background:var\(--risk-bg\)!important;color:var\(--risk-text\)\}\}/);
+ assert.match(html,/risk-dashboard-v04\.css\?v=engineering-dark-1/);
 });
