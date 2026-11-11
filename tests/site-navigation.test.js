@@ -73,7 +73,8 @@ test('engineering build remains primary while monitoring is a dedicated chapter'
  const monitoring=fs.readFileSync(path.join(root,'continuous-monitoring.html'),'utf8');
  assert.match(engineering,/href="\.\/continuous-monitoring\.html\?stage=0#monitoring-guide"/);
  assert.match(monitoring,/id="monitoring-guide"/);
- assert.match(engineering,/id="view-monitor"[^>]*hidden/);
+ assert.doesNotMatch(engineering,/id="view-monitor"|id="monitor-view"/);
+ assert.match(engineering,/location\\.replace\\('\\.\\/continuous-monitoring\\.html\\?stage='/);
  assert.match(engineering,/Engineering stage explorer/);
  assert.match(engineering,/Implementation/);
 });
