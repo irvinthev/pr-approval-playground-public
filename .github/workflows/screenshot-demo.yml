@@ -1,18 +1,19 @@
-name: Public site screenshot demo
+name: PR visual QA screenshots
 on:
   workflow_dispatch:
   pull_request:
-    paths:
-      - 'scripts/capture-public-page.mjs'
-      - '.github/workflows/screenshot-demo.yml'
 permissions:
   contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 jobs:
   capture:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        # pull_request checks out the PR merge commit: captures proposed code, not Pages.
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -20,12 +21,25 @@ jobs:
         run: |
           npm install --no-save playwright
           npx playwright install --with-deps chromium
-      - name: Capture public pages
+      - name: Serve checked-out site
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/site-server.log 2>&1 &
+          echo $! > /tmp/site-server.pid
+          for i in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:4173/index.html > /dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/site-server.log
+          exit 1
+      - name: Capture desktop/mobile states and assert interactions
+        env:
+          SITE_BASE_URL: http://127.0.0.1:4173/
         run: node scripts/capture-public-page.mjs
       - name: Upload screenshots and collection metadata
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: public-site-screenshots
+          name: pr-visual-qa-${{ github.run_number }}
           path: screenshots-demo/
           if-no-files-found: warn
+          retention-days: 7
