@@ -55,6 +55,18 @@ async function runCase(label, path, viewportName, viewport, scenario) {
     check((await page.locator('h1').count()) > 0, label + ': missing primary heading');
 
     const checks = ['HTTP ' + response.status(), 'h1 present'];
+    if (scenario === 'overview-authority-map') {
+      const diagram = page.locator('#overview-authority-map');
+      check(await diagram.isVisible(), 'Overview architecture diagram missing');
+      check(await diagram.locator('.authority-map-routes .authority-map-route').count() === 2, 'Two approval routes required');
+      check(await diagram.locator('.authority-map-external-model').isVisible(), 'External model boundary missing');
+      check((await diagram.innerText()).includes('AI agreement alone is insufficient'), 'Automation authority warning missing');
+      check((await diagram.innerText()).includes('Shadow analysis may observe, but cannot authorize'), 'Human route lacks shadow-mode limitation');
+      const links = diagram.locator('.authority-map-links a');
+      check(await links.count() === 2, 'Expected Engineering and Risk exploration links');
+      check(await diagram.evaluate(el => el.getBoundingClientRect().width > 0), 'Diagram has no rendered width');
+      checks.push('Authority map: model boundary, two routes and deep links');
+    }
     if (scenario === 'guided-journey') {
       await Promise.all([
         page.waitForURL(url => url.pathname.endsWith('/index.html') && url.searchParams.get('journey') === 'rr02'),
@@ -216,6 +228,7 @@ try {
     await runCase('cross-page-rr02-' + viewportName, 'index.html', viewportName, viewport, 'cross-page-rr02');
     await runCase('monitoring-assurance-rr02-' + viewportName, 'continuous-monitoring.html', viewportName, viewport, 'monitoring-assurance-rr02');
     await runCase('guided-investigation-' + viewportName, 'index.html', viewportName, viewport, 'guided-journey');
+    await runCase('overview-authority-map-' + viewportName, 'index.html#overview-authority-map', viewportName, viewport, 'overview-authority-map');
     await runCase('rr02-negative-test-covered-' + viewportName, 'engineering-blueprint.html', viewportName, viewport, 'rr02-negative-test-covered');
     await runCase('rr02-negative-test-missed-' + viewportName, 'engineering-blueprint.html', viewportName, viewport, 'rr02-negative-test-missed');
   }
