@@ -21,6 +21,21 @@ tabs.forEach((tab,index)=>{
   activate(tabs[i].dataset.riskTab,true);
  });
 });
+function tabForHash(hash){
+ if(!hash||hash==='#main-content')return null;
+ const id=decodeURIComponent(hash.slice(1));
+ const target=document.getElementById(id);
+ if(!target)return null;
+ const panel=target.closest('.risk-tab-panel');
+ return panel?panel.id.replace('risk-tab-',''):null;
+}
+function revealHashTarget(){
+ const panel=tabForHash(location.hash);
+ if(!panel)return false;
+ activate(panel);
+ return true;
+}
 const initial=new URLSearchParams(location.search).get('view');
-activate(['register','inventory','model','guidance'].includes(initial)?initial:'register');
+if(!revealHashTarget())activate(['register','inventory','model','guidance'].includes(initial)?initial:'register');
+window.addEventListener('hashchange',revealHashTarget);
 })();
