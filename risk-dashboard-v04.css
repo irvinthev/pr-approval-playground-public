@@ -91,3 +91,60 @@ body.risk-dashboard{background:#f1f5fb;color:#172844}
 .risk-dashboard .governance-editor{margin-top:12px;border-top:1px solid #d7e2ed;padding-top:8px}
 .risk-dashboard .governance-editor .governance-form{margin-top:10px}
 @media(max-width:760px){.risk-dashboard .governance-example-grid{grid-template-columns:1fr}}
+
+/* Risk Assessment UX: coherent light reading surfaces and focused model navigation. */
+.risk-dashboard .risk-tabs{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;scroll-snap-type:x proximity;padding-top:2px}
+.risk-dashboard .risk-tabs button{flex:0 0 auto;white-space:nowrap;scroll-snap-align:start}
+.risk-dashboard #risk-tab-model{min-width:0}
+.risk-dashboard #risk-tab-model .shared-pipeline-context{background:#fff;color:#18334e;border:1px solid #cedceb;box-shadow:0 2px 12px #152c4808;padding:20px 22px;scroll-margin-top:20px}
+.risk-dashboard #risk-tab-model .shared-pipeline-context h2{color:#173354;font-size:21px;line-height:1.3}
+.risk-dashboard #risk-tab-model .shared-pipeline-context p{color:#445b75}
+.risk-dashboard #risk-tab-model .shared-pipeline-context .shared-stages{display:flex;overflow-x:auto;gap:8px;padding:4px 2px 12px;scroll-snap-type:x proximity;scrollbar-width:thin}
+.risk-dashboard #risk-tab-model .shared-pipeline-context .shared-stage{flex:0 0 150px;min-height:54px;white-space:normal;background:#f1f6fc;border:1px solid #c7d8e9;color:#244666;border-radius:9px;scroll-snap-align:start;font-size:12px}
+.risk-dashboard #risk-tab-model .shared-pipeline-context .shared-stage[aria-pressed=true]{background:#dceafa;border-color:#1d5eb9;color:#104782;box-shadow:inset 0 0 0 1px #1d5eb9}
+.risk-dashboard #risk-tab-model .shared-pipeline-context .shared-lenses{display:flex;gap:8px;margin:8px 0 15px}
+.risk-dashboard #risk-tab-model .shared-pipeline-context .shared-lenses a{background:#f4f8fd;color:#24568f;border:1px solid #bfd0e4;min-height:42px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+.risk-dashboard #risk-tab-model .shared-pipeline-context .shared-lenses a[aria-current=page]{background:#205cae;color:#fff;border-color:#205cae}
+.risk-dashboard #risk-tab-model .shared-pipeline-context .shared-detail{border-color:#d7e3ef;padding-top:15px}
+.risk-dashboard #risk-tab-model .shared-pipeline-context .shared-detail strong{color:#193d65;font-size:14px}
+.risk-dashboard #risk-tab-model .shared-pipeline-context .shared-detail p{color:#3e5771;font-size:14px;line-height:1.65}
+.risk-dashboard #risk-tab-model .shared-pipeline-context .shared-rcm a{color:#1e5ba6;font-weight:700}
+.risk-dashboard #risk-tab-model .shared-pipeline-context .shared-note{color:#576f87;font-size:12px}
+.risk-dashboard #risk-tab-model .operating-panel{background:#fff;border-color:#d6e0ec;color:#193451;box-shadow:0 2px 12px #152c4808}
+.risk-dashboard #risk-tab-model .operating-panel h2{color:#183552}
+.risk-dashboard #risk-tab-model .operating-panel .field-kicker{color:#2362a2}
+.risk-dashboard #risk-tab-model .operating-panel .operating-note,
+.risk-dashboard #risk-tab-model .operating-panel>p{color:#48617d}
+.risk-dashboard #risk-tab-model .operating-example{background:#f6faff;border-color:#cad9e9;color:#1b3856;min-height:175px}
+.risk-dashboard #risk-tab-model .operating-example strong{color:#163b68}
+.risk-dashboard #risk-tab-model .operating-example span:not(.operating-example-kicker):not(.operating-example-action){color:#48627d}
+.risk-dashboard #risk-tab-model .operating-example-kicker,.risk-dashboard #risk-tab-model .operating-example-action{color:#1e5ba6}
+.risk-dashboard #risk-tab-model .operating-example:hover,.risk-dashboard #risk-tab-model .operating-example[aria-pressed=true]{background:#e9f2ff;border-color:#2565c7}
+.risk-dashboard #risk-tab-model .operating-results{border-color:#d6e2ee}
+.risk-dashboard #risk-tab-model .operating-results h3{color:#183552}
+.risk-dashboard #risk-tab-model .operating-results p{color:#415b77}
+.risk-dashboard #risk-tab-model .operating-takeaways section,
+.risk-dashboard #risk-tab-model .operating-finding{background:#f5f9fe;border-color:#d4e1ee}
+.risk-dashboard #risk-tab-model .operating-takeaways h4,.risk-dashboard #risk-tab-model .operating-finding h3{color:#1e5ca7}
+.risk-dashboard #risk-tab-model .operating-takeaways p,.risk-dashboard #risk-tab-model .operating-finding p{color:#3b5672}
+.risk-dashboard #risk-tab-model .operating-finding a{color:#205da9}
+.risk-dashboard #risk-tab-model .operating-next a{background:#f3f8fe;border-color:#cbdcec;color:#1e5ca7}
+.risk-dashboard #risk-tab-model .operating-next a span{color:#49627b}
+.risk-dashboard #risk-tab-model .operating-advanced,.risk-dashboard #risk-tab-model .operating-evidence{border-color:#d6e2ef}
+.risk-dashboard #risk-tab-model .operating-advanced summary,.risk-dashboard #risk-tab-model .operating-evidence summary{color:#1e5ca7}
+.risk-dashboard #risk-tab-model .operating-fields label{color:#264765}
+.risk-dashboard #risk-tab-model .operating-fields select{background:#fff;color:#243c59;border-color:#b4c7db}
+.risk-dashboard #risk-tab-model .operating-controls button[type=button]{color:#205ca7;border-color:#83a8d4}
+@media(max-width:780px){
+ .risk-dashboard .risk-tabs{margin-bottom:15px}
+ .risk-dashboard .risk-tabs button{min-height:48px;padding:11px 13px}
+ .risk-dashboard #risk-tab-model .shared-pipeline-context{padding:16px}
+ .risk-dashboard #risk-tab-model .shared-pipeline-context .shared-stage{flex-basis:134px}
+ .risk-dashboard #risk-tab-model .shared-pipeline-context .shared-lenses{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+ .risk-dashboard #risk-tab-model .shared-pipeline-context .shared-lenses a{min-width:0;text-align:center}
+ .risk-dashboard #risk-tab-model .operating-panel{padding:17px}
+}
+@media(max-width:440px){
+ .risk-dashboard #risk-tab-model .shared-pipeline-context .shared-lenses{grid-template-columns:1fr 1fr}
+ .risk-dashboard #risk-tab-model .shared-pipeline-context .shared-lenses a{font-size:12px;padding:9px 7px}
+}
