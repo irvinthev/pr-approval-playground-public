@@ -18,9 +18,57 @@
 .register-risk-body .register-related{margin:13px 0}.register-risk-body .register-unknown{border-left:3px solid #8da6b5;padding:9px 11px;background:#1c3c4b}
 .register-download{cursor:pointer;background:#9de8d4;color:#06212a;border:0;border-radius:8px;padding:12px 16px;min-height:44px;font:inherit;font-weight:800}
 @media(max-width:780px){#risk-assessment-guide .field-steps{grid-template-columns:repeat(2,minmax(0,1fr))}.register-filters{grid-template-columns:1fr}}
-</style></head>
-<body><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html">Overview</a><a href="./ai-sdlc-risk.html" aria-current="page">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Assurance</a></nav></header>
-<section class="field-hero" id="main-content" tabindex="-1"><div class="field-kicker">01 / AI SDLC Risk Assessment · proposed method v0.3</div><h1>Where does AI have authority?</h1><p>Start with the operating model before evaluating individual changes. Identify which activities AI performs, which actions it may execute, and which decisions it may authorize—not merely how many agents are in the pipeline.</p></section>
+</style><link rel="stylesheet" href="./risk-dashboard-v04.css"></head>
+<body class="risk-dashboard"><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html">Overview</a><a href="./ai-sdlc-risk.html" aria-current="page">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Assurance</a></nav></header>
+<section class="risk-main-hero" id="main-content" tabindex="-1">
+<div><div class="field-kicker">AI-enabled software delivery / Risk Assessment</div><h1>AI SDLC Risk Assessment</h1>
+<p>Identify what AI can do, which systems and data it touches, what critical assets are exposed, and which risks warrant safeguards, treatment or authorized acceptance.</p></div>
+<aside class="risk-framework-banner"><strong>NIST AI RMF–informed</strong><p>Practical, illustrative guidance based on the NIST AI Risk Management Framework. The framework informs the method; it does not endorse this register or assign risk scores.</p></aside>
+</section>
+<div class="risk-tabs" role="tablist" aria-label="Risk assessment workspace">
+<button type="button" role="tab" id="tab-register" aria-controls="risk-tab-register" aria-selected="true" data-risk-tab="register">Assessment &amp; Register</button>
+<button type="button" role="tab" id="tab-inventory" aria-controls="risk-tab-inventory" aria-selected="false" data-risk-tab="inventory">AI Inventory &amp; Risk Tracking</button>
+<button type="button" role="tab" id="tab-model" aria-controls="risk-tab-model" aria-selected="false" data-risk-tab="model">Operating Model Explorer</button>
+<button type="button" role="tab" id="tab-guidance" aria-controls="risk-tab-guidance" aria-selected="false" data-risk-tab="guidance">Guidance &amp; References</button>
+</div>
+<section class="risk-tab-panel" id="risk-tab-register" role="tabpanel" aria-labelledby="tab-register">
+<div class="risk-frame" aria-labelledby="rmf-approach-title"><h2 id="rmf-approach-title">NIST AI RMF: A practical approach</h2>
+<p>Use four connected functions to structure assessment, from governance and risk identification through validation and ongoing response.</p>
+<div class="rmf-cards">
+<div class="rmf-card"><span class="rmf-icon" aria-hidden="true">♙</span><strong>Govern</strong><p>Set policy, ownership, accountability and risk tolerance.</p></div>
+<div class="rmf-card"><span class="rmf-icon" aria-hidden="true">◎</span><strong>Map</strong><p>Understand the AI system, data flow, affected assets and credible risk scenarios.</p></div>
+<div class="rmf-card"><span class="rmf-icon" aria-hidden="true">⌕</span><strong>Measure</strong><p>Evaluate risk, safeguard design, testing, evidence and uncertainty.</p></div>
+<div class="rmf-card"><span class="rmf-icon" aria-hidden="true">⚙</span><strong>Manage</strong><p>Choose treatment, monitor operation, escalate and reassess.</p></div>
+</div><p class="governance-note">The four RMF functions are not stages that must occur only once or in this order. This site's risks, safeguards and classifications are illustrative adaptations.</p></div>
+<section class="field-section" id="risk-register" aria-labelledby="risk-register-title">
+<div class="field-kicker">Illustrative register / nine risk scenarios</div>
+<h2 id="risk-register-title">Explore AI-enabled SDLC risks and assurance questions</h2>
+<p>This example library generalizes nine failure scenarios from our working risk-control map. Filter by AI authority or illustrative AI RMF function, inspect a proposed control objective and suggested evidence, then export the catalog for independent assessment. The mappings are analytical suggestions, not a claim that any risk is currently present or mitigated.</p>
+<div id="sdlc-risk-register"></div>
+</section>
+
+<details class="risk-frame"><summary><strong>Detailed assessment method and NIST references</strong></summary><section class="field-section" id="risk-assessment-guide" aria-labelledby="risk-assessment-guide-title">
+<div class="field-kicker">Risk assessment guidance / NIST AI RMF–informed</div>
+<h2 id="risk-assessment-guide-title">From AI authority to a risk assessment</h2>
+<p>NIST AI RMF 1.0 organizes AI risk management into <strong>Govern, Map, Measure, and Manage</strong>. The four functions inform this practical method; they are not scoring bands, a prescribed control checklist, or a certification. The scenarios and RCM mappings below are field-guide adaptations, not official NIST risk statements or descriptions of implemented controls.</p>
+<ol class="field-steps">
+<li><b>Govern</b><span>Identify accountable owners, authority, policy boundaries and tolerance.</span></li>
+<li><b>Map</b><span>Document AI participation, intended use, criticality, affected systems, failure modes and affected parties.</span></li>
+<li><b>Measure</b><span>Validate classifications, negative cases, control evidence, gaps and uncertainty.</span></li>
+<li><b>Manage</b><span>Determine permissible authority, safeguards, escalation, monitoring and reassessment triggers.</span></li>
+</ol>
+<p><strong>Assessment sequence:</strong> Scope the operating model → select credible failure scenarios → identify independently enforced safeguards → validate evidence → record open questions → have management evaluate impact, likelihood, tolerance and response. Missing evidence means <strong>not assessed</strong>, not low risk. Risk rankings require a management-approved scale and context; this guide intentionally does not calculate them.</p>
+<p>Reference: <a href="https://airc.nist.gov/airmf-resources/airmf/" target="_blank" rel="noopener noreferrer">NIST AI RMF 1.0 ↗</a> and <a href="https://airc.nist.gov/airmf-resources/playbook/" target="_blank" rel="noopener noreferrer">NIST AI RMF Playbook ↗</a>.</p>
+</section>
+</details>
+</section>
+<section class="risk-tab-panel" id="risk-tab-inventory" role="tabpanel" aria-labelledby="tab-inventory" hidden>
+<div class="risk-frame"><h2>AI inventory → data and crown jewels → risk ownership</h2>
+<p>Use a draft worksheet to record AI systems, accountable owners, use cases, information classification and critical-asset exposure; then track scenario-level risks and proposed treatment. Data classification identifies sensitivity of information; crown-jewel assessment identifies business assets whose compromise or disruption could have disproportionate consequences. These concepts must be assessed separately.</p>
+<p class="governance-note"><strong>Public demonstration boundary:</strong> These entries stay in page memory until you leave or refresh. Export locally for review. No database, delegated workflow, acceptance decision or risk sign-off exists here. Do not enter actual confidential business information.</p></div>
+<div id="risk-governance-workspace"></div>
+</section>
+<section class="risk-tab-panel" id="risk-tab-model" role="tabpanel" aria-labelledby="tab-model" hidden>
 <div id="shared-pipeline-context" data-perspective="risk" class="shared-pipeline-context" aria-label="Shared seven-stage pipeline context"></div>
 <section class="operating-panel" id="operating-model-explorer" aria-labelledby="operating-model-title">
 <div class="field-kicker">Explore the risk · three example operating models</div>
@@ -61,25 +109,9 @@
 </div><div class="operating-controls"><button type="submit">View custom model</button><button type="button" id="operating-model-reset">Clear selections</button></div></form>
 </details>
 </section>
-<section class="field-section" id="risk-assessment-guide" aria-labelledby="risk-assessment-guide-title">
-<div class="field-kicker">Risk assessment guidance / NIST AI RMF–informed</div>
-<h2 id="risk-assessment-guide-title">From AI authority to a risk assessment</h2>
-<p>NIST AI RMF 1.0 organizes AI risk management into <strong>Govern, Map, Measure, and Manage</strong>. The four functions inform this practical method; they are not scoring bands, a prescribed control checklist, or a certification. The scenarios and RCM mappings below are field-guide adaptations, not official NIST risk statements or descriptions of implemented controls.</p>
-<ol class="field-steps">
-<li><b>Govern</b><span>Identify accountable owners, authority, policy boundaries and tolerance.</span></li>
-<li><b>Map</b><span>Document AI participation, intended use, criticality, affected systems, failure modes and affected parties.</span></li>
-<li><b>Measure</b><span>Validate classifications, negative cases, control evidence, gaps and uncertainty.</span></li>
-<li><b>Manage</b><span>Determine permissible authority, safeguards, escalation, monitoring and reassessment triggers.</span></li>
-</ol>
-<p><strong>Assessment sequence:</strong> Scope the operating model → select credible failure scenarios → identify independently enforced safeguards → validate evidence → record open questions → have management evaluate impact, likelihood, tolerance and response. Missing evidence means <strong>not assessed</strong>, not low risk. Risk rankings require a management-approved scale and context; this guide intentionally does not calculate them.</p>
-<p>Reference: <a href="https://airc.nist.gov/airmf-resources/airmf/" target="_blank" rel="noopener noreferrer">NIST AI RMF 1.0 ↗</a> and <a href="https://airc.nist.gov/airmf-resources/playbook/" target="_blank" rel="noopener noreferrer">NIST AI RMF Playbook ↗</a>.</p>
+
 </section>
-<section class="field-section" id="risk-register" aria-labelledby="risk-register-title">
-<div class="field-kicker">Illustrative register / nine risk scenarios</div>
-<h2 id="risk-register-title">Explore AI-enabled SDLC risks and assurance questions</h2>
-<p>This example library generalizes nine failure scenarios from our working risk-control map. Filter by AI authority or illustrative AI RMF function, inspect a proposed control objective and suggested evidence, then export the catalog for independent assessment. The mappings are analytical suggestions, not a claim that any risk is currently present or mitigated.</p>
-<div id="sdlc-risk-register"></div>
-</section>
+<section class="risk-tab-panel" id="risk-tab-guidance" role="tabpanel" aria-labelledby="tab-guidance" hidden>
 <section class="field-section"><h2>Map participation and authority</h2><p>For each stage, document whether activity is human-led, AI-assisted, AI-executed, or conventional deterministic automation. Then identify effective permissions and independent enforcement. These categories are descriptive—not a Low/Medium/High risk scale.</p><div class="field-overflow"><table class="field-table"><thead><tr><th>SDLC activity</th><th>Question to answer</th><th>Authority to examine</th></tr></thead><tbody>
 <tr><td>Develop</td><td>Can AI alter code, tests, dependencies or configuration?</td><td>Execution; tool and repository permissions</td></tr>
 <tr><td>Review</td><td>Does AI recommend findings or determine whether a required check passes?</td><td>Decision influence; reviewer reliability</td></tr>
@@ -96,4 +128,6 @@
 </tbody></table></div><p>These are illustrative comparisons. None establishes inherent likelihood, effective controls, or residual risk in a real environment.</p></section>
 <section class="field-section"><h2>Translate risk tolerance into decisions</h2><p>Management owns the approved scope and boundaries; technical enforcement determines whether each condition holds. Keep these outcomes separate: <strong>eligible for conditional authorization</strong>, <strong>qualified human authorization required</strong>, <strong>blocked for failed mandatory conditions</strong>, and <strong>AI capability suspended when its control path is unreliable</strong>.</p><div class="field-actions"><a class="field-button" href="./engineering-blueprint.html">Explore engineering safeguards →</a><a class="field-secondary" href="./control-matrix.html">Review existing control objectives →</a></div></section>
 <section class="field-section"><h2>Independent engineering challenge</h2><p>For a deeper assessment of delegated AI approval authority, review thirteen engineering risks mapped to published OpenAI, Anthropic, Cursor, NIST and OWASP practices. These references support engineering challenge, not a new control requirement.</p><div class="field-actions"><a class="field-button" href="./engineering-challenge-reference.html#industry-challenge">Explore 13 risk-first engineering challenges →</a></div></section><section class="field-section"><h2>Supporting materials</h2><p><a href="./risk-controls.html">Risk & Safeguards reference →</a> · <a href="./independent-assurance.html">Assurance and evidence →</a> · <a href="https://airc.nist.gov/airmf-resources/airmf/" target="_blank" rel="noopener noreferrer">NIST AI RMF ↗</a> · <a href="https://csrc.nist.gov/pubs/sp/800/218/final" target="_blank" rel="noopener noreferrer">NIST SSDF ↗</a></p><p>Published frameworks inform the questions; they do not endorse this field guide or prescribe its assessment outcomes.</p></section>
-<footer class="field-note">Proposed qualitative method. No computed AI risk score, automated recommendation, production approval, or control-effectiveness determination is provided.</footer></main><script src="./sdlc-risk-register.js"></script><script src="./sdlc-risk-register-ui.js"></script><script src="./operating-model.js"></script><script src="./shared-pipeline-context.js?v=1"></script><script src="./shared-pipeline-nav.js?v=1"></script></body></html>
+
+</section>
+<footer class="field-note">Proposed qualitative risk method and fictional examples. No computed AI risk score, externally persisted inventory, management acceptance, automated production authorization, or control-effectiveness determination is provided.</footer></main><script src="./risk-governance-worksheet.js"></script><script src="./sdlc-risk-register.js"></script><script src="./risk-governance-ui.js"></script><script src="./risk-dashboard-tabs.js"></script><script src="./sdlc-risk-register-ui.js"></script><script src="./operating-model.js"></script><script src="./shared-pipeline-context.js?v=1"></script><script src="./shared-pipeline-nav.js?v=1"></script></body></html>
