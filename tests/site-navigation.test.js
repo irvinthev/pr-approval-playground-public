@@ -214,3 +214,14 @@ test('Overview architecture map separates AI analysis, external model dependenci
  assert.match(html,/\.\/engineering-blueprint\.html#rr02-negative-test/);
  assert.match(html,/\.\/ai-sdlc-risk\.html\?risk=RR-02#risk-explorer/);
 });
+
+test('Overview PNG handoff keeps accessible HTML fallback and separate human/automation routes',()=>{
+ const html=read('index.html');
+ assert.match(html,/id="overview-png-anchor" hidden/);
+ assert.match(html,/id="overview-png-image"/);
+ assert.match(html,/\.\/assets\/ai-cicd-overview\.png/);
+ assert.match(html,/id="overview-authority-map"/);
+ assert.match(html,/The model|AI assessment is not approval authority/);
+ assert.match(html,/high risk, disagreement, or uncertainty/i);
+ assert.match(html,/className='overview-map-details'/);
+});
