@@ -75,6 +75,11 @@ async function runCase(label, path, viewportName, viewport, scenario) {
         }
       }
       check((await page.locator('.guided-completion').innerText()).includes('No actual company configuration'), 'Illustrative conclusion missing');
+      const handoff = await page.locator('.guided-completion').innerText();
+      check(handoff.includes('Management-to-auditor handoff'), 'Management handoff heading missing');
+      check(handoff.includes('Design to explain') && handoff.includes('Evidence to prepare') && handoff.includes('Still to establish'), 'Handoff does not separate design, evidence, and unknowns');
+      check(handoff.includes('auditor evaluation remains separate'), 'Independent auditor judgment missing');
+      checks.push('Handoff distinguishes management demonstration from auditor evaluation');
       check(await page.locator('.guided-steps a').count() === 5, 'Five chapters not retained');
       checks.push('Full five-page guided investigation, RR-02 and illustrative conclusion');
     }
