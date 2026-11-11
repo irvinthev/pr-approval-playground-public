@@ -22,12 +22,14 @@ const inventoryForm=n('form',null,'governance-form');
  ['Effective authority','authority','select',[['Not assessed','Not assessed'],['Advisory','Advisory'],['Review gate','Review gate'],['Automated approval','Automated approval'],['Production execution','Production execution'],['Governance changes','Governance changes']]],
  ['Highest information classification','dataClass','select',D.classes.map(k=>[k,k])],
  ['Classification source / basis','classificationBasis'],
+ ['Data categories / origin','dataTypes','textarea',null,true],
+ ['Data access / external sharing','dataAccess','textarea',null,true],
  ['Crown-jewel exposure','crownJewel','select',[['Unknown','Unknown'],['Yes','Yes'],['No','No']]],
  ['Critical asset / process affected','criticalAsset'],
  ['Data flow and boundary','dataFlow','textarea',null,true]
 ].forEach(args=>inventoryForm.append(makeField(...args)));
 const inventoryButtons=n('div',null,'governance-actions');const addAsset=n('button','Add inventory draft');addAsset.type='submit';const demo=n('button','Fill fictional example','secondary');demo.type='button';demo.addEventListener('click',()=>{
- const fields={name:'Example AI PR reviewer',owner:'Engineering lead (fictional)',purpose:'Review a documentation-only PR and recommend an eligibility decision',provider:'Third-party model runtime',authority:'Review gate',dataClass:'Internal',classificationBasis:'Example company information policy',crownJewel:'Unknown',criticalAsset:'Shared billing library (potential downstream consumer)',dataFlow:'PR diff → vendor model API → evaluation → independent policy gate'};
+ const fields={name:'Example AI PR reviewer',owner:'Engineering lead (fictional)',purpose:'Review a documentation-only PR and recommend an eligibility decision',provider:'Third-party model runtime',authority:'Review gate',dataClass:'Internal',classificationBasis:'Example company information policy',dataTypes:'PR source code and static analysis output',dataAccess:'Engineering-managed service to vendor model API',crownJewel:'Unknown',criticalAsset:'Shared billing library (potential downstream consumer)',dataFlow:'PR diff → vendor model API → evaluation → independent policy gate'};
  for(const [key,value] of Object.entries(fields)){const input=inventoryForm.elements.namedItem(key);if(input)input.value=value;}
 });
 inventoryButtons.append(addAsset,demo);inventoryForm.append(inventoryButtons);inventorySection.append(inventoryForm);
@@ -45,6 +47,10 @@ riskForm.append(makeField('Qualitative impact (unverified)','impact','select',[[
 riskForm.append(makeField('Likelihood (unverified)','likelihood','select',[['Not assessed','Not assessed'],['Low — user hypothesis','Low — user hypothesis'],['Moderate — user hypothesis','Moderate — user hypothesis'],['High — user hypothesis','High — user hypothesis']]));
 riskForm.append(makeField('Proposed safeguard / current control','safeguard','textarea',null,true));
 riskForm.append(makeField('Evidence and validation gaps','evidence','textarea',null,true));
+riskForm.append(makeField('Risk status (draft only)','riskStatus','select',[['Draft — open','Draft — open'],['Draft — treatment planned','Draft — treatment planned'],['Draft — monitoring planned','Draft — monitoring planned']]));
+riskForm.append(makeField('Remediation / treatment action plan','actionPlan','textarea',null,true));
+riskForm.append(makeField('Action owner','actionOwner'));
+riskForm.append(makeField('Target action date','targetDate','date'));
 riskForm.append(makeField('Management response under consideration','treatment','select',[['Undetermined','Undetermined'],['Mitigate','Mitigate'],['Avoid or restrict','Avoid or restrict'],['Transfer or share','Transfer or share'],['Propose acceptance','Propose acceptance']]));
 riskForm.append(makeField('Acceptance rationale (required if proposing acceptance)','rationale','textarea',null,true));
 riskForm.append(makeField('Conditions and compensating safeguards','conditions','textarea',null,true));
