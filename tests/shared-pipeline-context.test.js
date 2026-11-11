@@ -25,7 +25,7 @@ test('shared-library decision connects eligibility, authorization and production
  assert.match(M.trace[6].evidence,/artifact digest/);
  assert.deepEqual(M.trace[3].controls,['AI-03','AI-06','AI-07','AI-08','AI-15']);
 });
-test('Risk and Assurance have the stage strip; Engineering reuses its own stage explorer and monitoring redirect',()=>{
+test('Risk and Assurance have the stage strip; Engineering and Monitoring retain independent stage explorers',()=>{
  for(const [page,lens] of [['ai-sdlc-risk.html','risk'],['engineering-blueprint.html','engineering'],['independent-assurance.html','assurance']]){
   const s=read(page);
   assert.match(s,new RegExp('id="shared-pipeline-context" data-perspective="'+lens+'"'));
@@ -39,8 +39,10 @@ test('Risk and Assurance have the stage strip; Engineering reuses its own stage 
  assert.match(script,/history\.replaceState/);
  assert.doesNotMatch(script,/resolveAuthorization|evaluateCase|approveMerge|runApproval/,'navigation must not touch evaluation engine');
  const monitor=read('continuous-monitoring.html');
- assert.match(monitor,/location\.replace\('\.\/engineering-blueprint\.html\?stage='/);
- assert.match(monitor,/view=monitor/);
+ assert.match(monitor,/id="stage-pickers"/);
+ assert.match(monitor,/id="monitoring-guide"/);
+ assert.match(monitor,/src="\.\/monitoring\.js\?v=shared-1"/);
+ assert.doesNotMatch(monitor,/location\.replace\('\.\/engineering-blueprint\.html\?stage='/);
 });
 test('shared navigation JavaScript parses and exposes only reference data',()=>{
  for(const p of ['shared-pipeline-context.js','shared-pipeline-nav.js'])new vm.Script(read(p),{filename:p});

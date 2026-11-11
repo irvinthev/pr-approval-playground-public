@@ -9,10 +9,11 @@ test('one page owns Build and Monitor lenses and one stage selector',()=>{
  assert.match(monitor,/root\.renderUnifiedMonitor=function\(stage\)/);
  assert.doesNotMatch(monitor,/stage-pickers|monitor-blueprint-link/);
 });
-test('technical depth and interactive examples retained; old monitoring links migrate',()=>{
+test('technical depth and interactive examples retained while Monitoring runs as its own chapter',()=>{
  const page=read('engineering-blueprint.html'),legacy=read('continuous-monitoring.html');
  for(const label of ['id="technical-requirements"','id="required-ci"','Full implementation checklist','Implementation details, sourcing and integrations'])assert.ok(page.includes(label),label);
  for(const label of ['Normal sample','Exception sample','Purpose, evidence and owner response','Exercise this monitor'])assert.ok(read('unified-monitoring.js').includes(label),label);
- assert.match(legacy,/location\.replace\('\.\/engineering-blueprint\.html\?stage='/);
- assert.match(legacy,/location\.hash\.startsWith\('#case='\)/);
+ assert.match(legacy,/id="monitoring-guide"/);
+ assert.match(legacy,/src="\.\/monitoring\.js\?v=shared-1"/);
+ assert.doesNotMatch(legacy,/location\.replace\('\.\/engineering-blueprint\.html\?stage='/);
 });
