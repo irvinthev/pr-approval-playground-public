@@ -148,3 +148,6 @@ body.risk-dashboard{background:#f1f5fb;color:#172844}
  .risk-dashboard #risk-tab-model .shared-pipeline-context .shared-lenses{grid-template-columns:1fr 1fr}
  .risk-dashboard #risk-tab-model .shared-pipeline-context .shared-lenses a{font-size:12px;padding:9px 7px}
 }
+
+/* Risk Assessment must retain its light theme over the shared mobile shell. */
+@media(max-width:700px){body.risk-dashboard{background:#f1f5fb!important;color:#172844}}
