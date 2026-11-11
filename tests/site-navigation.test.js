@@ -204,3 +204,13 @@ test('Assurance differentiates authoritative source types and the integration ch
  assert.match(html,/@media\(max-width:620px\)\{\.simple-assurance \.guidance-map/,'source map has explicit mobile layout');
  assert.match(html,/id="shared-case-root" hidden/);
 });
+
+test('Overview architecture map separates AI analysis, external model dependencies and approval authority',()=>{
+ const html=read('index.html');
+ assert.match(html,/id="overview-authority-map"/);
+ for(const term of ['Eligibility policy','AI agent + reviewers','Externally managed model','Authorized human review','Policy-authorized automation','Protected merge']) assert.ok(html.includes(term),'Missing architecture label: '+term);
+ assert.match(html,/AI agreement alone is insufficient/);
+ assert.match(html,/Shadow analysis may observe, but cannot authorize/);
+ assert.match(html,/\.\/engineering-blueprint\.html#rr02-negative-test/);
+ assert.match(html,/\.\/ai-sdlc-risk\.html\?risk=RR-02#risk-explorer/);
+});
