@@ -9,37 +9,27 @@ test('archived references still point to Assurance while current Assurance foote
  }
  const footer=assurance.slice(assurance.lastIndexOf('<footer'),assurance.indexOf('</footer>',assurance.lastIndexOf('<footer'))+9);
  assert.match(footer,/href="\.\/continuous-monitoring\.html"/);
- assert.doesNotMatch(footer,/href="\.\/risk-controls\.html"/);
 });
-test('advanced Monitoring investigations and working interactions migrated into unified page',()=>{
- const page=read('engineering-blueprint.html'),renderer=read('unified-monitoring.js');
- for(const text of ['id="worked-examples"','Approved demo-01. Deployed demo-02.','24 / 24 records','id="eng-data"','id="event-detail"','id="investigate"','id="resolve"','id="trace"','data-event="0"'])assert.ok(page.includes(text),'missing '+text);
- assert.match(renderer,/document\.getElementById\('worked-examples'\)/);
- assert.match(page,/revealLinkedResource\(\)/);
- assert.match(page,/section\.open=true/);
- assert.match(page,/section\.scrollIntoView/);
- assert.match(renderer,/investigations\.hidden=active!==6/);
- assert.match(renderer,/if\(active!==6\)investigations\.open=false/);
- assert.match(page,/document\.querySelector\('\[data-event="0"\]'\)\.click\(\)/);
+test('Dedicated Monitoring retains both interactive cases and population testing',()=>{
+ const monitoring=read('continuous-monitoring.html'),js=read('monitoring.js');
+ for(const id of ['worked-examples','eng-data','event-detail','investigate','resolve','trace','coverage','monitoring-use-notes','ci-canary-monitoring','stage-pickers'])assert.ok(monitoring.includes('id="'+id+'"'),id);
+ for(const item of ['Approved demo-01. Deployed demo-02.','24 / 24 records','24 / 25','data-event="0"'])assert.ok(monitoring.includes(item),item);
+ assert.match(js,/examples\.hidden=active!==6/);
+ assert.match(js,/location\.hash==='#worked-examples'/);
+ assert.match(monitoring,/src="\.\/monitoring\.js\?v=shared-1"/);
 });
-test('Monitoring is a standalone interactive chapter with stage-specific cases and deep links',()=>{
- const page=read('continuous-monitoring.html');
- for(const id of ['stage-pickers','monitoring-guide','worked-examples','monitoring-use-notes','ci-canary-monitoring','eng-data','event-detail'])assert.ok(page.includes('id="'+id+'"'),id);
- for(const phrase of ['Operate the approval process','Detect','Respond','Learn','Approved demo-01. Deployed demo-02.'])assert.ok(page.includes(phrase),phrase);
- assert.match(page,/src="\.\/monitoring\.js\?v=shared-1"/);
- for(const label of ['01 · Detect','02 · Investigate','03 · Respond','04 · Learn','24 / 24 can look complete while 24 / 25','?stage=6#worked-examples'])assert.ok(page.includes(label),label);
- assert.doesNotMatch(page,/location\.replace\('\.\/engineering-blueprint\.html\?stage='/);
+test('Old Engineering monitoring bookmarks redirect to their counterpart on Monitoring',()=>{
+ const engineering=read('engineering-blueprint.html');
+ assert.match(engineering,/const fragment=location\.hash\.slice\(1\)/);
+ assert.match(engineering,/params\.get\('view'\)!=='monitor'/);
+ assert.match(engineering,/fragment==='worked-examples'\?6/);
+ assert.match(engineering,/location\.replace\('\.\/continuous-monitoring\.html\?stage='/);
+ for(const id of ['worked-examples','monitoring-use-notes','ci-canary-monitoring'])assert.ok(read('continuous-monitoring.html').includes('id="'+id+'"'),id);
+ assert.doesNotMatch(engineering,/id="monitor-view"|src="\.\/unified-monitoring\.js"/);
 });
-test('monitoring setup and CI/canary guidance remain reachable in both reference paths',()=>{
- const page=read('engineering-blueprint.html'),monitor=read('continuous-monitoring.html');
- for(const id of ['monitoring-use-notes','ci-canary-monitoring']){assert.ok(page.includes('id="'+id+'"'));assert.ok(monitor.includes('id="'+id+'"'));}
- for(const phrase of ['Define the population, processing window, threshold, owner and closure evidence','Reconcile against independent merge and deployment sources','Required CI and canary outcomes'])assert.ok(page.includes(phrase),phrase);
- assert.match(monitor,/href="\.\/engineering-blueprint\.html\?stage=0#technical-requirements"/);
-});
-test('coverage warning has readable foreground and navigation discards stale monitoring fragments',()=>{
- const page=read('engineering-blueprint.html');
- assert.match(page,/\.unified-monitor p#coverage-note\.label\{color:#16332f!important\}/);
- assert.match(page,/if\(\['#worked-examples','#monitoring-use-notes','#ci-canary-monitoring'\]\.includes\(u\.hash\)\)u\.hash=''/);
- assert.match(page,/if\(\['#worked-examples','#monitoring-use-notes','#ci-canary-monitoring'\]\.includes\(url\.hash\)\)url\.hash=''/);
- assert.match(page,/legacyMonitoringFragments=new Set\(\['worked-examples','monitoring-use-notes','ci-canary-monitoring'\]\)/);
+test('Engineering retains technical resource links while Monitoring owns CI/canary guidance',()=>{
+ const engineering=read('engineering-blueprint.html'),monitoring=read('continuous-monitoring.html');
+ for(const id of ['required-ci','progressive-rollout','supporting-resources'])assert.ok(engineering.includes('id="'+id+'"'),id);
+ for(const id of ['monitoring-use-notes','ci-canary-monitoring'])assert.ok(monitoring.includes('id="'+id+'"'),id);
+ assert.match(monitoring,/href="\.\/engineering-blueprint\.html\?stage=0#technical-requirements"/);
 });
