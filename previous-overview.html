@@ -85,7 +85,7 @@
 <button class="workflow-stage" type="button" data-stage="0" aria-pressed="true"><span class="stage-number">01 · ENTRY</span><strong>Pull request</strong><p>Identify the change and exact commit.</p><span class="stage-state">Completed</span></button>
 <button class="workflow-stage" type="button" data-stage="1" aria-pressed="false"><span class="stage-number">02 · RULES</span><strong>Deterministic gates</strong><p>Check eligibility, paths, dependencies, and exclusions.</p><span class="stage-state">Completed</span></button>
 <button class="workflow-stage" type="button" data-stage="2" aria-pressed="false"><span class="stage-number">03 · CODE QUALITY</span><strong>CI &amp; code checks</strong><p>Build, test, scan, and apply required reviews.</p><span class="stage-state">Completed</span></button>
-<button class="workflow-stage" type="button" data-stage="3" aria-pressed="false"><span class="stage-number">04 · AI SIGNALS</span><strong>AI reviewers</strong><p>QualityBot and RiskBot evaluate the revision.</p><span class="stage-state">Completed</span></button>
+<button class="workflow-stage" type="button" data-stage="3" aria-pressed="false"><span class="stage-number">04 · AI SIGNALS</span><strong>AI reviewers</strong><p>AI Reviewer A and AI Reviewer B evaluate the revision.</p><span class="stage-state">Completed</span></button>
 <button class="workflow-stage" type="button" data-stage="4" aria-pressed="false"><span class="stage-number">05 · AUTHORITY</span><strong>Policy decision</strong><p>Determine automated eligibility or human escalation.</p><span class="stage-state">Completed</span></button>
 <button class="workflow-stage" type="button" data-stage="5" aria-pressed="false"><span class="stage-number">06 · ENFORCEMENT</span><strong>GitHub merge</strong><p>Enforce required checks and valid authorization.</p><span class="stage-state">Completed</span></button>
 <button class="workflow-stage" type="button" data-stage="6" aria-pressed="false"><span class="stage-number">07 · DELIVERY</span><strong>Build &amp; deploy</strong><p>Bind released artifact to the authorized revision.</p><span class="stage-state">Completed</span></button>
@@ -172,7 +172,7 @@
     },
     split: {
       tone:"human",states:["done","done","done","human","human","skipped","skipped","skipped"],
-      facts:["Eligibility and CI checks pass.","QualityBot and RiskBot disagree.","The automated decision path refuses authorization.","An authorized human must review before any merge and subsequent release."],
+      facts:["Eligibility and CI checks pass.","AI Reviewer A and AI Reviewer B disagree.","The automated decision path refuses authorization.","An authorized human must review before any merge and subsequent release."],
       label:"HUMAN REVIEW REQUIRED",
       reason:"Conflicting AI assessments are not resolved by resubmitting the same change to AI. The case exits automated approval.",
       action:"Next: obtain an independent human decision on the current commit; downstream steps are not shown as completed."
