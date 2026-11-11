@@ -174,6 +174,17 @@
 .authority-map-routes{grid-template-columns:1fr;padding-top:30px;gap:7px}.authority-map-routes:before{text-align:left}
 .authority-map-links{flex-direction:column;gap:8px}
 }
+
+/* Optional overview PNG enhancement: original responsive map remains usable when file is absent. */
+.overview-png-anchor{margin:20px 0 13px;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #547f88;color:#17314c}
+.overview-png-anchor[hidden]{display:none}
+.overview-png-anchor img{display:block;width:100%;height:auto;object-fit:contain}
+.overview-png-anchor figcaption{padding:11px 17px 14px;font-size:13px;line-height:1.5;color:#254760;background:#edf6fa}
+.overview-png-anchor figcaption a{color:#125ba0;font-weight:750}
+.overview-map-details{margin:12px 0 18px;border:1px solid var(--site-border);border-radius:10px}
+.overview-map-details>summary{cursor:pointer;padding:13px 16px;min-height:44px;font-size:14px;font-weight:750;color:var(--site-text)}
+.overview-map-details>.authority-map{margin:2px 12px 12px}
+@media(max-width:650px){.overview-png-anchor figcaption{font-size:12px;padding:10px 12px}}
 </style><link rel="stylesheet" href="./ui-polish.css?v=1"><link rel="stylesheet" href="./guided-investigation.css"></head>
 <body class="overview"><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a><a class="site-experiments" href="./playground.html">Advanced experiments ↗</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html" aria-current="page">Overview</a><a href="./ai-sdlc-risk.html">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Assurance</a></nav></header>
 
@@ -185,6 +196,10 @@
 <div class="hero-actions"><a class="guide-action" href="./index.html?journey=rr02#guided-investigation">Start guided investigation →</a><a class="secondary-action" href="#workflow">Explore delivery pipeline →</a><a class="secondary-action" href="./engineering-blueprint.html">Engineering &amp; safeguards →</a></div>
 </section>
 
+<figure class="overview-png-anchor" id="overview-png-anchor" hidden aria-labelledby="overview-png-caption">
+  <img id="overview-png-image" alt="Illustrative CI/CD diagram. A pull request passes deterministic eligibility checks. Excluded changes require authorized human review; eligible changes receive two AI risk assessments. High risk, disagreement, or uncertainty also requires human review. Only eligible low-risk changes meeting independent policy conditions may use an automated route. Both routes converge on protected merge and deployment. Beneath the workflow, agent configuration and tools are distinguished from externally managed foundation models." width="1752" height="897" decoding="async">
+  <figcaption id="overview-png-caption"><strong>AI assessment is not approval authority.</strong> A model's favorable result alone cannot authorize an automated merge. <a href="./engineering-blueprint.html#rr02-negative-test">Test the boundary</a> · <a href="./ai-sdlc-risk.html?risk=RR-02#risk-explorer">Examine the failure risk</a></figcaption>
+</figure>
 <section class="authority-map" id="overview-authority-map" aria-labelledby="authority-map-title">
   <div class="authority-map-heading">
     <span class="section-kicker">ARCHITECTURE / AUTHORITY AT A GLANCE</span>
@@ -485,4 +500,26 @@ tabs.forEach((t,i)=>{t.addEventListener("click",()=>{perspective=t.dataset.persp
 render();
 })();
 </script>
-</main><script src="./guided-investigation.js"></script></body></html>
+</main><script src="./guided-investigation.js"></script><script>
+/* Progressive enhancement: until the PNG has been uploaded, use the existing responsive HTML architecture map. */
+(function(){
+  const image=document.getElementById('overview-png-image');
+  const figure=document.getElementById('overview-png-anchor');
+  const map=document.getElementById('overview-authority-map');
+  if(!image||!figure||!map)return;
+  image.addEventListener('load',()=>{
+    if(!image.naturalWidth)return;
+    figure.hidden=false;
+    if(!map.parentElement.matches('details.overview-map-details')){
+      const details=document.createElement('details');
+      details.className='overview-map-details';
+      const summary=document.createElement('summary');
+      summary.textContent='Explore the architecture in accessible text and links';
+      details.append(summary);
+      map.before(details);
+      details.append(map);
+    }
+  });
+  image.src='./ai-cicd-overview.png';
+})();
+</script></body></html>
