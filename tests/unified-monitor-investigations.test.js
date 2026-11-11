@@ -27,6 +27,7 @@ test('Monitoring is a standalone interactive chapter with stage-specific cases a
  for(const id of ['stage-pickers','monitoring-guide','worked-examples','monitoring-use-notes','ci-canary-monitoring','eng-data','event-detail'])assert.ok(page.includes('id="'+id+'"'),id);
  for(const phrase of ['Operate the approval process','Detect','Respond','Learn','Approved demo-01. Deployed demo-02.'])assert.ok(page.includes(phrase),phrase);
  assert.match(page,/src="\.\/monitoring\.js\?v=shared-1"/);
+ for(const label of ['01 · Detect','02 · Investigate','03 · Respond','04 · Learn','24 / 24 can look complete while 24 / 25','?stage=6#worked-examples'])assert.ok(page.includes(label),label);
  assert.doesNotMatch(page,/location\.replace\('\.\/engineering-blueprint\.html\?stage='/);
 });
 test('monitoring setup and CI/canary guidance remain reachable in both reference paths',()=>{
