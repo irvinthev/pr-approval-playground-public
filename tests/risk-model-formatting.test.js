@@ -24,3 +24,10 @@ test('Risk tab formatting leaves risk assessment and reviewer logic untouched',(
  assert.doesNotMatch(tabs,/evaluateCase|approveMerge|runApproval|QualityBot|RiskBot|Braze|Appboy/);
  assert.doesNotMatch(css,/QualityBot|RiskBot|Braze|Appboy/);
 });
+
+test('mobile Risk Assessment light theme takes precedence over shared dark mobile shell',()=>{
+ const base=read('site.css'),risk=read('risk-dashboard-v04.css'),html=read('ai-sdlc-risk.html');
+ assert.match(base,/@media\(max-width:700px\)\{[\s\S]*?body\{background:#091321!important\}/);
+ assert.match(risk,/@media\(max-width:700px\)\{body\.risk-dashboard\{background:#f1f5fb!important;color:#172844\}\}/);
+ assert.match(html,/risk-dashboard-v04\.css\?v=mobile-contrast-1/);
+});
