@@ -109,6 +109,22 @@
 .overview .investigation-tabs{margin:11px 0 7px}.overview .investigation-panel{min-height:95px}
 .overview .investigation-links{margin-top:10px}.overview .investigation-note{margin-bottom:0}
 @media(max-width:520px){.overview .path-branch-grid{grid-template-columns:1fr 1fr}.overview .path-branch-title span{display:block}.overview .path-branch-lane{padding:8px}.overview .path-branch-lane strong{font-size:12px}.overview .path-branch-lane span{font-size:11px}}
+
+/* Distinguish neutral learning from scenario results without changing scenario evaluation. */
+.overview .overview-mode-line{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 11px}
+.overview .overview-mode{font-size:12px;font-weight:750;color:#c7e7e1}
+.overview #clear-scenario{border:1px solid #668e91;background:#173b46;color:#e0f6f0;border-radius:7px;padding:9px 12px;min-height:40px;font:inherit;font-size:12px;cursor:pointer}
+.overview .workflow-stage:not([data-state]) .stage-state{color:#a9bec9;font-weight:600}
+.overview .scenario-mode{font-size:12px;font-weight:750;color:#b4f0df;margin:0 0 12px}
+.overview .scenario-mini{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:5px;margin:0 0 15px}
+.overview .scenario-mini-stage{border:1px solid #4b6c79;background:#142f40;border-radius:6px;padding:9px 4px;text-align:center;min-width:0}
+.overview .scenario-mini-stage strong{display:block;font-size:11px;color:#f0f8fa}
+.overview .scenario-mini-stage span{display:block;font-size:10px;line-height:1.4;color:#c0d7df;margin-top:4px}
+.overview .scenario-mini-stage[data-state=done]{border-color:#47c0a8;background:#123c3c}
+.overview .scenario-mini-stage[data-state=human]{border-color:#ecb965;background:#453523}
+.overview .scenario-mini-stage[data-state=blocked],.overview .scenario-mini-stage[data-state=alert]{border-color:#f08e91;background:#412a33}
+.overview .scenario-mini-stage[data-state=skipped]{opacity:.58}
+@media(max-width:700px){.overview .scenario-mini{grid-template-columns:repeat(4,minmax(0,1fr))}}
 </style><link rel="stylesheet" href="./ui-polish.css?v=1"></head>
 <body class="overview"><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a><a class="site-experiments" href="./playground.html">Advanced experiments ↗</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html" aria-current="page">Overview</a><a href="./ai-sdlc-risk.html">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Assurance</a></nav></header>
 
@@ -123,15 +139,16 @@
 <div class="section-kicker">01 / How it works</div>
 <h2 class="section-heading" id="workflow-title">Explore the path from code to production</h2>
 <p class="section-intro">This eight-touchpoint journey illustrates how AI, ordinary engineering checks, authorization, and production delivery can work together. Select a stage to see the implementation responsibility and the evidence it produces. The detailed pipeline simulator uses a different seven-stage grouping.</p>
+<div class="overview-mode-line"><span id="workflow-mode" class="overview-mode">Explore mode · No scenario selected</span><button id="clear-scenario" type="button" hidden>Return to Explore mode</button></div>
 <div class="workflow-stages" id="workflow-stages" aria-label="Eight workflow stages">
-<button class="workflow-stage" type="button" data-stage="0" aria-pressed="true"><span class="stage-number">01 · ENTRY</span><strong>Pull request</strong><p>Identify the change and exact commit.</p><span class="stage-state">Modeled pass</span></button>
-<button class="workflow-stage" type="button" data-stage="1" aria-pressed="false"><span class="stage-number">02 · RULES</span><strong>Deterministic gates</strong><p>Check eligibility, paths, dependencies, and exclusions.</p><span class="stage-state">Modeled pass</span></button>
-<button class="workflow-stage" type="button" data-stage="2" aria-pressed="false"><span class="stage-number">03 · CODE QUALITY</span><strong>CI &amp; code checks</strong><p>Build, test, scan, and apply required reviews.</p><span class="stage-state">Modeled pass</span></button>
-<button class="workflow-stage" type="button" data-stage="3" aria-pressed="false"><span class="stage-number">04 · AI SIGNALS</span><strong>AI reviewers</strong><p>Two fictional AI reviewers evaluate the same revision.</p><span class="stage-state">Modeled pass</span></button>
-<button class="workflow-stage" type="button" data-stage="4" aria-pressed="false"><span class="stage-number">05 · AUTHORITY</span><strong>Policy decision</strong><p>Determine automated eligibility or human escalation.</p><span class="stage-state">Modeled pass</span></button>
-<button class="workflow-stage" type="button" data-stage="5" aria-pressed="false"><span class="stage-number">06 · ENFORCEMENT</span><strong>GitHub merge</strong><p>Enforce required checks and valid authorization.</p><span class="stage-state">Modeled pass</span></button>
-<button class="workflow-stage" type="button" data-stage="6" aria-pressed="false"><span class="stage-number">07 · DELIVERY</span><strong>Build &amp; deploy</strong><p>Bind released artifact to the authorized revision.</p><span class="stage-state">Modeled pass</span></button>
-<button class="workflow-stage" type="button" data-stage="7" aria-pressed="false"><span class="stage-number">08 · OPERATIONS</span><strong>Monitor &amp; respond</strong><p>Observe health, exceptions, and rollback triggers.</p><span class="stage-state">Modeled pass</span></button>
+<button class="workflow-stage" type="button" data-stage="0" aria-pressed="true"><span class="stage-number">01 · ENTRY</span><strong>Pull request</strong><p>Identify the change and exact commit.</p><span class="stage-state">Explore stage</span></button>
+<button class="workflow-stage" type="button" data-stage="1" aria-pressed="false"><span class="stage-number">02 · RULES</span><strong>Deterministic gates</strong><p>Check eligibility, paths, dependencies, and exclusions.</p><span class="stage-state">Explore stage</span></button>
+<button class="workflow-stage" type="button" data-stage="2" aria-pressed="false"><span class="stage-number">03 · CODE QUALITY</span><strong>CI &amp; code checks</strong><p>Build, test, scan, and apply required reviews.</p><span class="stage-state">Explore stage</span></button>
+<button class="workflow-stage" type="button" data-stage="3" aria-pressed="false"><span class="stage-number">04 · AI SIGNALS</span><strong>AI reviewers</strong><p>Two fictional AI reviewers evaluate the same revision.</p><span class="stage-state">Explore stage</span></button>
+<button class="workflow-stage" type="button" data-stage="4" aria-pressed="false"><span class="stage-number">05 · AUTHORITY</span><strong>Policy decision</strong><p>Determine automated eligibility or human escalation.</p><span class="stage-state">Explore stage</span></button>
+<button class="workflow-stage" type="button" data-stage="5" aria-pressed="false"><span class="stage-number">06 · ENFORCEMENT</span><strong>GitHub merge</strong><p>Enforce required checks and valid authorization.</p><span class="stage-state">Explore stage</span></button>
+<button class="workflow-stage" type="button" data-stage="6" aria-pressed="false"><span class="stage-number">07 · DELIVERY</span><strong>Build &amp; deploy</strong><p>Bind released artifact to the authorized revision.</p><span class="stage-state">Explore stage</span></button>
+<button class="workflow-stage" type="button" data-stage="7" aria-pressed="false"><span class="stage-number">08 · OPERATIONS</span><strong>Monitor &amp; respond</strong><p>Observe health, exceptions, and rollback triggers.</p><span class="stage-state">Explore stage</span></button>
 </div>
 <div class="path-branch" role="group" aria-label="Human and AI approval routes">
 <div class="path-branch-title">Authorization routes <span>Different review paths · shared enforcement</span></div>
@@ -189,16 +206,18 @@
 <section class="scenario-section" id="scenario-lab" aria-labelledby="scenario-title">
 <div class="section-kicker">03 / Optional exploration</div>
 <h2 class="section-heading" id="scenario-title">Explore how different changes move through the pipeline</h2>
-<p class="section-intro">Start with the routine low-risk path, or explore disagreement, exclusions, and production response. These examples illustrate different operating outcomes—not four failures to discover. Selecting one updates the pipeline above.</p>
+<p class="section-intro">Choose a fictional case to enter Simulation mode. Your choice updates the eight stages above; the compact stage results below let you inspect outcomes here without scrolling back.</p>
 <div class="scenario-picker" role="group" aria-label="Simulation scenarios">
-<button type="button" data-scenario="pass" aria-pressed="true">✅ Standard low-risk pass</button>
+<button type="button" data-scenario="pass" aria-pressed="false">✅ Standard low-risk pass</button>
 <button type="button" data-scenario="split" aria-pressed="false">🔀 AI split decision</button>
 <button type="button" data-scenario="excluded" aria-pressed="false">🛑 Hard-gate exclusion</button>
 <button type="button" data-scenario="canary" aria-pressed="false">💥 Production canary failure</button>
 </div>
+<div class="scenario-mode" id="scenario-mode" role="status">No scenario selected · Explore mode</div>
+<div class="scenario-mini" id="scenario-mini" aria-label="Scenario stage results" hidden></div>
 <div class="scenario-result" aria-live="polite">
-<div class="result-panel"><h3>Illustrative pipeline state</h3><ul id="scenario-facts"><li>Deterministic eligibility checks pass.</li><li>CI and both AI reviewers pass.</li><li>An authorized approval permits protected merge.</li><li>Release validation and monitoring complete.</li></ul></div>
-<div class="result-panel" id="decision-panel" data-tone="pass"><h3>Decision and explanation</h3><p class="decision-label" id="decision-label">AUTO-APPROVAL ELIGIBLE</p><p id="decision-reason">This fictional change meets the selected policy and evidence requirements. Eligibility does not, by itself, prove the design is effective in production.</p><p class="next-action" id="decision-action">Next: enforce authorization at the exact commit and validate the released artifact.</p></div>
+<div class="result-panel"><h3>Illustrative pipeline state</h3><ul id="scenario-facts"><li>Select one of the four scenarios to see how the pipeline responds.</li></ul></div>
+<div class="result-panel" id="decision-panel" data-tone="neutral"><h3>Decision and explanation</h3><p class="decision-label" id="decision-label">SELECT A SCENARIO</p><p id="decision-reason">Explore mode explains the workflow without asserting any outcome.</p><p class="next-action" id="decision-action">Choose a fictional case above to run the simulation.</p></div>
 </div>
 <div class="sim-actions"><a class="guide-action" href="./engineering-blueprint.html">Explore engineering implementation →</a><a class="secondary-action" href="./auditor-view.html">Challenge the decision in Auditor View →</a></div>
 <p class="illustrative-note">These scenario results are fixed, fictional teaching examples—not live model outputs, real approval events, or verified controls. Deep-dive pages have their own simulations; the selected Overview scenario is not transferred.</p>
@@ -276,10 +295,33 @@
     document.getElementById("stage-engineering").textContent=details[index][0];
     document.getElementById("stage-assurance").textContent=details[index][1];
   }
+  const mini=document.getElementById("scenario-mini");
+  const mode=document.getElementById("workflow-mode");
+  const scenarioMode=document.getElementById("scenario-mode");
+  const clearButton=document.getElementById("clear-scenario");
+  const shortStages=["PR","Policy","CI","AI","Authority","Merge","Deploy","Monitor"];
+  const stateLabels={done:"Pass",human:"Human",blocked:"Excluded",skipped:"Not reached",alert:"Intervention"};
+  function resetExplore(){
+    scenarioButtons.forEach(button=>button.setAttribute("aria-pressed","false"));
+    stageButtons.forEach(button=>{delete button.dataset.state;button.querySelector(".stage-state").textContent="Explore stage";});
+    mini.replaceChildren();mini.hidden=true;
+    mode.textContent="Explore mode · No scenario selected";scenarioMode.textContent="No scenario selected · Explore mode";clearButton.hidden=true;
+    document.getElementById("scenario-facts").replaceChildren();
+    const item=document.createElement("li");item.textContent="Select one of the four scenarios to see how the pipeline responds.";document.getElementById("scenario-facts").appendChild(item);
+    document.getElementById("decision-panel").dataset.tone="neutral";
+    document.getElementById("decision-label").textContent="SELECT A SCENARIO";
+    document.getElementById("decision-reason").textContent="Explore mode explains the workflow without asserting any outcome.";
+    document.getElementById("decision-action").textContent="Choose a fictional case above to run the simulation.";
+  }
   function selectScenario(key) {
     const data=scenarios[key];
     if (!data) return;
     scenarioButtons.forEach(button=>button.setAttribute("aria-pressed",String(button.dataset.scenario===key)));
+    const selected=scenarioButtons.find(button=>button.dataset.scenario===key);
+    mode.textContent="Simulation mode · "+selected.textContent.trim();
+    scenarioMode.textContent="Simulation mode · "+selected.textContent.trim()+" · Stage results below";
+    clearButton.hidden=false;mini.hidden=false;mini.replaceChildren();
+    data.states.forEach((state,index)=>{const item=document.createElement("div");item.className="scenario-mini-stage";item.dataset.state=state;const label=document.createElement("strong");label.textContent=shortStages[index];const value=document.createElement("span");value.textContent=stateLabels[state];item.append(label,value);mini.appendChild(item);});
     stageButtons.forEach((button,index)=>{
       const state=data.states[index];
       button.dataset.state=state;
@@ -296,8 +338,9 @@
   }
   stageButtons.forEach((button,index)=>button.addEventListener("click",()=>inspect(index)));
   scenarioButtons.forEach(button=>button.addEventListener("click",()=>selectScenario(button.dataset.scenario)));
+  clearButton.addEventListener("click",resetExplore);
   inspect(activeStage);
-  selectScenario("pass");
+  resetExplore();
 })();
 </script>
 <script>
