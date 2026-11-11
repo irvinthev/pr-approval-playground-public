@@ -151,3 +151,127 @@ body.risk-dashboard{background:#f1f5fb;color:#172844}
 
 /* Risk Assessment must retain its light theme over the shared mobile shell. */
 @media(max-width:700px){body.risk-dashboard{background:#f1f5fb!important;color:#172844}}
+
+/* Risk Assessment palette aligned to Engineering & Safeguards (dark navy / mint). */
+body.risk-dashboard{
+ --risk-bg:#091321;--risk-panel:#102738;--risk-raised:#142c41;--risk-border:#3c5b70;
+ --risk-text:#eef5ff;--risk-muted:#b7ccd9;--risk-mint:#a4edda;
+ background:var(--risk-bg)!important;color:var(--risk-text);
+}
+.risk-dashboard .risk-main-hero h1{color:var(--risk-text)}
+.risk-dashboard .risk-main-hero p{color:var(--risk-muted)}
+.risk-dashboard .field-kicker{color:var(--risk-mint)}
+.risk-dashboard .risk-framework-banner{background:#10283b;border-color:#416377;color:var(--risk-text)}
+.risk-dashboard .risk-framework-banner strong{color:var(--risk-mint)}
+.risk-dashboard .risk-framework-banner p{color:var(--risk-muted)}
+.risk-dashboard .risk-tabs{border-color:var(--risk-border)}
+.risk-dashboard .risk-tabs button{color:#bed4e2}
+.risk-dashboard .risk-tabs button[aria-selected=true]{color:#edfff9;background:#20504d;border-color:#7bbcb0;border-bottom-color:var(--risk-mint)}
+.risk-dashboard .risk-tab-panel{color:var(--risk-text)}
+.risk-dashboard .risk-frame,.risk-dashboard .field-section,.risk-dashboard .operating-panel{
+ background:var(--risk-panel);border-color:var(--risk-border);color:var(--risk-text);box-shadow:none
+}
+.risk-dashboard .risk-frame h2,.risk-dashboard .field-section h2,
+.risk-dashboard .operating-panel h2{color:var(--risk-text)}
+.risk-dashboard .risk-frame p,.risk-dashboard .field-section p,
+.risk-dashboard .field-section li{color:var(--risk-muted)}
+.risk-dashboard .rmf-card:nth-child(n){background:var(--risk-raised);border:1px solid var(--risk-border)}
+.risk-dashboard .rmf-card strong{color:var(--risk-text)}
+.risk-dashboard .rmf-card p{color:var(--risk-muted)}
+.risk-dashboard .rmf-icon{color:var(--risk-mint)}
+.risk-dashboard .field-steps li,.risk-dashboard .field-card{background:var(--risk-raised);border-color:var(--risk-border);color:var(--risk-text)}
+.risk-dashboard .field-steps li b,.risk-dashboard .field-card h3{color:var(--risk-text)}
+.risk-dashboard .field-steps li span,.risk-dashboard .field-card p{color:var(--risk-muted)}
+.risk-dashboard .field-button,.risk-dashboard .register-download,.risk-dashboard .governance-export{
+ background:var(--risk-mint);border-color:var(--risk-mint);color:#102b34
+}
+.risk-dashboard .field-secondary{color:var(--risk-mint);border-color:#548679}
+.risk-dashboard .field-table td,.risk-dashboard .field-table th{color:var(--risk-muted);border-color:var(--risk-border)}
+.risk-dashboard .field-table th{color:var(--risk-mint)}
+.risk-dashboard #risk-register a,.risk-dashboard #risk-assessment-guide a{color:var(--risk-mint)}
+.risk-dashboard .register-filters label,.risk-dashboard .governance-form label{color:var(--risk-text)}
+.risk-dashboard .register-filters select,.risk-dashboard .governance-form input,
+.risk-dashboard .governance-form select,.risk-dashboard .governance-form textarea{
+ background:#18374b;color:var(--risk-text);border-color:#65889c
+}
+.risk-dashboard .register-risk,.risk-dashboard .governance-example-card{background:var(--risk-raised);border-color:var(--risk-border)}
+.risk-dashboard .register-risk summary,.risk-dashboard .register-risk summary strong{color:var(--risk-text)}
+.risk-dashboard .register-id{color:var(--risk-mint)}
+.risk-dashboard .register-functions,.risk-dashboard .register-risk-body p{color:var(--risk-muted)}
+.risk-dashboard .register-risk-body{background:var(--risk-panel);border-color:var(--risk-border)}
+.risk-dashboard .register-risk-body h4{color:var(--risk-mint)}
+.risk-dashboard .register-risk-body .register-unknown{background:#203b50}
+.risk-dashboard .risk-count,.risk-dashboard .governance-summary,
+.risk-dashboard .governance-summary strong{color:var(--risk-muted)}
+.risk-dashboard .governance-table th{background:#1a3a4e;color:var(--risk-mint)}
+.risk-dashboard .governance-table td,.risk-dashboard .governance-table th{border-color:var(--risk-border)}
+.risk-dashboard .governance-table td{color:var(--risk-muted)}
+.risk-dashboard .governance-note{background:#18394c;color:var(--risk-muted);border-color:var(--risk-mint)}
+.risk-dashboard .governance-actions button.secondary{background:var(--risk-raised);color:var(--risk-mint);border-color:#598678}
+.risk-dashboard .governance-example-kicker,.risk-dashboard .governance-example-card h3{color:var(--risk-mint)}
+.risk-dashboard .governance-example-card p,.risk-dashboard .governance-example-card dt{color:var(--risk-muted)}
+.risk-dashboard .governance-example-card dd{color:var(--risk-text)}
+.risk-dashboard .governance-example-card details{border-color:var(--risk-border)}
+.risk-dashboard .governance-example-card details summary,.risk-dashboard .governance-editor summary{color:var(--risk-mint)}
+.risk-dashboard .governance-example-card details strong{color:var(--risk-mint)}
+.risk-dashboard .governance-template-button{background:#18374b;color:var(--risk-mint);border-color:#65889c}
+.risk-dashboard .governance-editor{border-color:var(--risk-border)}
+.risk-dashboard #risk-tab-model .shared-pipeline-context{
+ background:var(--risk-panel);color:var(--risk-text);border-color:var(--risk-border);box-shadow:none
+}
+.risk-dashboard #risk-tab-model .shared-pipeline-context h2{color:var(--risk-text)}
+.risk-dashboard #risk-tab-model .shared-pipeline-context p{color:var(--risk-muted)}
+.risk-dashboard #risk-tab-model .shared-pipeline-context .shared-stage{
+ background:#18374b;border-color:#527488;color:var(--risk-text)
+}
+.risk-dashboard #risk-tab-model .shared-pipeline-context .shared-stage[aria-pressed=true]{
+ background:#20504d;border-color:var(--risk-mint);color:#edfff9;box-shadow:inset 0 0 0 1px #6abca8
+}
+.risk-dashboard #risk-tab-model .shared-pipeline-context .shared-lenses a{
+ background:#142c41;border-color:#528579;color:#bce9dc
+}
+.risk-dashboard #risk-tab-model .shared-pipeline-context .shared-lenses a[aria-current=page]{
+ background:#20504d;border-color:var(--risk-mint);color:var(--risk-text)
+}
+.risk-dashboard #risk-tab-model .shared-pipeline-context .shared-detail{border-color:var(--risk-border)}
+.risk-dashboard #risk-tab-model .shared-pipeline-context .shared-detail strong{color:var(--risk-text)}
+.risk-dashboard #risk-tab-model .shared-pipeline-context .shared-detail p{color:var(--risk-muted)}
+.risk-dashboard #risk-tab-model .shared-pipeline-context .shared-rcm a{color:var(--risk-mint)}
+.risk-dashboard #risk-tab-model .shared-pipeline-context .shared-note{color:#a8c6d0}
+.risk-dashboard #risk-tab-model .operating-panel{background:var(--risk-panel);border-color:var(--risk-border);color:var(--risk-text);box-shadow:none}
+.risk-dashboard #risk-tab-model .operating-panel h2{color:var(--risk-text)}
+.risk-dashboard #risk-tab-model .operating-panel .field-kicker{color:var(--risk-mint)}
+.risk-dashboard #risk-tab-model .operating-panel .operating-note,
+.risk-dashboard #risk-tab-model .operating-panel>p{color:var(--risk-muted)}
+.risk-dashboard #risk-tab-model .operating-example{
+ background:var(--risk-raised);border-color:#527488;color:var(--risk-text)
+}
+.risk-dashboard #risk-tab-model .operating-example strong{color:var(--risk-text)}
+.risk-dashboard #risk-tab-model .operating-example span:not(.operating-example-kicker):not(.operating-example-action){color:var(--risk-muted)}
+.risk-dashboard #risk-tab-model .operating-example-kicker,
+.risk-dashboard #risk-tab-model .operating-example-action{color:var(--risk-mint)}
+.risk-dashboard #risk-tab-model .operating-example:hover,
+.risk-dashboard #risk-tab-model .operating-example[aria-pressed=true]{
+ background:#20504d;border-color:var(--risk-mint)
+}
+.risk-dashboard #risk-tab-model .operating-results{border-color:var(--risk-border)}
+.risk-dashboard #risk-tab-model .operating-results h3{color:var(--risk-text)}
+.risk-dashboard #risk-tab-model .operating-results p{color:var(--risk-muted)}
+.risk-dashboard #risk-tab-model .operating-takeaways section,
+.risk-dashboard #risk-tab-model .operating-finding{background:var(--risk-raised);border-color:var(--risk-border)}
+.risk-dashboard #risk-tab-model .operating-takeaways h4,
+.risk-dashboard #risk-tab-model .operating-finding h3{color:var(--risk-mint)}
+.risk-dashboard #risk-tab-model .operating-takeaways p,
+.risk-dashboard #risk-tab-model .operating-finding p{color:var(--risk-muted)}
+.risk-dashboard #risk-tab-model .operating-finding a{color:var(--risk-mint)}
+.risk-dashboard #risk-tab-model .operating-next a{background:var(--risk-raised);border-color:var(--risk-border);color:var(--risk-mint)}
+.risk-dashboard #risk-tab-model .operating-next a span{color:var(--risk-muted)}
+.risk-dashboard #risk-tab-model .operating-advanced,
+.risk-dashboard #risk-tab-model .operating-evidence{border-color:var(--risk-border)}
+.risk-dashboard #risk-tab-model .operating-advanced summary,
+.risk-dashboard #risk-tab-model .operating-evidence summary{color:var(--risk-mint)}
+.risk-dashboard #risk-tab-model .operating-fields label{color:var(--risk-text)}
+.risk-dashboard #risk-tab-model .operating-fields select{background:#18374b;color:var(--risk-text);border-color:#65889c}
+.risk-dashboard #risk-tab-model .operating-controls button[type=button]{color:var(--risk-mint);border-color:#598678}
+.risk-dashboard .field-note{background:#102738;border:1px solid var(--risk-border);color:var(--risk-muted)}
+@media(max-width:700px){body.risk-dashboard{background:var(--risk-bg)!important;color:var(--risk-text)}}
