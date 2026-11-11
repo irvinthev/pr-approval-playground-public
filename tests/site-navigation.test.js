@@ -104,8 +104,9 @@ test('Engineering to Monitoring preserves selected stage and legacy view links r
  assert.match(engineering,/id="stage-monitor-link" href="\.\/continuous-monitoring\.html\?stage=0#monitoring-guide"/);
  assert.match(engineering,/id="engineering-footer-monitor-link" href="\.\/continuous-monitoring\.html\?stage=0#monitoring-guide"/);
  assert.match(engineering,/\$\('stage-monitor-link'\)\.href='\.\/continuous-monitoring\.html\?stage='\+encodeURIComponent\(String\(active\)\)/);
- assert.match(engineering,/id="view-monitor"[^>]*hidden/);
- assert.match(engineering,/get\('view'\)==='monitor'\?'monitor':'build'/);
+ assert.doesNotMatch(engineering,/id="view-monitor"|id="monitor-view"/);
+ assert.ok(engineering.includes("params.get('view')!=='monitor'"));
+ assert.ok(engineering.includes("location.replace('./continuous-monitoring.html?stage='"));
  assert.match(monitoring,/id="monitoring-guide"/);
  const script=fs.readFileSync(path.join(root,'monitoring.js'),'utf8');
  assert.match(script,/new URLSearchParams\(search\)\.get\('stage'\)/);
