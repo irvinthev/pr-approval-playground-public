@@ -33,6 +33,7 @@ function revealHashTarget(){
  const panel=tabForHash(location.hash);
  if(!panel)return false;
  activate(panel);
+ requestAnimationFrame(()=>{const target=document.getElementById(decodeURIComponent(location.hash.slice(1)));if(target)target.scrollIntoView({block:'start',behavior:'auto'});});
  return true;
 }
 const initial=new URLSearchParams(location.search).get('view');
