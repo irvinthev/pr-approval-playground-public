@@ -219,7 +219,7 @@ test('Overview PNG handoff keeps accessible HTML fallback and separate human/aut
  const html=read('index.html');
  assert.match(html,/id="overview-png-anchor" hidden/);
  assert.match(html,/id="overview-png-image"/);
- assert.match(html,/\.\/assets\/ai-cicd-overview\.png/);
+ assert.match(fs.readFileSync(path.join(root,'index.html'),'utf8'),/\.\/assets\/ai-cicd-overview\.png/);
  assert.match(html,/id="overview-authority-map"/);
  assert.match(html,/The model|AI assessment is not approval authority/);
  assert.match(html,/high risk, disagreement, or uncertainty/i);
