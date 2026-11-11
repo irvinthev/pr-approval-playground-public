@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-const W=window.WorkedExamples,host=document.getElementById('worked-examples');if(!W||!host)return;
+const W=window.WorkedExamples,I=window.AssuranceInterpretation,host=document.getElementById('worked-examples');if(!W||!I||!host)return;
 let id='standard',condition='baseline',view='engineering';
 const status=document.createElement('p');status.className='we-sr';status.setAttribute('role','status');status.setAttribute('aria-live','polite');host.after(status);
 const node=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined&&text!==null)n.textContent=text;if(cls)n.className=cls;return n;};
@@ -58,6 +58,18 @@ function render(announce=false){
  const assurance=node('section',null,'pane audit we-assurance');assurance.id='we-assurance';assurance.setAttribute('aria-label','Audit workpaper');
  const ah=node('header',null,'pane-header');ah.append(node('h3','02 / Audit workpaper'),node('span','SIMULATION · NOT VERIFIED','badge'));assurance.append(ah);
  const ab=node('div',null,'we-pane-body');
+ const interpretation=I.interpret(id,condition);
+ const interpretationBox=node('section',null,'we-interpretation');
+ interpretationBox.append(node('h4','AI decision → Enforcement → Assurance'));
+ const interpretations=[
+  ['AI assessment','ai'],['Independent enforcement','enforcement'],['Assurance conclusion','reliance']
+ ];
+ for(const [heading,key] of interpretations){const item=node('div',null,'we-interpretation-item');item.append(node('strong',heading),node('p',interpretation[key]));interpretationBox.append(item);}
+ const evidenceCallout=node('p',null,'we-interpretation-evidence');evidenceCallout.append(node('strong','Evidence to inspect · '),document.createTextNode(interpretation.evidence));interpretationBox.append(evidenceCallout);
+ const relatedLinks=node('p',null,'we-interpretation-links');relatedLinks.append(node('strong','Relevant RCM objectives · '));
+ interpretation.controls.forEach((control,n)=>{if(n)relatedLinks.append(document.createTextNode(' · '));relatedLinks.append(link('WEB15:'+control,'./rcm-view.html#control-'+control));});
+ interpretationBox.append(relatedLinks);
+ ab.append(interpretationBox);
  addFact(ab,'Engineering observation',observation);
  addFact(ab,'Challenge introduced',challenge);
  addFact(ab,'Expected control behavior',expected);
