@@ -231,18 +231,8 @@ details.field-deep-dive>section{margin:0 14px 16px}
 <section class="workflow-map" id="workflow" aria-labelledby="workflow-title">
 <div class="section-kicker">01 / INTERACTIVE DELIVERY SIMULATOR</div>
 <h2 class="section-heading" id="workflow-title">Explore the four delivery outcomes</h2>
-<p class="section-intro">Choose one of four fictional change outcomes, then inspect the relevant stage, authorization route and supporting evidence. This interactive simulator uses eight detailed touchpoints; the other chapters group the lifecycle into seven stages.</p>
-<div class="scenario-inline" id="scenario-lab" aria-labelledby="scenario-title">
-<div class="section-kicker">TRY A SCENARIO</div>
-<h3 id="scenario-title">Choose a change to follow</h3>
-<p class="scenario-inline-intro">Choose a fictional scenario or explore the baseline workflow.</p>
-<div class="scenario-picker" role="group" aria-label="Simulation scenarios">
-<button type="button" data-scenario="pass" aria-pressed="false">✅ Standard low-risk pass</button>
-<button type="button" data-scenario="split" aria-pressed="false">🔀 AI split decision</button>
-<button type="button" data-scenario="excluded" aria-pressed="false">🛑 Hard-gate exclusion</button>
-<button type="button" data-scenario="canary" aria-pressed="false">💥 Production canary failure</button>
-</div>
-</div>
+<p class="section-intro">Explore the delivery stages, then choose a fictional outcome below to see how the change proceeds and where it stops. This interactive simulator uses eight detailed touchpoints; the other chapters group the lifecycle into seven stages.</p>
+
 <div class="overview-mode-line"><span id="workflow-mode" class="overview-mode">Explore mode · No scenario selected</span><button id="clear-scenario" type="button" hidden>Return to Explore mode</button></div>
 <div class="workflow-stages" id="workflow-stages" aria-label="Eight workflow stages">
 <button class="workflow-stage" type="button" data-stage="0" aria-pressed="true"><span class="stage-number">01 · ENTRY</span><strong>Pull request</strong><p>Identify the change and exact commit.</p><span class="stage-state">Explore stage</span></button>
@@ -254,6 +244,17 @@ details.field-deep-dive>section{margin:0 14px 16px}
 <button class="workflow-stage" type="button" data-stage="6" aria-pressed="false"><span class="stage-number">07 · DELIVERY</span><strong>Build &amp; deploy</strong><p>Bind released artifact to the authorized revision.</p><span class="stage-state">Explore stage</span></button>
 <button class="workflow-stage" type="button" data-stage="7" aria-pressed="false"><span class="stage-number">08 · OPERATIONS</span><strong>Monitor &amp; respond</strong><p>Observe health, exceptions, and rollback triggers.</p><span class="stage-state">Explore stage</span></button>
 </div>
+<div class="scenario-inline" id="scenario-lab" aria-labelledby="scenario-title">
+<div class="section-kicker">TRY A SCENARIO</div>
+<h3 id="scenario-title">Choose a change to follow</h3>
+<p class="scenario-inline-intro">Run a fictional change through the eight stages above, or continue exploring the baseline workflow.</p>
+<div class="scenario-picker" role="group" aria-label="Simulation scenarios">
+<button type="button" data-scenario="pass" aria-pressed="false">✅ Standard low-risk pass</button>
+<button type="button" data-scenario="split" aria-pressed="false">🔀 AI split decision</button>
+<button type="button" data-scenario="excluded" aria-pressed="false">🛑 Hard-gate exclusion</button>
+<button type="button" data-scenario="canary" aria-pressed="false">💥 Production canary failure</button>
+</div>
+</div>
 <div class="scenario-inline-outcome" id="scenario-output" hidden aria-live="polite">
 <h3 class="scenario-outcome-heading">What happened in this scenario?</h3>
 <div class="scenario-result" aria-live="polite">
@@ -264,18 +265,6 @@ details.field-deep-dive>section{margin:0 14px 16px}
 <div class="sim-actions"><a class="guide-action" href="./engineering-blueprint.html">Explore engineering implementation →</a><a class="secondary-action" href="./auditor-view.html">Challenge the decision in Auditor View →</a></div>
 <p class="illustrative-note">Synthetic teaching examples, not live decisions or implemented controls. Selecting another scenario updates this workflow.</p>
 </div>
-<div class="path-branch" role="group" aria-label="Human and AI approval routes">
-<div class="path-branch-title">Authorization routes <span>Different review paths · shared enforcement</span></div>
-<div class="path-branch-grid">
-<div class="path-branch-lane"><strong>Human review</strong><span>Qualified reviewer authorizes the current change</span></div>
-<div class="path-branch-lane"><strong>AI-assisted review</strong><span>Policy-bound eligibility and separate authorization</span></div>
-</div>
-<div class="path-branch-join">↓ Both require protected merge and release controls</div>
-</div><details class="stage-inspector-toggle"><summary>Selected stage: Engineering and assurance details</summary><div class="stage-inspector" id="stage-inspector" aria-live="polite">
-<div><h3>Engineering · What must work?</h3><p id="stage-engineering">Bind each assessment to the exact changed revision.</p></div>
-<div><h3>Assurance · What must be demonstrated?</h3><p id="stage-assurance">Confirm the change and commit being evaluated are unambiguous.</p></div>
-</div>
-</details>
 <div class="boundary-explorer" id="trust-boundaries" aria-labelledby="boundary-title">
 <div class="section-kicker">TRUST BOUNDARIES / BETWEEN STAGES</div>
 <h3 id="boundary-title">Where does authority change hands?</h3>
@@ -383,16 +372,6 @@ details.field-deep-dive>section{margin:0 14px 16px}
 <script>
 (function () {
   "use strict";
-  const details = [
-    ["Capture the PR event, diff, repository, author, base branch, and immutable commit SHA. Re-evaluate on revision changes.","Verify that all evaluations and approvals refer to the exact revision that was merged."],
-    ["Run deterministic scope, path, dependency, and financial-impact rules before considering automated approval. Treat missing mappings as unresolved.","Test excluded and indirect-impact changes, incomplete inventories, and changes to the policy or mapping versions."],
-    ["Run required builds, tests, security scans, and applicable code review. Ensure failures cannot be ignored by a downstream AI score.","Inspect required-check configuration, negative test outcomes, code-review requirements, and bypass privileges."],
-    ["Evaluate both reviewers against the same commit; capture model/prompt versions, outputs, disagreements, and errors. Do not equate scores with approval.","Examine reviewer validation against adjudicated cases, missed unsafe changes, shared failure modes, and traceable inputs."],
-    ["Apply explicit policy to independent evidence, completeness, version binding, and approved authorization routes; route ambiguity to humans.","Confirm that authority is independent of the PR author and that stale, conflicting, or incomplete evidence cannot approve."],
-    ["Enforce protected branch rules and required status checks at merge; restrict approval credentials and audit bypass actions.","Reconcile GitHub settings, reviewer identities, bypass actors, and final merged SHA to the recorded authorization."],
-    ["Build from the authorized commit; verify artifact identity, release permissions, and every production deployment path.","Trace a representative approved commit through build provenance to the deployed artifact, including emergency routes."],
-    ["Observe canaries, quality and policy metrics, overrides, incidents, and rollback conditions; make suspension actionable.","Test alerts, exception handling, post-deployment evidence, remediation, and the ability to halt unsafe automation."]
-  ];
   const scenarios = {
     pass: {
       tone:"pass",states:["done","done","done","done","done","done","done","done"],
@@ -429,8 +408,7 @@ details.field-deep-dive>section{margin:0 14px 16px}
   function inspect(index) {
     activeStage=index;
     stageButtons.forEach((button,i)=>button.setAttribute("aria-pressed",String(index===i)));
-    document.getElementById("stage-engineering").textContent=details[index][0];
-    document.getElementById("stage-assurance").textContent=details[index][1];
+    // The stage grid remains selectable; redundant stage detail cards were removed.
   }
   const scenarioOutput=document.getElementById("scenario-output");
   const mode=document.getElementById("workflow-mode");
