@@ -183,6 +183,10 @@ async function runCase(label, path, viewportName, viewport, scenario) {
       checks.push('Risk Management → Engineering technical requirements');
     }
     if (scenario === 'monitoring-assurance-rr02') {
+      const disclosure = page.locator('#monitoring-investigations');
+      check(await disclosure.count() === 1,'Additional investigations disclosure missing');
+      if (await disclosure.getAttribute('open') === null) await disclosure.locator(':scope > summary').click();
+      check(await disclosure.getAttribute('open') !== null,'Additional investigations did not expand');
       const bridge = page.locator('#classification-monitoring-bridge');
       check(await bridge.isVisible(), 'Monitoring RR-02 handoff is missing');
       check((await bridge.innerText()).includes('false-low-risk'), 'Classification signal explanation missing');
