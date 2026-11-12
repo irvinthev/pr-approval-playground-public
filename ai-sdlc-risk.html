@@ -63,7 +63,19 @@
 .register-risk-body .register-related{margin:13px 0}.register-risk-body .register-unknown{border-left:3px solid #8da6b5;padding:9px 11px;background:#1c3c4b}
 .register-download{cursor:pointer;background:#9de8d4;color:#06212a;border:0;border-radius:8px;padding:12px 16px;min-height:44px;font:inherit;font-weight:800}
 @media(max-width:780px){#risk-assessment-guide .field-steps{grid-template-columns:repeat(2,minmax(0,1fr))}.register-filters{grid-template-columns:1fr}}
-</style><link rel="stylesheet" href="./risk-dashboard-v04.css?v=engineering-dark-1"><link rel="stylesheet" href="./guided-investigation.css"></head>
+</style><link rel="stylesheet" href="./risk-dashboard-v04.css?v=engineering-dark-1"><link rel="stylesheet" href="./guided-investigation.css"><style>
+/* Progressive disclosure: preserve reference depth without front-loading secondary content. */
+details.field-deep-dive{margin:18px 0;border:1px solid var(--site-border,#4d6875);border-radius:12px;background:var(--site-panel,#112d3c);overflow:visible}
+details.field-deep-dive>summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:58px;padding:14px 18px;color:var(--site-text,#e8f5f5)}
+details.field-deep-dive>summary::-webkit-details-marker{display:none}
+details.field-deep-dive>summary:focus-visible{outline:3px solid var(--site-mint,#a4edda);outline-offset:3px}
+details.field-deep-dive .field-deep-dive-label{display:block;font-size:15px;font-weight:750;line-height:1.4}
+details.field-deep-dive .field-deep-dive-hint{display:block;font-size:12px;color:var(--site-muted,#bfd0d8);margin-top:3px;line-height:1.4}
+details.field-deep-dive .field-deep-dive-chevron{flex-shrink:0;font-size:19px;color:var(--site-mint,#a4edda)}
+details.field-deep-dive[open] .field-deep-dive-chevron{transform:rotate(180deg)}
+details.field-deep-dive>section{margin:0 14px 16px}
+@media(max-width:600px){details.field-deep-dive>summary{padding:13px 14px}details.field-deep-dive>section{margin:0 10px 12px}}
+</style></head>
 <body class="risk-dashboard"><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html">Overview</a><a href="./ai-sdlc-risk.html" aria-current="page">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Assurance</a></nav></header>
 <section class="risk-main-hero" id="main-content" tabindex="-1">
 <div><div class="field-kicker">AI-enabled software delivery / Risk Assessment</div><h1>AI SDLC Risk Management</h1>
@@ -133,7 +145,7 @@
 
 </section>
 
-<details class="risk-frame"><summary><strong>Detailed assessment method and NIST references</strong></summary><section class="field-section" id="risk-assessment-guide" aria-labelledby="risk-assessment-guide-title">
+<details class="risk-frame"><summary><strong>Detailed assessment method and NIST references</strong></summary><details class="field-deep-dive"><summary><span><span class="field-deep-dive-label">Risk assessment method and framework detail</span><span class="field-deep-dive-hint">NIST alignment, criteria and supporting questions</span></span><span class="field-deep-dive-chevron" aria-hidden="true">⌄</span></summary><section class="field-section" id="risk-assessment-guide" aria-labelledby="risk-assessment-guide-title">
 <div class="field-kicker">Risk assessment guidance / NIST AI RMF–informed</div>
 <h2 id="risk-assessment-guide-title">From AI authority to a risk assessment</h2>
 <p>NIST AI RMF 1.0 organizes AI risk management into <strong>Govern, Map, Measure, and Manage</strong>. The four functions inform this practical method; they are not scoring bands, a prescribed control checklist, or a certification. The scenarios and RCM mappings below are field-guide adaptations, not official NIST risk statements or descriptions of implemented controls.</p>
@@ -145,7 +157,7 @@
 </ol>
 <p><strong>Assessment sequence:</strong> Scope the operating model → select credible failure scenarios → identify independently enforced safeguards → validate evidence → record open questions → have management evaluate impact, likelihood, tolerance and response. Missing evidence means <strong>not assessed</strong>, not low risk. Risk rankings require a management-approved scale and context; this guide intentionally does not calculate them.</p>
 <p>Reference: <a href="https://airc.nist.gov/airmf-resources/airmf/" target="_blank" rel="noopener noreferrer">NIST AI RMF 1.0 ↗</a> and <a href="https://airc.nist.gov/airmf-resources/playbook/" target="_blank" rel="noopener noreferrer">NIST AI RMF Playbook ↗</a>.</p>
-</section>
+</section></details>
 </details>
 </section>
 <section class="risk-tab-panel" id="risk-tab-inventory" role="tabpanel" aria-labelledby="tab-inventory" hidden>
@@ -235,4 +247,19 @@ const requestedRisk=new URLSearchParams(window.location.search).get('risk');
 show(['RR-01','RR-02','RR-04'].includes(requestedRisk)?requestedRisk:'RR-01');
 })();
 </script>
-<script src="./guided-investigation.js"></script></body></html>
+<script src="./guided-investigation.js"></script><script>
+/* Expand collapsed source material when a linked subsection is the destination. */
+(function(){
+function reveal(){
+  var hash=window.location.hash;
+  if(!hash||hash.length<2)return;
+  var id;try{id=decodeURIComponent(hash.slice(1))}catch(_){return}
+  var target=document.getElementById(id);
+  if(!target)return;
+  var parent=target.closest('details.field-deep-dive');
+  if(parent&&!parent.open)parent.open=true;
+}
+window.addEventListener('hashchange',reveal);
+reveal();
+})();
+</script></body></html>
