@@ -365,7 +365,8 @@ const summary = {
   source: base,
   reference: process.env.GITHUB_SHA || 'local',
   capturedAtUtc: new Date().toISOString(),
-  mode,\n  captures: records.length,
+  mode,
+  captures: records.length,
   failures,
   note: 'Static-site PR visual QA. Screenshots are review aids, not historical control evidence.'
 };
