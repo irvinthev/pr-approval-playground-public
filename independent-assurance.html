@@ -61,7 +61,8 @@ details.field-deep-dive>section{margin:0 14px 16px}
 .ace-selected{border:1px solid #547b8e;border-radius:11px;padding:18px;background:#102b3f}
 .ace-management,.ace-test,.ace-evidence{padding:12px 3px}
 .ace-management{border-bottom:1px solid #527284}
-.ace-test{border-bottom:1px solid #527284}
+.ace-test,.ace-outcome{border-bottom:1px solid #527284}
+.ace-outcome{padding:12px 3px}
 .ace-kicker{display:block;color:#a4eed9;letter-spacing:.07em;font-weight:800;font-size:11px;margin-bottom:7px}
 .ace-selected h3{font-size:19px;margin:0 0 7px;color:#f1f8ff}
 .ace-selected p{margin:0;color:#cbdde8;font-size:14px;line-height:1.55}
@@ -108,12 +109,13 @@ details.field-deep-dive>section{margin:0 14px 16px}
  <div class="ace-selected" id="ace-selected" aria-live="polite">
   <div class="ace-management"><span class="ace-kicker">MANAGEMENT CONTROL</span><h3 id="ace-management-title">Deterministic policy enforcement</h3><p id="ace-management-description">Apply versioned eligibility rules before AI review.</p></div>
   <div class="ace-test" aria-label="Corresponding independent assurance test"><span class="ace-kicker">INDEPENDENT TECHNICAL TEST</span><h3 id="ace-test-title">Negative testing and bypass attempts</h3><p id="ace-test-description">Challenge excluded, stale and unknown revisions.</p></div>
+  <div class="ace-outcome"><span class="ace-kicker">OBSERVED RESULT</span><p>Not established. This is a proposed test; actual execution, control configuration and results require independent verification.</p></div>
   <div class="ace-evidence"><span class="ace-kicker">EVIDENCE TO INSPECT</span><p id="ace-evidence-description">Effective policy, rule inputs, decision logs and rejected attempts.</p></div>
   <div class="ace-links" id="ace-links"><a href="./control-matrix.html#control-D01">Control example</a><a href="./rcm-view.html#download-current-rcm">Proposed RCM</a><a href="./engineering-blueprint.html#rr02-negative-test">Run negative test</a></div>
  </div>
  <div class="ace-footer"><span id="ace-progress">Domain 3 of 6</span><div><button type="button" id="ace-previous">← Previous</button><button type="button" id="ace-next">Next domain →</button></div></div>
  <p class="ace-disclaimer">Illustrative control-to-test relationships, not executed tests or observed control outcomes. Validate applicability, configuration, and evidence in the actual environment.</p>
-</section><div class="assurance-case-heading"><span class="simple-eyebrow">SUPPORTING CASES / TECHNICAL VALIDATION</span><h2>Challenge a real enforcement boundary</h2><p>Use the fictional RR-01 and RR-02 cases to explore negative tests and evidence handoffs.</p></div>
+</section><div class="assurance-case-heading"><span class="simple-eyebrow">SUPPORTING CASES / TECHNICAL VALIDATION</span><h2>Challenge an enforcement boundary</h2><p>Use the fictional RR-01 and RR-02 cases to explore negative tests and evidence handoffs.</p></div>
 <details class="authority-evidence-case" id="authorization-evidence-case">
 <summary><span class="aec-kicker">CONNECTED CONTROL EXAMPLE · RR-01</span><strong>Reviewer independence: from requirement to evidence</strong><span class="aec-subtitle">Management demonstration · Negative test · Evidence · Auditor evaluation</span></summary>
 <div class="aec-body">
