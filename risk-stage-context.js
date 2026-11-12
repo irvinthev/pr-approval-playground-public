@@ -53,8 +53,15 @@ function render(){
  }
  if(lens==='assurance'){
   if(test){
-   for(const [label,key] of [['Prepare','preparation'],['Challenge','execution'],['Expected outcome','expected'],['Test operation over time','operation'],['Retain','retain']]){
+   for(const [label,key] of [['Challenge','execution'],['Expected outcome','expected']]){
     const group=node('div',null,detail,'risk-context-test');
+    node('strong',label,group);
+    node('p',test[key],group);
+   }
+   const more=node('details',null,detail,'risk-context-test-more');
+   node('summary','Preparation, operating-period testing & evidence to retain',more);
+   for(const [label,key] of [['Prepare','preparation'],['Test operation over time','operation'],['Retain','retain']]){
+    const group=node('div',null,more,'risk-context-test');
     node('strong',label,group);
     node('p',test[key],group);
    }
