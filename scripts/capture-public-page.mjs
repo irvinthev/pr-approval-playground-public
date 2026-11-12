@@ -261,6 +261,27 @@ async function runCase(label, path, viewportName, viewport, scenario) {
       check(await page.locator('#document-assessment').isVisible(), 'Deep-linked evidence section is hidden');
       checks.push('Direct evidence deep link reveals expanded methodology');
     }
+    if (scenario?.startsWith('assurance-control:')) {
+      const key = scenario.split(':')[1];
+      const choices = page.locator('#ace-picker button[data-domain]');
+      check(await choices.count()===6,'Assurance six-domain selector missing');
+      await page.locator('#ace-picker button[data-domain="'+key+'"]').click();
+      check(await page.locator('#ace-picker button[aria-pressed="true"]').getAttribute('data-domain')===key,'Wrong control selected');
+      check(await page.locator('#ace-test-description').innerText().then(x=>x.length>50),'Independent technical test missing');
+      check(await page.locator('#ace-evidence-description').innerText().then(x=>x.length>35),'Evidence mapping missing');
+      check(await page.locator('#ace-links a').count()>=3,'RCM and testing links missing');
+      check(new URL(page.url()).searchParams.get('control')===key,'Selected domain not reflected in URL');
+      if(key==='policy'){
+        check(await page.locator('#ace-links a[href*="rr02-negative-test"]').count()===1,'Missing RR-02 negative test');
+        const asset=await page.request.get(new URL('assurance-control-map.svg',base).toString());
+        check(asset.ok(), 'Downloadable control map missing');
+        await page.locator('#ace-next').click();
+        check(await page.locator('#ace-picker button[aria-pressed="true"]').getAttribute('data-domain')==='evaluation','Next control failed');
+        await page.locator('#ace-previous').click();
+        check(await page.locator('#ace-picker button[aria-pressed="true"]').getAttribute('data-domain')==='policy','Previous control failed');
+      }
+      checks.push('Domain selection, linked RCM/negative tests, URL and evidence');
+    }
     if (scenario === 'assurance-expanded') {
       const details = page.locator('#authorization-evidence-case');
       await details.locator('summary').click();
@@ -315,6 +336,9 @@ try {
         file+'#'+anchor, viewportName, viewport, 'disclosure-deeplink');
     }
     await runCase('risk-rr02-expanded-' + viewportName, 'ai-sdlc-risk.html', viewportName, viewport, 'risk-rr02');
+    for (const key of ['governance','agent','policy','evaluation','authorization','monitoring']) {
+      await runCase('assurance-control-'+key+'-'+viewportName,'independent-assurance.html?control='+key,viewportName,viewport,'assurance-control:'+key);
+    }
     await runCase('assurance-evidence-expanded-' + viewportName, 'independent-assurance.html', viewportName, viewport, 'assurance-expanded');
     await runCase('assurance-evidence-deep-link-' + viewportName, 'independent-assurance.html', viewportName, viewport, 'assurance-deep-link');
     await runCase('cross-page-rr02-' + viewportName, 'index.html', viewportName, viewport, 'cross-page-rr02');
