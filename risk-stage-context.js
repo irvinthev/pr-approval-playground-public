@@ -46,7 +46,7 @@ function render(){
   const chips=node('span',undefined,b,'risk-context-chips');
   for(const kind of roles)node('small',labels[kind],chips,'risk-context-'+kind);
   if(!roles.length)node('small','—',chips,'risk-context-unmapped');
-  b.addEventListener('click',()=>{stage=item.id;syncExistingStage();save();render()});
+  b.addEventListener('click',()=>{stage=item.id;save();syncExistingStage();render()});
  }
  const st=model.stages[stage],rows=scenarios[risk].filter(x=>x[0]===stage);
  node('strong','Stage '+String(stage+1).padStart(2,'0')+' · '+st.title,detail,'risk-context-stage-title');
@@ -70,7 +70,7 @@ function render(){
  const nav=node('nav',undefined,detail,'risk-context-links');nav.setAttribute('aria-label','Keep selected risk and stage across perspectives');
  for(const [key,label] of [['risk','Risk'],['engineering','Engineering'],['monitoring','Monitoring'],['assurance','Assurance']])nav.append(link(key,label,stage));
 }
-chooser.addEventListener('change',()=>{if(!Object.hasOwn(scenarios,chooser.value))return;risk=chooser.value;stage=scenarios[risk][0][0];syncExistingStage();save();render()});
+chooser.addEventListener('change',()=>{if(!Object.hasOwn(scenarios,chooser.value))return;risk=chooser.value;stage=scenarios[risk][0][0];save();syncExistingStage();render()});
 root.addEventListener('popstate',()=>{const p=new URLSearchParams(root.location.search);if(Object.hasOwn(scenarios,p.get('risk')))risk=p.get('risk');const next=model.stageFromLocation(root.location.search);if(next!==null)stage=next;syncExistingStage();render()});
 render();
 })(typeof window!=='undefined'?window:globalThis);
