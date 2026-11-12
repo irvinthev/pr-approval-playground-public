@@ -49,7 +49,7 @@ test('homepage reconciles the interactive approval illustration with the broader
  const html=read('index.html');
  assert.match(html,/href="\.\/ai-sdlc-risk\.html">AI SDLC Risk Assessment/);
  assert.match(html,/href="\.\/previous-overview\.html">See archived previous Overview/);
- assert.match(html,/When AI reviews code, who actually approves it\?/i);
+ assert.match(html,/When AI reviews code, who authorizes the change\?/i);
  assert.match(html,/not a mandated architecture/i);
  assert.match(html,/Illustrative educational model: fictional scenarios/i);
  assert.doesNotMatch(html,/Braze|Appboy|braze\.com/i);
@@ -217,17 +217,17 @@ test('Overview architecture map separates AI analysis, external model dependenci
  assert.match(html,/\.\/ai-sdlc-risk\.html\?risk=RR-02#risk-explorer/);
 });
 
-test('Homepage retains one interactive simulator with its four scenarios and supporting panels',()=>{
+test('Homepage retains one interactive simulator with the workflow preceding scenarios',()=>{
  const html=read('index.html'),engineering=read('engineering-blueprint.html');
- assert.match(html,/When AI reviews code, who actually approves it\?/);
+ assert.match(html,/When AI reviews code, who authorizes the change\?/);
  assert.doesNotMatch(html,/id="overview-stages"|class="overview-simple-journey"|class="overview-simple-stages"/);
- assert.match(html,/href="#workflow">Explore the interactive delivery simulator/);
+ assert.match(html,/href="#workflow">Investigate a change/);
  assert.deepEqual([...html.matchAll(/<button class="workflow-stage"[^>]*data-stage="(\d+)"/g)].map(m=>Number(m[1])),[0,1,2,3,4,5,6,7]);
  assert.deepEqual([...html.matchAll(/<button type="button" data-scenario="([^"]+)"/g)].map(m=>m[1]),['pass','split','excluded','canary']);
  for(const id of ['scenario-output','decision-panel','stage-inspector','trust-boundaries','investigation-panel','field-guide-chapters'])
   assert.ok(html.includes('id="'+id+'"'),id);
  const at=fragment=>html.indexOf(fragment);
- assert.ok(at('id="scenario-lab"')<at('id="workflow-stages"'));
+ assert.ok(at('id="workflow-stages"')<at('id="scenario-lab"'));
  assert.ok(at('id="workflow-stages"')<at('Authorization routes'));
  assert.ok(at('Authorization routes')<at('id="stage-inspector"'));
  assert.ok(at('id="stage-inspector"')<at('id="trust-boundaries"'));
