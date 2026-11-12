@@ -13,6 +13,8 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
         # pull_request checks out the PR merge commit: captures proposed code, not Pages.
       - uses: actions/setup-node@v4
         with:
@@ -34,6 +36,7 @@ jobs:
       - name: Capture desktop/mobile states and assert interactions
         env:
           SITE_BASE_URL: http://127.0.0.1:4173/
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: node scripts/capture-public-page.mjs
       - name: Upload screenshots and collection metadata
         if: always()
