@@ -22,19 +22,19 @@ const pages = mode === 'full' ? [...baselinePages] : [];
 try {
   const parent = process.env.PR_BASE_SHA;
   if (parent) {
-    const changed = execFileSync('git', ['diff', '--name-only', parent, 'HEAD'], {encoding:'utf8'}).trim().split('\\n').filter(Boolean);
+    const changed = execFileSync('git', ['diff', '--name-only', parent, 'HEAD'], {encoding:'utf8'}).trim().split('\n').filter(Boolean);
     const add = file => {
-      if (/^[a-zA-Z0-9._/-]+\\.html$/.test(file) && !pages.some(([,p])=>p===file))
+      if (/^[a-zA-Z0-9._/-]+\.html$/.test(file) && !pages.some(([,p])=>p===file))
         pages.push(['changed-'+file.replace(/[^a-zA-Z0-9]+/g,'-'),file]);
     };
     for(const file of changed){
       if(file.endsWith('.html'))add(file);
       // Shared styles and scripts can affect all five principal chapters.
-      if (/^(site\\.css|guided-investigation\\.(css|js)|shared-pipeline-(context|nav)\\.(css|js)|page-orientation\\.css)$/.test(file)){
+      if (/^(site\.css|guided-investigation\.(css|js)|shared-pipeline-(context|nav)\.(css|js)|page-orientation\.css)$/.test(file)){
         ['index.html','ai-sdlc-risk.html','engineering-blueprint.html','continuous-monitoring.html','independent-assurance.html'].forEach(add);
       }
-      if (/^(risk-|sdlc-risk-)/.test(file) && /\\.(js|css)$/.test(file))add('ai-sdlc-risk.html');
-      if (/^scripts\\/capture-public-page\\.mjs$/.test(file))add('index.html');
+      if (/^(risk-|sdlc-risk-)/.test(file) && /\.(js|css)$/.test(file))add('ai-sdlc-risk.html');
+      if (/^scripts\/capture-public-page\.mjs$/.test(file))add('index.html');
     }
   }
 } catch(e) { console.warn('Changed page discovery unavailable: '+e.message); }
