@@ -57,6 +57,9 @@ async function runCase(label, path, viewportName, viewport, scenario) {
     const checks = ['HTTP ' + response.status(), 'h1 present'];
     if (scenario === 'overview-authority-map') {
       const diagram = page.locator('#overview-authority-map');
+      // The PNG is the default visual; expand the accessible architecture reference for this scenario.
+      const disclosure = page.locator('details.overview-map-details');
+      if (await disclosure.count()) await disclosure.locator('summary').click();
       check(await diagram.isVisible(), 'Overview architecture diagram missing');
       check(await diagram.locator('.authority-map-routes .authority-map-route').count() === 2, 'Two approval routes required');
       check(await diagram.locator('.authority-map-external-model').isVisible(), 'External model boundary missing');
