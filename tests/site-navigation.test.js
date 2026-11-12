@@ -49,7 +49,7 @@ test('homepage reconciles the interactive approval illustration with the broader
  const html=read('index.html');
  assert.match(html,/href="\.\/ai-sdlc-risk\.html">AI SDLC Risk Assessment/);
  assert.match(html,/href="\.\/previous-overview\.html">See archived previous Overview/);
- assert.match(html,/who authorizes a change/i);
+ assert.match(html,/When AI reviews code, who actually approves it\?/i);
  assert.match(html,/not a required architecture/i);
  assert.match(html,/Illustrative educational model: fictional scenarios/i);
  assert.doesNotMatch(html,/Braze|Appboy|braze\.com/i);
