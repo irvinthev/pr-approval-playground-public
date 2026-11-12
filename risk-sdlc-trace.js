@@ -3,7 +3,7 @@
 (function(root){
 'use strict';
 const model=root.SharedPipelineContext, host=root.document&&root.document.getElementById('risk-sdlc-trace');
-if(!model||!host)return;
+if(!model)return;
 const scenarios={
  'RR-02':[
   [0,'introduced','PR description or diff carries misleading context into the review process.'],
@@ -29,6 +29,8 @@ const scenarios={
   [6,'mitigated','Deployment restrictions and independently reconciled production records could reveal or block unauthorized releases.']
  ]
 };
+root.RiskScenarioStages=Object.freeze(scenarios);
+if(!host)return;
 const labels={introduced:'Introduced',exposed:'Exposed',mitigated:'Potential safeguard'};
 const hostStages=root.document.createElement('div');hostStages.className='risk-sdlc-stages';hostStages.setAttribute('role','group');hostStages.setAttribute('aria-label','Select a software delivery stage');
 const head=root.document.createElement('div');head.className='risk-sdlc-detail';head.setAttribute('aria-live','polite');
@@ -49,13 +51,16 @@ function detail(){
  }else node('p','No specific propagation point is mapped for this illustrative scenario at this stage. This is not a statement that the stage has no risk.',head,'risk-sdlc-empty');
  const links=node('div',undefined,head,'risk-sdlc-links');
  for(const [lens,label] of [['engineering','Engineering'],['monitoring','Monitoring'],['assurance','Assurance']]){
-   const a=node('a','Explore in '+label,links);a.href=model.href(lens,selectedStage);
+   const a=node('a','Explore in '+label,links);
+   a.href='./'+model.urls[lens]+'?risk='+encodeURIComponent(currentRisk)+'&stage='+selectedStage+'#risk-stage-context';
  }
 }
 function render(risk){
  if(!scenarios[risk])return;
  currentRisk=risk;
- selectedStage=scenarios[risk][0][0];
+ const incoming=new URLSearchParams(root.location.search);
+ const requestedStage=model.stageFromLocation(root.location.search);
+ selectedStage=(incoming.get('risk')===risk&&requestedStage!==null)?requestedStage:scenarios[risk][0][0];
  hostStages.replaceChildren();
  for(const stage of model.stages){
    const kinds=[...new Set(scenarios[risk].filter(x=>x[0]===stage.id).map(x=>x[1]))];
@@ -69,7 +74,8 @@ function render(risk){
    btn.addEventListener('click',()=>{
      selectedStage=stage.id;
      hostStages.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.stage)===selectedStage)));
-     detail();
+     const url=new URL(root.location.href);url.searchParams.set('risk',currentRisk);url.searchParams.set('stage',String(selectedStage));root.history.replaceState(null,'',url);
+    detail();
    });
  }
  detail();

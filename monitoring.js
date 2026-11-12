@@ -41,5 +41,7 @@
   $('monitoring-stage-status').textContent='Showing monitoring for stage '+(active+1)+': '+stage.title;if(window.SharedCaseUI)window.SharedCaseUI.refreshLinks();
  }
  data.stages.forEach((stage,i)=>{const b=el('button');b.type='button';b.append(el('span',String(i+1).padStart(2,'0')),document.createTextNode(stage.title));b.addEventListener('click',()=>{active=i;render();const url=new URL(location.href);url.search='';url.searchParams.set('stage',String(i));if(!url.hash.startsWith('#case='))url.hash='monitoring-guide';history.replaceState(null,'',url);$('stage-title').focus({preventScroll:true});$('monitoring-guide').scrollIntoView({behavior:'auto',block:'start'});});$('stage-pickers').append(b);});
+ // Presentation integration: switch the existing monitoring detail without scrolling.
+ root.MonitoringStageView={select(i){if(!Number.isInteger(i)||i<0||i>=data.stages.length)return false;active=i;render();return true;}};
  const status=el('p',null,'stage-status');status.id='monitoring-stage-status';status.setAttribute('role','status');$('stage-pickers').after(status);render();
 })(typeof globalThis!=='undefined'?globalThis:this);
