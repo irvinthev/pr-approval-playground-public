@@ -197,7 +197,7 @@ details.field-deep-dive .field-deep-dive-chevron{flex-shrink:0;font-size:19px;co
 details.field-deep-dive[open] .field-deep-dive-chevron{transform:rotate(180deg)}
 details.field-deep-dive>section{margin:0 14px 16px}
 @media(max-width:600px){details.field-deep-dive>summary{padding:13px 14px}details.field-deep-dive>section{margin:0 10px 12px}}
-</style></head>
+</style><link rel="stylesheet" href="./page-orientation.css?v=1"></head>
 <body class="overview"><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a><a class="site-experiments" href="./playground.html">Advanced experiments ↗</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html" aria-current="page">Overview</a><a href="./ai-sdlc-risk.html">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Assurance</a></nav></header>
 
 <section class="hero" id="main-content" tabindex="-1">
@@ -207,6 +207,18 @@ details.field-deep-dive>section{margin:0 14px 16px}
 <p class="lead">This field guide follows <strong>one fictional approach</strong> from pull request to production. It is a discussion and demonstration tool—not a comprehensive assessment method or a required architecture, and not a conclusion of control effectiveness.</p>
 <div class="hero-actions"><a class="guide-action" href="./index.html?journey=rr02#guided-investigation">Start guided investigation →</a><a class="secondary-action" href="#workflow">Explore delivery pipeline →</a><a class="secondary-action" href="./engineering-blueprint.html">Engineering &amp; safeguards →</a></div>
 </section>
+<section class="guide-orientation" aria-label="Page purpose and contents">
+<span class="guide-orientation-eyebrow">PAGE GUIDE / PURPOSE &amp; KEY AREAS</span>
+<h2>How to use this field guide</h2>
+<p>This site explores how AI can participate in CI/CD without confusing model assessment, change authorization, and production enforcement. Start with the five perspectives below, then use the fictional pipeline and scenarios to investigate specific boundaries.</p>
+<ol><li><a href="./index.html#overview-authority-map"><strong>Overview</strong><span>Follow a change from pull request to production</span></a></li>
+<li><a href="./ai-sdlc-risk.html#risk-categories"><strong>AI SDLC Risk Assessment</strong><span>Understand risks, failure scenarios, safeguards and decisions</span></a></li>
+<li><a href="./engineering-blueprint.html#engineering-build-plan"><strong>Engineering & Safeguards</strong><span>Explore the architecture, requirements and enforcement mechanisms</span></a></li>
+<li><a href="./continuous-monitoring.html#monitoring-guide"><strong>Monitoring & Operations</strong><span>Detect exceptions, investigate signals and respond</span></a></li>
+<li><a href="./independent-assurance.html#assurance-control-explorer"><strong>Assurance</strong><span>Review control domains, independent tests and evidence</span></a></li></ol>
+<p class="guide-orientation-footnote">All five pages describe one illustrative design, not a validated implementation or prescribed architecture.</p>
+</section>
+
 
 <figure class="overview-png-anchor" id="overview-png-anchor" hidden aria-labelledby="overview-png-caption">
   <img id="overview-png-image" alt="Illustrative CI/CD diagram. A pull request passes deterministic eligibility checks. Excluded changes require authorized human review; eligible changes receive two AI risk assessments. High risk, disagreement, or uncertainty also requires human review. Only eligible low-risk changes meeting independent policy conditions may use an automated route. Both routes converge on protected merge and deployment. Beneath the workflow, agent configuration and tools are distinguished from externally managed foundation models." width="1752" height="897" decoding="async">
