@@ -108,7 +108,37 @@ details.field-deep-dive>section{margin:0 14px 16px}
 .risk-featured-choices button:nth-child(3){border-left:4px solid #82c7f5}
 .risk-featured-choices button[aria-pressed=true]{background:#234751;box-shadow:inset 0 0 0 1px #a4edda}
 @media(max-width:620px){.risk-map-step{min-height:0;padding:16px}.risk-map-arrow{font-size:23px;line-height:1.1;padding:2px 0}}
-</style><link rel="stylesheet" href="./page-orientation.css?v=1"></head>
+</style><link rel="stylesheet" href="./page-orientation.css?v=1"><style>
+/* Scenario-to-SDLC context: semantic markers, not operating status. */
+.risk-sdlc-trace{border:1px solid #557789;border-radius:10px;background:#122f40;padding:17px;margin:18px 0}
+.risk-sdlc-trace h3{font-size:18px;margin:8px 0}.risk-sdlc-trace>p{font-size:13px;color:#c9dce4;line-height:1.6;margin:8px 0 15px}
+.risk-sdlc-legend{display:flex;gap:8px 20px;flex-wrap:wrap;margin:13px 0;font-size:12px;color:#e2f1f3}
+.risk-sdlc-legend span{display:inline-flex;align-items:center;gap:7px}
+.risk-sdlc-legend i{display:inline-block;width:10px;height:10px;border-radius:3px}
+.risk-legend-introduced{background:#f2b86b}.risk-legend-exposed{background:#fa8c94}.risk-legend-mitigated{background:#82c7f5}
+.risk-sdlc-stages{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:7px}
+.risk-sdlc-stage{font:inherit;display:flex;flex-direction:column;justify-content:space-between;gap:10px;min-height:100px;text-align:left;background:#19394b;border:1px solid #55788b;color:#f0f8fb;padding:11px 9px;border-radius:8px;cursor:pointer;min-width:0}
+.risk-sdlc-stage strong{font-size:12px;line-height:1.3}
+.risk-sdlc-stage:hover,.risk-sdlc-stage[aria-pressed=true]{background:#28505b;border-color:#a4edda}
+.risk-sdlc-stage[aria-pressed=true]{box-shadow:inset 0 0 0 1px #a4edda}
+.risk-sdlc-stage:focus-visible{outline:3px solid #a4edda;outline-offset:2px}
+.risk-sdlc-status{display:flex;gap:4px;flex-wrap:wrap}
+.risk-sdlc-chip{display:inline-block;font-size:10px;font-weight:750;line-height:1.3;border-radius:4px;padding:4px 5px;color:#fff}
+.risk-sdlc-chip.risk-sdlc-introduced{background:#664b28;color:#ffe0ae}
+.risk-sdlc-chip.risk-sdlc-exposed{background:#743a48;color:#ffe0e3}
+.risk-sdlc-chip.risk-sdlc-mitigated{background:#235a7b;color:#d3edff}
+.risk-sdlc-unmapped{color:#8ca8b7}
+.risk-sdlc-detail{margin:11px 0 0;padding:15px;background:#193b4d;border:1px solid #4c7183;border-radius:9px}
+.risk-sdlc-stage-title{display:block;color:#f1f9fc;font-size:15px;margin-bottom:9px}
+.risk-sdlc-event{font-size:13px;color:#e3eef2;line-height:1.55;margin:8px 0;border-left:3px solid;padding-left:10px}
+.risk-sdlc-event span{font-weight:800}
+.risk-sdlc-event.risk-sdlc-introduced{border-color:#f2b86b}.risk-sdlc-event.risk-sdlc-exposed{border-color:#fa8c94}.risk-sdlc-event.risk-sdlc-mitigated{border-color:#82c7f5}
+.risk-sdlc-links{display:flex;flex-wrap:wrap;gap:10px 18px;margin-top:13px}
+.risk-sdlc-links a{font-size:12px;color:#a4edda;font-weight:750}
+.risk-sdlc-empty{color:#cbdde5;font-size:13px}.risk-sdlc-trace .risk-sdlc-note{color:#afc5d0;font-size:11px;margin:12px 0 0}
+@media(max-width:1050px){.risk-sdlc-stages{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:600px){.risk-sdlc-trace{padding:13px}.risk-sdlc-stages{grid-template-columns:repeat(2,minmax(0,1fr))}.risk-sdlc-stage{min-height:88px}}
+</style></head>
 <body class="risk-dashboard"><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html">Overview</a><a href="./ai-sdlc-risk.html" aria-current="page">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Assurance</a></nav></header>
 <section class="risk-main-hero" id="main-content" tabindex="-1">
 <div><div class="field-kicker">AI-enabled software delivery / Risk Assessment</div><h1>AI SDLC Risk Management</h1>
@@ -159,6 +189,14 @@ details.field-deep-dive>section{margin:0 14px 16px}
 <div class="risk-map-arrow" aria-hidden="true">→</div>
 <div class="risk-map-step"><span>POTENTIALLY MITIGATED</span><strong id="risk-mitigated">Independent rules and identity restrictions</strong></div>
 </div>
+<section class="risk-sdlc-trace" aria-labelledby="risk-sdlc-title">
+ <span class="field-kicker">RISK PROPAGATION / SDLC</span>
+ <h3 id="risk-sdlc-title">Where does this failure enter the delivery lifecycle?</h3>
+ <p>Select a stage to see where the chosen risk is introduced, where it creates exposure, and which safeguards could interrupt it. Stages are taken from the shared seven-stage pipeline.</p>
+ <div class="risk-sdlc-legend" aria-label="Risk propagation legend"><span><i class="risk-legend-introduced"></i>Introduced</span><span><i class="risk-legend-exposed"></i>Exposed</span><span><i class="risk-legend-mitigated"></i>Potential safeguard</span></div>
+ <div id="risk-sdlc-trace"></div>
+ <p class="risk-sdlc-note">Illustrative associations, not observed failures or verified safeguards. A stage can contain multiple roles; an unmarked stage is not necessarily risk-free. The Overview uses eight visual touchpoints; this shared navigation groups them into seven.</p>
+</section>
 <div class="risk-selected-heading" aria-live="polite"><span class="field-kicker" id="risk-selected-id">RR-01 / ILLUSTRATIVE</span><h3 id="risk-selected-title">Unauthorized automated authorization</h3><p id="risk-selected-event">A contributor or administrator can influence the mechanism that authorizes their own change.</p></div>
 <div class="risk-detail-grid"><article><span>01 · BUSINESS CONSEQUENCE</span><h4>Why it matters</h4><p id="risk-why"></p></article>
 <article><span>02 · FAILURE PATH</span><h4>How it could happen</h4><p id="risk-failure"></p></article></div><div class="risk-treatment" id="risk-management-decision"><h3>Assess and decide</h3><p>Apply your organization's risk criteria; these examples do not determine likelihood, impact or acceptance.</p><p id="risk-treatment-question"></p></div><details class="risk-deeper"><summary>Explore safeguards, monitoring and assessment questions</summary><div class="risk-detail-grid"><article><span>03 · SAFEGUARDS</span><h4>What might prevent it</h4><p id="risk-safeguard"></p></article>
@@ -278,6 +316,7 @@ details.field-deep-dive>section{margin:0 14px 16px}
 
 </section>
 <footer class="field-note">Proposed qualitative risk method and fictional examples. No computed AI risk score, externally persisted inventory, management acceptance, automated production authorization, or control-effectiveness determination is provided.</footer></main><script src="./risk-governance-worksheet.js"></script><script src="./sdlc-risk-register.js"></script><script src="./risk-governance-ui.js"></script><script src="./risk-dashboard-tabs.js"></script><script src="./sdlc-risk-register-ui.js"></script><script src="./operating-model.js"></script><script src="./shared-pipeline-context.js?v=1"></script><script src="./shared-pipeline-nav.js?v=1"></script>
+<script src="./risk-sdlc-trace.js?v=1"></script>
 <script>
 (function(){'use strict';
 const R=window.SdlcRiskRegister,root=document.getElementById('risk-explorer');if(!R||!root)return;
@@ -290,6 +329,7 @@ const id=t=>document.getElementById(t);
 function show(key){const r=R.risks.find(x=>x.id===key),x=extras[key];if(!r||!x)return;
 root.querySelectorAll('[data-featured-risk]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.featuredRisk===key)));
 for(const [target,value] of Object.entries({'risk-introduced':x.source,'risk-exposed':x.exposure,'risk-mitigated':x.mitigation,'risk-selected-id':r.id+' / ILLUSTRATIVE','risk-selected-title':r.title,'risk-selected-event':r.event,'risk-why':x.why,'risk-failure':r.failure,'risk-safeguard':r.safeguard,'risk-decision':x.decision,'risk-monitor':x.monitor,'risk-assess':x.assess,'risk-treatment-question':'Open decision: '+r.question}))id(target).textContent=value;
+if(window.RiskSdlcTrace)window.RiskSdlcTrace.render(key);
 }
 root.querySelectorAll('[data-featured-risk]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.featuredRisk)));
 const requestedRisk=new URLSearchParams(window.location.search).get('risk');
