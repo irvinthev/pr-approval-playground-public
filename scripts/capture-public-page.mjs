@@ -98,6 +98,29 @@ async function runCase(label, path, viewportName, viewport, scenario) {
       }
       checks.push('Five stages, selected scenario, '+(layer||'default')+' detail and stage navigation');
     }
+    if (scenario === 'disclosure-deeplink') {
+      const targetId = new URL(page.url()).hash.slice(1);
+      const target = page.locator('#'+targetId);
+      check(await target.count() === 1, 'Deep-linked section missing: '+targetId);
+      const parent = target.locator('xpath=ancestor::details[contains(@class,"field-deep-dive")]');
+      check(await parent.count() === 1, 'Deep-linked section not in disclosure');
+      check(await parent.getAttribute('open') !== null, 'Deep link did not expand containing disclosure');
+      check(await target.isVisible(), 'Deep-linked section is not visible');
+      checks.push('Deep link automatically expands supporting content');
+    }
+    if (!scenario) {
+      const disclosures = page.locator('details.field-deep-dive:visible');
+      if (await disclosures.count()) {
+        const first = disclosures.first();
+        check(await first.getAttribute('open') === null, 'Supporting content should default collapsed');
+        await first.locator(':scope > summary').click();
+        check(await first.getAttribute('open') !== null, 'Disclosure did not open');
+        check((await first.innerText()).length > 100, 'Supporting content missing after expansion');
+        await first.locator(':scope > summary').click();
+        check(await first.getAttribute('open') === null, 'Disclosure did not close');
+        checks.push('Supporting material opens and closes without content loss');
+      }
+    }
     if (scenario === 'overview-authority-map') {
       const diagram = page.locator('#overview-authority-map');
       // The PNG is the default visual; expand the accessible architecture reference for this scenario.
@@ -275,6 +298,17 @@ try {
           'scenario-journey.html?scenario='+variant, viewportName, viewport,
           'scenario-journey:'+variant+':'+target+':'+layer);
       }
+    }
+    for (const [short, file, anchor] of [
+      ['overview','index.html','overview-map-unused'],
+      ['risk','ai-sdlc-risk.html','risk-assessment-guide'],
+      ['engineering','engineering-blueprint.html','required-ci-unused'],
+      ['monitoring','continuous-monitoring.html','challenge-title'],
+      ['assurance','independent-assurance.html','guidance-map']
+    ]) {
+      if (short === 'overview' || short === 'engineering') continue;
+      await runCase('disclosure-anchor-'+short+'-'+viewportName,
+        file+'#'+anchor, viewportName, viewport, 'disclosure-deeplink');
     }
     await runCase('risk-rr02-expanded-' + viewportName, 'ai-sdlc-risk.html', viewportName, viewport, 'risk-rr02');
     await runCase('assurance-evidence-expanded-' + viewportName, 'independent-assurance.html', viewportName, viewport, 'assurance-expanded');
