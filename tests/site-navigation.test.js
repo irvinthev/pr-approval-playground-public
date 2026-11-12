@@ -232,6 +232,9 @@ test('Homepage retains one interactive simulator with its four scenarios and sup
  assert.ok(at('Authorization routes')<at('id="stage-inspector"'));
  assert.ok(at('id="stage-inspector"')<at('id="trust-boundaries"'));
  assert.ok(at('id="trust-boundaries"')<at('id="field-guide-chapters"'));
+ assert.ok(at('id="field-guide-chapters"')<at('<details class="overview-reference-collapse">'));
+ assert.ok(at('<details class="overview-reference-collapse">')<at('Why this guide exists'));
+ assert.ok(at('id="main-content"')<at('id="workflow"'));
  assert.match(html,/class="overview-chapter-grid"/);
  assert.match(html,/id="overview-authority-map"/);
  assert.match(html,/class="overview-reference-collapse"/);
