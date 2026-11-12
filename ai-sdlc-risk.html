@@ -91,6 +91,23 @@ details.field-deep-dive>section{margin:0 14px 16px}
 .risk-category-number{font-size:11px;font-weight:800;letter-spacing:.08em;color:#a4edda}
 .risk-category-note{font-size:12px!important;color:#b2cad4!important;margin-bottom:0}
 @media(max-width:840px){.risk-category-grid{grid-template-columns:1fr}.risk-category-grid a{min-height:0}}
+</style><style>
+/* Risk flow: color communicates failure progression, not assessed severity or effectiveness. */
+.risk-map-step{position:relative;border-left-width:5px;min-height:108px}
+.risk-map-step:nth-child(1){background:#443523;border-color:#b9905b;border-left-color:#f2b86b}
+.risk-map-step:nth-child(3){background:#482b36;border-color:#b26775;border-left-color:#fa8c94}
+.risk-map-step:nth-child(5){background:#193b53;border-color:#4a8fb1;border-left-color:#82c7f5}
+.risk-map-step:nth-child(1)>span{color:#ffd395}
+.risk-map-step:nth-child(3)>span{color:#ffb5bc}
+.risk-map-step:nth-child(5)>span{color:#a6ddff}
+.risk-map-step strong{color:#fff8f3}
+.risk-map-arrow{color:#9cb9c8;font-weight:700}
+.risk-map-step:nth-child(5)::after{content:"Illustrative safeguard — effectiveness not assessed";display:block;font-size:11px;line-height:1.5;color:#c3dae8;margin-top:8px}
+.risk-featured-choices button:nth-child(1){border-left:4px solid #f2b86b}
+.risk-featured-choices button:nth-child(2){border-left:4px solid #b6a2f4}
+.risk-featured-choices button:nth-child(3){border-left:4px solid #82c7f5}
+.risk-featured-choices button[aria-pressed=true]{background:#234751;box-shadow:inset 0 0 0 1px #a4edda}
+@media(max-width:620px){.risk-map-step{min-height:0;padding:16px}.risk-map-arrow{font-size:23px;line-height:1.1;padding:2px 0}}
 </style></head>
 <body class="risk-dashboard"><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html">Overview</a><a href="./ai-sdlc-risk.html" aria-current="page">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Assurance</a></nav></header>
 <section class="risk-main-hero" id="main-content" tabindex="-1">
