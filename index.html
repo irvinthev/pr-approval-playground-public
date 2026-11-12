@@ -218,32 +218,56 @@ details.field-deep-dive>section{margin:0 14px 16px}
 
 @media(max-width:600px){.overview-chapter-grid{grid-template-columns:1fr}.overview-chapter-grid a{min-height:105px}}
 
+
+/* Figma-aligned Overview hierarchy: presentation only; simulator logic unchanged. */
+.overview .overview-welcome{max-width:1080px;padding-top:24px!important}
+.overview .overview-welcome h1{max-width:1060px;font-size:clamp(34px,4.5vw,57px);line-height:1.09;letter-spacing:-.035em}
+.overview .overview-welcome .lead{max-width:950px;font-size:clamp(16px,1.65vw,19px)}
+.overview .overview-welcome-scope{max-width:850px;font-size:13px;color:var(--site-muted)}
+.overview .overview-hero-actions{display:flex;align-items:center;flex-wrap:wrap;gap:12px 18px;margin:20px 0}
+.overview .overview-hero-actions a{min-height:44px;display:inline-flex;align-items:center;text-decoration:none}
+.overview .overview-quiet-link{border:1px solid var(--site-border);padding:10px 16px;border-radius:9px;font-size:14px;font-weight:750}
+.overview .overview-question-map{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:10px 0 28px}
+.overview .overview-question-map>div{background:#102738;border:1px solid #36566b;border-radius:12px;padding:18px;min-width:0}
+.overview .overview-question-map span{display:block;font-size:11px;letter-spacing:.09em;color:var(--site-mint);font-weight:800;margin-bottom:10px}
+.overview .overview-question-map strong{font-size:18px;line-height:1.3}
+.overview .overview-question-map p{color:var(--site-muted);font-size:13px;line-height:1.6;margin:9px 0 0}
+.overview .workflow-map{padding:clamp(16px,2.3vw,28px);border-radius:14px;margin:0 0 28px}
+.overview .workflow-map .section-heading{font-size:clamp(23px,2.8vw,30px)}
+.overview .overview-stage-label{margin:14px 0 10px;font-size:11px;letter-spacing:.09em;font-weight:800;color:var(--site-mint)}
+.overview .workflow-stages{margin-bottom:20px}
+.overview .workflow-stage{min-height:125px}
+.overview .scenario-inline{margin:14px 0 18px;border-top:1px solid var(--site-border);padding-top:23px}
+.overview .scenario-inline h3{font-size:23px;line-height:1.3;margin:8px 0}
+.overview .scenario-inline-intro{font-size:13px;color:var(--site-muted)}
+.overview .scenario-picker button{min-height:83px;padding:15px;line-height:1.5}
+.overview .scenario-inline-outcome{margin-bottom:18px}
+.overview .stage-inspector-toggle,.overview .boundary-details{scroll-margin-top:16px}
+.overview .lens-section{margin-top:30px}
+@media(max-width:800px){.overview .overview-question-map{grid-template-columns:1fr}.overview .overview-question-map>div{padding:15px}.overview .overview-question-map strong{font-size:16px}}
+@media(max-width:580px){.overview .overview-hero-actions{flex-direction:column;align-items:stretch}.overview .overview-hero-actions a{justify-content:center;text-align:center;width:100%}.overview .overview-welcome h1{font-size:clamp(31px,8.2vw,39px)}.overview .workflow-map{padding:15px}.overview .scenario-picker button{min-height:70px}.overview .overview-question-map{gap:8px;margin-bottom:20px}}
+
 </style></head>
 <body class="overview"><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a><a class="site-experiments" href="./playground.html">Advanced experiments ↗</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html" aria-current="page">Overview</a><a href="./ai-sdlc-risk.html">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Assurance</a></nav></header>
 
 <section class="hero overview-welcome" id="main-content" tabindex="-1">
 <span class="eyebrow">AI-ENABLED SDLC / FIELD GUIDE</span>
-<h1>When AI reviews code, who actually approves it?</h1>
-<p class="lead">A practical guide to how AI participates in software delivery, where approval authority belongs, what safeguards enforce it, and what evidence supports assurance.</p>
+<h1>When AI reviews code, who authorizes the change?</h1>
+<p class="lead">Follow a software change. Find where AI has authority, what independently enforces its limits, and what evidence would justify reliance.</p>
 <p class="overview-welcome-scope">Follow one illustrative change from pull request to production. The examples are fictional; they explain design and testing decisions, not an implemented approval system.</p>
-<p class="overview-simulator-entry"><a class="guide-action" href="#workflow">Explore the interactive delivery simulator →</a></p>
+<div class="overview-hero-actions"><a class="guide-action" href="#workflow">Investigate a change →</a><a class="overview-quiet-link" href="./engineering-blueprint.html">Explore the safeguards →</a></div>
+</section>
+<section class="overview-question-map" aria-label="Three questions for every AI-assisted change">
+  <div><span>01 / AUTHORITY</span><strong>Who may authorize?</strong><p>Define where an AI recommendation ends and an approved decision begins.</p></div>
+  <div><span>02 / ENFORCEMENT</span><strong>What prevents bypass?</strong><p>Verify independent gates, required checks, and restricted privileges.</p></div>
+  <div><span>03 / EVIDENCE</span><strong>What demonstrates it worked?</strong><p>Connect approval, policy, and release records to the same revision.</p></div>
 </section>
 <section class="workflow-map" id="workflow" aria-labelledby="workflow-title">
-<div class="section-kicker">01 / INTERACTIVE DELIVERY SIMULATOR</div>
-<h2 class="section-heading" id="workflow-title">Explore the four delivery outcomes</h2>
-<p class="section-intro">Choose one of four fictional change outcomes, then inspect the relevant stage, authorization route and supporting evidence. This interactive simulator uses eight detailed touchpoints; the other chapters group the lifecycle into seven stages.</p>
-<div class="scenario-inline" id="scenario-lab" aria-labelledby="scenario-title">
-<div class="section-kicker">TRY A SCENARIO</div>
-<h3 id="scenario-title">Choose a change to follow</h3>
-<p class="scenario-inline-intro">Choose a fictional scenario or explore the baseline workflow.</p>
-<div class="scenario-picker" role="group" aria-label="Simulation scenarios">
-<button type="button" data-scenario="pass" aria-pressed="false">✅ Standard low-risk pass</button>
-<button type="button" data-scenario="split" aria-pressed="false">🔀 AI split decision</button>
-<button type="button" data-scenario="excluded" aria-pressed="false">🛑 Hard-gate exclusion</button>
-<button type="button" data-scenario="canary" aria-pressed="false">💥 Production canary failure</button>
-</div>
-</div>
+<div class="section-kicker">01 / FOLLOW A CHANGE</div>
+<h2 class="section-heading" id="workflow-title">Where does a recommendation become authority?</h2>
+<p class="section-intro">Follow the change through eight detailed touchpoints. Select any stage to inspect the safeguards and evidence; then test one of four fictional outcomes. Other chapters group the lifecycle into seven stages.</p>
 <div class="overview-mode-line"><span id="workflow-mode" class="overview-mode">Explore mode · No scenario selected</span><button id="clear-scenario" type="button" hidden>Return to Explore mode</button></div>
+<p class="overview-stage-label">SELECT A STAGE TO INSPECT THE ENFORCEMENT BOUNDARY</p>
 <div class="workflow-stages" id="workflow-stages" aria-label="Eight workflow stages">
 <button class="workflow-stage" type="button" data-stage="0" aria-pressed="true"><span class="stage-number">01 · ENTRY</span><strong>Pull request</strong><p>Identify the change and exact commit.</p><span class="stage-state">Explore stage</span></button>
 <button class="workflow-stage" type="button" data-stage="1" aria-pressed="false"><span class="stage-number">02 · RULES</span><strong>Deterministic gates</strong><p>Check eligibility, paths, dependencies, and exclusions.</p><span class="stage-state">Explore stage</span></button>
@@ -253,6 +277,17 @@ details.field-deep-dive>section{margin:0 14px 16px}
 <button class="workflow-stage" type="button" data-stage="5" aria-pressed="false"><span class="stage-number">06 · ENFORCEMENT</span><strong>GitHub merge</strong><p>Enforce required checks and valid authorization.</p><span class="stage-state">Explore stage</span></button>
 <button class="workflow-stage" type="button" data-stage="6" aria-pressed="false"><span class="stage-number">07 · DELIVERY</span><strong>Build &amp; deploy</strong><p>Bind released artifact to the authorized revision.</p><span class="stage-state">Explore stage</span></button>
 <button class="workflow-stage" type="button" data-stage="7" aria-pressed="false"><span class="stage-number">08 · OPERATIONS</span><strong>Monitor &amp; respond</strong><p>Observe health, exceptions, and rollback triggers.</p><span class="stage-state">Explore stage</span></button>
+</div>
+<div class="scenario-inline" id="scenario-lab" aria-labelledby="scenario-title">
+<div class="section-kicker">02 / RUN THE INVESTIGATION</div>
+<h3 id="scenario-title">Select what happens to the change</h3>
+<p class="scenario-inline-intro">Each selection runs the existing illustrative scenario logic. No selection means neutral Explore mode.</p>
+<div class="scenario-picker" role="group" aria-label="Simulation scenarios">
+<button type="button" data-scenario="pass" aria-pressed="false">✅ Standard low-risk pass</button>
+<button type="button" data-scenario="split" aria-pressed="false">🔀 AI split decision</button>
+<button type="button" data-scenario="excluded" aria-pressed="false">🛑 Hard-gate exclusion</button>
+<button type="button" data-scenario="canary" aria-pressed="false">💥 Production canary failure</button>
+</div>
 </div>
 <div class="scenario-inline-outcome" id="scenario-output" hidden aria-live="polite">
 <h3 class="scenario-outcome-heading">What happened in this scenario?</h3>
@@ -305,7 +340,7 @@ details.field-deep-dive>section{margin:0 14px 16px}
 </section>
 <section class="lens-section overview-chapter-gateway" id="field-guide-chapters" aria-labelledby="lenses-title">
 <span class="section-kicker">02 / EXPLORE THE FIELD GUIDE</span>
-<h2 id="lenses-title">Four perspectives on the same delivery process</h2>
+<h2 id="lenses-title">Continue with the deeper field guide</h2>
 <p>Continue from the simulator into the perspective most relevant to your question.</p>
 <nav class="overview-chapter-grid" aria-label="Explore the field guide perspectives">
 <a href="./ai-sdlc-risk.html"><strong>Risk Assessment</strong><span>Where could automated delivery fail?</span><small>Explore failure paths →</small></a>
