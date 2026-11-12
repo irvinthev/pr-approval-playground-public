@@ -197,27 +197,69 @@ details.field-deep-dive .field-deep-dive-chevron{flex-shrink:0;font-size:19px;co
 details.field-deep-dive[open] .field-deep-dive-chevron{transform:rotate(180deg)}
 details.field-deep-dive>section{margin:0 14px 16px}
 @media(max-width:600px){details.field-deep-dive>summary{padding:13px 14px}details.field-deep-dive>section{margin:0 10px 12px}}
-</style><link rel="stylesheet" href="./page-orientation.css?v=1"></head>
+</style><link rel="stylesheet" href="./page-orientation.css?v=1"><style>
+.overview-welcome{padding-top:30px!important;padding-bottom:16px!important}
+.overview .overview-welcome h1{max-width:960px;font-size:clamp(31px,4.3vw,52px)}
+.overview .overview-welcome .lead{max-width:940px;font-size:clamp(16px,1.6vw,19px);line-height:1.55}
+.overview-welcome-scope{max-width:900px;color:var(--site-muted);font-size:13px;line-height:1.65;margin:12px 0 0}
+.overview-simple-journey,.overview-chapter-gateway{margin:20px 0 24px}
+.overview-simple-journey{padding:clamp(17px,2.2vw,26px);border:1px solid var(--site-border);border-radius:13px;background:#122c3b}
+.overview-simple-journey h2,.overview-chapter-gateway h2{font-size:clamp(22px,2.7vw,30px);line-height:1.25;margin:8px 0}
+.overview-simple-journey>p,.overview-chapter-gateway>p{font-size:14px;line-height:1.65;color:var(--site-muted);max-width:850px;margin:6px 0 18px}
+.overview-simple-stages{list-style:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:0;margin:15px 0 0}
+.overview-simple-stages li{min-width:0;padding:16px 14px;min-height:150px;border:1px solid #527487;border-radius:9px;background:#19384a}
+.overview-simple-stages li>span{display:block;font-size:12px;font-weight:800;letter-spacing:.08em;color:#a4edda;margin-bottom:10px}
+.overview-simple-stages li>strong{display:block;font-size:15px;line-height:1.35;color:var(--site-text)}
+.overview-simple-stages li>p{font-size:13px;line-height:1.5;color:var(--site-muted);margin:7px 0 0}
+.overview-simple-journey .overview-simple-note{font-size:11px;margin:13px 0 0}
+.overview-chapter-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.overview-chapter-grid a{display:flex;flex-direction:column;gap:7px;min-height:134px;padding:18px;border:1px solid #527487;border-radius:10px;background:#173449;color:var(--site-text);text-decoration:none}
+.overview-chapter-grid a:hover,.overview-chapter-grid a:focus-visible{background:#254d61;border-color:#a4edda}
+.overview-chapter-grid a strong{font-size:17px;line-height:1.35}
+.overview-chapter-grid a span{font-size:13px;line-height:1.5;color:var(--site-muted)}
+.overview-chapter-grid a small{margin-top:auto;color:#a4edda;font-size:12px;font-weight:800}
+.overview-reference-collapse{margin:16px 0 22px;border:1px solid var(--site-border);border-radius:10px}
+.overview-reference-collapse>summary{cursor:pointer;padding:15px 17px;color:var(--site-text);font-size:13px;font-weight:750}
+.overview-reference-collapse>.authority-map{margin:0 12px 13px}
+@media(max-width:860px){.overview-simple-stages{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.overview-simple-stages{gap:8px}.overview-simple-stages li{min-height:146px;padding:12px}.overview-simple-stages li>strong{font-size:14px}.overview-simple-stages li>p{font-size:12px}.overview-chapter-grid{grid-template-columns:1fr}.overview-chapter-grid a{min-height:105px}}
+@media(max-width:380px){.overview-simple-stages{grid-template-columns:1fr}.overview-simple-stages li{min-height:0}}
+</style></head>
 <body class="overview"><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a><a class="site-experiments" href="./playground.html">Advanced experiments ↗</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html" aria-current="page">Overview</a><a href="./ai-sdlc-risk.html">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Assurance</a></nav></header>
 
-<section class="hero" id="main-content" tabindex="-1">
-<span class="eyebrow">ENGINEERING · SECURITY · RISK · ASSURANCE</span>
-<h1>How should AI participate in software delivery?</h1>
-<p class="lead">AI can review code. But who authorizes a change, what enforces that decision, and what evidence proves it?</p>
-
-<div class="hero-actions"><a class="guide-action" href="#field-guide-chapters">Explore the five pages →</a><a class="secondary-action" href="./ai-sdlc-risk.html?risk=RR-02&amp;stage=1#risk-sdlc-trace">Trace a risk through the SDLC →</a><a class="secondary-action" href="./engineering-blueprint.html">Engineering &amp; safeguards →</a></div>
+<section class="hero overview-welcome" id="main-content" tabindex="-1">
+<span class="eyebrow">AI-ENABLED SDLC / FIELD GUIDE</span>
+<h1>When AI reviews code, who actually approves it?</h1>
+<p class="lead">A practical guide to how AI participates in software delivery, where approval authority belongs, what safeguards enforce it, and what evidence supports assurance.</p>
+<p class="overview-welcome-scope">Follow one illustrative change from pull request to production. The examples are fictional; they explain design and testing decisions, not an implemented approval system.</p>
 </section>
-<section class="guide-orientation guide-orientation-overview" id="field-guide-chapters" aria-label="Field guide purpose and chapters">
-  <p>This field guide examines how AI can participate in software delivery, using a fictional code-to-production workflow and concepts from secure SDLC practice and the NIST AI Risk Management Framework. It is an illustrative guide, not an exhaustive methodology or an assessment of an operating system. The five pages move from understanding the delivery path to risk, engineering safeguards, operational monitoring, and independent assurance.</p>
-  <nav aria-label="Explore the five field guide pages"><a href="./index.html#overview-authority-map">Overview</a><a href="./ai-sdlc-risk.html#risk-categories">Risk Assessment</a><a href="./engineering-blueprint.html#engineering-build-plan">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html#monitoring-guide">Monitoring &amp; Operations</a><a href="./independent-assurance.html#assurance-control-explorer">Assurance</a></nav>
+<section class="overview-simple-journey" id="overview-stages" aria-labelledby="overview-stages-title">
+<span class="section-kicker">01 / THE DELIVERY LIFECYCLE</span>
+<h2 id="overview-stages-title">Seven stages from code to production</h2>
+<p>AI review is one step, not approval authority. The same seven-stage model guides Risk, Engineering, Monitoring, and Assurance.</p>
+<ol class="overview-simple-stages">
+<li><span>01</span><strong>Pull request</strong><p>A developer proposes a change and identifies the exact revision.</p></li>
+<li><span>02</span><strong>Eligibility &amp; CI</strong><p>Rules and required checks determine what qualifies for AI evaluation.</p></li>
+<li><span>03</span><strong>AI reviews</strong><p>AI assesses quality and risk; uncertainty routes to humans.</p></li>
+<li><span>04</span><strong>Authorization</strong><p>Policy determines the permitted human or automated approval route.</p></li>
+<li><span>05</span><strong>Merge &amp; build</strong><p>Protected merge and trusted builds enforce the current decision.</p></li>
+<li><span>06</span><strong>Pre-production</strong><p>Release conditions and artifact identity are checked before promotion.</p></li>
+<li><span>07</span><strong>Production rollout</strong><p>Deploy, monitor actual changes, and respond to exceptions.</p></li>
+</ol>
+<p class="overview-simple-note">A stage is a conceptual responsibility, not a mandated tool sequence. Checks can run concurrently.</p>
 </section>
-
-
-<figure class="overview-png-anchor" id="overview-png-anchor" hidden aria-labelledby="overview-png-caption">
-  <img id="overview-png-image" alt="Illustrative CI/CD diagram. A pull request passes deterministic eligibility checks. Excluded changes require authorized human review; eligible changes receive two AI risk assessments. High risk, disagreement, or uncertainty also requires human review. Only eligible low-risk changes meeting independent policy conditions may use an automated route. Both routes converge on protected merge and deployment. Beneath the workflow, agent configuration and tools are distinguished from externally managed foundation models." width="1752" height="897" decoding="async">
-  <figcaption id="overview-png-caption"><strong>AI assessment is not approval authority.</strong> A model's favorable result alone cannot authorize an automated merge. <a href="./engineering-blueprint.html#rr02-negative-test">Test the boundary</a> · <a href="./ai-sdlc-risk.html?risk=RR-02#risk-explorer">Examine the failure risk</a></figcaption>
-</figure>
-<section class="authority-map" id="overview-authority-map" aria-labelledby="authority-map-title">
+<section class="lens-section overview-chapter-gateway" id="field-guide-chapters" aria-labelledby="lenses-title">
+<span class="section-kicker">02 / HOW TO USE THE GUIDE</span>
+<h2 id="lenses-title">Four perspectives on the same delivery process</h2>
+<p>Start with the question you need to answer. Each chapter has its own stage-specific investigation.</p>
+<nav class="overview-chapter-grid" aria-label="Explore the field guide perspectives">
+<a href="./ai-sdlc-risk.html"><strong>Risk Assessment</strong><span>Where could automated delivery fail?</span><small>Explore failure paths →</small></a>
+<a href="./engineering-blueprint.html"><strong>Engineering &amp; Safeguards</strong><span>What must we build and enforce?</span><small>Explore implementation →</small></a>
+<a href="./continuous-monitoring.html"><strong>Monitoring &amp; Operations</strong><span>How do we detect and respond to problems?</span><small>Explore monitoring →</small></a>
+<a href="./independent-assurance.html"><strong>Assurance</strong><span>How would we independently test the safeguards?</span><small>Explore assurance →</small></a>
+</nav>
+</section>
+<details class="overview-reference-collapse"><summary>Advanced reference: authority boundaries and agent/model dependencies</summary><section class="authority-map" id="overview-authority-map" aria-labelledby="authority-map-title">
   <div class="authority-map-heading">
     <span class="section-kicker">ARCHITECTURE / AUTHORITY AT A GLANCE</span>
     <h2 id="authority-map-title">One change. Several decision boundaries.</h2>
@@ -257,7 +299,7 @@ details.field-deep-dive>section{margin:0 14px 16px}
     <p><strong>Where authority lives:</strong> Eligibility and protected merge restrictions must be independently enforced; the AI layer supplies assessments, not authority. An incomplete policy inventory can still produce an incorrect deterministic outcome.</p>
     <div class="authority-map-links"><a href="./engineering-blueprint.html#rr02-negative-test">Challenge a missed dependency →</a><a href="./ai-sdlc-risk.html?risk=RR-02#risk-explorer">Explore the related risk →</a></div>
   </div>
-</section>
+</section></details>
 <details class="field-deep-dive"><summary><span><span class="field-deep-dive-label">Why this guide exists</span><span class="field-deep-dive-hint">Purpose and context</span></span><span class="field-deep-dive-chevron" aria-hidden="true">⌄</span></summary><section class="overview-method" aria-label="Why this field guide exists and how to use it">
 <p><strong>Why this guide exists:</strong> AI-assisted development is increasingly familiar; delegating change-approval authority is a separate decision. Traditional SDLC safeguards remain essential, but AI-generated risk judgments introduce questions about scope, failure modes, and evidence.</p>
 <p><strong>Use it to align three conversations:</strong> <strong>Engineering and leadership</strong> decide where AI may act; <strong>Engineering and Risk</strong> challenge eligibility, enforcement, and operational safeguards; <strong>management and auditors</strong> distinguish what management can demonstrate from what an auditor must independently evaluate.</p>
@@ -342,15 +384,7 @@ details.field-deep-dive>section{margin:0 14px 16px}
 <p class="section-intro">AI reviewers are only one part of the workflow. Explore how existing CI/CD safeguards, deterministic policy, independent authorization, and deployment enforcement could work together in this fictional design.</p>
 <p><a class="guide-action" href="./engineering-blueprint.html#engineering-build-plan">Explore the engineering implementation →</a></p>
 </section></details>
-<section class="lens-section" aria-labelledby="lenses-title">
-<div class="section-kicker">04 / Explore the field guide</div><h2 class="section-heading" id="lenses-title">Explore implementation, operations, risk, and assurance</h2>
-<p class="section-intro">One delivery system, four perspectives. Start where your question leads.</p>
-<div class="lens-grid">
-<a class="lens-card" href="./engineering-blueprint.html"><strong>Engineering &amp; Operations</strong><p>How do we implement, validate, enforce, and operate this workflow?</p><span>Open implementation guide →</span></a>
-<a class="lens-card" href="./ai-sdlc-risk.html"><strong>Security &amp; Risk</strong><p>Where could policy, model behavior, privileges, or deployment pathways fail?</p><span>Challenge safeguards →</span></a>
-<a class="lens-card" href="./independent-assurance.html"><strong>Internal &amp; External Audit</strong><p>What evidence and negative tests would support—or limit—reliance?</p><span>Evaluate assurance →</span></a>
-<a class="lens-card" href="./rcm-view.html"><strong>GRC &amp; Control Owners</strong><p>Who owns rules, exemptions, monitoring, evidence, and change governance?</p><span>Examine control objectives →</span></a>
-</div></section>
+
 <details id="foundations" class="overview-references">
 <summary>Framework references and control objectives</summary>
 <div class="reference-links">
@@ -510,28 +544,6 @@ render();
 })();
 </script>
 </main><script src="./guided-investigation.js"></script><script>
-/* Progressive enhancement: until the PNG has been uploaded, use the existing responsive HTML architecture map. */
-(function(){
-  const image=document.getElementById('overview-png-image');
-  const figure=document.getElementById('overview-png-anchor');
-  const map=document.getElementById('overview-authority-map');
-  if(!image||!figure||!map)return;
-  image.addEventListener('load',()=>{
-    if(!image.naturalWidth)return;
-    figure.hidden=false;
-    if(!map.parentElement.matches('details.overview-map-details')){
-      const details=document.createElement('details');
-      details.className='overview-map-details';
-      const summary=document.createElement('summary');
-      summary.textContent='Explore the architecture in accessible text and links';
-      details.append(summary);
-      map.before(details);
-      details.append(map);
-    }
-  });
-  image.src='./ai-cicd-overview.PNG';
-})();
-</script><script>
 /* Expand collapsed source material when a linked subsection is the destination. */
 (function(){
 function reveal(){
@@ -540,8 +552,8 @@ function reveal(){
   var id;try{id=decodeURIComponent(hash.slice(1))}catch(_){return}
   var target=document.getElementById(id);
   if(!target)return;
-  var parent=target.closest('details.field-deep-dive');
-  if(parent&&!parent.open)parent.open=true;
+  var parent=target.closest('details');
+  while(parent){if(!parent.open)parent.open=true;parent=parent.parentElement&&parent.parentElement.closest('details');}
 }
 window.addEventListener('hashchange',reveal);
 reveal();

@@ -134,8 +134,9 @@ async function runCase(label, path, viewportName, viewport, scenario) {
     }
     if (scenario === 'overview-authority-map') {
       const diagram = page.locator('#overview-authority-map');
-      // The PNG is the default visual; expand the accessible architecture reference for this scenario.
-      const disclosure = page.locator('details.overview-map-details');
+      // The detailed architecture now lives in Engineering; keep the Overview's
+      // text-based authority reference available as an explicit advanced disclosure.
+      const disclosure = page.locator('details.overview-reference-collapse');
       if (await disclosure.count()) await disclosure.locator('summary').click();
       check(await diagram.isVisible(), 'Overview architecture diagram missing');
       check(await diagram.locator('.authority-map-routes .authority-map-route').count() === 2, 'Two approval routes required');
