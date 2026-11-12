@@ -2,13 +2,17 @@ const test=require('node:test'),assert=require('node:assert/strict'),fs=require(
 const read=file=>fs.readFileSync(path.join(__dirname,'..',file),'utf8');
 const model=require('../shared-pipeline-context.js');
 test('three perspectives mount one read-only seven-stage journey',()=>{
- for(const [file,lens] of [['engineering-blueprint.html','engineering'],['continuous-monitoring.html','monitoring'],['independent-assurance.html','assurance']]){
+ for(const [file,lens] of [['continuous-monitoring.html','monitoring'],['independent-assurance.html','assurance']]){
   const html=read(file);
   assert.match(html,new RegExp('id="stage-journey"[^>]+data-perspective="'+lens+'"'),file);
   assert.match(html,/src="\.\/stage-journey\.js\?v=1"/,file);
   assert.match(html,/href="\.\/stage-journey\.css\?v=1"/,file);
   assert.ok(html.indexOf('id="stage-journey"')<html.indexOf(lens==='engineering'?'id="technical-requirements"':lens==='monitoring'?'id="monitoring-guide"':'id="prelaunch-validation"'),file);
  }
+ const engineering=read('engineering-blueprint.html');
+ assert.match(engineering,/id="technical-requirements"/);
+ assert.match(engineering,/id="stage-journey" hidden/);
+ assert.doesNotMatch(engineering,/src="\\.\\/stage-journey\\.js/);
 });
 test('journey links use actual existing destinations and preserve zero-based stage IDs',()=>{
  const js=read('stage-journey.js');
