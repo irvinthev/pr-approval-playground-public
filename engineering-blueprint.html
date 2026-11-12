@@ -264,12 +264,32 @@ details.field-deep-dive>section{margin:0 14px 16px}
  #technical-requirements .stage-monitor-link{display:inline-flex;margin-top:4px}
  #technical-requirements>.stages{padding-right:35px}
 }
-</style><link rel="stylesheet" href="./page-orientation.css?v=1"><link rel="stylesheet" href="./risk-stage-context.css?v=1"></head><body><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a><a class="site-experiments" href="./playground.html">Advanced experiments ↗</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html">Overview</a><a href="./ai-sdlc-risk.html">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html" aria-current="page">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Assurance</a></nav></header><section class="hero" id="main-content" tabindex="-1"><span class="eyebrow">ENGINEERING &amp; SAFEGUARDS</span><h1>How would we actually build this?</h1><p>Reuse delivery controls. Integrate AI reviewers. Enforce authorization separately.</p></section>
+</style><link rel="stylesheet" href="./page-orientation.css?v=1"><link rel="stylesheet" href="./risk-stage-context.css?v=1"><style>
+.engineering-architecture-reference{margin:16px 0 20px;border:1px solid #537b8c;border-radius:12px;background:#112f40}
+.engineering-architecture-reference>summary{cursor:pointer;list-style:none;padding:15px 18px;font-size:14px;font-weight:750;color:#e5f6f2;min-height:50px}
+.engineering-architecture-reference>summary::-webkit-details-marker{display:none}
+.engineering-architecture-reference>summary:focus-visible,.engineering-architecture-figure a:focus-visible{outline:3px solid #a4edda;outline-offset:2px}
+.engineering-architecture-figure{padding:0 14px 16px}
+.engineering-architecture-figure>p{font-size:13px;line-height:1.6;color:#c5d9e0}
+.engineering-architecture-figure img{display:block;width:100%;height:auto;border-radius:9px;border:1px solid #688d9b;background:white}
+.engineering-architecture-figure a{display:block}
+.engineering-architecture-figure .engineering-architecture-caption{font-size:12px}
+</style></head><body><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a><a class="site-experiments" href="./playground.html">Advanced experiments ↗</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html">Overview</a><a href="./ai-sdlc-risk.html">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html" aria-current="page">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Assurance</a></nav></header><section class="hero" id="main-content" tabindex="-1"><span class="eyebrow">ENGINEERING &amp; SAFEGUARDS</span><h1>How would we actually build this?</h1><p>Reuse delivery controls. Integrate AI reviewers. Enforce authorization separately.</p></section>
 <section class="guide-orientation" aria-label="Engineering approach">
   <p>This page translates AI-enabled SDLC risks and authorization requirements into an illustrative engineering approach, drawing on secure development and change-management principles, including NIST SSDF. It shows how existing delivery controls, AI reviewers, independent authorization, and release safeguards could work together. This is not a prescribed or verified architecture. <strong>Explore the architecture and stages below</strong> to examine implementation requirements and challenge tests.</p>
 </section>
 
-<nav class="engineering-quick-nav" aria-label="Engineering page shortcuts"><span>JUMP TO</span><a href="#technical-requirements">Implementation details</a><a href="#rr02-negative-test">Run negative test</a><a href="#supporting-resources">Technical reference</a></nav>
+<details class="engineering-architecture-reference" id="engineering-architecture-reference">
+ <summary>Detailed system architecture: AI review, authorization and trust boundaries <span aria-hidden="true">▾</span></summary>
+ <div class="engineering-architecture-figure">
+  <p>Technical reference: deterministic eligibility routes excluded changes to authorized human review. Two AI assessments inform eligibility but do not grant approval authority. Human and permitted automated approval paths converge at protected merge and controlled delivery.</p>
+  <a href="./ai-cicd-overview.PNG" target="_blank" rel="noopener noreferrer" aria-label="Open detailed AI-enabled CI/CD architecture at full size">
+   <img src="./ai-cicd-overview.PNG" alt="Detailed illustrative AI-enabled CI/CD architecture: pull request, deterministic eligibility, separate human and AI-assisted routes, independent approval authorization, protected merge, and build and deployment. The lower panel distinguishes internally governed agent configuration and externally managed foundation models." width="1752" height="897" loading="lazy" decoding="async">
+  </a>
+  <p class="engineering-architecture-caption">Open the image at full size for detailed labels. The architecture is illustrative, not a verified implementation. Continue to implementation details below for enforcement and acceptance tests.</p>
+ </div>
+</details>
+<nav class="engineering-quick-nav" aria-label="Engineering page shortcuts"><span>JUMP TO</span><a href="#engineering-architecture-reference">Architecture</a><a href="#technical-requirements">Implementation details</a><a href="#rr02-negative-test">Run negative test</a><a href="#supporting-resources">Technical reference</a></nav>
 
 
 
