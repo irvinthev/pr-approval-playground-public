@@ -34,13 +34,14 @@
    const detail=el('details');detail.append(el('summary','Exercise this monitor'),el('p',signal.exercise),el('p','Expected response: '+signal.expected));card.append(detail);
    const refs=el('div',null,'test-refs');refs.append(...signal.refs.map(source));card.append(refs);return card;
   }));
-  $('monitor-blueprint-link').href='./engineering-blueprint.html?stage='+active+'#technical-requirements';
+  const selectedRisk=new URLSearchParams(location.search).get('risk');
+  $('monitor-blueprint-link').href='./engineering-blueprint.html?'+(selectedRisk&&/^RR-(01|02|04)$/.test(selectedRisk)?'risk='+encodeURIComponent(selectedRisk)+'&':'')+'stage='+active+'#risk-stage-context';
   $('pipeline-link').href='./experience.html?stage='+active+'#pipeline-section';$('assurance-link').href='./independent-assurance.html?stage='+active+'#testing-guide';
   $('control-links').replaceChildren(...stage.controls.map(id=>{const a=el('a',id+' · View control →');a.href='./control-matrix.html#control-'+id;return a;}));
   [...$('stage-pickers').children].forEach((b,i)=>b.setAttribute('aria-pressed',String(i===active)));
   $('monitoring-stage-status').textContent='Showing monitoring for stage '+(active+1)+': '+stage.title;if(window.SharedCaseUI)window.SharedCaseUI.refreshLinks();
  }
- data.stages.forEach((stage,i)=>{const b=el('button');b.type='button';b.append(el('span',String(i+1).padStart(2,'0')),document.createTextNode(stage.title));b.addEventListener('click',()=>{active=i;render();const url=new URL(location.href);url.search='';url.searchParams.set('stage',String(i));if(!url.hash.startsWith('#case='))url.hash='monitoring-guide';history.replaceState(null,'',url);$('stage-title').focus({preventScroll:true});$('monitoring-guide').scrollIntoView({behavior:'auto',block:'start'});});$('stage-pickers').append(b);});
+ // The shared navigator owns stage selection; no second stage button strip is rendered.
  // Presentation integration: switch the existing monitoring detail without scrolling.
  root.MonitoringStageView={select(i){if(!Number.isInteger(i)||i<0||i>=data.stages.length)return false;active=i;render();return true;}};
  const status=el('p',null,'stage-status');status.id='monitoring-stage-status';status.setAttribute('role','status');$('stage-pickers').after(status);render();
