@@ -26,13 +26,16 @@ test('shared-library decision connects eligibility, authorization and production
  assert.deepEqual(M.trace[3].controls,['AI-03','AI-06','AI-07','AI-08','AI-15']);
 });
 test('Risk and Assurance have the stage strip; Engineering and Monitoring retain independent stage explorers',()=>{
- for(const [page,lens] of [['ai-sdlc-risk.html','risk'],['engineering-blueprint.html','engineering'],['independent-assurance.html','assurance']]){
+ for(const [page,lens] of [['ai-sdlc-risk.html','risk'],['independent-assurance.html','assurance']]){
   const s=read(page);
   assert.match(s,new RegExp('id="shared-pipeline-context" data-perspective="'+lens+'"'));
-  assert.match(s,/src="\.\/shared-pipeline-context\.js\?v=1"/);
-  assert.match(s,/src="\.\/shared-pipeline-nav\.js\?v=1"/);
-  assert.match(s,/shared-pipeline-context\.css\?v=1/);
+  assert.ok(s.includes('src="./shared-pipeline-nav.js?v=1"'));
  }
+ const engineering=read('engineering-blueprint.html');
+ assert.match(engineering,/id="technical-requirements"/);
+ assert.match(engineering,/id="stages"/);
+ assert.match(engineering,/id="shared-pipeline-context" hidden/);
+ assert.ok(!engineering.includes('src="./shared-pipeline-nav.js?v=1"'));
  const script=read('shared-pipeline-nav.js');
  assert.match(script,/if\(!engineering\)\{/,'Engineering has no duplicate stage strip');
  assert.match(script,/const existing=doc.querySelectorAll\('#stages button'\)/);

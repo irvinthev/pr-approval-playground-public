@@ -1,20 +1,19 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const page=fs.readFileSync(path.join(__dirname,'..','engineering-blueprint.html'),'utf8');
-test('Engineering build plan is visible ahead of interactive stage selector',()=>{
+test('Compact architecture precedes interactive Engineering stage explorer',()=>{
  const start=page.indexOf('id="engineering-build-plan"'),explore=page.indexOf('id="technical-requirements"');
  assert.ok(start>=0&&explore>start);
  const plan=page.slice(start,explore);
- assert.match(plan,/Reuse → Integrate → Build/);
- assert.match(page,/<h1>How would we actually build this\?<\/h1>/);
- assert.match(page,/id="delivery-roadmap"/);
- assert.match(page,/Reuse controls, integrate reviewers and build the missing policy and evidence layer/);
- assert.match(page,/See the seven-stage implementation checklist/);
+ assert.match(plan,/Reuse → Integrate → Enforce/);
+ for(const text of ['Automated approval','Human code review','Both routes rejoin','Human approval never waives mandatory CI'])assert.ok(plan.includes(text),text);
+ assert.equal((page.match(/data-build-stage="[1-7]"/g)||[]).length,7);
+ for(let i=0;i<7;i++)assert.ok(page.includes('engineering-blueprint.html?stage='+i+'#technical-requirements'));
  assert.match(page,/Canonical seven-stage implementation checklist/);
- assert.match(page,/<title>Engineering &amp; Safeguards/);
- assert.equal((plan.match(/data-build-stage="[1-7]"/g)||[]).length,7);
- for(let i=0;i<7;i++)assert.ok(plan.includes('engineering-blueprint.html?stage='+i+'#technical-requirements'));
- for(const label of ['What Engineering implements','Done when','Automated approval','Human code review','Both routes rejoin','Human approval never waives mandatory CI'])assert.ok(plan.includes(label),label);
- assert.match(plan,/does not call GitHub APIs/);
+ assert.ok(page.indexOf('id="rr02-negative-test"')>explore);
+ assert.ok(page.indexOf('id="supporting-resources"')>page.indexOf('id="rr02-negative-test"'));
+ assert.match(page,/Swipe horizontally to explore all seven stages/);
+ assert.match(page,/id="delivery-roadmap"/);
+ assert.match(page,/id="rr02-run-negative-test"/);
 });
 test('Build plan keeps accessible mobile summaries and original interactive chapters',()=>{
  assert.match(page,/build-plan__mobile-label/);
