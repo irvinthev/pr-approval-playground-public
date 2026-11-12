@@ -56,7 +56,7 @@ test('homepage reconciles the interactive approval illustration with the broader
  assert.deepEqual([...html.matchAll(/<button class="workflow-stage"[^>]*data-stage="(\d+)"/g)].map(x=>Number(x[1])),[0,1,2,3,4,5,6,7]);
  assert.deepEqual([...html.matchAll(/<button type="button" data-scenario="([^"]+)"/g)].map(x=>x[1]),['pass','split','excluded','canary']);
  assert.match(html,/AI classification, approval-of-record, enforced merge, and production release eligibility remain separate decisions/);
- assert.match(html,/detailed seven-stage simulator/i);
+ assert.match(html,/seven-stage lifecycle used in the other chapters/i);
  assert.doesNotMatch(html,/QualityBot|RiskBot/);
  const archived=read('previous-overview.html');
  assert.doesNotMatch(archived,/QualityBot|RiskBot|Braze|Appboy/i);
