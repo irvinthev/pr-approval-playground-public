@@ -31,3 +31,25 @@ test('legacy selectors and links are retained for technical content and deep lin
  assert.match(assurance,/id="stage-journey" class="stage-journey" data-perspective="assurance" hidden/);
  assert.ok(read('index.html').includes('risk=RR-02&amp;stage=1#risk-sdlc-trace'));
 });
+
+test('Engineering and Monitoring use shared navigation without second visible stage strips',()=>{
+ const eng=read('engineering-blueprint.html'),mon=read('continuous-monitoring.html');
+ const engJs=read('risk-stage-context.js'),monitorJs=read('monitoring.js');
+ assert.match(eng,/<span id="stages" hidden aria-hidden="true"><\/span>/);
+ assert.doesNotMatch(eng,/<div class="stages" id="stages"/);
+ assert.doesNotMatch(eng,/id="stage-swipe-hint"/);
+ assert.match(mon,/<span id="stage-pickers" hidden aria-hidden="true"><\/span>/);
+ assert.doesNotMatch(mon,/class="panel monitoring-stage-picker"/);
+ assert.match(eng,/window\.EngineeringStageView=\{select\(i\)/);
+ assert.match(monitorJs,/root\.MonitoringStageView=\{select\(i\)/);
+ assert.match(engJs,/root\.EngineeringStageView\?\.select\(stage\)/);
+ assert.match(engJs,/root\.MonitoringStageView\?\.select\(stage\)/);
+ assert.doesNotMatch(monitorJs,/\$\('stage-pickers'\)\.append\(b\)/);
+ assert.doesNotMatch(eng,/\$\('stages'\)\.append\(b\)/);
+});
+test('Existing technical links preserve selected risk and stage',()=>{
+ const eng=read('engineering-blueprint.html'),monitor=read('monitoring.js'),shared=read('risk-stage-context.js');
+ assert.match(eng,/selectedRisk&&\/\^RR-\(01\|02\|04\)\$\//);
+ assert.match(monitor,/selectedRisk&&\/\^RR-\(01\|02\|04\)\$\//);
+ assert.match(shared,/stage=item\.id;save\(\);syncExistingStage\(\);render\(\)/);
+});
