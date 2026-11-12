@@ -228,51 +228,7 @@ details.field-deep-dive>section{margin:0 14px 16px}
 <p class="overview-welcome-scope">Follow one illustrative change from pull request to production. The examples are fictional; they explain design and testing decisions, not an implemented approval system.</p>
 <p class="overview-simulator-entry"><a class="guide-action" href="#workflow">Explore the interactive delivery simulator →</a></p>
 </section>
-<details class="overview-reference-collapse"><summary>Advanced reference: authority boundaries and agent/model dependencies</summary><section class="authority-map" id="overview-authority-map" aria-labelledby="authority-map-title">
-  <div class="authority-map-heading">
-    <span class="section-kicker">ARCHITECTURE / AUTHORITY AT A GLANCE</span>
-    <h2 id="authority-map-title">One change. Several decision boundaries.</h2>
-    <p>Follow how eligibility, AI review and protected merge remain separate decisions in this fictional design.</p>
-  </div>
-  <div class="authority-map-flow" role="group" aria-label="Illustrative change flow with eligibility, AI-assisted review, separate approval paths and protected merge">
-    <div class="authority-map-node authority-map-pr"><span class="authority-map-icon" aria-hidden="true">⌘</span><strong>Pull request</strong><small>Code, context, exact revision</small></div>
-    <div class="authority-map-arrow" aria-hidden="true">→</div>
-    <div class="authority-map-node authority-map-policy"><span class="authority-map-icon" aria-hidden="true">◇</span><strong>Eligibility policy</strong><small>Scope, dependencies, exclusions</small><span class="authority-map-chip">Deterministic</span></div>
-    <div class="authority-map-arrow" aria-hidden="true">→</div>
-    <div class="authority-map-node authority-map-agent"><span class="authority-map-icon" aria-hidden="true">✳</span><strong>AI agent + reviewers</strong><small>Prompts, context, tools, model calls</small><span class="authority-map-chip">Analysis, not approval</span></div>
-  </div>
-  <div class="authority-map-external" aria-label="AI dependency and control distinction">
-    <div class="authority-map-agent-control"><strong>Agent configuration</strong><span>Tool permissions, context access, instructions and orchestration can be governed by Engineering.</span></div>
-    <div class="authority-map-external-model"><strong>Externally managed model</strong><span>Opaque weights, provider-side updates, variable outputs and availability may be outside direct control.</span></div>
-  </div>
-  <div class="authority-map-routes" role="group" aria-label="Separate human and automated authorization routes">
-    <div class="authority-map-route authority-map-human">
-      <span class="authority-map-route-label">EXCLUDED · UNCERTAIN · SENSITIVE</span>
-      <strong>Authorized human review</strong>
-      <small>No AI-based approval substitution. Shadow analysis may observe, but cannot authorize.</small>
-    </div>
-    <div class="authority-map-route authority-map-auto">
-      <span class="authority-map-route-label">ELIGIBLE · REQUIRED CONDITIONS SATISFIED</span>
-      <strong>Policy-authorized automation</strong>
-      <small>Only within an approved scope; AI agreement alone is insufficient.</small>
-    </div>
-  </div>
-  <div class="authority-map-merge" role="group" aria-label="Protected merge, deployment and subsequent monitoring">
-    <div class="authority-map-node authority-map-policy"><strong>Protected merge</strong><small>Branch rules, required checks, current-SHA validity and restricted bypass</small></div>
-    <div class="authority-map-arrow" aria-hidden="true">→</div>
-    <div class="authority-map-node"><strong>Build &amp; deploy</strong><small>Release and artifact integrity</small></div>
-    <div class="authority-map-arrow" aria-hidden="true">→</div>
-    <div class="authority-map-node"><strong>Monitor &amp; evaluate</strong><small>Signals, evidence and independent testing</small></div>
-  </div>
-  <div class="authority-map-footer">
-    <p><strong>Where authority lives:</strong> Eligibility and protected merge restrictions must be independently enforced; the AI layer supplies assessments, not authority. An incomplete policy inventory can still produce an incorrect deterministic outcome.</p>
-    <div class="authority-map-links"><a href="./engineering-blueprint.html#rr02-negative-test">Challenge a missed dependency →</a><a href="./ai-sdlc-risk.html?risk=RR-02#risk-explorer">Explore the related risk →</a></div>
-  </div>
-</section></details>
-<details class="field-deep-dive"><summary><span><span class="field-deep-dive-label">Why this guide exists</span><span class="field-deep-dive-hint">Purpose and context</span></span><span class="field-deep-dive-chevron" aria-hidden="true">⌄</span></summary><section class="overview-method" aria-label="Why this field guide exists and how to use it">
-<p><strong>Why this guide exists:</strong> AI-assisted development is increasingly familiar; delegating change-approval authority is a separate decision. Traditional SDLC safeguards remain essential, but AI-generated risk judgments introduce questions about scope, failure modes, and evidence.</p>
-<p><strong>Use it to align three conversations:</strong> <strong>Engineering and leadership</strong> decide where AI may act; <strong>Engineering and Risk</strong> challenge eligibility, enforcement, and operational safeguards; <strong>management and auditors</strong> distinguish what management can demonstrate from what an auditor must independently evaluate.</p>
-</section></details><section class="workflow-map" id="workflow" aria-labelledby="workflow-title">
+<section class="workflow-map" id="workflow" aria-labelledby="workflow-title">
 <div class="section-kicker">01 / INTERACTIVE DELIVERY SIMULATOR</div>
 <h2 class="section-heading" id="workflow-title">Explore the four delivery outcomes</h2>
 <p class="section-intro">Choose one of four fictional change outcomes, then inspect the relevant stage, authorization route and supporting evidence. This interactive simulator uses eight detailed touchpoints; the other chapters group the lifecycle into seven stages.</p>
@@ -358,6 +314,51 @@ details.field-deep-dive>section{margin:0 14px 16px}
 <a href="./independent-assurance.html"><strong>Assurance</strong><span>How would we independently test the safeguards?</span><small>Explore assurance →</small></a>
 </nav>
 </section>
+<details class="overview-reference-collapse"><summary>Advanced reference: authority boundaries and agent/model dependencies</summary><section class="authority-map" id="overview-authority-map" aria-labelledby="authority-map-title">
+  <div class="authority-map-heading">
+    <span class="section-kicker">ARCHITECTURE / AUTHORITY AT A GLANCE</span>
+    <h2 id="authority-map-title">One change. Several decision boundaries.</h2>
+    <p>Follow how eligibility, AI review and protected merge remain separate decisions in this fictional design.</p>
+  </div>
+  <div class="authority-map-flow" role="group" aria-label="Illustrative change flow with eligibility, AI-assisted review, separate approval paths and protected merge">
+    <div class="authority-map-node authority-map-pr"><span class="authority-map-icon" aria-hidden="true">⌘</span><strong>Pull request</strong><small>Code, context, exact revision</small></div>
+    <div class="authority-map-arrow" aria-hidden="true">→</div>
+    <div class="authority-map-node authority-map-policy"><span class="authority-map-icon" aria-hidden="true">◇</span><strong>Eligibility policy</strong><small>Scope, dependencies, exclusions</small><span class="authority-map-chip">Deterministic</span></div>
+    <div class="authority-map-arrow" aria-hidden="true">→</div>
+    <div class="authority-map-node authority-map-agent"><span class="authority-map-icon" aria-hidden="true">✳</span><strong>AI agent + reviewers</strong><small>Prompts, context, tools, model calls</small><span class="authority-map-chip">Analysis, not approval</span></div>
+  </div>
+  <div class="authority-map-external" aria-label="AI dependency and control distinction">
+    <div class="authority-map-agent-control"><strong>Agent configuration</strong><span>Tool permissions, context access, instructions and orchestration can be governed by Engineering.</span></div>
+    <div class="authority-map-external-model"><strong>Externally managed model</strong><span>Opaque weights, provider-side updates, variable outputs and availability may be outside direct control.</span></div>
+  </div>
+  <div class="authority-map-routes" role="group" aria-label="Separate human and automated authorization routes">
+    <div class="authority-map-route authority-map-human">
+      <span class="authority-map-route-label">EXCLUDED · UNCERTAIN · SENSITIVE</span>
+      <strong>Authorized human review</strong>
+      <small>No AI-based approval substitution. Shadow analysis may observe, but cannot authorize.</small>
+    </div>
+    <div class="authority-map-route authority-map-auto">
+      <span class="authority-map-route-label">ELIGIBLE · REQUIRED CONDITIONS SATISFIED</span>
+      <strong>Policy-authorized automation</strong>
+      <small>Only within an approved scope; AI agreement alone is insufficient.</small>
+    </div>
+  </div>
+  <div class="authority-map-merge" role="group" aria-label="Protected merge, deployment and subsequent monitoring">
+    <div class="authority-map-node authority-map-policy"><strong>Protected merge</strong><small>Branch rules, required checks, current-SHA validity and restricted bypass</small></div>
+    <div class="authority-map-arrow" aria-hidden="true">→</div>
+    <div class="authority-map-node"><strong>Build &amp; deploy</strong><small>Release and artifact integrity</small></div>
+    <div class="authority-map-arrow" aria-hidden="true">→</div>
+    <div class="authority-map-node"><strong>Monitor &amp; evaluate</strong><small>Signals, evidence and independent testing</small></div>
+  </div>
+  <div class="authority-map-footer">
+    <p><strong>Where authority lives:</strong> Eligibility and protected merge restrictions must be independently enforced; the AI layer supplies assessments, not authority. An incomplete policy inventory can still produce an incorrect deterministic outcome.</p>
+    <div class="authority-map-links"><a href="./engineering-blueprint.html#rr02-negative-test">Challenge a missed dependency →</a><a href="./ai-sdlc-risk.html?risk=RR-02#risk-explorer">Explore the related risk →</a></div>
+  </div>
+</section></details>
+<details class="field-deep-dive"><summary><span><span class="field-deep-dive-label">Why this guide exists</span><span class="field-deep-dive-hint">Purpose and context</span></span><span class="field-deep-dive-chevron" aria-hidden="true">⌄</span></summary><section class="overview-method" aria-label="Why this field guide exists and how to use it">
+<p><strong>Why this guide exists:</strong> AI-assisted development is increasingly familiar; delegating change-approval authority is a separate decision. Traditional SDLC safeguards remain essential, but AI-generated risk judgments introduce questions about scope, failure modes, and evidence.</p>
+<p><strong>Use it to align three conversations:</strong> <strong>Engineering and leadership</strong> decide where AI may act; <strong>Engineering and Risk</strong> challenge eligibility, enforcement, and operational safeguards; <strong>management and auditors</strong> distinguish what management can demonstrate from what an auditor must independently evaluate.</p>
+</section></details>
 
 
 
