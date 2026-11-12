@@ -27,7 +27,7 @@ test('six-domain assurance explorer reuses one crosswalk, shows cross-cutting ch
  const html=read('independent-assurance.html');
  assert.match(html,/src="\.\/assurance-rcm-crosswalk\.js\?v=1"/);
  assert.ok(html.indexOf('assurance-rcm-crosswalk.js?v=1')<html.indexOf('const domains=['));
- for(const id of ['ace-picker','ace-selected','ace-rcm-crosswalk','ace-rcm-list','ace-crosscut-cards','ace-footer','prelaunch-validation'])
+ for(const id of ['ace-picker','ace-selected','ace-rcm-crosswalk','ace-rcm-list','ace-crosscut-cards','ace-progress','prelaunch-validation'])
   assert.ok(html.includes('id="'+id+'"'),id);
  assert.match(html,/crosswalk\.domains\[d\.key\]/);
  assert.match(html,/a\.href='\.\/rcm-view\.html#control-'\+id/);
