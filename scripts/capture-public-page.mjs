@@ -11,25 +11,36 @@ import { readdir } from 'node:fs/promises';
 
 const base = process.env.SITE_BASE_URL || 'http://127.0.0.1:4173/';
 const output = resolve('screenshots-demo');
-const pages = [
+const mode = process.env.QA_MODE === 'full' ? 'full' : 'targeted';
+const baselinePages = [
   ['overview', 'index.html'],
   ['risk-management', 'ai-sdlc-risk.html'],
   ['assurance', 'independent-assurance.html'],
 ];
-// Changed HTML pages are included automatically. An explicit four-scenario
-// matrix exercises the interactive journey, rather than only its default view.
+const pages = mode === 'full' ? [...baselinePages] : [];
+// In targeted mode, capture the pages affected by the PR; avoid a full-site matrix.
 try {
   const parent = process.env.PR_BASE_SHA;
   if (parent) {
-    const changed = execFileSync('git', ['diff', '--name-only', parent, 'HEAD'], {encoding:'utf8'}).trim().split('\n');
-    for (const file of changed) {
-      if (/^[a-zA-Z0-9._/-]+\.html$/.test(file) && !pages.some(([,p]) => p === file)) {
-        pages.push(['changed-' + file.replace(/[^a-zA-Z0-9]+/g,'-'), file]);
+    const changed = execFileSync('git', ['diff', '--name-only', parent, 'HEAD'], {encoding:'utf8'}).trim().split('\n').filter(Boolean);
+    const add = file => {
+      if (/^[a-zA-Z0-9._/-]+\.html$/.test(file) && !pages.some(([,p])=>p===file))
+        pages.push(['changed-'+file.replace(/[^a-zA-Z0-9]+/g,'-'),file]);
+    };
+    for(const file of changed){
+      if(file.endsWith('.html'))add(file);
+      // Shared styles and scripts can affect all five principal chapters.
+      if (/^(site\.css|guided-investigation\.(css|js)|shared-pipeline-(context|nav)\.(css|js)|page-orientation\.css)$/.test(file)){
+        ['index.html','ai-sdlc-risk.html','engineering-blueprint.html','continuous-monitoring.html','independent-assurance.html'].forEach(add);
       }
+      if (/^(risk-|sdlc-risk-)/.test(file) && /\.(js|css)$/.test(file))add('ai-sdlc-risk.html');
+      if (/^scripts\/capture-public-page\.mjs$/.test(file))add('index.html');
     }
   }
-} catch(e) { console.warn('Changed page discovery unavailable: ' + e.message); }
-if (!pages.some(([,p])=>p==='scenario-journey.html')) pages.push(['scenario-journey','scenario-journey.html']);
+} catch(e) { console.warn('Changed page discovery unavailable: '+e.message); }
+// Baseline page is a safe fallback for PRs with no changed HTML/CSS/JS mapping.
+if (!pages.length) pages.push(['overview','index.html']);
+if (mode === 'full' && !pages.some(([,p])=>p==='scenario-journey.html')) pages.push(['scenario-journey','scenario-journey.html']);
 const viewports = [
   ['desktop', { width: 1280, height: 900 }],
   ['mobile', { width: 390, height: 844 }],
@@ -137,10 +148,10 @@ async function runCase(label, path, viewportName, viewport, scenario) {
       checks.push('Authority map: model boundary, two routes and deep links');
     }
     if (scenario === 'guided-journey') {
-      await Promise.all([
-        page.waitForURL(url => url.pathname.endsWith('/index.html') && url.searchParams.get('journey') === 'rr02'),
-        page.locator('a[href*="journey=rr02#guided-investigation"]').first().click()
-      ]);
+      // Exercise the supported deep link directly. The Overview CTA is now a chapter guide,
+      // so looking for a retired hero link creates an unrelated 30s timeout.
+      await page.goto(new URL('index.html?journey=rr02#guided-investigation',base).toString(), {waitUntil:'domcontentloaded',timeout:10000});
+      check(new URL(page.url()).searchParams.get('journey')==='rr02','Guided journey deep link did not load');
       check(await page.locator('#guided-investigation').isVisible(), 'Guided journey not visible on Overview');
       check(await page.locator('[data-scenario="excluded"]').getAttribute('aria-pressed') === 'true', 'Overview scenario not selected');
       const expected = ['Change', 'Risk', 'Safeguards', 'Monitoring', 'Assurance'];
@@ -316,6 +327,7 @@ try {
     for (const [name, path] of pages) {
       await runCase(name + '-' + viewportName, path, viewportName, viewport, null);
     }
+    if(mode==='targeted')continue;
     for (const variant of ['pass','split','excluded','canary']) {
       const target = {pass:5,split:3,excluded:2,canary:5}[variant];
       for (const layer of ['authority','safeguard','evidence']) {
@@ -353,7 +365,7 @@ const summary = {
   source: base,
   reference: process.env.GITHUB_SHA || 'local',
   capturedAtUtc: new Date().toISOString(),
-  captures: records.length,
+  mode,\n  captures: records.length,
   failures,
   note: 'Static-site PR visual QA. Screenshots are review aids, not historical control evidence.'
 };
