@@ -31,5 +31,6 @@ test('Engineering retains technical resource links while Monitoring owns CI/cana
  const engineering=read('engineering-blueprint.html'),monitoring=read('continuous-monitoring.html');
  for(const id of ['required-ci','progressive-rollout','supporting-resources'])assert.ok(engineering.includes('id="'+id+'"'),id);
  for(const id of ['monitoring-use-notes','ci-canary-monitoring'])assert.ok(monitoring.includes('id="'+id+'"'),id);
- assert.match(monitoring,/href="\.\/engineering-blueprint\.html\?stage=0#technical-requirements"/);
+ assert.match(monitoring,/href="\.\/engineering-blueprint\.html\?stage=0#risk-stage-context"/);
+ assert.match(monitoring,/<span id="stage-pickers" hidden aria-hidden="true"><\/span>/);
 });
