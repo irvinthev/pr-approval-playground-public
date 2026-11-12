@@ -80,6 +80,19 @@ details.field-deep-dive>section{margin:0 14px 16px}
 .assurance-case-heading p{color:#bfd3e0;font-size:14px;line-height:1.5;margin:0}
 @media(max-width:750px){.ace-head{display:block}.ace-map-link{display:inline-flex;margin-top:14px}.ace-picker{grid-template-columns:repeat(2,minmax(0,1fr))}.ace-picker button{min-height:69px}.ace-selected{padding:12px}.ace-links a{flex:1;text-align:center}.ace-footer{flex-wrap:wrap}}
 @media(max-width:390px){.ace-picker{gap:7px}.ace-picker button{padding:10px 7px}.ace-picker button[aria-pressed=true]{padding:9px 6px}.ace-picker button strong{font-size:12px}}
+
+.ace-rcm-crosswalk,.ace-crosscut{border:1px solid #587f91;border-radius:11px;padding:16px;margin-top:13px;background:#142b40}
+.ace-rcm-crosswalk h3,.ace-crosscut h3{font-size:18px;line-height:1.35;color:#edf9fa;margin:7px 0 9px}
+.ace-rcm-note,.ace-rcm-stages{font-size:12px;line-height:1.55;color:#c5d9e3;margin:8px 0 12px}
+.ace-rcm-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.ace-rcm-list a{display:flex;align-items:baseline;gap:9px;min-width:0;background:#203c50;border:1px solid #618493;border-radius:7px;padding:10px;text-decoration:none;color:#ecf7f9;font-size:12px;line-height:1.4}
+.ace-rcm-list a:hover,.ace-rcm-list a:focus-visible{background:#285468;text-decoration:underline}
+.ace-rcm-list b{white-space:nowrap;color:#a4edda}
+.ace-crosscut-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.ace-crosscut-card{background:#242e52;border:1px solid #7b83be;border-radius:9px;padding:12px;min-width:0}
+.ace-crosscut-card h4{font-size:14px;line-height:1.3;margin:0 0 8px;color:#e0e4ff}
+.ace-crosscut-card p{font-size:12px;line-height:1.55;margin:0;color:#e0e5f1}
+@media(max-width:850px){.ace-crosscut-cards{grid-template-columns:1fr}.ace-rcm-list{grid-template-columns:1fr}}
 </style><link rel="stylesheet" href="./page-orientation.css?v=1"><link rel="stylesheet" href="./risk-stage-context.css?v=1"></head>
 <body><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html">Overview</a><a href="./ai-sdlc-risk.html">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html" aria-current="page">Assurance</a></nav></header>
 <article class="simple-assurance">
@@ -100,7 +113,7 @@ details.field-deep-dive>section{margin:0 14px 16px}
 <section class="assurance-control-explorer" id="assurance-control-explorer" aria-labelledby="ace-title">
  <div class="ace-head">
   <div><span class="simple-eyebrow">START HERE / TECHNICAL ASSURANCE</span><h2 id="ace-title">What is controlled, and how do we test it?</h2>
-  <p>Select one of six management control domains. Inspect the corresponding independent test, required evidence, and related workpapers.</p></div>
+  <p>Select one of six control domains to inspect management safeguards, independent assurance tests, proposed RCM relationships and cross-cutting checks.</p></div>
   <a class="ace-map-link" href="./assurance-control-map.svg" download="AI-SDLC-Assurance-Control-Map.svg">Download full control map ↗</a>
  </div>
  <div class="ace-picker" id="ace-picker" role="group" aria-label="Select a control domain">
@@ -117,6 +130,18 @@ details.field-deep-dive>section{margin:0 14px 16px}
   <div class="ace-outcome"><span class="ace-kicker">OBSERVED RESULT</span><p>Not established. This is a proposed test; actual execution, control configuration and results require independent verification.</p></div>
   <div class="ace-evidence"><span class="ace-kicker">EVIDENCE TO INSPECT</span><p id="ace-evidence-description">Effective policy, rule inputs, decision logs and rejected attempts.</p></div>
   <div class="ace-links" id="ace-links"><a href="./control-matrix.html#control-D01">Control example</a><a href="./rcm-view.html#download-current-rcm">Proposed RCM</a><a href="./engineering-blueprint.html#rr02-negative-test">Run negative test</a></div>
+ </div>
+ <div class="ace-rcm-crosswalk" id="ace-rcm-crosswalk" aria-labelledby="ace-rcm-title">
+  <span class="ace-kicker">PROPOSED RCM CROSSWALK / 15 CONTROLS</span>
+  <h3 id="ace-rcm-title">Which proposed RCM controls support this domain?</h3>
+  <p class="ace-rcm-note">Control names and primary SDLC stages come from the 15-control RCM. Grouping controls into these six domains is an illustrative association, not a change to their RCM ownership or formal stage assignment.</p>
+  <div id="ace-rcm-list" class="ace-rcm-list" aria-live="polite"></div>
+  <p class="ace-rcm-stages" id="ace-rcm-stages"></p>
+ </div>
+ <div class="ace-crosscut" aria-labelledby="ace-crosscut-title">
+  <span class="ace-kicker">CROSS-CUTTING ASSURANCE / APPLIES TO EVERY DOMAIN</span>
+  <h3 id="ace-crosscut-title">Change management · Testing &amp; validation · Operating effectiveness</h3>
+  <div id="ace-crosscut-cards" class="ace-crosscut-cards" aria-live="polite"></div>
  </div>
  <div class="ace-footer"><span id="ace-progress">Domain 3 of 6</span><div><button type="button" id="ace-previous">← Previous</button><button type="button" id="ace-next">Next domain →</button></div></div>
  <p class="ace-disclaimer">Illustrative control-to-test relationships, not executed tests or observed control outcomes. Validate applicability, configuration, and evidence in the actual environment.</p>
@@ -277,7 +302,8 @@ function reveal(){
 window.addEventListener('hashchange',reveal);
 reveal();
 })();
-</script><script>
+</script><script src="./assurance-rcm-crosswalk.js?v=1"></script>
+<script>
 (function(){'use strict';
 const domains=[
 {key:'governance',name:'Governance & scope',control:'Define the eligible repositories, change classes, exclusions, policy owners and population boundaries.',test:'Reconcile eligible and excluded repositories and PR populations to independent source records; challenge missing or unowned scope.',evidence:'Approved scope and exclusions; repo inventory; ruleset ownership; population reconciliation and exception history.',links:[['RCM AI-02','./rcm-view.html#control-AI-02'],['Control example','./control-matrix.html#control-G01'],['Population testing','./independent-assurance.html#document-assessment']]},
@@ -301,6 +327,27 @@ function render(){
  $('ace-test-description').textContent=d.test;$('ace-evidence-description').textContent=d.evidence;
  $('ace-links').replaceChildren();
  for(const [label,url] of d.links){const a=document.createElement('a');a.href=url;a.textContent=label+' →';$('ace-links').appendChild(a);}
+
+ const crosswalk=window.AssuranceRcmCrosswalk;
+ if(crosswalk&&crosswalk.domains[d.key]){
+  const map=crosswalk.domains[d.key],list=$('ace-rcm-list');
+  list.replaceChildren();
+  for(const id of map.controls){
+   const record=crosswalk.controls[id];if(!record)continue;
+   const a=document.createElement('a');a.href='./rcm-view.html#control-'+id;
+   const code=document.createElement('b');code.textContent=id;
+   const name=document.createElement('span');name.textContent=record.name;
+   a.append(code,name);a.title='Primary RCM stage: '+record.primary;list.append(a);
+  }
+  $('ace-rcm-stages').textContent='Relevant lifecycle touchpoints (proposed): '+map.stages.join(' · ')+'. Individual control primary stages remain defined in the RCM.';
+  const cards=$('ace-crosscut-cards');cards.replaceChildren();
+  for(const [title,field] of [['Change Management','change'],['Testing & Validation','testing'],['Operating Effectiveness','operation']]){
+   const card=document.createElement('section');card.className='ace-crosscut-card';
+   const h=document.createElement('h4');h.textContent=title;
+   const p=document.createElement('p');p.textContent=map[field];
+   card.append(h,p);cards.append(card);
+  }
+ }
  $('ace-progress').textContent='Domain '+(selected+1)+' of 6';$('ace-previous').disabled=selected===0;$('ace-next').textContent=selected===5?'Start again ↻':'Next domain →';
  const next=new URL(location.href);next.searchParams.set('control',d.key);history.replaceState(null,'',next);
 }
