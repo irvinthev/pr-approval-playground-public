@@ -16,7 +16,7 @@ test('one mapping source powers all perspectives and passes risk plus stage in l
  const risk=read('risk-sdlc-trace.js'),shared=read('risk-stage-context.js');
  assert.match(risk,/root\.RiskScenarioStages=Object\.freeze\(scenarios\)/);
  for(const id of ['RR-01','RR-02','RR-04'])assert.ok(risk.includes("'"+id+"':["),id);
- assert.match(shared,/const scenarios=root\.RiskScenarioStages/);
+ assert.match(shared,/scenarios=root\.RiskScenarioStages/);
  assert.match(shared,/searchParams\.set\('risk',risk\)/);
  assert.match(shared,/searchParams\.set\('stage',String\(stage\)\)/);
  assert.match(shared,/model\.stages/);
