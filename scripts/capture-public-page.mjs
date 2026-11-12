@@ -6,6 +6,8 @@ import { chromium } from 'playwright';
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import { execFileSync } from 'node:child_process';
+import { readdir } from 'node:fs/promises';
 
 const base = process.env.SITE_BASE_URL || 'http://127.0.0.1:4173/';
 const output = resolve('screenshots-demo');
@@ -14,6 +16,20 @@ const pages = [
   ['risk-management', 'ai-sdlc-risk.html'],
   ['assurance', 'independent-assurance.html'],
 ];
+// Changed HTML pages are included automatically. An explicit four-scenario
+// matrix exercises the interactive journey, rather than only its default view.
+try {
+  const parent = process.env.PR_BASE_SHA;
+  if (parent) {
+    const changed = execFileSync('git', ['diff', '--name-only', parent, 'HEAD'], {encoding:'utf8'}).trim().split('\n');
+    for (const file of changed) {
+      if (/^[a-zA-Z0-9._/-]+\.html$/.test(file) && !pages.some(([,p]) => p === file)) {
+        pages.push(['changed-' + file.replace(/[^a-zA-Z0-9]+/g,'-'), file]);
+      }
+    }
+  }
+} catch(e) { console.warn('Changed page discovery unavailable: ' + e.message); }
+if (!pages.some(([,p])=>p==='scenario-journey.html')) pages.push(['scenario-journey','scenario-journey.html']);
 const viewports = [
   ['desktop', { width: 1280, height: 900 }],
   ['mobile', { width: 390, height: 844 }],
@@ -55,6 +71,33 @@ async function runCase(label, path, viewportName, viewport, scenario) {
     check((await page.locator('h1').count()) > 0, label + ': missing primary heading');
 
     const checks = ['HTTP ' + response.status(), 'h1 present'];
+    if (scenario?.startsWith('scenario-journey:')) {
+      const [, variant, stepNumber, layer] = scenario.split(':');
+      const title = {pass:'Standard low-risk pass',split:'AI split decision',excluded:'Hard gate scope exclusion',canary:'Production canary failure'}[variant];
+      check(title, 'Unknown journey fixture ' + variant);
+      check((await page.locator('#case-title').innerText()) === title, 'Unexpected scenario heading');
+      check(await page.locator('[data-case][aria-pressed="true"]').getAttribute('data-case') === variant,'Selected scenario not reflected');
+      check(await page.locator('#pipeline .step').count() === 5,'Journey must have five pipeline stages');
+      if (stepNumber) {
+        const target = Number(stepNumber)-1;
+        await page.locator('#pipeline .step').nth(target).click();
+        check(await page.locator('#stage-label').innerText() === 'STAGE '+stepNumber+' / 5','Pipeline stage navigation failed');
+      }
+      if (layer) {
+        await page.locator('[data-layer="'+layer+'"]').click();
+        check(await page.locator('[data-layer="'+layer+'"]').getAttribute('aria-selected') === 'true','Layer toggle failed');
+      }
+      check((await page.locator('#detail-text').innerText()).length > 35,'Stage detail missing');
+      const expected = {
+        split:{stage:3,state:'human'}, excluded:{stage:2,state:'blocked'},
+        canary:{stage:5,state:'alert'}, pass:{stage:5,state:'pass'}
+      }[variant];
+      if (Number(stepNumber) === expected.stage) {
+        check(await page.locator('#stage-state').getAttribute('class') === 'status '+expected.state,'Incorrect scenario decision state');
+        checks.push('Divergence state: '+ expected.state);
+      }
+      checks.push('Five stages, selected scenario, '+(layer||'default')+' detail and stage navigation');
+    }
     if (scenario === 'overview-authority-map') {
       const diagram = page.locator('#overview-authority-map');
       // The PNG is the default visual; expand the accessible architecture reference for this scenario.
@@ -224,6 +267,14 @@ try {
   for (const [viewportName, viewport] of viewports) {
     for (const [name, path] of pages) {
       await runCase(name + '-' + viewportName, path, viewportName, viewport, null);
+    }
+    for (const variant of ['pass','split','excluded','canary']) {
+      const target = {pass:5,split:3,excluded:2,canary:5}[variant];
+      for (const layer of ['authority','safeguard','evidence']) {
+        await runCase('journey-'+variant+'-stage'+target+'-'+layer+'-'+viewportName,
+          'scenario-journey.html?scenario='+variant, viewportName, viewport,
+          'scenario-journey:'+variant+':'+target+':'+layer);
+      }
     }
     await runCase('risk-rr02-expanded-' + viewportName, 'ai-sdlc-risk.html', viewportName, viewport, 'risk-rr02');
     await runCase('assurance-evidence-expanded-' + viewportName, 'independent-assurance.html', viewportName, viewport, 'assurance-expanded');
