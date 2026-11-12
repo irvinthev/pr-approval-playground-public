@@ -12,7 +12,7 @@ test('three perspectives mount one read-only seven-stage journey',()=>{
  const engineering=read('engineering-blueprint.html');
  assert.match(engineering,/id="technical-requirements"/);
  assert.match(engineering,/id="stage-journey" hidden/);
- assert.doesNotMatch(engineering,/src="\\.\\/stage-journey\\.js/);
+ assert.ok(!engineering.includes('src="./stage-journey.js?v=1"'));
 });
 test('journey links use actual existing destinations and preserve zero-based stage IDs',()=>{
  const js=read('stage-journey.js');
