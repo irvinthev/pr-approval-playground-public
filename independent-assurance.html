@@ -44,6 +44,41 @@ details.field-deep-dive .field-deep-dive-chevron{flex-shrink:0;font-size:19px;co
 details.field-deep-dive[open] .field-deep-dive-chevron{transform:rotate(180deg)}
 details.field-deep-dive>section{margin:0 14px 16px}
 @media(max-width:600px){details.field-deep-dive>summary{padding:13px 14px}details.field-deep-dive>section{margin:0 10px 12px}}
+</style><style>
+/* Technical Assurance Control Explorer */
+.assurance-control-explorer{margin:18px 0 28px;padding:clamp(16px,3vw,25px);background:#111e35;border:1px solid #46627e;border-radius:15px}
+.ace-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.ace-head h2{font-size:clamp(22px,3vw,31px);margin:8px 0 6px;color:#eef7ff}
+.ace-head p{font-size:14px;line-height:1.55;color:#c7d8e7;max-width:680px;margin:0}
+.ace-map-link{border:1px solid #668c9b;padding:10px 12px;min-height:42px;border-radius:8px;color:#c5f3e4;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap}
+.ace-map-link:hover,.ace-map-link:focus-visible{background:#234559;text-decoration:underline}
+.ace-picker{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:21px 0 16px}
+.ace-picker button{background:#1b334d;color:#edf6ff;border:1px solid #5a7895;border-radius:9px;padding:13px 10px;min-height:75px;text-align:left;cursor:pointer;display:flex;gap:10px;align-items:center}
+.ace-picker button span{color:#a2d7d1;font-size:12px;font-weight:800;align-self:flex-start}
+.ace-picker button strong{font-size:14px;line-height:1.3}
+.ace-picker button[aria-pressed=true]{background:#244c65;border:2px solid #9ee7d5;padding:12px 9px}
+.ace-picker button:focus-visible,.ace-footer button:focus-visible{outline:3px solid #d3ffec;outline-offset:3px}
+.ace-selected{border:1px solid #547b8e;border-radius:11px;padding:18px;background:#102b3f}
+.ace-management,.ace-test,.ace-evidence{padding:12px 3px}
+.ace-management{border-bottom:1px solid #527284}
+.ace-test{border-bottom:1px solid #527284}
+.ace-kicker{display:block;color:#a4eed9;letter-spacing:.07em;font-weight:800;font-size:11px;margin-bottom:7px}
+.ace-selected h3{font-size:19px;margin:0 0 7px;color:#f1f8ff}
+.ace-selected p{margin:0;color:#cbdde8;font-size:14px;line-height:1.55}
+.ace-links{display:flex;gap:10px;flex-wrap:wrap;margin:13px 0 0}
+.ace-links a{font-size:13px;font-weight:700;color:#baf3df;padding:9px 11px;border:1px solid #547a88;border-radius:8px;text-decoration:none}
+.ace-links a:hover,.ace-links a:focus-visible{text-decoration:underline;background:#21465a}
+.ace-footer{display:flex;justify-content:space-between;align-items:center;margin:15px 0 0;gap:12px}
+.ace-footer>span{color:#b9d3de;font-size:12px}
+.ace-footer>div{display:flex;gap:8px}
+.ace-footer button{cursor:pointer;border:1px solid #6b9ba2;background:#18495a;color:#f1fff9;border-radius:8px;min-height:42px;padding:9px 14px;font-weight:700}
+.ace-footer button:disabled{opacity:.4;cursor:not-allowed}
+.ace-disclaimer{font-size:12px;line-height:1.55;color:#b3c9d6;margin:15px 0 0}
+.assurance-case-heading{margin:26px 0 15px}
+.assurance-case-heading h2{font-size:24px;margin:7px 0}
+.assurance-case-heading p{color:#bfd3e0;font-size:14px;line-height:1.5;margin:0}
+@media(max-width:750px){.ace-head{display:block}.ace-map-link{display:inline-flex;margin-top:14px}.ace-picker{grid-template-columns:repeat(2,minmax(0,1fr))}.ace-picker button{min-height:69px}.ace-selected{padding:12px}.ace-links a{flex:1;text-align:center}.ace-footer{flex-wrap:wrap}}
+@media(max-width:390px){.ace-picker{gap:7px}.ace-picker button{padding:10px 7px}.ace-picker button[aria-pressed=true]{padding:9px 6px}.ace-picker button strong{font-size:12px}}
 </style></head>
 <body><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html">Overview</a><a href="./ai-sdlc-risk.html">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html" aria-current="page">Assurance</a></nav></header>
 <article class="simple-assurance">
@@ -51,13 +86,34 @@ details.field-deep-dive>section{margin:0 14px 16px}
 <span class="simple-eyebrow">ASSURANCE / A PRACTICAL FIELD GUIDE</span>
 <h1>How do we gain assurance over AI-enabled software development?</h1>
 <p class="simple-lead">Identify AI authority, independently enforced limits and evidence needed for reliance.</p>
-<p class="simple-lead">Start with a fictional authorization case; expand the five-part method for depth.</p>
+
 <p class="simple-boundary">Illustrative guidance, not a prescribed architecture or conclusion of control effectiveness. Applicable requirements, management decisions and audit judgments depend on the actual environment.</p>
 
 </header>
 
-<section class="assurance-start" aria-labelledby="assurance-start-title"><span class="simple-eyebrow">START HERE / THREE QUESTIONS</span><h2 id="assurance-start-title">Follow the authority. Challenge the boundary. Examine the evidence.</h2><p>Choose a question to explore the corresponding assurance method.</p><div class="assurance-start-grid"><a href="#operating-model"><span>01 / AUTHORITY</span><strong>What can AI actually do?</strong><small>Distinguish code generation, advice, classification, and approval.</small></a><a href="#foundational-controls"><span>02 / ENFORCEMENT</span><strong>What stops it from going further?</strong><small>Inspect independent eligibility, permissions, bypasses and release protections.</small></a><a href="#document-assessment"><span>03 / EVIDENCE</span><strong>What would justify reliance?</strong><small>Evaluate tested behavior, complete records, and operation over time.</small></a></div><p class="assurance-start-note">The example connects all three questions.</p></section>
-<section class="assurance-example-entry"><span class="simple-eyebrow">02 / WALK THROUGH ONE EXAMPLE</span><h2>Can a contributor bypass independent authorization?</h2><p>Follow a fictional case from requirements through negative tests and evidence.</p></section>
+<section class="assurance-control-explorer" id="assurance-control-explorer" aria-labelledby="ace-title">
+ <div class="ace-head">
+  <div><span class="simple-eyebrow">START HERE / TECHNICAL ASSURANCE</span><h2 id="ace-title">What is controlled, and how do we test it?</h2>
+  <p>Select one of six management control domains. Inspect the corresponding independent test, required evidence, and related workpapers.</p></div>
+  <a class="ace-map-link" href="./assurance-control-map.svg" download="AI-SDLC-Assurance-Control-Map.svg">Download full control map ↗</a>
+ </div>
+ <div class="ace-picker" id="ace-picker" role="group" aria-label="Select a control domain">
+  <button type="button" data-domain="governance" aria-pressed="false"><span>01</span><strong>Governance &amp; scope</strong></button>
+  <button type="button" data-domain="agent" aria-pressed="false"><span>02</span><strong>Agent security</strong></button>
+  <button type="button" data-domain="policy" aria-pressed="true"><span>03</span><strong>Policy enforcement</strong></button>
+  <button type="button" data-domain="evaluation" aria-pressed="false"><span>04</span><strong>AI validation</strong></button>
+  <button type="button" data-domain="authorization" aria-pressed="false"><span>05</span><strong>Authorization</strong></button>
+  <button type="button" data-domain="monitoring" aria-pressed="false"><span>06</span><strong>Monitoring</strong></button>
+ </div>
+ <div class="ace-selected" id="ace-selected" aria-live="polite">
+  <div class="ace-management"><span class="ace-kicker">MANAGEMENT CONTROL</span><h3 id="ace-management-title">Deterministic policy enforcement</h3><p id="ace-management-description">Apply versioned eligibility rules before AI review.</p></div>
+  <div class="ace-test" aria-label="Corresponding independent assurance test"><span class="ace-kicker">INDEPENDENT TECHNICAL TEST</span><h3 id="ace-test-title">Negative testing and bypass attempts</h3><p id="ace-test-description">Challenge excluded, stale and unknown revisions.</p></div>
+  <div class="ace-evidence"><span class="ace-kicker">EVIDENCE TO INSPECT</span><p id="ace-evidence-description">Effective policy, rule inputs, decision logs and rejected attempts.</p></div>
+  <div class="ace-links" id="ace-links"><a href="./control-matrix.html#control-D01">Control example</a><a href="./rcm-view.html#download-current-rcm">Proposed RCM</a><a href="./engineering-blueprint.html#rr02-negative-test">Run negative test</a></div>
+ </div>
+ <div class="ace-footer"><span id="ace-progress">Domain 3 of 6</span><div><button type="button" id="ace-previous">← Previous</button><button type="button" id="ace-next">Next domain →</button></div></div>
+ <p class="ace-disclaimer">Illustrative control-to-test relationships, not executed tests or observed control outcomes. Validate applicability, configuration, and evidence in the actual environment.</p>
+</section><div class="assurance-case-heading"><span class="simple-eyebrow">SUPPORTING CASES / TECHNICAL VALIDATION</span><h2>Challenge a real enforcement boundary</h2><p>Use the fictional RR-01 and RR-02 cases to explore negative tests and evidence handoffs.</p></div>
 <details class="authority-evidence-case" id="authorization-evidence-case">
 <summary><span class="aec-kicker">CONNECTED CONTROL EXAMPLE · RR-01</span><strong>Reviewer independence: from requirement to evidence</strong><span class="aec-subtitle">Management demonstration · Negative test · Evidence · Auditor evaluation</span></summary>
 <div class="aec-body">
@@ -211,5 +267,38 @@ function reveal(){
 }
 window.addEventListener('hashchange',reveal);
 reveal();
+})();
+</script><script>
+(function(){'use strict';
+const domains=[
+{key:'governance',name:'Governance & scope',control:'Define the eligible repositories, change classes, exclusions, policy owners and population boundaries.',test:'Reconcile eligible and excluded repositories and PR populations to independent source records; challenge missing or unowned scope.',evidence:'Approved scope and exclusions; repo inventory; ruleset ownership; population reconciliation and exception history.',links:[['RCM controls','./control-matrix.html#control-G01'],['Proposed RCM','./rcm-view.html#download-current-rcm'],['Population testing','./independent-assurance.html#document-assessment']]},
+{key:'agent',name:'Agent security & configuration',control:'Govern prompts, tools, permissions, model routing and sensitive context used by AI reviewers.',test:'Attempt unauthorized tool access, malicious instructions in PR content, configuration changes and sensitive data exposure.',evidence:'Agent identity and permission matrix; effective prompt/model/tool versions; configuration history; security test outcomes.',links:[['Control example','./control-matrix.html#control-A01'],['Proposed RCM','./rcm-view.html#download-current-rcm'],['Foundational safeguards','./independent-assurance.html#foundational-controls']]},
+{key:'policy',name:'Deterministic policy enforcement',control:'Apply versioned repository, path, dependency and required-check eligibility rules independently of AI ratings.',test:'Inject an excluded dependency, missing policy input, failed check and stale commit; attempt to bypass automated exclusion.',evidence:'Effective allowlist and dependency map, policy version, test PR/SHA, input snapshot, decision trace and failed-bypass result.',links:[['Control example','./control-matrix.html#control-D01'],['Proposed RCM','./rcm-view.html#download-current-rcm'],['Run fictional negative test','./engineering-blueprint.html#rr02-negative-test'],['Evidence challenge','./independent-assurance.html#rr02-negative-evidence']]},
+{key:'evaluation',name:'AI evaluation & validation',control:'Validate reviewer performance, false-low-risk classifications, disagreements, missing context and model changes.',test:'Compare outputs to independently adjudicated cases; test adversarial inputs, disagreements and shared reviewer dependencies.',evidence:'Adjudicated test set and coverage; per-reviewer verdict and SHA; model/prompt versions; false classifications and remediation.',links:[['Control example','./control-matrix.html#control-A03'],['Proposed RCM','./rcm-view.html#download-current-rcm'],['Classification evidence','./independent-assurance.html#classification-evidence-bridge']]},
+{key:'authorization',name:'Change authorization & deployment',control:'Enforce an authorized approval-of-record, current required checks, protected merge and artifact/release linkage.',test:'Attempt self-approval, stale-revision merge, unauthorized approval, bypass and artifact substitution; reperform a change end to end.',evidence:'Effective GitHub rulesets, CODEOWNERS, permissions and bypass log; approved SHA, merged SHA, artifact digest and deployment record.',links:[['Control example','./control-matrix.html#control-P01'],['Proposed RCM','./rcm-view.html#download-current-rcm'],['Reviewer independence case','./independent-assurance.html#authorization-evidence-case']]},
+{key:'monitoring',name:'Monitoring & response',control:'Detect unusual approvals, missing events, source-to-deployment mismatches and model drift; assign escalation, suspension and recovery authority.',test:'Reconcile deployment population independently; inject missed alerts; inspect timeliness, disposition and operating effectiveness.',evidence:'Independent PR and deployment populations; monitoring logic, alerts, investigations, suspension and restart decisions.',links:[['Control example','./control-matrix.html#control-X01'],['Proposed RCM','./rcm-view.html#download-current-rcm'],['Stage monitoring','./continuous-monitoring.html#monitoring-guide'],['Operating evidence','./independent-assurance.html#operations-assurance']]}
+];
+const picker=document.getElementById('ace-picker');if(!picker)return;
+const $=id=>document.getElementById(id);
+const buttons=[...picker.querySelectorAll('button[data-domain]')];
+let selected=2;
+const qs=new URLSearchParams(location.search).get('control');
+const initial=domains.findIndex(d=>d.key===qs);if(initial>=0)selected=initial;
+function render(){
+ const d=domains[selected];
+ buttons.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.domain===d.key)));
+ $('ace-management-title').textContent=d.name;$('ace-management-description').textContent=d.control;
+ $('ace-test-title').textContent=['Scope & population testing','Configuration & access testing','Negative testing & bypass attempts','Classification & dependency testing','End-to-end reperformance','Operating effectiveness & evidence reliability'][selected];
+ $('ace-test-description').textContent=d.test;$('ace-evidence-description').textContent=d.evidence;
+ $('ace-links').replaceChildren();
+ for(const [label,url] of d.links){const a=document.createElement('a');a.href=url;a.textContent=label+' →';$('ace-links').appendChild(a);}
+ $('ace-progress').textContent='Domain '+(selected+1)+' of 6';$('ace-previous').disabled=selected===0;$('ace-next').textContent=selected===5?'Start again ↻':'Next domain →';
+ const next=new URL(location.href);next.searchParams.set('control',d.key);history.replaceState(null,'',next);
+}
+buttons.forEach((b,i)=>b.addEventListener('click',()=>{selected=i;render()}));
+$('ace-previous').addEventListener('click',()=>{selected=Math.max(0,selected-1);render()});
+$('ace-next').addEventListener('click',()=>{selected=(selected+1)%6;render()});
+window.addEventListener('popstate',()=>{const p=new URLSearchParams(location.search).get('control');const i=domains.findIndex(d=>d.key===p);if(i>=0){selected=i;render()}});
+render();
 })();
 </script></body></html>
