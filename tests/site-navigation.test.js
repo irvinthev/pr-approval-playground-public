@@ -217,22 +217,24 @@ test('Overview architecture map separates AI analysis, external model dependenci
  assert.match(html,/\.\/ai-sdlc-risk\.html\?risk=RR-02#risk-explorer/);
 });
 
-test('Homepage presents seven readable stages and four chapter entry points while retaining scenario outcomes',()=>{
- const html=read('index.html');
- const engineering=read('engineering-blueprint.html');
- assert.match(html,/id="overview-stages"/);
+test('Homepage retains one interactive simulator with its four scenarios and supporting panels',()=>{
+ const html=read('index.html'),engineering=read('engineering-blueprint.html');
  assert.match(html,/When AI reviews code, who actually approves it\?/);
- assert.deepEqual([...html.matchAll(/<li><span>(0[1-7])<\/span><strong>/g)].map(m=>Number(m[1])),[1,2,3,4,5,6,7]);
- assert.match(html,/id="field-guide-chapters"/);
+ assert.doesNotMatch(html,/id="overview-stages"|class="overview-simple-journey"|class="overview-simple-stages"/);
+ assert.match(html,/href="#workflow">Explore the interactive delivery simulator/);
+ assert.deepEqual([...html.matchAll(/<button class="workflow-stage"[^>]*data-stage="(\d+)"/g)].map(m=>Number(m[1])),[0,1,2,3,4,5,6,7]);
+ assert.deepEqual([...html.matchAll(/<button type="button" data-scenario="([^"]+)"/g)].map(m=>m[1]),['pass','split','excluded','canary']);
+ for(const id of ['scenario-output','decision-panel','stage-inspector','trust-boundaries','investigation-panel','field-guide-chapters'])
+  assert.ok(html.includes('id="'+id+'"'),id);
+ const at=fragment=>html.indexOf(fragment);
+ assert.ok(at('id="scenario-lab"')<at('id="workflow-stages"'));
+ assert.ok(at('id="workflow-stages"')<at('Authorization routes'));
+ assert.ok(at('Authorization routes')<at('id="stage-inspector"'));
+ assert.ok(at('id="stage-inspector"')<at('id="trust-boundaries"'));
+ assert.ok(at('id="trust-boundaries"')<at('id="field-guide-chapters"'));
  assert.match(html,/class="overview-chapter-grid"/);
- assert.match(html,/\.\/ai-sdlc-risk\.html/);
- assert.match(html,/\.\/continuous-monitoring\.html/);
- assert.match(html,/\.\/independent-assurance\.html/);
  assert.match(html,/id="overview-authority-map"/);
  assert.match(html,/class="overview-reference-collapse"/);
- assert.doesNotMatch(html,/id="overview-png-image"/);
  assert.match(engineering,/id="engineering-architecture-reference"/);
  assert.match(engineering,/src="\.\/ai-cicd-overview\.PNG"/);
- for(const scenario of ['pass','split','excluded','canary'])
-   assert.ok(html.includes('data-scenario="'+scenario+'"'));
 });
