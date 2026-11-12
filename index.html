@@ -203,7 +203,7 @@ details.field-deep-dive>section{margin:0 14px 16px}
 <section class="hero" id="main-content" tabindex="-1">
 <span class="eyebrow">ENGINEERING · SECURITY · RISK · ASSURANCE</span>
 <h1>How should AI participate in software delivery?</h1>
-<p class="lead">AI can help review and classify changes in CI/CD. As teams consider giving it more responsibility, Engineering, Risk, leadership, and auditors need a shared understanding of clear decision authority: what AI may decide, what independently enforces that limit, and what evidence can demonstrate the design.</p>
+<p class="lead">AI can review code. But who authorizes a change, what enforces that decision, and what evidence proves it?</p>
 <p class="lead">This field guide follows <strong>one fictional approach</strong> from pull request to production. It is a discussion and demonstration tool—not a comprehensive assessment method or a required architecture, and not a conclusion of control effectiveness.</p>
 <div class="hero-actions"><a class="guide-action" href="./index.html?journey=rr02#guided-investigation">Start guided investigation →</a><a class="secondary-action" href="#workflow">Explore delivery pipeline →</a><a class="secondary-action" href="./engineering-blueprint.html">Engineering &amp; safeguards →</a></div>
 </section>
@@ -216,7 +216,7 @@ details.field-deep-dive>section{margin:0 14px 16px}
   <div class="authority-map-heading">
     <span class="section-kicker">ARCHITECTURE / AUTHORITY AT A GLANCE</span>
     <h2 id="authority-map-title">One change. Several decision boundaries.</h2>
-    <p>AI agents can analyze a proposed change, but model output is not approval authority. Follow the distinct routes from scope checks to protected merge. This is one fictional design, not a claim about any deployed system.</p>
+    <p>Follow how eligibility, AI review and protected merge remain separate decisions in this fictional design.</p>
   </div>
   <div class="authority-map-flow" role="group" aria-label="Illustrative change flow with eligibility, AI-assisted review, separate approval paths and protected merge">
     <div class="authority-map-node authority-map-pr"><span class="authority-map-icon" aria-hidden="true">⌘</span><strong>Pull request</strong><small>Code, context, exact revision</small></div>
@@ -259,11 +259,11 @@ details.field-deep-dive>section{margin:0 14px 16px}
 </section></details><section class="workflow-map" id="workflow" aria-labelledby="workflow-title">
 <div class="section-kicker">01 / How it works</div>
 <h2 class="section-heading" id="workflow-title">Explore the path from code to production</h2>
-<p class="section-intro">This eight-touchpoint journey illustrates how AI, ordinary engineering checks, authorization, and production delivery can work together. Select a stage to see the implementation responsibility and the evidence it produces. The detailed pipeline simulator uses a different seven-stage grouping.</p>
+<p class="section-intro">Choose a stage to inspect responsibility and evidence. The overview has eight touchpoints; the simulator groups them into seven.</p>
 <div class="scenario-inline" id="scenario-lab" aria-labelledby="scenario-title">
 <div class="section-kicker">TRY A SCENARIO</div>
 <h3 id="scenario-title">Choose a change to follow</h3>
-<p class="scenario-inline-intro">Explore the neutral workflow, or select a fictional scenario to see how the eight stages respond.</p>
+<p class="scenario-inline-intro">Choose a fictional scenario or explore the baseline workflow.</p>
 <div class="scenario-picker" role="group" aria-label="Simulation scenarios">
 <button type="button" data-scenario="pass" aria-pressed="false">✅ Standard low-risk pass</button>
 <button type="button" data-scenario="split" aria-pressed="false">🔀 AI split decision</button>
@@ -339,7 +339,7 @@ details.field-deep-dive>section{margin:0 14px 16px}
 </section></details>
 <section class="lens-section" aria-labelledby="lenses-title">
 <div class="section-kicker">04 / Explore the field guide</div><h2 class="section-heading" id="lenses-title">Explore implementation, operations, risk, and assurance</h2>
-<p class="section-intro">These are complementary perspectives on one delivery system—not separate workflows or chapters that must be followed in order. Choose the area most useful to your work.</p>
+<p class="section-intro">One delivery system, four perspectives. Start where your question leads.</p>
 <div class="lens-grid">
 <a class="lens-card" href="./engineering-blueprint.html"><strong>Engineering &amp; Operations</strong><p>How do we implement, validate, enforce, and operate this workflow?</p><span>Open implementation guide →</span></a>
 <a class="lens-card" href="./ai-sdlc-risk.html"><strong>Security &amp; Risk</strong><p>Where could policy, model behavior, privileges, or deployment pathways fail?</p><span>Challenge safeguards →</span></a>
