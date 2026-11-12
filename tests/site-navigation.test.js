@@ -49,7 +49,7 @@ test('homepage reconciles the interactive approval illustration with the broader
  const html=read('index.html');
  assert.match(html,/href="\.\/ai-sdlc-risk\.html">AI SDLC Risk Assessment/);
  assert.match(html,/href="\.\/previous-overview\.html">See archived previous Overview/);
- assert.match(html,/clear decision authority/i);
+ assert.match(html,/who authorizes a change/i);
  assert.match(html,/not a required architecture/i);
  assert.match(html,/Illustrative educational model: fictional scenarios/i);
  assert.doesNotMatch(html,/Braze|Appboy|braze\.com/i);
@@ -133,7 +133,7 @@ test('Assurance explains the AI assurance challenge without claiming verified op
   assert.match(html,new RegExp(term,'i'),term);
  }
  for(const id of ['operating-model','foundational-controls','prelaunch-validation','operations-assurance','document-assessment'])assert.equal(html.split('id="'+id+'"').length-1,1,id);
- assert.match(html,/not the required architecture or a description of any company's implementation/i);
+ assert.match(html,/Start with a fictional authorization case/i);
  assert.match(html,/Organizations may use one reviewer, multiple reviewers or deterministic automation/i);
  assert.match(html,/Not every test applies to every operating model/i);
  assert.match(html,/artifact repository or registry record/i);

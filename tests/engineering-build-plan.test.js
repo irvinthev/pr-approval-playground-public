@@ -7,7 +7,7 @@ test('Engineering build plan is visible ahead of interactive stage selector',()=
  assert.match(plan,/Reuse → Integrate → Build/);
  assert.match(page,/<h1>How would we actually build this\?<\/h1>/);
  assert.match(page,/id="delivery-roadmap"/);
- assert.match(page,/Three implementation decisions/);
+ assert.match(page,/Reuse controls, integrate reviewers and build the missing policy and evidence layer/);
  assert.match(page,/See the seven-stage implementation checklist/);
  assert.match(page,/Canonical seven-stage implementation checklist/);
  assert.match(page,/<title>Engineering &amp; Safeguards/);
