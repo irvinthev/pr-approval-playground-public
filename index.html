@@ -235,14 +235,14 @@ details.field-deep-dive>section{margin:0 14px 16px}
 
 <div class="overview-mode-line"><span id="workflow-mode" class="overview-mode">Explore mode · No scenario selected</span><button id="clear-scenario" type="button" hidden>Return to Explore mode</button></div>
 <div class="workflow-stages" id="workflow-stages" aria-label="Eight workflow stages">
-<button class="workflow-stage" type="button" data-stage="0" aria-pressed="true"><span class="stage-number">01 · ENTRY</span><strong>Pull request</strong><p>Identify the change and exact commit.</p><span class="stage-state">Explore stage</span></button>
-<button class="workflow-stage" type="button" data-stage="1" aria-pressed="false"><span class="stage-number">02 · RULES</span><strong>Deterministic gates</strong><p>Check eligibility, paths, dependencies, and exclusions.</p><span class="stage-state">Explore stage</span></button>
-<button class="workflow-stage" type="button" data-stage="2" aria-pressed="false"><span class="stage-number">03 · CODE QUALITY</span><strong>CI &amp; code checks</strong><p>Build, test, scan, and apply required reviews.</p><span class="stage-state">Explore stage</span></button>
-<button class="workflow-stage" type="button" data-stage="3" aria-pressed="false"><span class="stage-number">04 · AI SIGNALS</span><strong>AI reviewers</strong><p>Two fictional AI reviewers evaluate the same revision.</p><span class="stage-state">Explore stage</span></button>
-<button class="workflow-stage" type="button" data-stage="4" aria-pressed="false"><span class="stage-number">05 · AUTHORITY</span><strong>Policy decision</strong><p>Determine automated eligibility or human escalation.</p><span class="stage-state">Explore stage</span></button>
-<button class="workflow-stage" type="button" data-stage="5" aria-pressed="false"><span class="stage-number">06 · ENFORCEMENT</span><strong>GitHub merge</strong><p>Enforce required checks and valid authorization.</p><span class="stage-state">Explore stage</span></button>
-<button class="workflow-stage" type="button" data-stage="6" aria-pressed="false"><span class="stage-number">07 · DELIVERY</span><strong>Build &amp; deploy</strong><p>Bind released artifact to the authorized revision.</p><span class="stage-state">Explore stage</span></button>
-<button class="workflow-stage" type="button" data-stage="7" aria-pressed="false"><span class="stage-number">08 · OPERATIONS</span><strong>Monitor &amp; respond</strong><p>Observe health, exceptions, and rollback triggers.</p><span class="stage-state">Explore stage</span></button>
+<button class="workflow-stage" type="button" data-stage="0" aria-pressed="true"><span class="stage-number">01 · ENTRY</span><strong>Pull request</strong><p>Identify the change and exact commit.</p><span class="stage-state">Select stage</span></button>
+<button class="workflow-stage" type="button" data-stage="1" aria-pressed="false"><span class="stage-number">02 · RULES</span><strong>Deterministic gates</strong><p>Check eligibility, paths, dependencies, and exclusions.</p><span class="stage-state">Select stage</span></button>
+<button class="workflow-stage" type="button" data-stage="2" aria-pressed="false"><span class="stage-number">03 · CODE QUALITY</span><strong>CI &amp; code checks</strong><p>Build, test, scan, and apply required reviews.</p><span class="stage-state">Select stage</span></button>
+<button class="workflow-stage" type="button" data-stage="3" aria-pressed="false"><span class="stage-number">04 · AI SIGNALS</span><strong>AI reviewers</strong><p>Two fictional AI reviewers evaluate the same revision.</p><span class="stage-state">Select stage</span></button>
+<button class="workflow-stage" type="button" data-stage="4" aria-pressed="false"><span class="stage-number">05 · AUTHORITY</span><strong>Policy decision</strong><p>Determine automated eligibility or human escalation.</p><span class="stage-state">Select stage</span></button>
+<button class="workflow-stage" type="button" data-stage="5" aria-pressed="false"><span class="stage-number">06 · ENFORCEMENT</span><strong>GitHub merge</strong><p>Enforce required checks and valid authorization.</p><span class="stage-state">Select stage</span></button>
+<button class="workflow-stage" type="button" data-stage="6" aria-pressed="false"><span class="stage-number">07 · DELIVERY</span><strong>Build &amp; deploy</strong><p>Bind released artifact to the authorized revision.</p><span class="stage-state">Select stage</span></button>
+<button class="workflow-stage" type="button" data-stage="7" aria-pressed="false"><span class="stage-number">08 · OPERATIONS</span><strong>Monitor &amp; respond</strong><p>Observe health, exceptions, and rollback triggers.</p><span class="stage-state">Select stage</span></button>
 </div>
 <div class="scenario-inline" id="scenario-lab" aria-labelledby="scenario-title">
 <div class="section-kicker">TRY A SCENARIO</div>
@@ -417,7 +417,7 @@ details.field-deep-dive>section{margin:0 14px 16px}
 
   function resetExplore(){
     scenarioButtons.forEach(button=>button.setAttribute("aria-pressed","false"));
-    stageButtons.forEach(button=>{delete button.dataset.state;button.querySelector(".stage-state").textContent="Explore stage";});
+    stageButtons.forEach(button=>{delete button.dataset.state;button.querySelector(".stage-state").textContent="Select stage";});
     scenarioOutput.hidden=true;document.getElementById("overview-related-risk").hidden=true;
     mode.textContent="Explore mode · No scenario selected";clearButton.hidden=true;
     document.getElementById("scenario-facts").replaceChildren();
