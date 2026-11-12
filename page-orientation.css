@@ -1,0 +1,10 @@
+/* Shared narrative orientation: concise context, not a duplicate navigation layer. */
+.guide-orientation{margin:12px 0 22px;padding:13px 0 15px;border:0;border-bottom:1px solid #456b78;background:transparent;color:#e8f4f6}
+.guide-orientation p{font-size:14px;line-height:1.65;color:#c8dce5;margin:0 0 9px;max-width:940px}
+.guide-orientation p:last-child{margin-bottom:0}
+.guide-orientation strong{color:#e8f4f6}
+.guide-orientation-overview nav{display:flex;flex-wrap:wrap;gap:5px 14px;margin-top:12px}
+.guide-orientation-overview a{color:#a4edda;font-size:13px;font-weight:750;text-decoration:underline;text-underline-offset:3px}
+.guide-orientation-overview a:hover{color:#e9fff7}
+.guide-orientation-overview a:focus-visible{outline:3px solid #a4edda;outline-offset:3px}
+@media(max-width:650px){.guide-orientation{margin:10px 0 18px;padding:9px 0 12px}.guide-orientation p{font-size:13px;line-height:1.6}.guide-orientation-overview nav{gap:9px 13px}}
