@@ -32,6 +32,18 @@
 .rr02-negative-evidence .rr02-evidence-limit{padding:9px 12px;background:#1b4250;border-left:3px solid #a5ddcb}
 .rr02-negative-evidence a{color:#b5f0dc;font-weight:700}
 @media(max-width:700px){.rr02-evidence-grid{grid-template-columns:1fr}.rr02-negative-evidence{padding:15px}}
+</style><style>
+/* Progressive disclosure: preserve reference depth without front-loading secondary content. */
+details.field-deep-dive{margin:18px 0;border:1px solid var(--site-border,#4d6875);border-radius:12px;background:var(--site-panel,#112d3c);overflow:visible}
+details.field-deep-dive>summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:58px;padding:14px 18px;color:var(--site-text,#e8f5f5)}
+details.field-deep-dive>summary::-webkit-details-marker{display:none}
+details.field-deep-dive>summary:focus-visible{outline:3px solid var(--site-mint,#a4edda);outline-offset:3px}
+details.field-deep-dive .field-deep-dive-label{display:block;font-size:15px;font-weight:750;line-height:1.4}
+details.field-deep-dive .field-deep-dive-hint{display:block;font-size:12px;color:var(--site-muted,#bfd0d8);margin-top:3px;line-height:1.4}
+details.field-deep-dive .field-deep-dive-chevron{flex-shrink:0;font-size:19px;color:var(--site-mint,#a4edda)}
+details.field-deep-dive[open] .field-deep-dive-chevron{transform:rotate(180deg)}
+details.field-deep-dive>section{margin:0 14px 16px}
+@media(max-width:600px){details.field-deep-dive>summary{padding:13px 14px}details.field-deep-dive>section{margin:0 10px 12px}}
 </style></head>
 <body><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html">Overview</a><a href="./ai-sdlc-risk.html">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html" aria-current="page">Assurance</a></nav></header>
 <article class="simple-assurance">
@@ -144,7 +156,7 @@
 <div class="feedback-line"><strong>This approach is meant to be challenged.</strong><p>Apply the method to the real operating model rather than treating this example as a checklist. Which risks are material, what existing engineering controls address them, and what evidence remains missing?</p></div>
 </section>
 </div></details>
-<details class="assurance-support-expanded" id="assurance-supporting-material"><summary><span class="simple-eyebrow">REFERENCE MATERIAL</span><strong>Frameworks and additional fictional cases</strong><span>Background guidance and extended case-study library.</span></summary><div class="assurance-method-body"><section class="guidance-map" id="guidance-map" aria-labelledby="guidance-title">
+<details class="assurance-support-expanded" id="assurance-supporting-material"><summary><span class="simple-eyebrow">REFERENCE MATERIAL</span><strong>Frameworks and additional fictional cases</strong><span>Background guidance and extended case-study library.</span></summary><div class="assurance-method-body"><details class="field-deep-dive"><summary><span><span class="field-deep-dive-label">Guidance sources and how to apply them</span><span class="field-deep-dive-hint">Reference framework comparison</span></span><span class="field-deep-dive-chevron" aria-hidden="true">⌄</span></summary><section class="guidance-map" id="guidance-map" aria-labelledby="guidance-title">
 <div class="guidance-intro"><span class="simple-eyebrow">THE PRACTITIONER CHALLENGE / KNOW WHAT EACH SOURCE DOES</span><h2 id="guidance-title">Established guidance. Different purposes. One practical assurance challenge.</h2><p>AI risk, secure software delivery, vendor responsibilities and financial-reporting audits are not the same discipline. These sources contribute different pieces; none alone determines whether this particular AI approval design can be relied upon.</p></div>
 <div class="guidance-grid" aria-label="Source types and their contributions">
 <div class="guidance-tile"><span class="guidance-type">01 / AI RISK MANAGEMENT</span><strong>Frame the risk</strong><p>Identify AI roles, authority, consequences and governance objectives.</p><a href="https://www.nist.gov/itl/ai-risk-management-framework" target="_blank" rel="noopener noreferrer">NIST AI RMF <span aria-hidden="true">↗</span></a></div>
@@ -154,9 +166,9 @@
 <div class="guidance-tile"><span class="guidance-type">05 / APPLICABLE AUDIT OBLIGATIONS</span><strong>Determine what evidence supports reliance</strong><p>Apply relevant SOX/ICFR requirements and auditing standards within the actual audit scope.</p><div class="guidance-sources"><a href="https://pcaobus.org/oversight/standards/auditing-standards/details/AS1105" target="_blank" rel="noopener noreferrer">PCAOB AS 1105 <span aria-hidden="true">↗</span></a><a href="https://pcaobus.org/oversight/standards/auditing-standards/details/AS2201" target="_blank" rel="noopener noreferrer">PCAOB AS 2201 <span aria-hidden="true">↗</span></a></div></div>
 </div>
 <div class="guidance-bridge"><span class="simple-eyebrow">OUR CONTRIBUTION / CONNECT THE DISCIPLINES</span><h3>From established guidance to practical assurance</h3><p>The challenge is not a lack of frameworks. It is translating their different purposes into a practical, defensible way to evaluate AI authority inside software delivery.</p><p>Here, <strong>AI risk guidance frames the concern</strong>, <strong>security guidance informs the threat</strong>, <strong>Engineering demonstrates a safeguard</strong>, <strong>management monitors its operation</strong>, and <strong>Audit independently evaluates the evidence</strong>.</p><p class="guidance-boundary">A proposed synthesis for discussion, not a new regulatory standard, official mapping, certification, or claim that no AI audit guidance exists. Specific requirements and testing remain dependent on scope and professional judgment.</p></div>
-</section>
+</section></details>
 <div id="shared-case-root" hidden></div>
-<section class="assurance-example" aria-labelledby="case-example-title">
+<details class="field-deep-dive"><summary><span><span class="field-deep-dive-label">Fictional shared-library case study</span><span class="field-deep-dive-hint">Extended worked example</span></span><span class="field-deep-dive-chevron" aria-hidden="true">⌄</span></summary><section class="assurance-example" aria-labelledby="case-example-title">
 <div class="example-head"><div><span class="simple-eyebrow">SUPPORTING CASE STUDY / ONE FICTIONAL PR</span><h2 id="case-example-title">Apply the method to a fictional shared-library change.</h2><p>A downstream billing dependency makes the change ineligible for AI approval—even when both reviewers call it low risk.</p></div><span class="example-status">HUMAN REVIEW REQUIRED</span></div>
 <div class="example-outcomes" aria-label="Illustrative review and eligibility results">
 <div><span>AI REVIEWER A</span><strong>Low risk</strong></div>
@@ -167,7 +179,7 @@
 <div class="example-actions"><a class="example-primary" href="./auditor-view.html#billing-challenge-lab">Challenge the decision →</a><a href="#foundational-controls">Review what must be tested ↑</a><a href="./rcm-view.html#download-current-rcm">Inspect the proposed controls →</a></div>
 <p class="simple-note">This financial-dependency example is an <strong>adversarial counterfactual</strong>: the two fictional AI verdicts illustrate why their agreement could not override the earlier deterministic exclusion. An excluded PR would be routed to human review without needing AI sign-off.</p>
 <p class="example-disclaimer">Illustrative result from the existing shared-library challenge—not a live PR, executed test, or evidence of operating control effectiveness.</p>
-</section>
+</section></details>
 <section class="simple-block" id="worked-example-library"><div class="simple-eyebrow">WORK THROUGH THE EVIDENCE</div><h2>Four situations. Two perspectives.</h2><p>Compare Engineering evidence with an Assurance assessment. Change a condition to see what fails, what remains unknown and what to test next.</p><div class="simple-actions"><a href="./auditor-view.html?example=standard#worked-examples">Standard approval →</a><a href="./auditor-view.html?example=dependency#worked-examples">Hidden billing dependency →</a><a href="./auditor-view.html?example=policy#worked-examples">Who can change the rules? →</a><a href="./auditor-view.html?example=population#worked-examples">Missing deployment →</a></div></section>
 
 </div></details>
@@ -185,4 +197,19 @@ document.getElementById('rr02-evidence-fixture').textContent=fixture==='covered'
 document.getElementById('rr02-evidence-observed').textContent=fixture==='covered'
 ?'Simulated result: human review required. Verify the actual gate response, rejection of unauthorized approval, and exact-commit linkage with real implementation records.'
 :'Simulated result: auto-approval eligible (unsafe). The result conflicts with the expected human-review route. Verify whether actual GitHub controls denied or permitted merge; do not infer a completed deployment.';
-})();</script></body></html>
+})();</script><script>
+/* Expand collapsed source material when a linked subsection is the destination. */
+(function(){
+function reveal(){
+  var hash=window.location.hash;
+  if(!hash||hash.length<2)return;
+  var id;try{id=decodeURIComponent(hash.slice(1))}catch(_){return}
+  var target=document.getElementById(id);
+  if(!target)return;
+  var parent=target.closest('details.field-deep-dive');
+  if(parent&&!parent.open)parent.open=true;
+}
+window.addEventListener('hashchange',reveal);
+reveal();
+})();
+</script></body></html>
