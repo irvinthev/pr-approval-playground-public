@@ -44,3 +44,7 @@
 .risk-stage-context .risk-context-test>strong{font-size:13px;color:#a4edda}
 .risk-stage-context .risk-context-test>p{font-size:13px;line-height:1.6;color:#d7e9ef;margin:5px 0}
 .risk-stage-context .risk-context-local-link{display:inline-block;margin-top:14px;color:#a4edda;font-size:13px;font-weight:750}
+
+.risk-stage-context .risk-context-test-more{border:1px solid #466e7e;border-radius:8px;margin-top:13px;padding:10px 13px}
+.risk-stage-context .risk-context-test-more summary{cursor:pointer;font-size:13px;font-weight:750;color:#a4edda}
+.risk-stage-context .risk-context-test-more summary:focus-visible{outline:3px solid #a4edda;outline-offset:3px}
