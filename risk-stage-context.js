@@ -28,6 +28,7 @@ node('p','Illustrative mapping; potential safeguards are not verified as impleme
 function localTarget(){return lens==='engineering'?'technical-requirements':lens==='monitoring'?'monitoring-guide':'prelaunch-validation'}
 function syncExistingStage(){
  if(lens==='assurance')return;
+ if(lens==='monitoring'&&root.MonitoringStageView?.select(stage))return;
  const selector=doc.getElementById(lens==='engineering'?'stages':'stage-pickers');
  const button=selector&&selector.querySelectorAll('button')[stage];
  if(button)button.click();
