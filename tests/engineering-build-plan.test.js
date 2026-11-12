@@ -1,6 +1,6 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const page=fs.readFileSync(path.join(__dirname,'..','engineering-blueprint.html'),'utf8');
-test('Compact architecture precedes interactive Engineering stage explorer',()=>{
+test('Compact architecture precedes the preserved Engineering implementation details',()=>{
  const start=page.indexOf('id="engineering-build-plan"'),explore=page.indexOf('id="technical-requirements"');
  assert.ok(start>=0&&explore>start);
  const plan=page.slice(start,explore);
@@ -11,7 +11,8 @@ test('Compact architecture precedes interactive Engineering stage explorer',()=>
  assert.match(page,/Canonical seven-stage implementation checklist/);
  assert.ok(page.indexOf('id="rr02-negative-test"')>explore);
  assert.ok(page.indexOf('id="supporting-resources"')>page.indexOf('id="rr02-negative-test"'));
- assert.match(page,/Swipe horizontally to explore all seven stages/);
+ assert.match(page,/id="risk-stage-context" data-perspective="engineering"/);
+ assert.doesNotMatch(page,/id="stage-swipe-hint"/);
  assert.match(page,/id="delivery-roadmap"/);
  assert.match(page,/id="rr02-run-negative-test"/);
 });
@@ -19,8 +20,8 @@ test('Build plan keeps accessible mobile summaries and original interactive chap
  assert.match(page,/build-plan__mobile-label/);
  assert.match(page,/@media\(max-width:800px\)/);
  for(const id of ['technical-requirements','build-view','stage-monitor-link','supporting-resources','required-ci','progressive-rollout'])assert.ok(page.includes('id="'+id+'"'),id);
- assert.match(page,/<h2>Engineering stage explorer<\/h2>/);
+ assert.match(page,/<h2>Engineering implementation &amp; validation<\/h2>/);
  assert.match(page,/<summary>Full implementation checklist/);
  const link=page.indexOf('id="stage-monitor-link"'),stageButtons=page.indexOf('id="stages"');
- assert.ok(link>=0&&stageButtons>link,'Dedicated Monitoring link precedes stage selection');
+ assert.ok(link>=0&&stageButtons>link,'Dedicated Monitoring link precedes the retained legacy anchor');
 });
