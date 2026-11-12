@@ -75,12 +75,39 @@ details.field-deep-dive .field-deep-dive-chevron{flex-shrink:0;font-size:19px;co
 details.field-deep-dive[open] .field-deep-dive-chevron{transform:rotate(180deg)}
 details.field-deep-dive>section{margin:0 14px 16px}
 @media(max-width:600px){details.field-deep-dive>summary{padding:13px 14px}details.field-deep-dive>section{margin:0 10px 12px}}
+</style><style>
+/* Risk taxonomy is a navigation layer, not a second risk register. */
+.risk-primary-categories{margin:18px 0 24px;padding:clamp(16px,2.5vw,24px);border:1px solid #456e78;border-radius:14px;background:#102f3e}
+.risk-primary-categories h2{font-size:clamp(24px,3.3vw,34px);margin:8px 0 9px;line-height:1.2}
+.risk-primary-categories>p{color:#c7dce5;line-height:1.6;font-size:14px;max-width:900px}
+.risk-category-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:18px 0}
+.risk-category-grid a{display:flex;flex-direction:column;gap:10px;min-width:0;min-height:225px;padding:18px;border-radius:11px;border:1px solid #547786;background:#17394b;color:#eaf7f7;text-decoration:none}
+.risk-category-grid a:hover,.risk-category-grid a:focus-visible{border-color:#a4edda;background:#1e4653}
+.risk-category-grid a:focus-visible{outline:3px solid #a4edda;outline-offset:3px}
+.risk-category-grid strong{font-size:19px;line-height:1.25}
+.risk-category-grid a>span:not(.risk-category-number){color:#e0ecf1;font-size:14px;line-height:1.5}
+.risk-category-grid small{color:#b9d1dc;font-size:12px;line-height:1.5}
+.risk-category-grid em{font-style:normal;color:#a4edda;font-weight:800;font-size:13px;margin-top:auto}
+.risk-category-number{font-size:11px;font-weight:800;letter-spacing:.08em;color:#a4edda}
+.risk-category-note{font-size:12px!important;color:#b2cad4!important;margin-bottom:0}
+@media(max-width:840px){.risk-category-grid{grid-template-columns:1fr}.risk-category-grid a{min-height:0}}
 </style></head>
 <body class="risk-dashboard"><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html">Overview</a><a href="./ai-sdlc-risk.html" aria-current="page">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Assurance</a></nav></header>
 <section class="risk-main-hero" id="main-content" tabindex="-1">
 <div><div class="field-kicker">AI-enabled software delivery / Risk Assessment</div><h1>AI SDLC Risk Management</h1>
 <p>Explore AI-enabled delivery risks, safeguards and management decisions.</p><div class="risk-audience"><strong>Who should use this?</strong><span><b>Engineering leadership:</b> decide where AI may act.</span><span><b>Security:</b> identify threats and safeguards.</span><span><b>GRC:</b> connect exposures, risk criteria and treatment.</span><span><b>Internal Audit:</b> understand the management risk process.</span></div></div>
 
+</section>
+<section class="risk-primary-categories" id="risk-categories" aria-labelledby="risk-categories-title">
+ <div class="field-kicker">RISK ASSESSMENT / START HERE</div>
+ <h2 id="risk-categories-title">Three risks. Nine ways delivery can fail.</h2>
+ <p>When AI reviews, classifies or authorizes software changes, start with what could go wrong. Choose a risk category to explore its underlying failure scenarios, safeguards and evidence in the existing library.</p>
+ <div class="risk-category-grid">
+  <a href="#risk-register" data-risk-category="decision"><span class="risk-category-number">01 / AI DECISIONS</span><strong>AI Decision Risk</strong><span>Can AI reliably assess the changes it is assigned?</span><small>RR-02 · RR-05 — Misclassification and correlated reviewer failures</small><em>Explore 2 scenarios →</em></a>
+  <a href="#risk-register" data-risk-category="governance"><span class="risk-category-number">02 / AUTHORITY</span><strong>Authorization &amp; Governance Risk</strong><span>Is AI operating within independently governed approval authority?</span><small>RR-01 · RR-06 · RR-08 · RR-09 — Approval, drift, overrides and identities</small><em>Explore 4 scenarios →</em></a>
+  <a href="#risk-register" data-risk-category="execution"><span class="risk-category-number">03 / DELIVERY</span><strong>CI/CD Execution Risk</strong><span>Does the pipeline enforce conditions required to merge, deploy and prove the authorized change path?</span><small>RR-03 · RR-04 · RR-07 — Stale approvals, bypasses and incomplete evidence</small><em>Explore 3 scenarios →</em></a>
+ </div>
+ <p class="risk-category-note">Risk category → Risk event → Failure scenario → Impact → Safeguards → Evidence. These are illustrative scenarios, not assessed organizational risks or verified controls.</p>
 </section>
 <section aria-label="Follow a change" style="margin:15px 0 25px;padding:20px;border:1px solid #4d7b7a;border-radius:12px;background:#143c44">
   <div class="field-kicker">VISUAL INVESTIGATION / START HERE</div>
