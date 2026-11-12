@@ -76,7 +76,7 @@ test('engineering build remains primary while monitoring is a dedicated chapter'
  assert.match(monitoring,/id="monitoring-guide"/);
  assert.doesNotMatch(engineering,/id="view-monitor"|id="monitor-view"/);
  assert.ok(engineering.includes("location.replace('./continuous-monitoring.html?stage='"));
- assert.match(engineering,/Engineering stage explorer/);
+ assert.match(engineering,/Engineering implementation &amp; validation/);
  assert.match(engineering,/Implementation/);
 });
 test('Assurance presents three core sections and links to detailed testing and live lab',()=>{
@@ -104,7 +104,9 @@ test('Engineering to Monitoring preserves selected stage and legacy view links r
  const monitoring=read('continuous-monitoring.html');
  assert.match(engineering,/id="stage-monitor-link" href="\.\/continuous-monitoring\.html\?stage=0#monitoring-guide"/);
  assert.match(engineering,/id="engineering-footer-monitor-link" href="\.\/continuous-monitoring\.html\?stage=0#monitoring-guide"/);
- assert.match(engineering,/\$\('stage-monitor-link'\)\.href='\.\/continuous-monitoring\.html\?stage='\+encodeURIComponent\(String\(active\)\)/);
+ assert.match(engineering,/\$\('stage-monitor-link'\)\.href='\.\/continuous-monitoring\.html\?'\+/);
+ assert.match(engineering,/stage='\+encodeURIComponent\(String\(active\)\)/);
+ assert.match(engineering,/selectedRisk&&\/\^RR-\(01\|02\|04\)\$\//);
  assert.doesNotMatch(engineering,/id="view-monitor"|id="monitor-view"/);
  assert.ok(engineering.includes("params.get('view')!=='monitor'"));
  assert.ok(engineering.includes("location.replace('./continuous-monitoring.html?stage='"));

@@ -28,10 +28,8 @@ node('p','Illustrative mapping; potential safeguards are not verified as impleme
 function localTarget(){return lens==='engineering'?'technical-requirements':lens==='monitoring'?'monitoring-guide':'prelaunch-validation'}
 function syncExistingStage(){
  if(lens==='assurance')return;
+ if(lens==='engineering'&&root.EngineeringStageView?.select(stage))return;
  if(lens==='monitoring'&&root.MonitoringStageView?.select(stage))return;
- const selector=doc.getElementById(lens==='engineering'?'stages':'stage-pickers');
- const button=selector&&selector.querySelectorAll('button')[stage];
- if(button)button.click();
 }
 function save(){
  const url=new URL(root.location.href);
@@ -48,7 +46,7 @@ function render(){
   const chips=node('span',undefined,b,'risk-context-chips');
   for(const kind of roles)node('small',labels[kind],chips,'risk-context-'+kind);
   if(!roles.length)node('small','—',chips,'risk-context-unmapped');
-  b.addEventListener('click',()=>{stage=item.id;syncExistingStage();save();render()});
+  b.addEventListener('click',()=>{stage=item.id;save();syncExistingStage();render()});
  }
  const st=model.stages[stage],rows=scenarios[risk].filter(x=>x[0]===stage);
  node('strong','Stage '+String(stage+1).padStart(2,'0')+' · '+st.title,detail,'risk-context-stage-title');
@@ -61,8 +59,8 @@ function render(){
  }else node('p','No specific propagation point is mapped here for this scenario. '+st.summary,detail,'risk-context-empty');
  const record=model.trace[stage],test=model.assuranceTests[stage];
  let text=null;
- if(lens==='engineering')text=record?.engineering||'Use the Engineering stage explorer below for this stage’s requirements, implementation, and validation criteria.';
- if(lens==='monitoring')text=record?.monitoring||'Use the Monitoring stage details below to examine signals, exception investigations, and response.';
+ if(lens==='engineering')text=record?.engineering||'Inspect the implementation and validation details below for this selected stage.';
+ if(lens==='monitoring')text=record?.monitoring||'Inspect the monitoring signals and exception investigations below for this selected stage.';
  if(lens==='assurance')text=record?.assurance||test?.expected||'Refer to the control domains and technical test procedures below for relevant evidence and challenge tests.';
  node('p',text,detail,'risk-context-perspective');
  const action=node('div',undefined,detail,'risk-context-actions');
@@ -72,7 +70,7 @@ function render(){
  const nav=node('nav',undefined,detail,'risk-context-links');nav.setAttribute('aria-label','Keep selected risk and stage across perspectives');
  for(const [key,label] of [['risk','Risk'],['engineering','Engineering'],['monitoring','Monitoring'],['assurance','Assurance']])nav.append(link(key,label,stage));
 }
-chooser.addEventListener('change',()=>{if(!Object.hasOwn(scenarios,chooser.value))return;risk=chooser.value;stage=scenarios[risk][0][0];syncExistingStage();save();render()});
+chooser.addEventListener('change',()=>{if(!Object.hasOwn(scenarios,chooser.value))return;risk=chooser.value;stage=scenarios[risk][0][0];save();syncExistingStage();render()});
 root.addEventListener('popstate',()=>{const p=new URLSearchParams(root.location.search);if(Object.hasOwn(scenarios,p.get('risk')))risk=p.get('risk');const next=model.stageFromLocation(root.location.search);if(next!==null)stage=next;syncExistingStage();render()});
 render();
 })(typeof window!=='undefined'?window:globalThis);
