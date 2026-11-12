@@ -224,13 +224,13 @@ test('Homepage retains one interactive simulator with its four scenarios and sup
  assert.match(html,/href="#workflow">Explore the interactive delivery simulator/);
  assert.deepEqual([...html.matchAll(/<button class="workflow-stage"[^>]*data-stage="(\d+)"/g)].map(m=>Number(m[1])),[0,1,2,3,4,5,6,7]);
  assert.deepEqual([...html.matchAll(/<button type="button" data-scenario="([^"]+)"/g)].map(m=>m[1]),['pass','split','excluded','canary']);
- for(const id of ['scenario-output','decision-panel','stage-inspector','trust-boundaries','investigation-panel','field-guide-chapters'])
+ for(const id of ['scenario-output','decision-panel','trust-boundaries','investigation-panel','field-guide-chapters'])
   assert.ok(html.includes('id="'+id+'"'),id);
  const at=fragment=>html.indexOf(fragment);
- assert.ok(at('id="scenario-lab"')<at('id="workflow-stages"'));
- assert.ok(at('id="workflow-stages"')<at('Authorization routes'));
- assert.ok(at('Authorization routes')<at('id="stage-inspector"'));
- assert.ok(at('id="stage-inspector"')<at('id="trust-boundaries"'));
+ assert.ok(at('id="workflow-stages"')<at('id="scenario-lab"'));
+ assert.ok(at('id="scenario-lab"')<at('id="scenario-output"'));
+ assert.ok(at('id="scenario-output"')<at('id="trust-boundaries"'));
+ assert.doesNotMatch(html,/class="path-branch"|class="stage-inspector"|id="stage-engineering"|id="stage-assurance"/);
  assert.ok(at('id="trust-boundaries"')<at('id="field-guide-chapters"'));
  assert.ok(at('id="field-guide-chapters"')<at('<details class="overview-reference-collapse">'));
  assert.ok(at('<details class="overview-reference-collapse">')<at('Why this guide exists'));
