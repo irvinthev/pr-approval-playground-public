@@ -185,7 +185,19 @@
 .overview-map-details>summary{cursor:pointer;padding:13px 16px;min-height:44px;font-size:14px;font-weight:750;color:var(--site-text)}
 .overview-map-details>.authority-map{margin:2px 12px 12px}
 @media(max-width:650px){.overview-png-anchor figcaption{font-size:12px;padding:10px 12px}}
-</style><link rel="stylesheet" href="./ui-polish.css?v=1"><link rel="stylesheet" href="./guided-investigation.css"></head>
+</style><link rel="stylesheet" href="./ui-polish.css?v=1"><link rel="stylesheet" href="./guided-investigation.css"><style>
+/* Progressive disclosure: preserve reference depth without front-loading secondary content. */
+details.field-deep-dive{margin:18px 0;border:1px solid var(--site-border,#4d6875);border-radius:12px;background:var(--site-panel,#112d3c);overflow:visible}
+details.field-deep-dive>summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:58px;padding:14px 18px;color:var(--site-text,#e8f5f5)}
+details.field-deep-dive>summary::-webkit-details-marker{display:none}
+details.field-deep-dive>summary:focus-visible{outline:3px solid var(--site-mint,#a4edda);outline-offset:3px}
+details.field-deep-dive .field-deep-dive-label{display:block;font-size:15px;font-weight:750;line-height:1.4}
+details.field-deep-dive .field-deep-dive-hint{display:block;font-size:12px;color:var(--site-muted,#bfd0d8);margin-top:3px;line-height:1.4}
+details.field-deep-dive .field-deep-dive-chevron{flex-shrink:0;font-size:19px;color:var(--site-mint,#a4edda)}
+details.field-deep-dive[open] .field-deep-dive-chevron{transform:rotate(180deg)}
+details.field-deep-dive>section{margin:0 14px 16px}
+@media(max-width:600px){details.field-deep-dive>summary{padding:13px 14px}details.field-deep-dive>section{margin:0 10px 12px}}
+</style></head>
 <body class="overview"><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a><a class="site-experiments" href="./playground.html">Advanced experiments ↗</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html" aria-current="page">Overview</a><a href="./ai-sdlc-risk.html">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Assurance</a></nav></header>
 
 <section class="hero" id="main-content" tabindex="-1">
@@ -241,10 +253,10 @@
     <div class="authority-map-links"><a href="./engineering-blueprint.html#rr02-negative-test">Challenge a missed dependency →</a><a href="./ai-sdlc-risk.html?risk=RR-02#risk-explorer">Explore the related risk →</a></div>
   </div>
 </section>
-<section class="overview-method" aria-label="Why this field guide exists and how to use it">
+<details class="field-deep-dive"><summary><span><span class="field-deep-dive-label">Why this guide exists</span><span class="field-deep-dive-hint">Purpose and context</span></span><span class="field-deep-dive-chevron" aria-hidden="true">⌄</span></summary><section class="overview-method" aria-label="Why this field guide exists and how to use it">
 <p><strong>Why this guide exists:</strong> AI-assisted development is increasingly familiar; delegating change-approval authority is a separate decision. Traditional SDLC safeguards remain essential, but AI-generated risk judgments introduce questions about scope, failure modes, and evidence.</p>
 <p><strong>Use it to align three conversations:</strong> <strong>Engineering and leadership</strong> decide where AI may act; <strong>Engineering and Risk</strong> challenge eligibility, enforcement, and operational safeguards; <strong>management and auditors</strong> distinguish what management can demonstrate from what an auditor must independently evaluate.</p>
-</section><section class="workflow-map" id="workflow" aria-labelledby="workflow-title">
+</section></details><section class="workflow-map" id="workflow" aria-labelledby="workflow-title">
 <div class="section-kicker">01 / How it works</div>
 <h2 class="section-heading" id="workflow-title">Explore the path from code to production</h2>
 <p class="section-intro">This eight-touchpoint journey illustrates how AI, ordinary engineering checks, authorization, and production delivery can work together. Select a stage to see the implementation responsibility and the evidence it produces. The detailed pipeline simulator uses a different seven-stage grouping.</p>
@@ -320,11 +332,11 @@
 <p class="workflow-note">Illustrative model only: the eight touchpoints are not a required architecture or a one-to-one match with the detailed seven-stage simulator. Stages may run concurrently. AI classification, approval-of-record, enforced merge, and production release eligibility remain separate decisions.</p>
 </section>
 
-<section class="build-section" aria-labelledby="build-title">
+<details class="field-deep-dive"><summary><span><span class="field-deep-dive-label">How Engineering would implement this</span><span class="field-deep-dive-hint">Implementation context and next steps</span></span><span class="field-deep-dive-chevron" aria-hidden="true">⌄</span></summary><section class="build-section" aria-labelledby="build-title">
 <div class="section-kicker">02 / Engineering implementation</div><h2 class="section-heading" id="build-title">How would Engineering make this work?</h2>
 <p class="section-intro">AI reviewers are only one part of the workflow. Explore how existing CI/CD safeguards, deterministic policy, independent authorization, and deployment enforcement could work together in this fictional design.</p>
 <p><a class="guide-action" href="./engineering-blueprint.html#engineering-build-plan">Explore the engineering implementation →</a></p>
-</section>
+</section></details>
 <section class="lens-section" aria-labelledby="lenses-title">
 <div class="section-kicker">04 / Explore the field guide</div><h2 class="section-heading" id="lenses-title">Explore implementation, operations, risk, and assurance</h2>
 <p class="section-intro">These are complementary perspectives on one delivery system—not separate workflows or chapters that must be followed in order. Choose the area most useful to your work.</p>
@@ -513,5 +525,20 @@ render();
     }
   });
   image.src='./ai-cicd-overview.PNG';
+})();
+</script><script>
+/* Expand collapsed source material when a linked subsection is the destination. */
+(function(){
+function reveal(){
+  var hash=window.location.hash;
+  if(!hash||hash.length<2)return;
+  var id;try{id=decodeURIComponent(hash.slice(1))}catch(_){return}
+  var target=document.getElementById(id);
+  if(!target)return;
+  var parent=target.closest('details.field-deep-dive');
+  if(parent&&!parent.open)parent.open=true;
+}
+window.addEventListener('hashchange',reveal);
+reveal();
 })();
 </script></body></html>
