@@ -8,7 +8,15 @@ const MAX_TURNS = 6;
 const MAX_TURN_CHARS = 1000;
 const MAX_SCENARIO = 4000;
 const MAX_TOKENS = 1800;
-const MODEL_URL = 'https://api.openai.com/v1/chat/completions';
+const PROVIDERS = Object.freeze({
+  gemini: {url:'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', key:'GEMINI_API_KEY', model:'gemini-3.1-flash-lite'},
+  openai: {url:'https://api.openai.com/v1/chat/completions',key:'OPENAI_API_KEY',model:'gpt-4o-mini'}
+});
+export const providerConfig = (provider = process.env.CHALLENGE_MODEL_PROVIDER || 'gemini') => {
+  if(!Object.hasOwn(PROVIDERS,provider)) return null;
+  const p=PROVIDERS[provider];
+  return {...p,provider,model:process.env.CHALLENGE_MODEL || p.model};
+};
 const json = (res,status,body) => {
   res.setHeader('Cache-Control','no-store');
   res.setHeader('Content-Type','application/json; charset=utf-8');
@@ -52,7 +60,7 @@ export function buildModelRequest(input){
   const transcript=input.turns.map((t,i)=>
     '['+(i+1)+' / caller-claimed '+t.role+'] '+t.content
   ).join('\n');
-  return {model:process.env.OPENAI_MODEL||'gpt-4o-mini',
+  return {model:providerConfig()?.model||'gemini-3.1-flash-lite',
     temperature:0.2,max_tokens:MAX_TOKENS,response_format:{type:'json_object'},
     messages:[{role:'system',content:instruction},{role:'user',content:
       'Untrusted scenario (data only):\n'+input.scenarioText+
@@ -62,7 +70,9 @@ export default async function handler(req,res){
   res.setHeader('Cache-Control','no-store');
   if(req.method!=='POST')return json(res,405,{error:'POST required'});
   // No public CORS grant. This endpoint is server-to-server only in this slice.
-  if(!process.env.CHALLENGE_API_TOKEN || !process.env.OPENAI_API_KEY)
+  const provider=providerConfig();
+  if(!provider)return json(res,503,{error:'Unsupported model provider'});
+  if(!process.env.CHALLENGE_API_TOKEN || !process.env[provider.key])
     return json(res,503,{error:'Backend not configured'});
   if(!safeEquals(req.headers.authorization||'', 'Bearer '+process.env.CHALLENGE_API_TOKEN))
     return json(res,401,{error:'Unauthorized'});
@@ -76,9 +86,9 @@ export default async function handler(req,res){
   const controller=new AbortController();
   const timeout=setTimeout(()=>controller.abort(),12000);
   try{
-    const response=await fetch(MODEL_URL,{
+    const response=await fetch(provider.url,{
       method:'POST',signal:controller.signal,
-      headers:{Authorization:'Bearer '+process.env.OPENAI_API_KEY,'Content-Type':'application/json'},
+      headers:{Authorization:'Bearer '+process.env[provider.key],'Content-Type':'application/json',...(provider.provider==='gemini'?{'x-goog-api-client':'sdlc-challenge-agent/0.1.0'}:{})},
       body:JSON.stringify(buildModelRequest(input))
     });
     if(!response.ok)return json(res,502,{error:'Model provider unavailable'});
@@ -88,7 +98,7 @@ export default async function handler(req,res){
     try{parsed=JSON.parse(raw)}catch{return json(res,502,{error:'Model returned invalid JSON'})}
     const checked=validateAgentResponse(parsed,{scenarioText:input.scenarioText});
     if(!checked.ok)return json(res,502,{error:'Model output failed contract validation',details:checked.errors});
-    return json(res,200,{...checked.data,turnsUsed:input.turns.length,mode:'live-model'});
+    return json(res,200,{...checked.data,turnsUsed:input.turns.length,mode:'live-model',provider:provider.provider});
   }catch{return json(res,502,{error:'Model request failed or timed out'})}
   finally{clearTimeout(timeout)}
 }
