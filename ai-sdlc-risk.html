@@ -48,6 +48,33 @@
 @media(max-width:650px){.risk-audience{grid-template-columns:1fr}.risk-detail-grid{grid-template-columns:1fr}}
 .risk-explorer-links a#risk-engineering-next{display:inline-block;padding:9px 13px;border:1px solid #7cbba8;border-radius:8px;background:#17483f;color:#e9fff7;text-decoration:none}.risk-explorer-links a#risk-engineering-next:hover,.risk-explorer-links a#risk-engineering-next:focus-visible{background:#256052}
 /* Risk Assessment investigation-first presentation. Existing scenario and tab logic are unchanged. */
+
+/* PR #152 second-pass UX — risk investigation is primary; framework/tools are secondary. */
+.risk-dashboard .risk-featured-choices{margin:13px 0 24px}
+.risk-dashboard .risk-featured-choices button{min-height:133px}
+.risk-dashboard .risk-story-progress{border-top:1px solid var(--site-border);padding-top:20px;margin:17px 0;color:var(--site-mint);font-size:11px;font-weight:800;letter-spacing:.07em;line-height:1.8}
+.risk-dashboard .risk-story-progress span{color:var(--site-muted);padding:0 5px}
+.risk-dashboard .risk-selected-heading{margin:15px 0 23px}
+.risk-dashboard .risk-story-subheading{font-size:18px;margin:21px 0 12px}
+.risk-dashboard .risk-visible-safeguard{margin:15px 0}
+.risk-dashboard .risk-visible-safeguard article{border:1px solid #4d7e79;border-radius:11px;background:#143b3d;padding:19px}
+.risk-dashboard .risk-visible-safeguard article>span{font-size:12px;font-weight:800;color:var(--site-mint)}
+.risk-dashboard .risk-visible-safeguard h4{font-size:18px;margin:9px 0}
+.risk-dashboard .risk-visible-safeguard p{font-size:14px;line-height:1.7;color:#d7e6eb;margin:0}
+.risk-dashboard .risk-story-decision-label{font-size:11px;font-weight:800;color:var(--site-mint);letter-spacing:.09em}
+.risk-dashboard .risk-investigation-further{margin:27px 0 12px;padding-top:20px;border-top:1px solid var(--site-border)}
+.risk-dashboard .risk-investigation-further>h3{font-size:20px;margin:0 0 7px}
+.risk-dashboard .risk-investigation-further>p{font-size:13px;color:var(--site-muted)}
+.risk-dashboard .risk-context-details{margin:18px 0;border:1px solid var(--site-border);border-radius:10px;padding:0 16px}
+.risk-dashboard .risk-context-details>summary{cursor:pointer;padding:14px 0;font-size:14px;font-weight:750;color:var(--site-mint)}
+.risk-dashboard .risk-context-details .risk-context{margin:12px 0}
+.risk-dashboard .risk-advanced-heading{margin:34px 0 16px;padding:22px;border:1px solid var(--site-border);border-radius:12px;background:#102738;scroll-margin-top:18px}
+.risk-dashboard .risk-advanced-heading h2{font-size:clamp(23px,2.6vw,29px);margin:8px 0}
+.risk-dashboard .risk-advanced-heading p{font-size:14px;color:var(--site-muted);margin:0}
+.risk-dashboard .risk-primary-categories{margin-top:14px}
+.risk-dashboard .risk-more-tools{margin-top:25px}
+@media(max-width:650px){.risk-dashboard .risk-story-progress{font-size:10px}.risk-dashboard .risk-visible-safeguard article{padding:15px}.risk-dashboard .risk-advanced-heading{padding:15px}.risk-dashboard .risk-featured-choices button{min-height:94px}}
+
 .risk-dashboard .risk-main-hero{padding-top:24px!important;padding-bottom:20px!important;max-width:1200px}
 .risk-dashboard .risk-main-hero h1{max-width:1150px;font-size:clamp(33px,4.5vw,54px);letter-spacing:-.035em;line-height:1.12}
 .risk-dashboard .risk-main-hero .risk-hero-lead{font-size:clamp(16px,1.65vw,19px);color:var(--site-muted);max-width:950px;line-height:1.6;margin:14px 0 0}
@@ -163,33 +190,30 @@ details.field-deep-dive>section{margin:0 14px 16px}
 </style></head>
 <body class="risk-dashboard"><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html">Overview</a><a href="./ai-sdlc-risk.html" aria-current="page">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Assurance</a></nav></header>
 <section class="risk-main-hero" id="main-content" tabindex="-1">
-<div><div class="field-kicker">AI-enabled software delivery / Risk Assessment</div><h1>What could go wrong when AI helps decide a change is safe?</h1><p class="risk-hero-lead">Choose a credible failure. Trace where it enters delivery, what could interrupt it, and the decision management must make.</p><div class="risk-hero-actions"><a class="field-button" href="#risk-explorer">Investigate a risk →</a><a class="field-secondary" href="#risk-categories">Browse all nine scenarios →</a></div>
+<div><div class="field-kicker">AI-enabled software delivery / Risk Assessment</div><h1>What could go wrong when AI helps decide a change is safe?</h1><p class="risk-hero-lead">Choose a credible failure. Trace where it enters delivery, what could interrupt it, and the decision management must make.</p><div class="risk-hero-actions"><a class="field-button" href="#risk-explorer">Investigate a risk →</a><a class="field-secondary" href="#risk-register">Browse all nine scenarios →</a></div>
 </div>
 
 </section>
 <section class="risk-explorer" id="risk-explorer" aria-labelledby="risk-explorer-title">
 <div class="risk-explorer-heading"><span class="field-kicker">01 / INVESTIGATE A FAILURE</span><h2 id="risk-explorer-title">Start with the failure. Follow it to the decision.</h2><p>Select a credible scenario, trace its effects across the SDLC, then examine the potential safeguards and management decision.</p></div>
 <p class="risk-investigation-preface">The examples below are synthetic teaching scenarios. No likelihood, impact, control effectiveness, or risk acceptance is determined by this guide.</p>
-<div class="risk-context">
-<div><span class="risk-meta">BUSINESS OBJECTIVE</span><strong>Accelerate software delivery while preserving authorized, reliable production changes.</strong></div>
-<div><span class="risk-meta">AI AUTHORITY</span><strong>AI reviews, classifies or conditionally authorizes changes.</strong></div>
-<div><span class="risk-meta">RISK BOUNDARY</span><strong>Management defines acceptable scope and exceptions; model output does not set appetite.</strong></div>
-</div>
-<div class="risk-rmf-line" aria-label="NIST AI RMF alignment"><strong>Govern</strong><span>Set decision rights</span><strong>Map</strong><span>Identify exposure</span><strong>Measure</strong><span>Assess uncertainty</span><strong>Manage</strong><span>Choose treatment</span></div>
 <h3>Choose a failure scenario</h3>
 <div class="risk-featured-choices" role="group" aria-label="Featured AI SDLC risk scenarios">
 <button type="button" data-featured-risk="RR-02" aria-pressed="false"><span>01 · CLASSIFICATION</span><strong>Unsafe change classified low risk</strong><small>Trusted inputs and eligibility</small></button>
 <button type="button" data-featured-risk="RR-01" aria-pressed="true"><span>02 · AUTHORIZATION</span><strong>Unauthorized automated approval</strong><small>Delegated authority and independence</small></button>
 <button type="button" data-featured-risk="RR-04" aria-pressed="false"><span>03 · RELEASE</span><strong>Deployment bypasses approved controls</strong><small>Production integrity and release paths</small></button>
 </div>
-<div class="risk-map" aria-label="Selected scenario propagation">
+<div class="risk-story-progress">FAILURE <span aria-hidden="true">→</span> CONSEQUENCE <span aria-hidden="true">→</span> EXPOSURE <span aria-hidden="true">→</span> SAFEGUARD <span aria-hidden="true">→</span> MANAGEMENT DECISION</div><div class="risk-selected-heading" aria-live="polite"><span class="field-kicker" id="risk-selected-id">RR-01 / ILLUSTRATIVE</span><h3 id="risk-selected-title">Unauthorized automated authorization</h3><p id="risk-selected-event">A contributor or administrator can influence the mechanism that authorizes their own change.</p></div>
+<div class="risk-detail-grid"><article><span>01 · BUSINESS CONSEQUENCE</span><h4>Why it matters</h4><p id="risk-why"></p></article>
+<article><span>02 · FAILURE PATH</span><h4>How it could happen</h4><p id="risk-failure"></p></article></div><h3 class="risk-story-subheading">Where the failure creates exposure</h3><div class="risk-map" aria-label="Selected scenario propagation">
 <div class="risk-map-step"><span>INTRODUCED</span><strong id="risk-introduced">Policy or approval privileges</strong></div>
 <div class="risk-map-arrow" aria-hidden="true">→</div>
 <div class="risk-map-step"><span>EXPOSED</span><strong id="risk-exposed">Unauthorized approval or protected merge</strong></div>
 <div class="risk-map-arrow" aria-hidden="true">→</div>
 <div class="risk-map-step"><span>POTENTIALLY MITIGATED</span><strong id="risk-mitigated">Independent rules and identity restrictions</strong></div>
 </div>
-<section class="risk-sdlc-trace" aria-labelledby="risk-sdlc-title">
+<div class="risk-visible-safeguard"><article><span>03 · SAFEGUARDS</span><h4>What might prevent it</h4><p id="risk-safeguard"></p></article></div>
+<div class="risk-treatment" id="risk-management-decision"><div class="risk-story-decision-label">MANAGEMENT DECISION</div><h3>Assess and decide</h3><p>Apply your organization's risk criteria; these examples do not determine likelihood, impact or acceptance.</p><p id="risk-treatment-question"></p></div><div class="risk-investigation-further"><h3>Inspect the failure across the SDLC</h3><p>Use the stage trace to see where the selected risk arises and what could interrupt it.</p><section class="risk-sdlc-trace" aria-labelledby="risk-sdlc-title">
  <span class="field-kicker">RISK PROPAGATION / SDLC</span>
  <h3 id="risk-sdlc-title">Where does this failure enter the delivery lifecycle?</h3>
  <p>Select a stage to see where the chosen risk is introduced, where it creates exposure, and which safeguards could interrupt it. Stages are taken from the shared seven-stage pipeline.</p>
@@ -197,20 +221,27 @@ details.field-deep-dive>section{margin:0 14px 16px}
  <div id="risk-sdlc-trace"></div>
  <p class="risk-sdlc-note">Illustrative associations, not observed failures or verified safeguards. A stage can contain multiple roles; an unmarked stage is not necessarily risk-free. The Overview uses eight visual touchpoints; this shared navigation groups them into seven.</p>
 </section>
-<div class="risk-selected-heading" aria-live="polite"><span class="field-kicker" id="risk-selected-id">RR-01 / ILLUSTRATIVE</span><h3 id="risk-selected-title">Unauthorized automated authorization</h3><p id="risk-selected-event">A contributor or administrator can influence the mechanism that authorizes their own change.</p></div>
-<div class="risk-detail-grid"><article><span>01 · BUSINESS CONSEQUENCE</span><h4>Why it matters</h4><p id="risk-why"></p></article>
-<article><span>02 · FAILURE PATH</span><h4>How it could happen</h4><p id="risk-failure"></p></article></div><div class="risk-treatment" id="risk-management-decision"><h3>Assess and decide</h3><p>Apply your organization's risk criteria; these examples do not determine likelihood, impact or acceptance.</p><p id="risk-treatment-question"></p></div><details class="risk-deeper"><summary>Explore safeguards, monitoring and assessment questions</summary><div class="risk-detail-grid"><article><span>03 · SAFEGUARDS</span><h4>What might prevent it</h4><p id="risk-safeguard"></p></article>
+<details class="risk-deeper"><summary>Explore safeguards, monitoring and assessment questions</summary><div class="risk-detail-grid">
 <article><span>04 · DECISION RIGHTS</span><h4>What management must decide</h4><p id="risk-decision"></p></article>
 <article><span>05 · CONTINUOUS RESPONSE</span><h4>What to monitor</h4><p id="risk-monitor"></p></article>
 <article><span>06 · ASSESSMENT</span><h4>What remains to evaluate</h4><p id="risk-assess"></p></article></div><p>Possible treatment options include limiting automated authority, strengthening safeguards, requiring human review or suspending an unreliable route. Management owns that decision.</p></details>
 
-<div class="risk-explorer-links"><a id="risk-engineering-next" href="./engineering-blueprint.html#technical-requirements">Continue to Engineering: eligibility safeguards →</a><a href="#risk-register">Browse all nine risk scenarios ↓</a><a href="./engineering-blueprint.html">Explore safeguard implementation →</a><a href="./independent-assurance.html">Examine assurance approach →</a></div>
+</div>
+<div class="risk-explorer-links"><a id="risk-engineering-next" href="./engineering-blueprint.html#technical-requirements">Continue to Engineering: eligibility safeguards →</a><a href="#risk-register">Open the nine-scenario library ↓</a><a href="./engineering-blueprint.html">Explore safeguard implementation →</a><a href="./independent-assurance.html">Examine assurance approach →</a></div>
+<details class="risk-context-details"><summary>Assessment context and NIST AI RMF alignment</summary><div class="risk-context">
+<div><span class="risk-meta">BUSINESS OBJECTIVE</span><strong>Accelerate software delivery while preserving authorized, reliable production changes.</strong></div>
+<div><span class="risk-meta">AI AUTHORITY</span><strong>AI reviews, classifies or conditionally authorizes changes.</strong></div>
+<div><span class="risk-meta">RISK BOUNDARY</span><strong>Management defines acceptable scope and exceptions; model output does not set appetite.</strong></div>
+</div>
+<div class="risk-rmf-line" aria-label="NIST AI RMF alignment"><strong>Govern</strong><span>Set decision rights</span><strong>Map</strong><span>Identify exposure</span><strong>Measure</strong><span>Assess uncertainty</span><strong>Manage</strong><span>Choose treatment</span></div>
+</details>
 <p class="risk-explorer-limit">SAIF-inspired visual pattern; not a reproduction of SAIF's risk taxonomy. NIST AI RMF functions are cross-cutting, not sequential approval gates. All examples are synthetic; no company-specific appetite, assessments, or effectiveness conclusions are asserted.</p>
 </section>
 
 
+<div class="risk-advanced-heading" id="advanced-risk-workspace"><span class="field-kicker">02 / DEEPER ANALYSIS</span><h2>Advanced Risk Assessment Workspace</h2><p>Explore the full scenario library, supporting tools, operating models, inventory, and framework references.</p></div>
 <section class="risk-primary-categories" id="risk-categories" aria-labelledby="risk-categories-title">
- <div class="field-kicker">02 / EXPLORE THE LIBRARY</div>
+ <div class="field-kicker">EXPLORE THE RISK DOMAINS</div>
  <h2 id="risk-categories-title">Three risk domains. Nine ways delivery can fail.</h2>
  <p>Browse all nine illustrative scenarios by domain, then examine relevant safeguards and evidence.</p>
  <div class="risk-category-grid">
@@ -221,9 +252,9 @@ details.field-deep-dive>section{margin:0 14px 16px}
  <p class="risk-category-note">Risk category → Risk event → Failure scenario → Impact → Safeguards → Evidence. These are illustrative scenarios, not assessed organizational risks or verified controls.</p>
 </section>
 <section aria-label="Follow a change" style="margin:15px 0 25px;padding:20px;border:1px solid #4d7b7a;border-radius:12px;background:#143c44">
-  <div class="field-kicker">VISUAL INVESTIGATION / START HERE</div>
-  <h2 style="font-size:clamp(22px,3vw,29px);margin:9px 0">One pipeline. Four outcomes.</h2>
-  <p style="color:#c8dde5;max-width:850px;font-size:14px">Follow four PR outcomes across authority, safeguards and evidence.</p>
+  <div class="field-kicker">RELATED / FOLLOW A CHANGE</div>
+  <h2 style="font-size:clamp(22px,3vw,29px);margin:9px 0">Explore a separate delivery simulation</h2>
+  <p style="color:#c8dde5;max-width:850px;font-size:14px">Need to follow an actual change through review and deployment? Open the separate interactive simulator.</p>
   <a class="field-button" href="./scenario-journey.html?scenario=pass" style="margin-top:8px">Explore the interactive pipeline →</a>
   <p style="font-size:12px;color:#aecbd2;margin:13px 0 0">Illustrative examples; this does not execute the policy evaluator or represent a validated deployment.</p>
 </section>
@@ -231,7 +262,7 @@ details.field-deep-dive>section{margin:0 14px 16px}
   <p>AI-enabled CI/CD risks are organized into three domains based on key decision points across the software delivery lifecycle, traditional SDLC control objectives, and AI-specific failure scenarios. The approach draws on the <strong>NIST AI Risk Management Framework (Govern, Map, Measure, Manage)</strong>, though the domains are an illustrative grouping rather than an official framework taxonomy.</p>
   <p>The domains are not exhaustive and connect nine representative risk scenarios to potential impacts, safeguards, and assurance evidence. <strong>Select a domain below</strong> to explore its risks and how they could be managed.</p>
 </section></details>
-<section class="risk-more-tools"><span class="field-kicker">EXPLORE FURTHER</span><h2>Risk scenario library and supporting tools</h2><p>Additional scenarios, inventory tools and references.</p></section>
+<section class="risk-more-tools"><span class="field-kicker">WORKSPACE TOOLS</span><h2>Risk library, inventory, operating models and references</h2><p>Switch between tools without leaving the assessment workspace.</p></section>
 <div class="risk-tabs" role="tablist" aria-label="Risk assessment workspace">
 <button type="button" role="tab" id="tab-register" aria-controls="risk-tab-register" aria-selected="true" data-risk-tab="register">Assessment &amp; Register</button>
 <button type="button" role="tab" id="tab-inventory" aria-controls="risk-tab-inventory" aria-selected="false" data-risk-tab="inventory">AI Inventory &amp; Risk Tracking</button>
