@@ -1,0 +1,26 @@
+name: RCM Explorer Checks
+on:
+  pull_request:
+    paths:
+      - 'rcm-explorer*'
+      - 'tests/rcm-explorer.test.mjs'
+      - 'rcm-view.html'
+      - '.github/workflows/rcm-explorer.yml'
+  workflow_dispatch:
+jobs:
+  rcms:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check JS syntax
+        run: |
+          node --check rcm-explorer-engine.js
+          node --check rcm-explorer-data.js
+          node --check rcm-explorer-app.js
+      - name: Test scenario recommendation logic
+        run: node --test tests/rcm-explorer.test.mjs
