@@ -187,6 +187,30 @@ details.field-deep-dive>section{margin:0 14px 16px}
 .risk-sdlc-empty{color:#cbdde5;font-size:13px}.risk-sdlc-trace .risk-sdlc-note{color:#afc5d0;font-size:11px;margin:12px 0 0}
 @media(max-width:1050px){.risk-sdlc-stages{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:600px){.risk-sdlc-trace{padding:13px}.risk-sdlc-stages{grid-template-columns:repeat(2,minmax(0,1fr))}.risk-sdlc-stage{min-height:88px}}
+
+/* Chapter orientation before the first failure investigation. */
+.risk-dashboard .risk-chapter-guide{border:1px solid #4b7483;background:#102d3d;border-radius:13px;padding:19px 21px;margin:10px 0 24px}
+.risk-dashboard .risk-chapter-guide-header p{margin:7px 0 14px;color:#c9dce3;font-size:14px;line-height:1.6;max-width:950px}
+.risk-dashboard .risk-chapter-guide ol{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;list-style:none;padding:0;margin:0}
+.risk-dashboard .risk-chapter-guide li{min-width:0}
+.risk-dashboard .risk-chapter-guide a{display:flex;flex-direction:column;gap:6px;height:100%;min-height:113px;padding:13px 15px;border:1px solid #4c7483;background:#19394b;border-radius:9px;color:#eef8f8;text-decoration:none}
+.risk-dashboard .risk-chapter-guide a:hover,.risk-dashboard .risk-chapter-guide a:focus-visible{border-color:#a4edda;background:#1c4754}
+.risk-dashboard .risk-chapter-guide a span{color:#a4edda;font-size:10px;letter-spacing:.07em;font-weight:850}
+.risk-dashboard .risk-chapter-guide a strong{font-size:15px;line-height:1.3}
+.risk-dashboard .risk-chapter-guide a small{font-size:12px;line-height:1.5;color:#c3d6e0}
+.risk-dashboard #risk-explorer{scroll-margin-top:22px}
+.risk-dashboard .risk-framework-disclosure>summary{display:flex;flex-wrap:wrap;align-items:baseline;gap:7px 13px;min-height:44px;cursor:pointer}
+.risk-dashboard .risk-framework-disclosure>summary small{font-size:12px;font-weight:500;color:#bbd1dc}
+.risk-dashboard .risk-framework-disclosure #risk-assessment-guide{scroll-margin-top:20px}
+@media(max-width:650px){
+ .risk-dashboard .risk-chapter-guide{padding:15px;margin:8px 0 19px}
+ .risk-dashboard .risk-chapter-guide ol{grid-template-columns:1fr;gap:8px}
+ .risk-dashboard .risk-chapter-guide a{min-height:0;padding:12px 13px;gap:4px}
+ .risk-dashboard .risk-chapter-guide-header p{font-size:13px}
+ .risk-dashboard #risk-assessment-guide .field-steps{grid-template-columns:1fr;gap:8px}
+ .risk-dashboard #risk-assessment-guide .field-steps li{min-width:0;padding:13px 15px}
+ .risk-dashboard #risk-assessment-guide .field-steps li span{font-size:13px;line-height:1.55}
+}
 </style></head>
 <body class="risk-dashboard"><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html">Overview</a><a href="./ai-sdlc-risk.html" aria-current="page">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Assurance</a></nav></header>
 <section class="risk-main-hero" id="main-content" tabindex="-1">
@@ -194,6 +218,14 @@ details.field-deep-dive>section{margin:0 14px 16px}
 </div>
 
 </section>
+<nav class="risk-chapter-guide" aria-label="How to use Risk Assessment" id="risk-chapter-guide">
+ <div class="risk-chapter-guide-header"><span class="field-kicker">HOW TO USE THIS CHAPTER</span><p>Start with a plausible failure—not a risk score. Follow its consequences and safeguards, then identify the decision management needs to make.</p></div>
+ <ol>
+  <li><a href="#risk-explorer"><span>01 / INVESTIGATE</span><strong>Choose what could fail</strong><small>Select a synthetic risk scenario and see its business consequence.</small></a></li>
+  <li><a href="#risk-sdlc-title"><span>02 / TRACE</span><strong>Locate the exposure</strong><small>Inspect where the failure enters the delivery lifecycle and potential safeguards.</small></a></li>
+  <li><a href="#risk-management-decision"><span>03 / DECIDE</span><strong>Identify the management decision</strong><small>Determine what needs to be validated, mitigated or escalated.</small></a></li>
+ </ol>
+</nav>
 <section class="risk-explorer" id="risk-explorer" aria-labelledby="risk-explorer-title">
 <div class="risk-explorer-heading"><span class="field-kicker">01 / INVESTIGATE A FAILURE</span><h2 id="risk-explorer-title">Start with the failure. Follow it to the decision.</h2><p>Select a credible scenario, trace its effects across the SDLC, then examine the potential safeguards and management decision.</p></div>
 <p class="risk-investigation-preface">The examples below are synthetic teaching scenarios. No likelihood, impact, control effectiveness, or risk acceptance is determined by this guide.</p>
@@ -285,7 +317,7 @@ details.field-deep-dive>section{margin:0 14px 16px}
 
 </section>
 
-<details class="risk-frame"><summary><strong>Detailed assessment method and NIST references</strong></summary><details class="field-deep-dive"><summary><span><span class="field-deep-dive-label">Risk assessment method and framework detail</span><span class="field-deep-dive-hint">NIST alignment, criteria and supporting questions</span></span><span class="field-deep-dive-chevron" aria-hidden="true">⌄</span></summary><section class="field-section" id="risk-assessment-guide" aria-labelledby="risk-assessment-guide-title">
+<details class="risk-frame risk-framework-disclosure"><summary><strong>Risk assessment method and framework detail</strong><small>NIST alignment, criteria and supporting questions</small></summary><section class="field-section" id="risk-assessment-guide" aria-labelledby="risk-assessment-guide-title">
 <div class="field-kicker">Risk assessment guidance / NIST AI RMF–informed</div>
 <h2 id="risk-assessment-guide-title">From AI authority to a risk assessment</h2>
 <p>NIST AI RMF 1.0 organizes AI risk management into <strong>Govern, Map, Measure, and Manage</strong>. The four functions inform this practical method; they are not scoring bands, a prescribed control checklist, or a certification. The scenarios and RCM mappings below are field-guide adaptations, not official NIST risk statements or descriptions of implemented controls.</p>
@@ -298,7 +330,6 @@ details.field-deep-dive>section{margin:0 14px 16px}
 <p><strong>Assessment sequence:</strong> Scope the operating model → select credible failure scenarios → identify independently enforced safeguards → validate evidence → record open questions → have management evaluate impact, likelihood, tolerance and response. Missing evidence means <strong>not assessed</strong>, not low risk. Risk rankings require a management-approved scale and context; this guide intentionally does not calculate them.</p>
 <p>Reference: <a href="https://airc.nist.gov/airmf-resources/airmf/" target="_blank" rel="noopener noreferrer">NIST AI RMF 1.0 ↗</a> and <a href="https://airc.nist.gov/airmf-resources/playbook/" target="_blank" rel="noopener noreferrer">NIST AI RMF Playbook ↗</a>.</p>
 </section></details>
-</details>
 </section>
 <section class="risk-tab-panel" id="risk-tab-inventory" role="tabpanel" aria-labelledby="tab-inventory" hidden>
 <div class="risk-frame"><h2>AI inventory → data and crown jewels → risk ownership</h2>
