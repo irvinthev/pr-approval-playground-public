@@ -1,0 +1,17 @@
+/* One compact, keyboard-accessible orientation strip shared across chapters. */
+.field-guide-shared-journey{margin:16px 0 27px;padding:16px;border:1px solid #35536a;border-radius:13px;background:#0d2131;color:#ebf4f8}
+.fgj-heading{display:flex;gap:8px 20px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:12px;font:12px/1.4 system-ui,sans-serif;letter-spacing:.04em}
+.fgj-heading span{color:#b9cbd7;letter-spacing:0}
+.fgj-stages{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:5px;list-style:none;padding:0;margin:0}
+.fgj-stages li{min-width:0}
+.fgj-stages a{display:flex;align-items:center;justify-content:center;min-height:47px;padding:8px 4px;border:1px solid #486274;border-radius:8px;color:#e4edf2;text-align:center;text-decoration:none;font:600 11px/1.25 system-ui,sans-serif}
+.fgj-stages a:hover,.fgj-stages a:focus-visible{outline:2px solid #8ce9d0;outline-offset:1px}
+.fgj-stages .fgj-current a{border-color:#6ce0be;background:#194c49;color:#e7fff8}
+.field-guide-shared-journey p{margin:10px 0 0;color:#bdd0da;font:12px/1.5 system-ui,sans-serif}
+@media(max-width:760px){.fgj-stages{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px}.fgj-stages li{flex:0 0 91px;scroll-snap-align:start}.fgj-stages a{min-height:46px}}
+
+.fgj-stages .fgj-page-scope:not(.fgj-current) a{border-style:dashed}
+.fgj-case-detail{margin-top:13px;padding:11px 13px;border-left:3px solid #6ce0be;background:#132c3b;border-radius:5px}
+.fgj-case-detail strong{display:block;font:700 12px/1.5 system-ui,sans-serif;color:#e7fff8}
+.field-guide-shared-journey .fgj-case-detail p{margin:5px 0;color:#e4edf2;line-height:1.55}
+.fgj-case-detail small{display:block;margin-top:7px;color:#bdd0da;line-height:1.5}
