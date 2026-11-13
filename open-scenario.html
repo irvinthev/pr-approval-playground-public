@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark"><title>Open Scenario Challenge Lab | AI SDLC Field Guide</title>
+<style>
+:root{font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;color:#f0f7fb;background:#081824;--line:#456577;--mint:#a8f2d6;--dim:#c9dce5}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#133444,#081824 50%)}a{color:var(--mint)}
+button,textarea{font:inherit}button{cursor:pointer}button:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid #a8f2d6;outline-offset:3px}
+.wrap{max-width:1270px;margin:auto;padding:20px clamp(15px,3vw,40px) 70px}
+nav{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--line);padding-bottom:17px}
+.brand{font-size:14px;font-weight:850}.back{font-size:13px}
+.eyebrow{font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--mint);margin-top:35px}
+h1{font-size:clamp(31px,4vw,52px);max-width:850px;line-height:1.08;letter-spacing:-.045em;margin:12px 0 15px}
+h2{font-size:21px;margin:0 0 12px}h3{font-size:16px;margin:0 0 8px}
+.lead{font-size:17px;color:#cee0e9;max-width:850px;margin-bottom:19px}
+.frame{border:1px solid var(--line);background:#102d3c;border-radius:15px;padding:21px}
+.columns{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(290px,.85fr);gap:18px;align-items:start}
+textarea{display:block;background:#0b2231;color:#fff;border:1px solid #88adbb;border-radius:10px;padding:15px;width:100%;min-height:158px;resize:vertical}
+label{font-weight:800;display:block;margin:0 0 10px}
+.muted{font-size:13px;color:var(--dim)}.actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px}
+.btn{background:#1c4653;border:1px solid #77a29b;color:#f1fff9;border-radius:9px;padding:10px 15px;font-weight:750;font-size:14px}
+.btn.primary{background:#a8f2d6;color:#10302e;border-color:#a8f2d6}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.chip{border:1px solid #72919c;border-radius:20px;padding:5px 10px;font-size:12px;color:#dfebf0}
+details{border:1px solid #48697b;border-radius:10px;padding:11px 14px;margin:10px 0;background:#143849}
+summary{font-weight:700;cursor:pointer}
+ul{padding-left:19px;margin:9px 0}li{margin:5px 0}.small{font-size:13px}
+.section{margin-top:23px}
+.reference{border-top:1px solid #476679;padding:14px 0}
+.reference:first-of-type{border-top:0}.reference strong{display:block;margin-bottom:5px}
+.reference p{margin:4px 0;color:#cee0e7;font-size:13px}
+.banner{background:#1b3d48;border:1px solid #6a949f;border-radius:11px;padding:13px 16px;margin:14px 0;color:#e0f0f5;font-size:13px}
+.result-title{font-size:20px;margin:0 0 8px}
+.question{border-left:3px solid #a8f2d6;padding-left:12px;margin:15px 0}
+.stepnav{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+.stepnav button[aria-current="step"]{background:#a8f2d6;color:#12352e}
+#output[hidden]{display:none}.footer{margin-top:30px;font-size:12px;color:#bcd2de}
+@media(max-width:850px){.columns{grid-template-columns:1fr}}
+</style></head><body><div class="wrap">
+<nav><span class="brand">AI-Enabled SDLC Risk &amp; Assurance Field Guide</span><a class="back" href="./index.html#overview-authority-map">← Overview / Authority map</a></nav>
+<div class="eyebrow">EXPERIMENTAL · PUBLIC-SAFE · FRAMEWORK-GROUNDED</div>
+<h1>Describe a software-delivery decision. Challenge the design.</h1>
+<p class="lead">Start with any AI-assisted code review, approval, CI/CD or deployment scenario. The lab identifies potentially relevant decision boundaries and shows traceable framework references. It will not invent system facts or declare control effectiveness.</p>
+<div class="columns">
+  <section class="frame" aria-label="Scenario input">
+    <h2>01 · Describe the scenario</h2>
+    <label for="scenario">What is being proposed?</label>
+    <textarea id="scenario" maxlength="4000" placeholder="Here's a scenario: a human approves an AI-generated review plan. Agents execute the plan, report success and then approve the pull request..."></textarea>
+    <p class="muted">Generic or sanitized content only. Do not paste real PRs, secrets, internal diagrams, personal information or confidential configurations. Text stays in this browser session; no model calls or network submission.</p>
+    <div class="actions"><button id="analyze" class="btn primary">Explore scenario →</button><button id="example" class="btn" type="button">Load fictional example</button><button id="clear" class="btn" type="button">Clear</button></div>
+    <div class="section" id="output" hidden>
+      <h2>02 · Explore the boundaries</h2>
+      <div id="coverage" class="banner" role="status"></div>
+      <p id="methods" class="muted"></p>
+      <div id="topics"></div>
+      <h2 class="section">03 · Challenge the proposal</h2>
+      <p class="muted">Select one issue to explore. The question and alternatives are illustrative design prompts, not a model-generated verdict.</p>
+      <div id="questions"></div>
+      <div class="stepnav"><button class="btn" id="previous" type="button">← Previous challenge</button><button class="btn" id="next" type="button">Next challenge →</button></div>
+      <h2 class="section">04 · Sources and evidence</h2>
+      <p class="muted">These are cataloged provision records from the existing field guide. Suggested topical relevance is not a validated control mapping or an endorsement of the design.</p>
+      <div id="references"></div>
+      <h2 class="section">05 · Save the reasoning</h2>
+      <p class="muted">Export contains the scenario text and educational reference metadata. Review it for sensitive information before sharing.</p>
+      <button id="download" class="btn" type="button">Export scenario brief (.json)</button>
+    </div>
+  </section>
+  <aside class="frame" aria-label="Source and limitations">
+    <h2>How this first slice works</h2>
+    <p>This experience accepts open-ended text. It does <b>not</b> yet use an LLM to interpret novel architectures. A transparent rule matcher retrieves candidate topics and existing catalog provisions; unsupported aspects stay unknown.</p>
+    <div class="banner"><b>Evidence boundary</b><div>A framework reference can inform a safeguard. It does not establish the applicable requirement, an implemented control, or evidence that an actual change is authorized.</div></div>
+    <h3>Source discipline</h3><ul>
+      <li>One canonical source catalog, no copied framework records.</li>
+      <li>Provision ID, publisher link, version and qualification displayed together.</li>
+      <li>Human-readable uncertainty and no fabricated compliance status.</li>
+      <li>Generic scenarios and local-only input.</li>
+    </ul>
+    <h3 class="section">What comes after this?</h3><p class="muted">Add a controlled LLM layer to interpret unfamiliar scenarios, retrieve applicable provisions, generate counterexamples and maintain explicit scenario state. Its output must be validated against catalog IDs and clearly differentiated from deterministic checks.</p>
+    <p class="muted">Educational artifact only. No real approval capability, production access, model inference, data persistence, or compliance certification.</p>
+  </aside>
+</div>
+<p class="footer">This feature is experimental. The canonical framework catalog records source revision and applicability limitations. All output is illustrative, not legal, security or audit advice for a particular implementation.</p>
+</div>
+<script type="module">
+import {analyzeScenario,frameworkIndex,CHALLENGE_V1} from './scenario-framework-adapter.js';
+const $=id=>document.getElementById(id);
+let current=null,step=0;
+function node(tag,txt,className){const e=document.createElement(tag);if(txt!==undefined)e.textContent=txt;if(className)e.className=className;return e;}
+function li(text){return node('li',text)}
+function display(){
+  const text=$('scenario').value.trim();if(!text){$('scenario').focus();return;}
+  current=analyzeScenario(text);step=0;
+  $('output').hidden=false;
+  $('coverage').textContent='Coverage: '+current.coverage;
+  $('methods').textContent='Method: '+current.detectionMethod+' · Catalog '+current.catalogVersion+' · Reviewed as of '+current.catalogAsOf;
+  const topics=$('topics');topics.replaceChildren();
+  if(!current.topics.length)topics.append(node('p','No supported category could be identified. Add concrete actors, permissions, review stages or deployment context. Do not assume this means low risk.','muted'));
+  for(const t of current.topics)topics.append(node('span',t.title,'chip'));
+  questions();
+  const refs=$('references');refs.replaceChildren();
+  if(!current.references.length)refs.append(node('p','No provision retrieved; framework applicability unresolved.','muted'));
+  current.references.forEach(r=>{
+    const d=node('article',undefined,'reference');
+    const link=node('a',r.id+' · '+r.title);link.href=r.sourceUrl;link.target='_blank';link.rel='noopener noreferrer';d.append(link);
+    d.append(node('p',r.sourceTitle+' · '+r.sourceVersion+' · '+r.sourceStatus));
+    d.append(node('p',r.qualification||'No qualification supplied in catalog.'));
+    d.append(node('p','Review: '+r.reviewStatus+' · Relationship: '+r.mappingStatus));
+    refs.append(d);
+  });
+  const uncertainty=node('details');uncertainty.open=true;
+  uncertainty.append(node('summary','Known limitations / open assumptions'));
+  const u=node('ul');current.uncertainties.forEach(x=>u.append(li(x)));uncertainty.append(u);refs.prepend(uncertainty);
+  $('download').disabled=false;
+}
+function questions(){
+  const root=$('questions');root.replaceChildren();
+  const t=current?.topics[step];
+  if(!t){root.append(node('p','First question: '+(current?.recommendedNext||'Describe the intended action and enforcement gate.'),'question'));$('previous').disabled=true;$('next').disabled=true;return;}
+  root.append(node('div','Challenge '+(step+1)+' of '+current.topics.length+' · '+t.title,'muted'));
+  root.append(node('p',t.question,'question'));
+  root.append(node('h3','Possible approaches to compare'));
+  const a=node('ul');t.alternatives.forEach(s=>a.append(li(s)));root.append(a);
+  root.append(node('h3','Illustrative negative tests'));
+  const tests=node('ul');t.tests.forEach(s=>tests.append(li(s)));root.append(tests);
+  $('previous').disabled=step===0;$('next').disabled=step===current.topics.length-1;
+}
+$('analyze').addEventListener('click',display);
+$('example').addEventListener('click',()=>{$('scenario').value='A human signs off on an AI-generated review plan. Two agents execute it, say the tests passed, and use a bot to approve the pull request. A new commit can be pushed before the merge queue runs. Who authorizes the current change?';display()});
+$('clear').addEventListener('click',()=>{$('scenario').value='';current=null;step=0;$('output').hidden=true;$('scenario').focus()});
+$('previous').addEventListener('click',()=>{if(step>0){step--;questions()}});
+$('next').addEventListener('click',()=>{if(current&&step<current.topics.length-1){step++;questions()}});
+$('download').addEventListener('click',()=>{
+ if(!current)return;
+ const payload={artifact:'fictional educational scenario',version:CHALLENGE_V1,scenario:current.input,topics:current.topics.map(t=>({id:t.id,title:t.title,question:t.question,alternatives:t.alternatives,tests:t.tests})),references:current.references,uncertainties:current.uncertainties,coverage:current.coverage,sourceCatalog:{version:frameworkIndex.schemaVersion,asOf:frameworkIndex.asOf},disclaimer:'Not system evidence, framework compliance, or production authorization.'};
+ const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+ const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='ai-sdlc-scenario-brief.json';a.click();URL.revokeObjectURL(url);
+});
+</script></body></html>
