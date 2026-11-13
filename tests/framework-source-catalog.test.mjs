@@ -9,12 +9,12 @@ test('source catalog has distinct, version-qualified sources',()=>{
  for(const s of c.sources){assert.ok(s.version&&s.status&&s.sourceType);assert.match(s.url,/^https:\/\//);assert.ok(s.limitations);}
 });
 test('provision references resolve and have explicit review and source status',()=>{
- assert.equal(c.provisions.length,18);
+ assert.equal(c.provisions.length,21);
  assert.equal(new Set(c.provisions.map(p=>p.id)).size,c.provisions.length);
  for(const p of c.provisions){assert.ok(c.sources.some(s=>s.id===p.sourceId),p.id);assert.match(p.url,/^https:\/\//);assert.ok(p.qualification&&p.reviewStatus);}
 });
 test('pilot maps only source-qualified preexisting safeguards',()=>{
- assert.equal(c.mappings.length,8);
+ assert.equal(c.mappings.length,11);
  for(const m of c.mappings){assert.ok(controls.some(x=>x.id===m.controlId));assert.ok(c.provisions.some(p=>p.id===m.provisionId));assert.equal(m.reviewStatus,'proposed-for-review');assert.equal(m.decision,'Pending');}
 });
 test('no restricted third-party assurance report or employer content',()=>{

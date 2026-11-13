@@ -7,7 +7,7 @@ As-of baseline: **2026-11-12**. Draft PR #158; source catalog format v1.0.0.
 - **GitHub = source of truth:** `framework-source-catalog.js` with immutable record IDs; CSV projections under `data/`.
 - **Spreadsheet = review instrument:** `AI_SDLC_Framework_Source_Mapping_Register.xlsx` supplied alongside the PR. Identical ID sets and review baseline; the workbook is **not** a live two-way synchronization system. Review decisions must be intentionally reconciled back into GitHub before adoption.
 
-The workbook deliberately contains 10 source metadata records, 18 *selected* framework provision/topic records, and 8 proposed WEB15 mappings. It is **not a full extraction** of NIST, OWASP, SLSA or CoSAI catalogs. Framework references are categorized as normative-ish specification topics, voluntary guidance practices, draft areas, threat taxonomy, design principles, accountability models or structured catalog pointers; none implies automatically applicable compliance.
+The workbook deliberately contains 10 source metadata records, 21 *selected* framework provision/topic records, and 11 proposed WEB15 mappings. It is **not a full extraction** of NIST, OWASP, SLSA or CoSAI catalogs. Framework references are categorized as normative-ish specification topics, voluntary guidance practices, draft areas, threat taxonomy, design principles, accountability models or structured catalog pointers; none implies automatically applicable compliance.
 
 ### Source inventory
 
@@ -28,7 +28,7 @@ The workbook deliberately contains 10 source metadata records, 18 *selected* fra
 
 1. **Source facts:** Publisher, title, version, source URL and status are distinct fields.
 2. **Reference facts:** Exact NIST AI RMF subcategory IDs (e.g. MEASURE 2.1), OWASP versioned IDs, or source-specific topics.
-3. **Relationship judgments:** All eight mapping rows are `proposed-for-review` and `Pending`, with rationale and a qualified support label.
+3. **Relationship judgments:** All eleven mapping rows are `proposed-for-review` and `Pending`, with rationale and a qualified support label.
 4. **Control implementation:** Not tested. The existing RCM and evaluator maintain their own statuses.
 5. **Confidentiality:** Restricted Cursor SOC 2 vendor assurance and confidential Braze configuration are excluded from every repository source and spreadsheet row.
 
@@ -55,3 +55,11 @@ No live network fetches, vendor data, secrets, or private documents are used by 
 ## Automated checks
 
 `node --test tests/framework-source-catalog.test.mjs tests/framework-registry.test.mjs tests/rcm-explorer.test.mjs`
+
+## Consolidation v1.1.0
+
+`framework-source-catalog.js` is the single authoritative metadata/provision/mapping dataset. `framework-registry.js` is a derived, read-only compatibility adapter with no independent framework, provision, or mapping rows. Seven pre-existing legacy relationships are preserved through `legacy` metadata attached to canonical mapping rows; three legacy-only relationships were added to the canonical list. As a result the canonical catalog now contains **21 selected provision/reference records and 11 proposed mapping rows**.
+
+The two inspector presentations remain unchanged as a backwards-compatible interim UI; they both originate from the canonical catalog. No risk recommendation scoring or business logic has been modified.
+
+The companion workbook `AI_SDLC_Framework_Source_Mapping_Register_v1_1.xlsx` is a downloadable review snapshot; it is not live-linked to GitHub. Reviewer dispositions must be intentionally reconciled into catalog data. CSV records under `data/` have been regenerated to match the canonical data. The reconciliation test `tests/framework-catalog-consolidation.test.mjs` protects all seven legacy mapping identifiers and checks exported rows.

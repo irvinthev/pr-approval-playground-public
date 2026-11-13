@@ -1,5 +1,5 @@
 export const sourceCatalog = {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "asOf": "2026-11-12",
   "sources": [
     {
@@ -13,7 +13,10 @@ export const sourceCatalog = {
       "published": "2022-02",
       "access": "Public publisher",
       "limitations": "Final practices; adoption and scope depend on context",
-      "reviewedAsOf": "2026-11-12"
+      "reviewedAsOf": "2026-11-12",
+      "legacyCompatibility": true,
+      "legacyRole": "Recommended secure development practices; not an automatic SOX requirement",
+      "legacyCurrencyNote": "SP 800-218 Rev.1 v1.2 is draft as of review date"
     },
     {
       "id": "NIST-AI-RMF-1.0",
@@ -26,7 +29,10 @@ export const sourceCatalog = {
       "published": "2023-01",
       "access": "Public publisher and uploaded original PDF",
       "limitations": "Voluntary and non-sector-specific; use numbered subcategories",
-      "reviewedAsOf": "2026-11-12"
+      "reviewedAsOf": "2026-11-12",
+      "legacyCompatibility": true,
+      "legacyRole": "Voluntary AI risk management framework; not regulatory control criteria",
+      "legacyCurrencyNote": "NIST indicates an update is in progress"
     },
     {
       "id": "NIST-CYBER-AI-8596-IPRD",
@@ -52,7 +58,10 @@ export const sourceCatalog = {
       "published": "unknown",
       "access": "Public publisher",
       "limitations": "Distinct Source and Build tracks; no automatic conformance",
-      "reviewedAsOf": "2026-11-12"
+      "reviewedAsOf": "2026-11-12",
+      "legacyCompatibility": true,
+      "legacyRole": "Software supply-chain integrity and provenance reference",
+      "legacyCurrencyNote": "Conformance requires assessment against applicable SLSA requirements"
     },
     {
       "id": "OWASP-LLM-2026",
@@ -65,7 +74,10 @@ export const sourceCatalog = {
       "published": "2026-08-04",
       "access": "Public publisher",
       "limitations": "Canonical /2026/final; LLM03 is Excessive Agency",
-      "reviewedAsOf": "2026-11-12"
+      "reviewedAsOf": "2026-11-12",
+      "legacyCompatibility": true,
+      "legacyRole": "Threat awareness and mitigations; not certification",
+      "legacyCurrencyNote": "Current 2026 list renumbered Excessive Agency to LLM03"
     },
     {
       "id": "OWASP-LLM-2025",
@@ -130,7 +142,10 @@ export const sourceCatalog = {
       "published": "unknown",
       "access": "Public publisher",
       "limitations": "Audit methodology, not mandatory CI/CD architecture",
-      "reviewedAsOf": "2026-11-12"
+      "reviewedAsOf": "2026-11-12",
+      "legacyCompatibility": true,
+      "legacyRole": "Auditor methodology for integrated ICFR audits; not an AI approval design mandate",
+      "legacyCurrencyNote": "Amendments effective December 15, 2026 must not be treated as already effective on this registry as-of date"
     }
   ],
   "provisions": [
@@ -143,7 +158,10 @@ export const sourceCatalog = {
       "url": "https://csrc.nist.gov/pubs/sp/800/218/final",
       "qualification": "Security check criteria; financial dependency maps are project adaptation",
       "reviewStatus": "publisher-id-observed",
-      "reviewedAsOf": "2026-11-12"
+      "reviewedAsOf": "2026-11-12",
+      "legacyReferenceId": "SSDF:PO.4",
+      "legacyReferenceLabel": "PO.4 — Define and use criteria for software security checks",
+      "legacyReferenceLevel": "practice"
     },
     {
       "id": "SSDF:PS.1",
@@ -154,7 +172,10 @@ export const sourceCatalog = {
       "url": "https://csrc.nist.gov/pubs/sp/800/218/final",
       "qualification": "Not a direct SOX segregation-of-duties rule",
       "reviewStatus": "publisher-id-observed",
-      "reviewedAsOf": "2026-11-12"
+      "reviewedAsOf": "2026-11-12",
+      "legacyReferenceId": "SSDF:PS.1",
+      "legacyReferenceLabel": "PS.1 — Protect all forms of code from unauthorized access and tampering",
+      "legacyReferenceLevel": "practice"
     },
     {
       "id": "AI-RMF:MEASURE-1.2",
@@ -242,7 +263,10 @@ export const sourceCatalog = {
       "url": "https://slsa.dev/spec/v1.2/build-provenance",
       "qualification": "Provenance ≠ deployment authorization or conformance",
       "reviewStatus": "publisher-id-observed",
-      "reviewedAsOf": "2026-11-12"
+      "reviewedAsOf": "2026-11-12",
+      "legacyReferenceId": "SLSA:PROVENANCE",
+      "legacyReferenceLabel": "SLSA 1.2 provenance — trace build artifacts to source",
+      "legacyReferenceLevel": "specification"
     },
     {
       "id": "SLSA:SOURCE-TRACK",
@@ -264,7 +288,10 @@ export const sourceCatalog = {
       "url": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/main/2026/final/LLM01_PromptInjection.md",
       "qualification": "Threat reference; mapping does not establish exploitability",
       "reviewStatus": "publisher-id-observed",
-      "reviewedAsOf": "2026-11-12"
+      "reviewedAsOf": "2026-11-12",
+      "legacyReferenceId": "OWASP-2026:LLM01",
+      "legacyReferenceLabel": "LLM01:2026 — Prompt Injection",
+      "legacyReferenceLevel": "threat"
     },
     {
       "id": "OWASP-2026:LLM03",
@@ -275,7 +302,10 @@ export const sourceCatalog = {
       "url": "https://github.com/GenAI-Security-Project/GenAI-LLM-Top10/blob/main/2026/final/LLM03_ExcessiveAgency.md",
       "qualification": "Renumbered from LLM06:2025",
       "reviewStatus": "publisher-id-observed",
-      "reviewedAsOf": "2026-11-12"
+      "reviewedAsOf": "2026-11-12",
+      "legacyReferenceId": "OWASP-2026:LLM03",
+      "legacyReferenceLabel": "LLM03:2026 — Excessive Agency",
+      "legacyReferenceLevel": "threat"
     },
     {
       "id": "COSAI-AGENTIC:HUMAN",
@@ -331,6 +361,48 @@ export const sourceCatalog = {
       "qualification": "Do not assume provider or customer is sole owner across all architectures",
       "reviewStatus": "publisher-id-observed",
       "reviewedAsOf": "2026-11-12"
+    },
+    {
+      "id": "AI-RMF:MEASURE",
+      "sourceId": "NIST-AI-RMF-1.0",
+      "provisionId": "MEASURE",
+      "title": "Assess and analyze AI risks",
+      "referenceType": "function",
+      "url": "https://airc.nist.gov/airmf-resources/playbook/measure/",
+      "qualification": "Function-level reference; specific subcategories are separately recorded",
+      "reviewStatus": "publisher-id-observed",
+      "reviewedAsOf": "2026-11-12",
+      "legacyReferenceId": "AI-RMF:MEASURE",
+      "legacyReferenceLabel": "MEASURE — Assess and analyze AI risks",
+      "legacyReferenceLevel": "function"
+    },
+    {
+      "id": "AI-RMF:GOVERN",
+      "sourceId": "NIST-AI-RMF-1.0",
+      "provisionId": "GOVERN",
+      "title": "Organizational AI risk policies and practices",
+      "referenceType": "function",
+      "url": "https://airc.nist.gov/airmf-resources/playbook/govern/",
+      "qualification": "Function-level reference; not a specific mandate",
+      "reviewStatus": "publisher-id-observed",
+      "reviewedAsOf": "2026-11-12",
+      "legacyReferenceId": "AI-RMF:GOVERN",
+      "legacyReferenceLabel": "GOVERN — Organizational AI risk policies and practices",
+      "legacyReferenceLevel": "function"
+    },
+    {
+      "id": "PCAOB:AS2201.21",
+      "sourceId": "PCAOB-AS2201",
+      "provisionId": "AS 2201 .21",
+      "title": "Top-down approach to controls selected for testing",
+      "referenceType": "auditing-standard",
+      "url": "https://pcaobus.org/oversight/standards/auditing-standards/details/AS2201",
+      "qualification": "Assurance methodology only; not a code review design mandate",
+      "reviewStatus": "publisher-id-observed",
+      "reviewedAsOf": "2026-11-12",
+      "legacyReferenceId": "PCAOB:AS2201.21",
+      "legacyReferenceLabel": "AS 2201 .21 — Top-down approach to controls selected for testing",
+      "legacyReferenceLevel": "auditing_standard"
     }
   ],
   "mappings": [
@@ -343,7 +415,15 @@ export const sourceCatalog = {
       "support": "qualified",
       "owner": "Unassigned",
       "decision": "Pending",
-      "asOf": "2026-11-12"
+      "asOf": "2026-11-12",
+      "legacy": {
+        "refId": "SSDF:PO.4",
+        "relationship": "supporting_principle",
+        "rationale": "SSDF PO.4 addresses defining criteria for security checks; repository/path/dependency screening is a project-specific implementation adaptation, not language required verbatim by SSDF.",
+        "limits": "Does not itself establish financial dependency completeness or SOX applicability.",
+        "mappingStatus": "proposed_for_review",
+        "support": "qualified"
+      }
     },
     {
       "controlId": "WEB15:AI-03",
@@ -354,7 +434,15 @@ export const sourceCatalog = {
       "support": "qualified",
       "owner": "Unassigned",
       "decision": "Pending",
-      "asOf": "2026-11-12"
+      "asOf": "2026-11-12",
+      "legacy": {
+        "refId": "SSDF:PS.1",
+        "relationship": "supporting_principle",
+        "rationale": "Protecting code from unauthorized access/tampering is relevant to controlling changes to approval mechanisms; independence of approver administrators is an additional implementation judgment.",
+        "limits": "SSDF PS.1 is not a prescriptive SOX segregation-of-duties rule.",
+        "mappingStatus": "proposed_for_review",
+        "support": "qualified"
+      }
     },
     {
       "controlId": "WEB15:AI-04",
@@ -365,7 +453,15 @@ export const sourceCatalog = {
       "support": "qualified",
       "owner": "Unassigned",
       "decision": "Pending",
-      "asOf": "2026-11-12"
+      "asOf": "2026-11-12",
+      "legacy": {
+        "refId": "OWASP-2026:LLM03",
+        "relationship": "threat_mitigation_alignment",
+        "rationale": "Excessive agent authority and permissions are explicitly in scope of OWASP 2026 Excessive Agency; limiting bot privileges is a relevant mitigation.",
+        "limits": "Threat alignment does not demonstrate that effective identity boundaries are implemented.",
+        "mappingStatus": "proposed_for_review",
+        "support": "qualified"
+      }
     },
     {
       "controlId": "WEB15:AI-04",
@@ -420,7 +516,72 @@ export const sourceCatalog = {
       "support": "qualified",
       "owner": "Unassigned",
       "decision": "Pending",
-      "asOf": "2026-11-12"
+      "asOf": "2026-11-12",
+      "legacy": {
+        "refId": "SLSA:PROVENANCE",
+        "relationship": "technical_alignment",
+        "rationale": "SLSA 1.2 build provenance concerns verifiable source-to-artifact traceability, supporting the control's build provenance objective.",
+        "limits": "A provenance record alone does not prove authorization or full SLSA conformance.",
+        "mappingStatus": "proposed_for_review",
+        "support": "qualified"
+      }
+    },
+    {
+      "controlId": "WEB15:AI-03",
+      "provisionId": "PCAOB:AS2201.21",
+      "relationship": "assurance-context-only",
+      "rationale": "AS 2201's top-down audit methodology may inform control selection when an actual ICFR risk is established.",
+      "reviewStatus": "proposed-for-review",
+      "support": "qualified",
+      "owner": "Unassigned",
+      "decision": "Pending",
+      "asOf": "2026-11-12",
+      "legacy": {
+        "refId": "PCAOB:AS2201.21",
+        "relationship": "assurance_context_only",
+        "rationale": "The ICFR auditor's top-down approach can make change authorization controls relevant when they address assessed financial reporting risks.",
+        "limits": "AS 2201 .21 does not direct organizations to use any particular GitHub reviewer or bot architecture.",
+        "mappingStatus": "proposed_for_review",
+        "support": "qualified"
+      }
+    },
+    {
+      "controlId": "WEB15:AI-04",
+      "provisionId": "SSDF:PS.1",
+      "relationship": "supporting-principle",
+      "rationale": "Code protection and least privilege support restrictions on agent permissions, without specifying a required bot role architecture.",
+      "reviewStatus": "proposed-for-review",
+      "support": "qualified",
+      "owner": "Unassigned",
+      "decision": "Pending",
+      "asOf": "2026-11-12",
+      "legacy": {
+        "refId": "SSDF:PS.1",
+        "relationship": "supporting_principle",
+        "rationale": "Least-privilege service identities support protection of code and software delivery assets.",
+        "limits": "Separate review and merge bot identities are an architectural option, not an explicit SSDF requirement.",
+        "mappingStatus": "proposed_for_review",
+        "support": "qualified"
+      }
+    },
+    {
+      "controlId": "WEB15:AI-05",
+      "provisionId": "AI-RMF:MEASURE",
+      "relationship": "supporting-principle",
+      "rationale": "Broad MEASURE function reference retained for compatibility; new numbered subcategory links give the more precise interpretation.",
+      "reviewStatus": "proposed-for-review",
+      "support": "qualified",
+      "owner": "Unassigned",
+      "decision": "Pending",
+      "asOf": "2026-11-12",
+      "legacy": {
+        "refId": "AI-RMF:MEASURE",
+        "relationship": "supporting_principle",
+        "rationale": "The MEASURE function addresses assessing AI risks with appropriate methods and metrics; adjudicated false-low-risk evaluations are a case-specific application.",
+        "limits": "AI RMF does not prescribe a universal approval threshold or sufficient false-approval rate.",
+        "mappingStatus": "proposed_for_review",
+        "support": "qualified"
+      }
     }
   ],
   "governance": {
@@ -428,6 +589,19 @@ export const sourceCatalog = {
     "spreadsheet": "generated review projection",
     "noRestrictedEvidence": true,
     "sourceRisk": "source facts and control relationship judgments remain separate",
-    "previousRegistry": "framework-registry.js retained for compatibility during pilot"
-  }
+    "previousRegistry": "framework-registry.js is derived compatibility adapter, no independent reference or mapping data",
+    "legacyRelationshipCount": 7
+  },
+  "legacyAliases": [
+    {
+      "legacy": "LLM06:2025 Excessive Agency",
+      "current": "LLM03:2026 Excessive Agency",
+      "note": "Historical 2025 and 2026 OWASP identifiers are version-specific"
+    },
+    {
+      "legacy": "LLM01:2025 Prompt Injection",
+      "current": "LLM01:2026 Prompt Injection",
+      "note": "Identifier unchanged but versions remain distinct"
+    }
+  ]
 };

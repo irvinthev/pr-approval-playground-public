@@ -7,6 +7,7 @@ on:
       - 'framework-source-catalog.js'
       - 'data/framework-*.csv'
       - 'tests/framework-source-catalog.test.mjs'
+      - 'tests/framework-catalog-consolidation.test.mjs'
       - 'docs/FRAMEWORK-SOURCE-LIBRARY.md'
       - 'tests/framework-registry.test.mjs'
       - 'docs/FRAMEWORK-REGISTRY-PILOT.md'
@@ -37,3 +38,5 @@ jobs:
         run: node --test tests/framework-registry.test.mjs
       - name: Test source catalog schema and confidentiality boundary
         run: node --test tests/framework-source-catalog.test.mjs
+      - name: Test compatibility adapter and canonical catalog parity
+        run: node --test tests/framework-catalog-consolidation.test.mjs
