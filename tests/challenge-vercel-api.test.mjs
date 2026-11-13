@@ -14,7 +14,9 @@ test('model request uses canonical catalog IDs and bounded output',()=>{
   const r=buildModelRequest({scenarioText:'A bot merges code',turns:[{role:'user',content:'Why?'}]});
   assert.equal(r.response_format.type,'json_object');
   assert.ok(r.messages[0].content.includes('SSDF:PS.1'));
-  assert.equal(r.messages.length,2);\n  assert.match(r.messages[1].content,/Untrusted caller-provided transcript/);\n  assert.match(r.messages[1].content,/Why\\?/);
+  assert.equal(r.messages.length,2);
+  assert.match(r.messages[1].content,/Untrusted caller-provided transcript/);
+  assert.match(r.messages[1].content,/Why\\?/);
 });
 test('GET forbidden and unconfigured backend fails closed',async()=>{
   const priorToken=process.env.CHALLENGE_API_TOKEN,priorKey=process.env.OPENAI_API_KEY;
