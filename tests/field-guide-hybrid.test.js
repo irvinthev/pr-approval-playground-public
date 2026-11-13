@@ -11,7 +11,9 @@ test('shared case has eight named stages and preserves separate approval authori
  for (const stage of ['PR','Eligibility','AI ×2','Authorize','Merge','Release','Monitor','Evidence']) {
   assert.ok(js.includes("name:'"+stage+"'"), stage);
  }
- assert.match(js, /aria-current','step'/);
+ assert.match(js, /setAttribute\('aria-pressed','false'\)/);
+ assert.match(js, /button\.addEventListener\('click',\(\)=>select\(i\)\)/);
+ assert.match(js, /deeper\.href=/);
  assert.match(js, /does not synchronize or validate the separate interactive labs/);
  assert.match(js, /Two nondeterministic reviewers provide advice, but neither reviewer authorizes/);
  assert.match(js, /Only a permitted actor and policy can authorize the evaluated revision/);

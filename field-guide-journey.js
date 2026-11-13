@@ -28,35 +28,72 @@
     if(document.getElementById('field-guide-shared-journey'))return;
     const anchor=document.querySelector('.risk-main-hero, .assurance-hero, section.hero');
     if(!anchor)return;
-    const el=document.createElement('nav');
-    el.id='field-guide-shared-journey';el.className='field-guide-shared-journey';
+    const el=document.createElement('section');
+    el.id='field-guide-shared-journey';
+    el.className='field-guide-shared-journey';
     el.setAttribute('aria-label','Shared illustrative PR journey');
     const header=document.createElement('div');header.className='fgj-heading';
     const title=document.createElement('strong');title.textContent='ONE CHANGE / EIGHT LIFECYCLE STAGES';
     const caption=document.createElement('span');caption.textContent='CASE-SHARED-01 · shared-library change · fictional case';
     header.append(title,caption);el.append(header);
-    const list=document.createElement('ol');list.className='fgj-stages';
+    const instructions=document.createElement('p');instructions.className='fgj-instructions';
+    instructions.textContent='Select a stage to inspect it here. Open its full chapter only when you want to go deeper.';
+    el.append(instructions);
+    const list=document.createElement('div');list.className='fgj-stages';
+    list.setAttribute('role','group');list.setAttribute('aria-label','Inspect a lifecycle stage without navigating');
+    const buttons=[];
+    const detail=document.createElement('div');detail.className='fgj-case-detail';
+    detail.setAttribute('role','region');detail.setAttribute('aria-label','Selected lifecycle stage');
+    const label=document.createElement('strong');label.id='fgj-selected-label';
+    const description=document.createElement('p');
+    const evidence=document.createElement('p');
+    const deeper=document.createElement('a');deeper.className='fgj-open-chapter';
+    deeper.textContent='Open full chapter →';
+    const warning=document.createElement('small');
+    warning.textContent='Illustrative case state; this view does not synchronize or validate the separate interactive labs.';
+    detail.append(label,description,evidence,deeper,warning);
+    let current=selected;
+    function select(index){
+      if(index<0||index>=stages.length)return;
+      current=index;
+      const stage=stages[index];
+      buttons.forEach((button,i)=>{
+        const active=i===index;
+        button.setAttribute('aria-pressed',String(active));
+        button.classList.toggle('fgj-selected',active);
+      });
+      label.textContent='CASE STATE / '+stage.name;
+      description.textContent=stage.description;
+      evidence.textContent='Question: '+stage.question+' Evidence to seek: '+stage.evidence;
+      const params=new URLSearchParams({case:'CASE-SHARED-01',journeyStage:String(index)});
+      deeper.href='./'+stage.page+'?'+params.toString()+'#'+stage.hash;
+      deeper.textContent=stage.page===currentPage?'Open detailed section →':'Open '+({
+        'index.html':'Overview',
+        'ai-sdlc-risk.html':'Risk & Governance',
+        'engineering-blueprint.html':'Engineering & Safeguards',
+        'continuous-monitoring.html':'Monitoring & Operations',
+        'independent-assurance.html':'Assurance'
+      }[stage.page]||'chapter')+' →';
+    }
     stages.forEach((stage,i)=>{
-      const li=document.createElement('li'),a=document.createElement('a');
-      const params=new URLSearchParams({case:'CASE-SHARED-01',journeyStage:String(i)});
-      a.href='./'+stage.page+'?'+params.toString()+'#'+stage.hash;
-      a.textContent=stage.name;a.title=stage.question;
-      a.setAttribute('aria-label',stage.name+': '+stage.question);
-      if(i===selected){li.classList.add('fgj-current');a.setAttribute('aria-current','step');}
-      if(stage.page===currentPage){li.classList.add('fgj-page-scope');}
-      li.append(a);list.append(li);
+      const button=document.createElement('button');
+      button.type='button';
+      button.className='fgj-stage';
+      button.textContent=stage.name;
+      button.title=stage.question;
+      button.setAttribute('aria-label','Inspect '+stage.name+': '+stage.question);
+      button.setAttribute('aria-controls','fgj-selected-label');
+      button.setAttribute('aria-pressed','false');
+      button.addEventListener('click',()=>select(i)); // No location/hash or scroll change.
+      buttons.push(button);list.append(button);
     });
     el.append(list);
     const mobileHint=document.createElement('p');mobileHint.className='fgj-scroll-hint';
     mobileHint.textContent='Swipe or scroll horizontally to view all eight stages.';
     el.append(mobileHint);
-    const detail=document.createElement('div');detail.className='fgj-case-detail';
-    const label=document.createElement('strong');label.textContent='CASE STATE / '+stages[selected].name;
-    const description=document.createElement('p');description.textContent=stages[selected].description;
-    const evidence=document.createElement('p');evidence.textContent='Question: '+stages[selected].question+' Evidence to seek: '+stages[selected].evidence;
-    const warning=document.createElement('small');warning.textContent='Illustrative case state; this view does not synchronize or validate the separate interactive labs.';
-    detail.append(label,description,evidence,warning);el.append(detail);
+    el.append(detail);
     anchor.insertAdjacentElement('afterend',el);
+    select(current);
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',render,{once:true});else render();
 })();
