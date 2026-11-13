@@ -1,0 +1,1 @@
+{"name":"sdlc-investigation-lab","private":true,"type":"module","scripts":{"test":"node --test evaluator.test.mjs"}}
