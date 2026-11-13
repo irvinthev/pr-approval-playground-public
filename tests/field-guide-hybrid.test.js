@@ -13,7 +13,7 @@ test('shared case has eight named stages and preserves separate approval authori
  }
  assert.match(js, /aria-current','step'/);
  assert.match(js, /does not synchronize or validate the separate interactive labs/);
- assert.match(js, /independent authorization/);
+ assert.match(js, /Authorization, merge eligibility and release eligibility are separate decisions/);
 });
 
 test('the five chapters use the common journey without replacing their existing advanced cases', () => {
@@ -29,7 +29,7 @@ test('the five chapters use the common journey without replacing their existing 
 
 test('Engineering specifies an independent decision truth table and negative tests', () => {
  const html=read('engineering-blueprint.html');
- for (const phrase of ['Policy truth table','Unauthorized identity','SHA changes after evaluation','Administrative ownership boundary','Nondeterministic reviewer']) {
+ for (const phrase of ['Policy truth table','Unauthorized identity','SHA changes after evaluation','Administrative ownership boundary','nondeterministic reviewer']) {
   assert.ok(html.includes(phrase),phrase);
  }
 });
