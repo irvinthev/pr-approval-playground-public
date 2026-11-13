@@ -591,5 +591,17 @@ export const sourceCatalog = {
     "sourceRisk": "source facts and control relationship judgments remain separate",
     "previousRegistry": "framework-registry.js is derived compatibility adapter, no independent reference or mapping data",
     "legacyRelationshipCount": 7
-  }
+  },
+  "legacyAliases": [
+    {
+      "legacy": "LLM06:2025 Excessive Agency",
+      "current": "LLM03:2026 Excessive Agency",
+      "note": "Historical 2025 and 2026 OWASP identifiers are version-specific"
+    },
+    {
+      "legacy": "LLM01:2025 Prompt Injection",
+      "current": "LLM01:2026 Prompt Injection",
+      "note": "Identifier unchanged but versions remain distinct"
+    }
+  ]
 };
