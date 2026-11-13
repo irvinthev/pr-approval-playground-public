@@ -236,9 +236,16 @@ test('Homepage retains one interactive simulator with the workflow preceding sce
  assert.ok(at('id="workflow-stages"')<at('Authorization routes'));
  assert.ok(at('Authorization routes')<at('id="stage-inspector"'));
  assert.ok(at('id="stage-inspector"')<at('id="trust-boundaries"'));
- assert.ok(at('id="trust-boundaries"')<at('id="field-guide-chapters"'));
- assert.ok(at('id="field-guide-chapters"')<at('<details class="overview-reference-collapse">'));
- assert.ok(at('<details class="overview-reference-collapse">')<at('Why this guide exists'));
+ // Approved UX order: explain purpose and chapter choices before the simulator.
+ assert.ok(at('id="main-content"')<at('id="overview-purpose"'));
+ assert.ok(at('id="overview-purpose"')<at('id="field-guide-chapters"'));
+ assert.ok(at('id="field-guide-chapters"')<at('class="overview-question-map"'));
+ assert.ok(at('class="overview-question-map"')<at('id="overview-authority-preview"'));
+ assert.ok(at('id="overview-authority-preview"')<at('id="workflow"'));
+ assert.ok(at('id="trust-boundaries"')<at('<details class="overview-reference-collapse">'));
+ assert.match(html,/class="overview-authority-steps"/);
+ assert.match(html,/Protected merge &amp; release/);
+ assert.match(html,/@media\(max-width:650px\)[\s\S]*?overview-authority-steps\{display:flex;flex-direction:column/);
  assert.ok(at('id="main-content"')<at('id="workflow"'));
  assert.match(html,/class="overview-chapter-grid"/);
  assert.match(html,/id="overview-authority-map"/);
