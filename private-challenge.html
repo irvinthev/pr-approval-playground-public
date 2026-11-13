@@ -28,7 +28,7 @@ ul{padding-left:23px;margin:8px 0}.citation{padding:10px 0;border-top:1px solid 
 <nav><strong>AI-Enabled SDLC Risk &amp; Assurance Field Guide</strong><a href="./open-scenario.html">← Rule-based public lab</a></nav>
 <div class="eyebrow">Private prototype · Vercel Preview only</div>
 <h1>Challenge your software-delivery design.</h1>
-<p class="lead">Describe a fictional AI review, approval, or deployment workflow. Gemini will challenge assumptions, suggest tests, and identify potentially relevant framework references.</p>
+<p class="lead">Describe a fictional AI review, approval, or deployment workflow. Gemini will challenge assumptions, apply relevant framework provisions, and suggest tests.</p>
 <div class="notice"><strong>Privacy and scope:</strong> Use fictional or publicly shareable scenarios only. Do not enter confidential company information, live PRs, credentials, internal diagrams, or personal data. Gemini free-tier requests may be used by Google to improve its services. This experience does not authorize changes or verify implemented controls.</div>
 <section class="panel" aria-labelledby="formtitle">
 <h2 id="formtitle">01 · Your scenario</h2>
@@ -44,10 +44,10 @@ ul{padding-left:23px;margin:8px 0}.citation{padding:10px 0;border-top:1px solid 
 <section id="result" class="panel" hidden aria-labelledby="resulttitle">
 <h2 id="resulttitle">02 · Gemini's design challenge</h2>
 <p class="small">Model-generated interpretation; facts, references, and implications require independent validation.</p>
+<div id="conclusions"></div>
 <div id="facts"></div>
 <div id="challenges"></div>
 <div id="unknowns"></div>
-<div class="section"><h3>Suggested framework references</h3><div id="citations"></div></div>
 </section>
 <section class="panel" id="followup" hidden aria-labelledby="followtitle">
 <h2 id="followtitle">03 · Ask a follow-up</h2>
@@ -81,8 +81,37 @@ function busy(value){
   el('ask').textContent=value?'Analyzing…':'Challenge my design';
   el('continue').textContent=value?'Analyzing…':'Continue the challenge';
 }
+function renderCitation(parent,citation){
+  const box=add('div',parent,'','citation');
+  add('strong',box,[citation.sourceTitle,citation.sourceLocator,citation.provisionTitle].filter(Boolean).join(' · '));
+  if(citation.sourceSummary)add('p',box,citation.sourceSummary);
+  add('p',box,[citation.sourceVersion,citation.qualification].filter(Boolean).join(' · '),'small');
+  try{
+    const url=new URL(citation.url);
+    if(url.protocol==='https:'){
+      const link=add('a',box,'Publisher reference');
+      link.href=url.href;link.target='_blank';link.rel='noopener noreferrer';
+    }
+  }catch{}
+}
 function render(data){
-  for(const id of ['facts','challenges','unknowns','citations'])clear(el(id));
+  for(const id of ['conclusions','facts','challenges','unknowns'])clear(el(id));
+  if(data.conclusions?.length){
+    title(el('conclusions'),'Conclusions and framework basis');
+    for(const conclusion of data.conclusions){
+      const box=add('div',el('conclusions'),'','card');
+      add('strong',box,'Scenario basis');
+      add('p',box,conclusion.scenarioBasis);
+      add('strong',box,'Framework basis');
+      for(const citation of conclusion.citations)renderCitation(box,citation);
+      if(!conclusion.citations.length)add('p',box,'Scenario reasoning only','small');
+      add('strong',box,'Application to this design');
+      add('p',box,conclusion.application);
+      add('strong',box,'Still to establish');
+      add('p',box,conclusion.openQuestion);
+    }
+  }
+
   title(el('facts'),'Facts, inferences and unknowns');
   for(const f of data.facts||[]){
     const box=add('div',el('facts'),'', 'card');
@@ -98,20 +127,6 @@ function render(data){
     if(ch.alternatives?.length){add('strong',box,'Alternatives');list(box,ch.alternatives)}
   }
   if(data.unknowns?.length){title(el('unknowns'),'Still unknown');list(el('unknowns'),data.unknowns)}
-  for(const c of data.citations||[]){
-    const box=add('div',el('citations'),'', 'citation');
-    add('strong',box,(c.sourceTitle||'Source')+' — '+(c.provisionTitle||c.provisionId));
-    add('p',box,(c.sourceVersion||'')+' · '+(c.qualification||'Suggested relevance only'),'small');
-    if(typeof c.url==='string'){
-      try{
-        const url=new URL(c.url);
-        if(url.protocol==='https:'){
-          const a=add('a',box,'Publisher reference');
-          a.href=url.href;a.target='_blank';a.rel='noopener noreferrer';
-        }
-      }catch{}
-    }
-  }
   el('result').hidden=false;el('followup').hidden=false;
   el('turncount').textContent=state.turns.length+' of 6 follow-up turns used';
   el('continue').disabled=state.turns.length>=6;
