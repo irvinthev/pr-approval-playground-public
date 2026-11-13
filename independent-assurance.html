@@ -93,27 +93,40 @@ details.field-deep-dive>section{margin:0 14px 16px}
 .ace-crosscut-card h4{font-size:14px;line-height:1.3;margin:0 0 8px;color:#e0e4ff}
 .ace-crosscut-card p{font-size:12px;line-height:1.55;margin:0;color:#e0e5f1}
 @media(max-width:850px){.ace-crosscut-cards{grid-template-columns:1fr}.ace-rcm-list{grid-template-columns:1fr}}
+
+/* Assurance investigation-first presentation */
+.assurance-hero h1{max-width:1100px;font-size:clamp(33px,4.3vw,55px);line-height:1.12}
+.assurance-hero .simple-lead{max-width:940px;font-size:clamp(16px,1.6vw,19px)}
+.assurance-hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin:22px 0}
+.assurance-hero-actions a{min-height:44px;display:inline-flex;align-items:center;justify-content:center;border-radius:9px;padding:10px 16px;text-decoration:none;font-size:14px;font-weight:750}
+.assurance-primary-action{background:#a4edda;border:1px solid #a4edda;color:#0b2930}
+.assurance-secondary-action{background:#152e3d;border:1px solid #547587;color:#edf5ff}
+#assurance-control-explorer{scroll-margin-top:20px;margin-top:16px}
+#assurance-control-explorer .ace-head h2{font-size:clamp(24px,2.8vw,30px)}
+.assurance-sequence{border-top:1px solid #36566b;margin:21px 0 14px;padding-top:16px;color:#a4edda;font-size:11px;font-weight:800;line-height:1.8;letter-spacing:.035em}
+#assurance-control-explorer .ace-outcome{border:1px solid #527d7d;background:#14353f;border-radius:10px}
+.assurance-advanced-heading{margin:33px 0 18px;padding:22px;border:1px solid #36566b;border-radius:12px;background:#102738}
+.assurance-advanced-heading h2{font-size:clamp(23px,2.7vw,29px);margin:8px 0}
+.assurance-advanced-heading p{font-size:14px;color:#c5dbe4;margin:0}
+.assurance-approach-disclosure{border:1px solid #36566b;background:#102738;border-radius:10px;padding:0 17px;margin:15px 0 26px}
+.assurance-approach-disclosure>summary{cursor:pointer;min-height:44px;padding:14px 0;color:#a4edda;font-weight:750;font-size:14px}
+.assurance-approach-disclosure .guide-orientation{margin:0;padding:0 0 15px;background:transparent;border:0}
+@media(max-width:650px){.assurance-hero-actions{flex-direction:column}.assurance-hero-actions a{width:100%}.assurance-advanced-heading{padding:15px}.assurance-sequence{font-size:10px}}
 </style><link rel="stylesheet" href="./page-orientation.css?v=1"><link rel="stylesheet" href="./risk-stage-context.css?v=1"></head>
 <body><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html">Overview</a><a href="./ai-sdlc-risk.html">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html" aria-current="page">Assurance</a></nav></header>
 <article class="simple-assurance">
 <header id="main-content" tabindex="-1" class="assurance-hero">
 <span class="simple-eyebrow">ASSURANCE / A PRACTICAL FIELD GUIDE</span>
-<h1>How do we gain assurance over AI-enabled software development?</h1>
-<p class="simple-lead">Identify AI authority, independently enforced limits and evidence needed for reliance.</p>
+<h1>What can management demonstrate—and what must we independently establish?</h1>
+<p class="simple-lead">Choose a control boundary. Compare management’s safeguard, the independent challenge, evidence sufficiency and limits on reliance.</p>
 
 
 
-</header>
-<section class="guide-orientation" aria-label="Assurance approach">
-  <p>Independent assurance is organized into six control domains by examining AI authority, traditional SDLC control objectives, and the evidence needed to establish enforcement. The approach draws on secure development and AI risk management concepts, including NIST SSDF and AI RMF, without treating the domains as an official framework taxonomy. The tests and evidence are illustrative, not executed assurance conclusions, and this is not a prescribed architecture. Applicable requirements and judgments depend on the actual operating environment. <strong>Select a domain below</strong> to explore control objectives, technical tests, and evidence.</p>
-</section>
-
-
-<section class="risk-stage-context" id="risk-stage-context" data-perspective="assurance" aria-label="Risk-aware SDLC stage investigation"></section>
+<nav class="assurance-hero-actions" aria-label="Assurance starting points"><a href="#assurance-control-explorer" class="assurance-primary-action">Investigate a control →</a><a href="./rcm-view.html#download-current-rcm" class="assurance-secondary-action">View proposed RCM →</a></nav></header>
 <section class="assurance-control-explorer" id="assurance-control-explorer" aria-labelledby="ace-title">
  <div class="ace-head">
-  <div><span class="simple-eyebrow">START HERE / TECHNICAL ASSURANCE</span><h2 id="ace-title">What is controlled, and how do we test it?</h2>
-  <p>Select one of six control domains to inspect management safeguards, independent assurance tests, proposed RCM relationships and cross-cutting checks.</p></div>
+  <div><span class="simple-eyebrow">01 / INVESTIGATE A CONTROL BOUNDARY</span><h2 id="ace-title">Six control domains. One assurance method.</h2>
+  <p>Choose one boundary to compare the intended safeguard, independent testing, supporting evidence, and limits of reliance.</p></div>
   <a class="ace-map-link" href="./assurance-control-map.svg" download="AI-SDLC-Assurance-Control-Map.svg">Download full control map ↗</a>
  </div>
  <div class="ace-picker" id="ace-picker" role="group" aria-label="Select a control domain">
@@ -124,11 +137,11 @@ details.field-deep-dive>section{margin:0 14px 16px}
   <button type="button" data-domain="authorization" aria-pressed="false"><span>05</span><strong>Authorization</strong></button>
   <button type="button" data-domain="monitoring" aria-pressed="false"><span>06</span><strong>Monitoring</strong></button>
  </div>
- <div class="ace-selected" id="ace-selected" aria-live="polite">
-  <div class="ace-management"><span class="ace-kicker">MANAGEMENT CONTROL</span><h3 id="ace-management-title">Deterministic policy enforcement</h3><p id="ace-management-description">Apply versioned eligibility rules before AI review.</p></div>
-  <div class="ace-test" aria-label="Corresponding independent assurance test"><span class="ace-kicker">INDEPENDENT TECHNICAL TEST</span><h3 id="ace-test-title">Negative testing and bypass attempts</h3><p id="ace-test-description">Challenge excluded, stale and unknown revisions.</p></div>
-  <div class="ace-outcome"><span class="ace-kicker">OBSERVED RESULT</span><p>Not established. This is a proposed test; actual execution, control configuration and results require independent verification.</p></div>
-  <div class="ace-evidence"><span class="ace-kicker">EVIDENCE TO INSPECT</span><p id="ace-evidence-description">Effective policy, rule inputs, decision logs and rejected attempts.</p></div>
+ <p class="assurance-sequence">MANAGEMENT DEMONSTRATES → INDEPENDENT CHALLENGE → EVIDENCE → CONCLUSION</p><div class="ace-selected" id="ace-selected" aria-live="polite">
+  <div class="ace-management"><span class="ace-kicker">MANAGEMENT DEMONSTRATES</span><h3 id="ace-management-title">Deterministic policy enforcement</h3><p id="ace-management-description">Apply versioned eligibility rules before AI review.</p></div>
+  <div class="ace-test" aria-label="Corresponding independent assurance test"><span class="ace-kicker">INDEPENDENT CHALLENGE</span><h3 id="ace-test-title">Negative testing and bypass attempts</h3><p id="ace-test-description">Challenge excluded, stale and unknown revisions.</p></div>
+  <div class="ace-evidence"><span class="ace-kicker">EVIDENCE TO EVALUATE</span><p id="ace-evidence-description">Effective policy, rule inputs, decision logs and rejected attempts.</p></div>
+  <div class="ace-outcome"><span class="ace-kicker">ASSURANCE CONCLUSION / NOT ESTABLISHED</span><p>Not established. This is a proposed test; actual execution, control configuration and results require independent verification.</p></div>
   <div class="ace-links" id="ace-links"><a href="./control-matrix.html#control-D01">Control example</a><a href="./rcm-view.html#download-current-rcm">Proposed RCM</a><a href="./engineering-blueprint.html#rr02-negative-test">Run negative test</a></div>
  </div>
  <div class="ace-rcm-crosswalk" id="ace-rcm-crosswalk" aria-labelledby="ace-rcm-title">
@@ -145,7 +158,13 @@ details.field-deep-dive>section{margin:0 14px 16px}
  </div>
  <div class="ace-footer"><span id="ace-progress">Domain 3 of 6</span><div><button type="button" id="ace-previous">← Previous</button><button type="button" id="ace-next">Next domain →</button></div></div>
  <p class="ace-disclaimer">Illustrative control-to-test relationships, not executed tests or observed control outcomes. Validate applicability, configuration, and evidence in the actual environment.</p>
-</section><div class="assurance-case-heading"><span class="simple-eyebrow">SUPPORTING CASES / TECHNICAL VALIDATION</span><h2>Challenge an enforcement boundary</h2><p>Use the fictional RR-01 and RR-02 cases to explore negative tests and evidence handoffs.</p></div>
+</section><div class="assurance-advanced-heading" id="assurance-advanced"><span class="simple-eyebrow">02 / DEEPER ANALYSIS</span><h2>Advanced Assurance Workspace</h2><p>Follow the SDLC stage, challenge negative cases, inspect the proposed RCM and explore detailed testing procedures.</p></div><section class="risk-stage-context" id="risk-stage-context" data-perspective="assurance" aria-label="Risk-aware SDLC stage investigation"></section>
+<details class="assurance-approach-disclosure"><summary>Framework and assessment scope</summary><section class="guide-orientation" aria-label="Assurance approach">
+  <p>Independent assurance is organized into six control domains by examining AI authority, traditional SDLC control objectives, and the evidence needed to establish enforcement. The approach draws on secure development and AI risk management concepts, including NIST SSDF and AI RMF, without treating the domains as an official framework taxonomy. The tests and evidence are illustrative, not executed assurance conclusions, and this is not a prescribed architecture. Applicable requirements and judgments depend on the actual operating environment. <strong>Select a domain below</strong> to explore control objectives, technical tests, and evidence.</p>
+</section>
+
+
+</details><div class="assurance-case-heading"><span class="simple-eyebrow">03 / NEGATIVE TESTS & EVIDENCE</span><h2>Challenge an enforcement boundary</h2><p>Use the fictional RR-01 and RR-02 cases to explore negative tests and evidence handoffs.</p></div>
 <details class="authority-evidence-case" id="authorization-evidence-case">
 <summary><span class="aec-kicker">CONNECTED CONTROL EXAMPLE · RR-01</span><strong>Reviewer independence: from requirement to evidence</strong><span class="aec-subtitle">Management demonstration · Negative test · Evidence · Auditor evaluation</span></summary>
 <div class="aec-body">
