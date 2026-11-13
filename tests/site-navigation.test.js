@@ -135,7 +135,12 @@ test('Assurance explains the AI assurance challenge without claiming verified op
   assert.match(html,new RegExp(term,'i'),term);
  }
  for(const id of ['operating-model','foundational-controls','prelaunch-validation','operations-assurance','document-assessment'])assert.equal(html.split('id="'+id+'"').length-1,1,id);
- assert.match(html,/Select one of six control domains/i);
+ assert.match(html,/Six control domains\. One assurance method\./i);
+ assert.match(html,/id="ace-investigation-question"/);
+ assert.match(html,/questions\[d\.key\]/);
+ for(const part of ['ace-management','ace-test','ace-evidence','ace-outcome'])assert.match(html,new RegExp('class="'+part+'"'));
+ assert.match(html,/ace-crosscut-disclosure/);
+ assert.match(html,/Assess population coverage, source integrity, corroboration/);
  assert.match(html,/Organizations may use one reviewer, multiple reviewers or deterministic automation/i);
  assert.match(html,/Not every test applies to every operating model/i);
  assert.match(html,/artifact repository or registry record/i);
