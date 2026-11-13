@@ -1,0 +1,9 @@
+controlId,provisionId,relationship,rationale,reviewStatus,support,owner,decision,asOf
+"WEB15:AI-01","SSDF:PO.4","supporting-principle","SSDF criteria inform screening checks; dependency impact screening remains locally derived.","proposed-for-review","qualified","Unassigned","Pending","2026-11-12"
+"WEB15:AI-03","SSDF:PS.1","supporting-principle","Code protection is related; reviewer separation is not mandated explicitly by the practice.","proposed-for-review","qualified","Unassigned","Pending","2026-11-12"
+"WEB15:AI-04","OWASP-2026:LLM03","threat-mitigation","Bounded permissions mitigate excessive agency; actual bot entitlement still needs testing.","proposed-for-review","qualified","Unassigned","Pending","2026-11-12"
+"WEB15:AI-04","COSAI-AGENTIC:BOUNDED","design-principle","Purpose-specific agent entitlements support least privilege.","proposed-for-review","qualified","Unassigned","Pending","2026-11-12"
+"WEB15:AI-05","AI-RMF:MEASURE-2.1","validation-principle","Record benchmark sets, evaluator details, labels and metrics for reviewer validation.","proposed-for-review","qualified","Unassigned","Pending","2026-11-12"
+"WEB15:AI-05","AI-RMF:MEASURE-2.3","validation-principle","Test false-low-risk outcomes under representative production-like cases.","proposed-for-review","qualified","Unassigned","Pending","2026-11-12"
+"WEB15:AI-05","AI-RMF:MEASURE-1.3","independent-assessment-principle","Involve people independent of reviewer development for validation.","proposed-for-review","qualified","Unassigned","Pending","2026-11-12"
+"WEB15:AI-10","SLSA:BUILD-PROVENANCE","technical-alignment","Provenance helps trace artifacts to source; does not prove approval of deployment.","proposed-for-review","qualified","Unassigned","Pending","2026-11-12"
