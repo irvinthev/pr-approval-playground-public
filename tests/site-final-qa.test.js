@@ -78,5 +78,5 @@ test('redundant chapter guides are secondary and optional experiments remain int
  assert.match(monitoring,/<details class="fg-supplementary-guide"[\s\S]*?<section class="monitoring-chapter-guide"/);
  assert.equal((monitoring.match(/id="fg-monitoring-dashboard"/g)||[]).length,1);
  assert.match(read('index.html'),/id="workflow"/);
- assert.match(read('playground.html'),/data-scenario=/);
+ assert.match(read('playground.html'),/data-lab=/);
 });
