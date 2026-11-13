@@ -211,13 +211,27 @@ details.field-deep-dive>section{margin:0 14px 16px}
  .risk-dashboard #risk-assessment-guide .field-steps li{min-width:0;padding:13px 15px}
  .risk-dashboard #risk-assessment-guide .field-steps li span{font-size:13px;line-height:1.55}
 }
-</style></head>
-<body class="risk-dashboard"><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html">Overview</a><a href="./ai-sdlc-risk.html" aria-current="page">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Assurance</a></nav></header>
+</style><link rel="stylesheet" href="./field-guide-journey.css"><script defer src="./field-guide-journey.js"></script></head>
+<body class="risk-dashboard"><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html">Overview</a><a href="./ai-sdlc-risk.html" aria-current="page">Risk &amp; Governance</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Assurance</a></nav></header>
 <section class="risk-main-hero" id="main-content" tabindex="-1">
-<div><div class="field-kicker">AI-enabled software delivery / Risk Assessment</div><h1>What could go wrong when AI helps decide a change is safe?</h1><p class="risk-hero-lead">Choose a credible failure. Trace where it enters delivery, what could interrupt it, and the decision management must make.</p><div class="risk-hero-actions"><a class="field-button" href="#risk-explorer">Investigate a risk →</a><a class="field-secondary" href="#risk-register">Browse all nine scenarios →</a></div>
+<div><div class="field-kicker">AI-enabled software delivery / Risk &amp; Governance</div><h1>What could go wrong when AI helps decide a change is safe?</h1><p class="risk-hero-lead">Start with what must not happen. Decide what AI may recommend, what it may authorize, who can change the rules, and which unsafe or uncertain changes must always reach a human.</p><div class="risk-hero-actions"><a class="field-button" href="#risk-explorer">Investigate a risk →</a><a class="field-secondary" href="#risk-register">Browse all nine scenarios →</a></div>
 </div>
 
 </section>
+<section class="fg-risk-governance" id="fg-delegated-authority" aria-labelledby="fg-risk-title" style="margin:22px 0 28px;padding:22px;border:1px solid #416071;border-radius:14px;background:#102333">
+<div class="field-kicker">RISK &amp; GOVERNANCE / THINK BEFORE SCORING</div>
+<h2 id="fg-risk-title">Define the decision boundary before evaluating the model</h2>
+<p>CASE-SHARED-01 begins as a small shared-library change. File count and diff size may look harmless while downstream financial or customer-impacting dependencies remain unknown. Risk assessment begins with the potential failure—not the model's low-risk label.</p>
+<ol style="display:grid;gap:10px;padding-left:22px">
+<li><strong>Scope:</strong> What repositories, dependencies and critical paths are deterministically excluded? Who may expand that scope?</li>
+<li><strong>Delegation:</strong> Is AI only advising, classifying, authorizing a qualified change, or affecting release eligibility? Which decisions remain human-owned?</li>
+<li><strong>Governance:</strong> Who owns risk appetite, review thresholds, exception decisions and policy changes? Can a code author modify the controls that judge their own change?</li>
+<li><strong>Uncertainty:</strong> What if two AI reviewers agree on the wrong result, produce different results on identical input, disagree with each other, or miss a shared dependency?</li>
+</ol>
+<p><strong>Management output:</strong> permitted use cases, hard exclusions, mandatory human fallback and owner-approved criteria. Reviewer score distributions do not independently establish authority or acceptable risk.</p>
+<p><a href="./engineering-blueprint.html#fg-build-blueprint">Next: translate the boundary into enforceable engineering requirements →</a></p>
+</section>
+<details class="fg-supplementary-guide" style="margin:15px 0 23px;padding:10px 14px;border:1px solid #416071;border-radius:9px"><summary style="cursor:pointer;font-weight:650;padding:8px 0">Optional chapter walkthrough: investigate, trace, decide</summary>
 <nav class="risk-chapter-guide" aria-label="How to use Risk Assessment" id="risk-chapter-guide">
  <div class="risk-chapter-guide-header"><span class="field-kicker">HOW TO USE THIS CHAPTER</span><p>Start with a plausible failure—not a risk score. Follow its consequences and safeguards, then identify the decision management needs to make.</p></div>
  <ol>
@@ -226,6 +240,8 @@ details.field-deep-dive>section{margin:0 14px 16px}
   <li><a href="#risk-management-decision"><span>03 / DECIDE</span><strong>Identify the management decision</strong><small>Determine what needs to be validated, mitigated or escalated.</small></a></li>
  </ol>
 </nav>
+
+</details>
 <section class="risk-explorer" id="risk-explorer" aria-labelledby="risk-explorer-title">
 <div class="risk-explorer-heading"><span class="field-kicker">01 / INVESTIGATE A FAILURE</span><h2 id="risk-explorer-title">Start with the failure. Follow it to the decision.</h2><p>Select a credible scenario, trace its effects across the SDLC, then examine the potential safeguards and management decision.</p></div>
 <p class="risk-investigation-preface">The examples below are synthetic teaching scenarios. No likelihood, impact, control effectiveness, or risk acceptance is determined by this guide.</p>
@@ -435,4 +451,4 @@ function reveal(){
 window.addEventListener('hashchange',reveal);
 reveal();
 })();
-</script></body></html>
+</script><script>(function(){function reveal(){const h=location.hash.slice(1);if(!h)return;const t=document.getElementById(h);const p=t&&t.closest('details.fg-supplementary-guide');if(p)p.open=true;}window.addEventListener('hashchange',reveal);if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',reveal,{once:true});else reveal();})();</script></body></html>
