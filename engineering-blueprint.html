@@ -310,11 +310,49 @@ body .wrap>.hero p{max-width:980px;font-size:clamp(16px,1.7vw,19px);line-height:
 @media(max-width:750px){.engineering-boundary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.engineering-hero-actions{flex-direction:column}.engineering-hero-actions a{width:100%}.engineering-boundary-grid{grid-template-columns:1fr}.engineering-boundary-card{padding:15px}.engineering-boundary-card strong{margin:7px 0}.engineering-boundary-card p{margin-bottom:7px}.engineering-boundary-card dl{display:grid;grid-template-columns:90px 1fr;column-gap:12px;margin-top:5px}.engineering-boundary-card dt{margin:5px 0}.engineering-boundary-card dd{margin:5px 0}}
 @media(prefers-reduced-motion:reduce){.engineering-boundary-card{transition:none}}
-</style><link rel="stylesheet" href="./field-guide-journey.css"><script defer src="./field-guide-journey.js"></script></head><body><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a><a class="site-experiments" href="./playground.html">Advanced experiments ↗</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html">Overview</a><a href="./ai-sdlc-risk.html">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html" aria-current="page">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Assurance</a></nav></header><section class="hero" id="main-content" tabindex="-1"><span class="eyebrow">ENGINEERING &amp; SAFEGUARDS</span><h1>What actually stops an unsafe change?</h1><p>Follow a pull request through the safeguards Engineering would need to build or configure. See who makes the decision, what independently enforces it, and how to prove the boundary holds.</p><div class="engineering-hero-actions"><a class="engineering-primary-action" href="#engineering-build-plan">Inspect the enforcement path →</a><a class="engineering-secondary-action" href="#rr02-negative-test">Try the failure test →</a></div></section>
+</style><link rel="stylesheet" href="./field-guide-journey.css"><script defer src="./field-guide-journey.js"></script></head><body><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a><a class="site-experiments" href="./playground.html">Advanced experiments ↗</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html">Overview</a><a href="./ai-sdlc-risk.html">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html" aria-current="page">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Assurance</a></nav></header><section class="hero" id="main-content" tabindex="-1"><span class="eyebrow">ENGINEERING &amp; SAFEGUARDS</span><h1>What actually stops an unsafe change?</h1><p>Start with a buildable enforcement architecture: define eligibility, evaluate two advisory AI reviewers, authorize the exact revision, enforce merge and release boundaries, and produce the records needed to test the design.</p><div class="engineering-hero-actions"><a class="engineering-primary-action" href="#engineering-build-plan">Review the build blueprint →</a><a class="engineering-secondary-action" href="#rr02-negative-test">Try the failure test →</a></div></section>
 <nav class="engineering-quick-nav" aria-label="Engineering page shortcuts"><span>EXPLORE</span><a href="#engineering-build-plan">Enforcement path</a><a href="#technical-requirements">Implementation</a><a href="#rr02-negative-test">Negative test</a><a href="#supporting-resources">Advanced tools</a></nav>
 
 
 
+<section class="section fg-build-blueprint" id="fg-build-blueprint" aria-labelledby="fg-build-title" style="margin:22px 0 30px;padding:22px;border:1px solid #416071;border-radius:14px;background:#0d2230">
+<span class="eyebrow">BUILD FIRST / THEN CHALLENGE</span>
+<h2 id="fg-build-title">A buildable approval path has six enforceable boundaries</h2>
+<p>The AI reviewers provide risk signals. They do not independently create permission to approve, merge or release. Implement the technical boundaries first; use the existing investigation below to try to defeat them.</p>
+<ol style="display:grid;gap:12px;padding-left:22px">
+<li><strong>Define scope deterministically.</strong> Version repository, file, dependency and critical-path exclusions. Unknown scope or rule failure must route to a human.</li>
+<li><strong>Evaluate two advisory AI reviewers.</strong> Record both outputs and the source revision. Missing output, disagreement, invalid response and timeouts must not expand eligibility.</li>
+<li><strong>Authorize separately.</strong> Management owns the delegation policy. A constrained approval identity acts only when the independently enforced policy permits it.</li>
+<li><strong>Bind the exact revision.</strong> New commits or changed relevant context invalidate stale approvals. Branch protections and privileged bypass actors must be covered.</li>
+<li><strong>Protect release integrity.</strong> Test the merge candidate and trace the authorized source through build provenance to the released artifact; a green check alone is not permission.</li>
+<li><strong>Expose evidence by design.</strong> Capture decision, policy, prompt/model/context version, actor, timestamps, tests, bypass events and deployed revision in an inspectable record.</li>
+</ol>
+<h3>Administrative independence is a design constraint</h3>
+<p>Map who may modify application code, deterministic eligibility rules, AI prompts/model/context, approval credentials or exception settings, and deployment configuration. Two reviewer agents are not independent controls when the same administrator can change their decision behavior and enforcement path without meaningful constraint.</p>
+<h3>How to test a nondeterministic reviewer</h3>
+<p>Exact output replay is not a valid universal success criterion for AI. Evaluate adjudicated representative and adversarial PRs, repeat where useful, track false-low-risk outcomes by severity, correlated errors, reviewer disagreement and drift after version changes. Keep deterministic exclusions and human escalation independent of that evaluation. Model agreement and high approval percentages do not establish authorization or safety.</p>
+<p><strong>Build acceptance:</strong> show a disallowed shared-library change denied, a two-reviewer split escalated, a stale SHA invalidated, an unauthorized approval blocked, and a reviewed-to-deployed artifact trace.</p>
+</section>
+
+<details class="fg-implementation-contract" open style="margin:0 0 24px;padding:18px;border:1px solid #416071;border-radius:12px;background:#0d2230">
+<summary style="cursor:pointer;font-weight:700;min-height:42px">Implementation contract · decision routing and independent owners</summary>
+<p>Illustrative policy: reviewers are advisory; the independently governed authorization service is the approval-of-record. A change is eligible for automation only if every required precondition holds at the same evaluated revision.</p>
+<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;text-align:left;font-size:13px">
+<caption style="text-align:left;padding:8px 0">Policy truth table — demonstration contract, not production configuration</caption>
+<thead><tr><th scope="col">Condition</th><th scope="col">Required outcome</th><th scope="col">Evidence / negative test</th></tr></thead>
+<tbody>
+<tr><td>Known eligible scope; required checks valid; both reviewers accept current SHA</td><td>Proceed only to independent authorization policy</td><td>Policy/version, both verdicts, current SHA, policy decision</td></tr>
+<tr><td>Prohibited path or critical dependency</td><td>Automation prohibited; human review</td><td>Negative fixture and exclusion-policy version</td></tr>
+<tr><td>Unknown dependency or unavailable eligibility data</td><td>Fail closed to human review</td><td>Missing-dependency test and rule execution log</td></tr>
+<tr><td>Reviewer disagreement, missing output, invalid response, timeout</td><td>No automated approval</td><td>Fail-safe fixture and raw reviewer-result metadata</td></tr>
+<tr><td>SHA changes after evaluation or approval</td><td>Invalidate stale evaluation/approval; re-evaluate</td><td>Before/after SHA and expired-check history</td></tr>
+<tr><td>Unauthorized identity or privileged bypass</td><td>Reject or independently detect/escalate; no reliance on unmonitored bypass</td><td>Permissions, branch rules, bypass audit trail and negative test</td></tr>
+<tr><td>Build/artifact does not match authorized revision</td><td>Block deployment or explicitly route through new authorization</td><td>Build provenance and release-gate rejection</td></tr>
+</tbody></table></div>
+<h3>Administrative ownership boundary</h3>
+<p>Document separate accountable owners or compensating approval/detection for: application changes; deterministic scope policy; AI reviewer prompts/models/context; automated approval credentials and branch-rule bypass; and production deployment configuration. A self-approval path exists when one actor can weaken the gate and approve the change without an independently enforced constraint.</p>
+<p><strong>Acceptance evidence:</strong> named owners, repo/ruleset permissions, tested default-deny behavior, complete decision event schema, CI/release identity and negative-test results. A written control alone is insufficient.</p>
+</details>
 <section class="section build-plan engineering-architecture" id="engineering-build-plan" aria-labelledby="build-plan-title">
  <span class="eyebrow">01 / FOLLOW THE ENFORCEMENT PATH</span>
  <h2 id="build-plan-title">From AI recommendation to enforceable change</h2>
