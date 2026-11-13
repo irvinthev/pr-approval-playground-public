@@ -318,6 +318,7 @@ body .wrap>.hero p{max-width:980px;font-size:clamp(16px,1.7vw,19px);line-height:
 <section class="section fg-build-blueprint" id="fg-build-blueprint" aria-labelledby="fg-build-title" style="margin:22px 0 30px;padding:22px;border:1px solid #416071;border-radius:14px;background:#0d2230">
 <span class="eyebrow">BUILD FIRST / THEN CHALLENGE</span>
 <h2 id="fg-build-title">A buildable approval path has six enforceable boundaries</h2>
+<p><strong>Shared example:</strong> CASE-SHARED-01 is a fictional shared-library change with uncertain financial dependencies. The review starts at <code>example-sha-A</code>; any subsequent revision such as <code>example-sha-B</code> requires a newly valid decision. Follow this same case in Risk, Monitoring, and Assurance.</p>
 <p>The AI reviewers provide risk signals. They do not independently create permission to approve, merge or release. Implement the technical boundaries first; use the existing investigation below to try to defeat them.</p>
 <ol style="display:grid;gap:12px;padding-left:22px">
 <li><strong>Define scope deterministically.</strong> Version repository, file, dependency and critical-path exclusions. Unknown scope or rule failure must route to a human.</li>
