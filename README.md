@@ -24,6 +24,16 @@ Published framework references remain visible on the homepage. They inform propo
 
 This is an educational simulator, not a working approval system or evidence of a real organization's controls. Examples are fictional.
 
+## Open scenario challenge lab (experimental)
+
+The [open-ended AI SDLC Challenge Lab](./open-scenario.html) accepts a user-authored, fictional scenario and retrieves **candidate** decision boundaries and source-linked framework provisions from the existing canonical `framework-source-catalog.js`. A standalone `scenario-framework-adapter.js` validates catalog references, performs transparent keyword-based topic matching and produces bounded educational challenges. It does not copy framework records, call an LLM, make network requests, make risk predictions, or verify actual controls. An unmatched scenario is explicitly unsupported, not safe.
+
+The UI lets readers explore recognized topics, compare design approaches, inspect proposed negative tests, review catalog citation metadata and export a local JSON scenario brief. Output reflects text in the browser only; no remote model integration or persistence. Do not submit confidential or proprietary inputs into this public demo. The system **does not** assert verified framework applicability, SOX readiness, or implementation evidence.
+
+The first slice builds on the MagicPath *Authority → Enforcement → Evidence* and *Scenario-Driven RCM & AI Framework Explorer* concepts. The MagicPath prototypes remain separate; this production-site increment does not change their remote canvases. A future LLM-backed agent must enforce source-ID validation, distinguish framework text from engineering interpretation, and protect user-data boundaries.
+
+Run the adapter regression tests with `node --test tests/open-scenario-adapter.test.mjs`.
+
 ## Run locally
 
 Open `index.html` in any browser. No build step, installation, API key, or backend required.
