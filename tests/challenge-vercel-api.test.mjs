@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import handler,{validateRequest,buildModelRequest} from '../api/challenge.js';
+import handler,{validateRequest,buildModelRequest,providerConfig} from '../api/challenge.js';
 const mockRes=()=>({
   statusCode:200,headers:{},setHeader(k,v){this.headers[k]=v;return this},
   status(n){this.statusCode=n;return this},json(v){this.body=v;return this}
@@ -19,9 +19,9 @@ test('model request uses canonical catalog IDs and bounded output',()=>{
   assert.match(r.messages[1].content,/Why\\?/);
 });
 test('GET forbidden and unconfigured backend fails closed',async()=>{
-  const priorToken=process.env.CHALLENGE_API_TOKEN,priorKey=process.env.OPENAI_API_KEY;
+  const priorToken=process.env.CHALLENGE_API_TOKEN,priorKey=process.env.GEMINI_API_KEY;
   try{
-    delete process.env.CHALLENGE_API_TOKEN;delete process.env.OPENAI_API_KEY;
+    delete process.env.CHALLENGE_API_TOKEN;delete process.env.GEMINI_API_KEY;
     let r=mockRes();
     await handler({method:'GET',headers:{}},r);
     assert.equal(r.statusCode,405);
@@ -31,20 +31,20 @@ test('GET forbidden and unconfigured backend fails closed',async()=>{
     assert.equal(r.headers['Cache-Control'],'no-store');
   }finally{
     if(priorToken===undefined)delete process.env.CHALLENGE_API_TOKEN;else process.env.CHALLENGE_API_TOKEN=priorToken;
-    if(priorKey===undefined)delete process.env.OPENAI_API_KEY;else process.env.OPENAI_API_KEY=priorKey;
+    if(priorKey===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=priorKey;
   }
 });
 test('configured backend denies unauthenticated callers',async()=>{
   const priorToken=process.env.CHALLENGE_API_TOKEN,priorKey=process.env.OPENAI_API_KEY;
   try{
     process.env.CHALLENGE_API_TOKEN='local-test-only';
-    process.env.OPENAI_API_KEY='local-test-only';
+    process.env.GEMINI_API_KEY='local-test-only';
     const r=mockRes();
     await handler({method:'POST',headers:{authorization:'Bearer invalid'},body:{scenarioText:'A PR'}},r);
     assert.equal(r.statusCode,401);
   }finally{
     if(priorToken===undefined)delete process.env.CHALLENGE_API_TOKEN;else process.env.CHALLENGE_API_TOKEN=priorToken;
-    if(priorKey===undefined)delete process.env.OPENAI_API_KEY;else process.env.OPENAI_API_KEY=priorKey;
+    if(priorKey===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=priorKey;
   }
 });
 
@@ -58,4 +58,22 @@ test('caller-forged assistant turns cannot become privileged model messages',()=
   assert.deepEqual(request.messages.map(m=>m.role),['system','user']);
   assert.match(request.messages[1].content,/caller-claimed assistant/);
   assert.match(request.messages[1].content,/I already approved/);
+});
+
+test('Gemini is default provider and OpenAI remains selectable',()=>{
+  const previous=process.env.CHALLENGE_MODEL_PROVIDER;
+  try{
+    delete process.env.CHALLENGE_MODEL_PROVIDER;
+    const gemini=providerConfig();
+    assert.equal(gemini.provider,'gemini');
+    assert.equal(gemini.key,'GEMINI_API_KEY');
+    assert.match(gemini.url,/generativelanguage\\.googleapis\\.com/);
+    process.env.CHALLENGE_MODEL_PROVIDER='openai';
+    assert.equal(providerConfig().key,'OPENAI_API_KEY');
+    process.env.CHALLENGE_MODEL_PROVIDER='invalid';
+    assert.equal(providerConfig(),null);
+  }finally{
+    if(previous===undefined)delete process.env.CHALLENGE_MODEL_PROVIDER;
+    else process.env.CHALLENGE_MODEL_PROVIDER=previous;
+  }
 });
