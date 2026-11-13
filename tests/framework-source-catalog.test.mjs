@@ -4,12 +4,12 @@ import {sourceCatalog} from '../framework-source-catalog.js';
 import {controls} from '../rcm-explorer-data.js';
 const c=sourceCatalog;
 test('source catalog has distinct, version-qualified sources',()=>{
- assert.equal(c.sources.length,10);
+ assert.equal(c.sources.length,11);
  assert.equal(new Set(c.sources.map(s=>s.id)).size,c.sources.length);
  for(const s of c.sources){assert.ok(s.version&&s.status&&s.sourceType);assert.match(s.url,/^https:\/\//);assert.ok(s.limitations);}
 });
 test('provision references resolve and have explicit review and source status',()=>{
- assert.equal(c.provisions.length,21);
+ assert.equal(c.provisions.length,25);
  assert.equal(new Set(c.provisions.map(p=>p.id)).size,c.provisions.length);
  for(const p of c.provisions){assert.ok(c.sources.some(s=>s.id===p.sourceId),p.id);assert.match(p.url,/^https:\/\//);assert.ok(p.qualification&&p.reviewStatus);}
 });
