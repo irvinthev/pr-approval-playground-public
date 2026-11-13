@@ -1,3 +1,4 @@
+import {explainAdversarialReview} from './rcm-scenario-reasoning.js';
 import {findMappings,frameworkRegistry} from './framework-registry.js';
 import {sourceCatalog} from './framework-source-catalog.js';
 import {recommend,useCases,riskAreas,authorityLevels,families,rowsForExport} from './rcm-explorer-engine.js';
@@ -14,6 +15,13 @@ function choices(){
  $('#risk-count').textContent=state.risks.length+' selected';
 }
 function panel(){
+ const example=explainAdversarialReview(state);
+ const reasonPanel=$('#scenario-reasoning');
+ reasonPanel.hidden=!example;
+ if(example){
+  const steps=[['What can go wrong',example.failure],['Why authority matters',example.consequence],['Who owns the guardrail',example.owner],['How to test',example.check]];
+  reasonPanel.innerHTML='<div class="reason-head"><span class="reason-kicker">ILLUSTRATIVE CASE · NO LIVE AI</span><h3>'+esc(example.title)+'</h3></div><div class="reason-steps">'+steps.map(([title,body])=>'<div><b>'+esc(title)+'</b><p>'+esc(body)+'</p></div>').join('')+'</div><div class="reason-controls"><b>Relevant existing safeguards</b><div>'+example.safeguards.map(s=>'<button type="button" data-control="'+esc(s.id)+'">'+esc(s.id)+' · '+esc(s.title)+'</button>').join('')+'</div></div><div class="reason-references"><b>Source lenses</b><p>'+example.references.map(s=>'<a href="'+esc(s.url)+'" target="_blank" rel="noopener noreferrer">'+esc(s.label)+'</a>').join(' · ')+'</p><small>Related guidance, not approved mappings. '+esc(example.status)+'</small></div>';
+ }
  const all=recommend(state), candidates=all.filter(c=>c.recommended);
  $('#match-count').textContent=candidates.length;$('#stat-risk').textContent=state.risks.length;$('#stat-framework').textContent=state.selectedFamilies.length;
  $('#all-controls').checked=state.showAll;$('#search').value=state.search;
@@ -34,6 +42,7 @@ function panel(){
 }
 function render(){choices();panel()}
 document.addEventListener('click',e=>{
+ if(e.target.closest('#load-adversarial-case')){Object.assign(state,{useCase:'approval',authority:'authorize',risks:['injection','sod'],tab:'controls',search:'',selected:'WEB15:AI-04'});render();$('#scenario-reasoning').scrollIntoView({behavior:'smooth',block:'nearest'});return}
  const t=e.target.closest('[data-case]');if(t){state.useCase=t.dataset.case;render();return}
  const c=e.target.closest('[data-control]');if(c){state.selected=c.dataset.control;panel();return}
  const tab=e.target.closest('[data-tab]');if(tab){state.tab=tab.dataset.tab;panel();return}
