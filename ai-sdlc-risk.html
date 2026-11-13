@@ -46,7 +46,29 @@
 .risk-deeper,.risk-library-detail{border:1px solid #466a7c;background:#153345;border-radius:10px;padding:0 15px;margin:12px 0}.risk-deeper summary,.risk-library-detail summary{cursor:pointer;min-height:44px;padding:15px 0;color:#a4edda;font-size:14px;font-weight:750}.risk-deeper>p,.risk-library-detail>p{font-size:13px;color:#cbdee7;line-height:1.65}
 .risk-rmf-detail summary{cursor:pointer;padding:12px 0;color:#a4edda}.risk-library-detail summary{display:grid;gap:5px}.risk-library-detail summary strong{font-size:19px;color:#e9f7f5}.risk-library-detail summary span:last-child{color:#c6d9e4;font-size:13px;font-weight:400}
 @media(max-width:650px){.risk-audience{grid-template-columns:1fr}.risk-detail-grid{grid-template-columns:1fr}}
-.risk-explorer-links a#risk-engineering-next{display:inline-block;padding:9px 13px;border:1px solid #7cbba8;border-radius:8px;background:#17483f;color:#e9fff7;text-decoration:none}.risk-explorer-links a#risk-engineering-next:hover,.risk-explorer-links a#risk-engineering-next:focus-visible{background:#256052}</style><style>
+.risk-explorer-links a#risk-engineering-next{display:inline-block;padding:9px 13px;border:1px solid #7cbba8;border-radius:8px;background:#17483f;color:#e9fff7;text-decoration:none}.risk-explorer-links a#risk-engineering-next:hover,.risk-explorer-links a#risk-engineering-next:focus-visible{background:#256052}
+/* Risk Assessment investigation-first presentation. Existing scenario and tab logic are unchanged. */
+.risk-dashboard .risk-main-hero{padding-top:24px!important;padding-bottom:20px!important;max-width:1200px}
+.risk-dashboard .risk-main-hero h1{max-width:1150px;font-size:clamp(33px,4.5vw,54px);letter-spacing:-.035em;line-height:1.12}
+.risk-dashboard .risk-main-hero .risk-hero-lead{font-size:clamp(16px,1.65vw,19px);color:var(--site-muted);max-width:950px;line-height:1.6;margin:14px 0 0}
+.risk-dashboard .risk-hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin:23px 0 0}
+.risk-dashboard .risk-hero-actions a{min-height:44px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+.risk-dashboard .risk-explorer{margin:13px 0 30px;padding:clamp(18px,3vw,28px);border:1px solid var(--site-border);border-radius:15px;background:#102738;scroll-margin-top:20px}
+.risk-dashboard .risk-explorer-heading h2{max-width:1040px;font-size:clamp(25px,3vw,32px);line-height:1.22}
+.risk-dashboard .risk-explorer-heading>p{max-width:840px;color:var(--site-muted);font-size:15px}
+.risk-dashboard .risk-investigation-preface{margin:15px 0 19px;color:#b7ccd9;font-size:12px;line-height:1.6}
+.risk-dashboard .risk-featured-choices{margin-top:16px}
+.risk-dashboard .risk-featured-choices button{min-height:125px;line-height:1.5;border-radius:10px}
+.risk-dashboard .risk-primary-categories{margin:18px 0 24px;scroll-margin-top:20px}
+.risk-dashboard .risk-primary-categories h2{font-size:clamp(24px,2.7vw,29px)}
+.risk-dashboard .risk-category-grid a{min-height:200px;border-radius:11px}
+.risk-dashboard .risk-approach-disclosure{margin:12px 0 25px;border:1px solid var(--site-border);border-radius:11px;background:#102738;padding:0 18px}
+.risk-dashboard .risk-approach-disclosure summary{font-size:14px;color:var(--site-mint);font-weight:750;padding:15px 3px;cursor:pointer}
+.risk-dashboard .risk-approach-disclosure .guide-orientation{margin:4px 0 16px;padding:0;border:0;background:transparent}
+.risk-dashboard .risk-explorer .risk-context{margin-bottom:20px}
+@media(max-width:650px){.risk-dashboard .risk-hero-actions{flex-direction:column}.risk-dashboard .risk-hero-actions a{width:100%}.risk-dashboard .risk-main-hero h1{font-size:clamp(31px,8vw,39px)}.risk-dashboard .risk-explorer{padding:15px}.risk-dashboard .risk-featured-choices button{min-height:95px}}
+
+</style><style>
 .operating-panel{border:1px solid #486a7b;background:#102b3b;border-radius:15px;padding:20px;margin:20px 0 32px}.operating-panel h2{margin-top:0}.operating-note{color:#bdd3de;font-size:14px;line-height:1.6}.operating-fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:20px 0}.operating-fields label{display:flex;flex-direction:column;gap:8px;color:#e6f4f5;font-weight:700;font-size:14px}.operating-fields select{width:100%;max-width:100%;color:#edf8fa;background:#17394b;border:1px solid #7294a2;border-radius:7px;padding:11px;font:inherit;min-height:48px}.operating-fields select:focus-visible,.operating-panel button:focus-visible{outline:3px solid #9de8d4;outline-offset:2px}.operating-controls{display:flex;gap:12px;flex-wrap:wrap}.operating-controls button{cursor:pointer;border:1px solid #9de8d4;border-radius:8px;background:#9de8d4;color:#06212a;padding:11px 16px;font-weight:800}.operating-controls button[type=button]{background:transparent;color:#b0f1df}.operating-results{border-top:1px solid #466778;margin-top:22px;padding-top:22px}.operating-results h3{font-size:20px}.operating-finding{border:1px solid #456678;border-radius:10px;padding:16px;margin:12px 0;background:#143347}.operating-finding h3{font-size:17px;margin:0 0 10px}.operating-finding p{color:#d1e3e9;font-size:14px;margin:8px 0;line-height:1.6}.operating-finding a{color:#9de8d4}
 .operating-examples{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:22px 0}.operating-example{min-width:0;min-height:194px;text-align:left;display:flex;flex-direction:column;align-items:flex-start;gap:9px;background:#143448;color:#e9f8ff;border:1px solid #526f80;border-radius:12px;padding:19px;cursor:pointer;font:inherit;line-height:1.45}.operating-example strong{font-size:20px;line-height:1.2}.operating-example span:not(.operating-example-kicker):not(.operating-example-action){color:#c8dae3;font-size:14px}.operating-example-kicker{color:#a4edda;font-size:11px;letter-spacing:.07em;text-transform:uppercase;font-weight:800}.operating-example-action{color:#a4edda;font-size:13px;font-weight:800;margin-top:auto}.operating-example:hover,.operating-example[aria-pressed=true]{border-color:#a4edda;background:#1a4353}.operating-example:focus-visible{outline:3px solid #a4edda;outline-offset:3px}.operating-advanced{margin-top:20px;border-top:1px solid #466778;padding-top:16px}.operating-advanced summary{cursor:pointer;color:#a4edda;font-weight:800;padding:9px 0}.operating-advanced[open] summary{margin-bottom:8px}.operating-results{scroll-margin-top:16px}.operating-results h3:focus{outline:3px solid var(--site-mint);outline-offset:4px}.operating-takeaways{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:14px 0}.operating-takeaways section{padding:14px;background:#143448;border:1px solid #456678;border-radius:10px}.operating-takeaways h4{margin:0 0 9px;color:#a4edda;font-size:14px}.operating-takeaways p{margin:0;color:#d1e3e9;font-size:14px;line-height:1.6}.operating-evidence{margin:18px 0;border-top:1px solid #466778;padding-top:14px}.operating-evidence summary{cursor:pointer;color:#a4edda;font-weight:800;padding:10px 0}@media(max-width:820px){.operating-takeaways{grid-template-columns:1fr}}@media(max-width:820px){.operating-examples{grid-template-columns:1fr}.operating-example{min-height:0}.operating-example strong{font-size:18px}}.operating-next{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}.operating-next a{display:flex;flex-direction:column;gap:5px;padding:14px 16px;border:1px solid var(--site-border);border-radius:10px;background:#143448;text-decoration:none;color:var(--site-mint)}.operating-next a span{font-size:13px;line-height:1.5;color:#d1e3e9}.operating-next a:hover,.operating-next a:focus-visible{border-color:var(--site-mint)}@media(max-width:820px){.operating-next{grid-template-columns:1fr}}</style><link rel="stylesheet" href="./shared-pipeline-context.css?v=1"><style>
 #risk-assessment-guide a,#risk-register a{color:var(--site-mint)}#risk-assessment-guide .field-steps{grid-template-columns:repeat(4,minmax(0,1fr))}
@@ -141,42 +163,20 @@ details.field-deep-dive>section{margin:0 14px 16px}
 </style></head>
 <body class="risk-dashboard"><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html">Overview</a><a href="./ai-sdlc-risk.html" aria-current="page">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Assurance</a></nav></header>
 <section class="risk-main-hero" id="main-content" tabindex="-1">
-<div><div class="field-kicker">AI-enabled software delivery / Risk Assessment</div><h1>AI SDLC Risk Management</h1>
+<div><div class="field-kicker">AI-enabled software delivery / Risk Assessment</div><h1>What could go wrong when AI helps decide a change is safe?</h1><p class="risk-hero-lead">Choose a credible failure. Trace where it enters delivery, what could interrupt it, and the decision management must make.</p><div class="risk-hero-actions"><a class="field-button" href="#risk-explorer">Investigate a risk →</a><a class="field-secondary" href="#risk-categories">Browse all nine scenarios →</a></div>
 </div>
 
 </section>
-<section class="guide-orientation" aria-label="Risk assessment approach">
-  <p>AI-enabled CI/CD risks are organized into three domains based on key decision points across the software delivery lifecycle, traditional SDLC control objectives, and AI-specific failure scenarios. The approach draws on the <strong>NIST AI Risk Management Framework (Govern, Map, Measure, Manage)</strong>, though the domains are an illustrative grouping rather than an official framework taxonomy.</p>
-  <p>The domains are not exhaustive and connect nine representative risk scenarios to potential impacts, safeguards, and assurance evidence. <strong>Select a domain below</strong> to explore its risks and how they could be managed.</p>
-</section>
-
-<section class="risk-primary-categories" id="risk-categories" aria-labelledby="risk-categories-title">
- <div class="field-kicker">RISK ASSESSMENT / START HERE</div>
- <h2 id="risk-categories-title">Three risks. Nine ways delivery can fail.</h2>
- <p>When AI reviews, classifies or authorizes software changes, start with what could go wrong. Choose a risk category to explore its underlying failure scenarios, safeguards and evidence in the existing library.</p>
- <div class="risk-category-grid">
-  <a href="#risk-register" data-risk-category="decision"><span class="risk-category-number">01 / AI DECISIONS</span><strong>AI Decision Risk</strong><span>Can AI reliably assess the changes it is assigned?</span><small>RR-02 · RR-05 — Misclassification and correlated reviewer failures</small><em>Explore 2 scenarios →</em></a>
-  <a href="#risk-register" data-risk-category="governance"><span class="risk-category-number">02 / AUTHORITY</span><strong>Authorization &amp; Governance Risk</strong><span>Is AI operating within independently governed approval authority?</span><small>RR-01 · RR-06 · RR-08 · RR-09 — Approval, drift, overrides and identities</small><em>Explore 4 scenarios →</em></a>
-  <a href="#risk-register" data-risk-category="execution"><span class="risk-category-number">03 / DELIVERY</span><strong>CI/CD Execution Risk</strong><span>Does the pipeline enforce conditions required to merge, deploy and prove the authorized change path?</span><small>RR-03 · RR-04 · RR-07 — Stale approvals, bypasses and incomplete evidence</small><em>Explore 3 scenarios →</em></a>
- </div>
- <p class="risk-category-note">Risk category → Risk event → Failure scenario → Impact → Safeguards → Evidence. These are illustrative scenarios, not assessed organizational risks or verified controls.</p>
-</section>
-<section aria-label="Follow a change" style="margin:15px 0 25px;padding:20px;border:1px solid #4d7b7a;border-radius:12px;background:#143c44">
-  <div class="field-kicker">VISUAL INVESTIGATION / START HERE</div>
-  <h2 style="font-size:clamp(22px,3vw,29px);margin:9px 0">One pipeline. Four outcomes.</h2>
-  <p style="color:#c8dde5;max-width:850px;font-size:14px">Follow four PR outcomes across authority, safeguards and evidence.</p>
-  <a class="field-button" href="./scenario-journey.html?scenario=pass" style="margin-top:8px">Explore the interactive pipeline →</a>
-  <p style="font-size:12px;color:#aecbd2;margin:13px 0 0">Illustrative examples; this does not execute the policy evaluator or represent a validated deployment.</p>
-</section>
 <section class="risk-explorer" id="risk-explorer" aria-labelledby="risk-explorer-title">
-<div class="risk-explorer-heading"><span class="field-kicker">RISK MANAGEMENT / START HERE</span><h2 id="risk-explorer-title">What could compromise an AI-enabled delivery objective?</h2><p>Select a risk to explore its cause, consequence, safeguard and management decision.</p></div>
+<div class="risk-explorer-heading"><span class="field-kicker">01 / INVESTIGATE A FAILURE</span><h2 id="risk-explorer-title">Start with the failure. Follow it to the decision.</h2><p>Select a credible scenario, trace its effects across the SDLC, then examine the potential safeguards and management decision.</p></div>
+<p class="risk-investigation-preface">The examples below are synthetic teaching scenarios. No likelihood, impact, control effectiveness, or risk acceptance is determined by this guide.</p>
 <div class="risk-context">
 <div><span class="risk-meta">BUSINESS OBJECTIVE</span><strong>Accelerate software delivery while preserving authorized, reliable production changes.</strong></div>
 <div><span class="risk-meta">AI AUTHORITY</span><strong>AI reviews, classifies or conditionally authorizes changes.</strong></div>
 <div><span class="risk-meta">RISK BOUNDARY</span><strong>Management defines acceptable scope and exceptions; model output does not set appetite.</strong></div>
 </div>
 <div class="risk-rmf-line" aria-label="NIST AI RMF alignment"><strong>Govern</strong><span>Set decision rights</span><strong>Map</strong><span>Identify exposure</span><strong>Measure</strong><span>Assess uncertainty</span><strong>Manage</strong><span>Choose treatment</span></div>
-<h3>Choose a risk scenario</h3>
+<h3>Choose a failure scenario</h3>
 <div class="risk-featured-choices" role="group" aria-label="Featured AI SDLC risk scenarios">
 <button type="button" data-featured-risk="RR-02" aria-pressed="false"><span>01 · CLASSIFICATION</span><strong>Unsafe change classified low risk</strong><small>Trusted inputs and eligibility</small></button>
 <button type="button" data-featured-risk="RR-01" aria-pressed="true"><span>02 · AUTHORIZATION</span><strong>Unauthorized automated approval</strong><small>Delegated authority and independence</small></button>
@@ -209,6 +209,28 @@ details.field-deep-dive>section{margin:0 14px 16px}
 </section>
 
 
+<section class="risk-primary-categories" id="risk-categories" aria-labelledby="risk-categories-title">
+ <div class="field-kicker">02 / EXPLORE THE LIBRARY</div>
+ <h2 id="risk-categories-title">Three risk domains. Nine ways delivery can fail.</h2>
+ <p>Browse all nine illustrative scenarios by domain, then examine relevant safeguards and evidence.</p>
+ <div class="risk-category-grid">
+  <a href="#risk-register" data-risk-category="decision"><span class="risk-category-number">01 / AI DECISIONS</span><strong>AI Decision Risk</strong><span>Can AI reliably assess the changes it is assigned?</span><small>RR-02 · RR-05 — Misclassification and correlated reviewer failures</small><em>Explore 2 scenarios →</em></a>
+  <a href="#risk-register" data-risk-category="governance"><span class="risk-category-number">02 / AUTHORITY</span><strong>Authorization &amp; Governance Risk</strong><span>Is AI operating within independently governed approval authority?</span><small>RR-01 · RR-06 · RR-08 · RR-09 — Approval, drift, overrides and identities</small><em>Explore 4 scenarios →</em></a>
+  <a href="#risk-register" data-risk-category="execution"><span class="risk-category-number">03 / DELIVERY</span><strong>CI/CD Execution Risk</strong><span>Does the pipeline enforce conditions required to merge, deploy and prove the authorized change path?</span><small>RR-03 · RR-04 · RR-07 — Stale approvals, bypasses and incomplete evidence</small><em>Explore 3 scenarios →</em></a>
+ </div>
+ <p class="risk-category-note">Risk category → Risk event → Failure scenario → Impact → Safeguards → Evidence. These are illustrative scenarios, not assessed organizational risks or verified controls.</p>
+</section>
+<section aria-label="Follow a change" style="margin:15px 0 25px;padding:20px;border:1px solid #4d7b7a;border-radius:12px;background:#143c44">
+  <div class="field-kicker">VISUAL INVESTIGATION / START HERE</div>
+  <h2 style="font-size:clamp(22px,3vw,29px);margin:9px 0">One pipeline. Four outcomes.</h2>
+  <p style="color:#c8dde5;max-width:850px;font-size:14px">Follow four PR outcomes across authority, safeguards and evidence.</p>
+  <a class="field-button" href="./scenario-journey.html?scenario=pass" style="margin-top:8px">Explore the interactive pipeline →</a>
+  <p style="font-size:12px;color:#aecbd2;margin:13px 0 0">Illustrative examples; this does not execute the policy evaluator or represent a validated deployment.</p>
+</section>
+<details class="risk-approach-disclosure"><summary>How this risk assessment is structured and how it relates to NIST AI RMF</summary><section class="guide-orientation" aria-label="Risk assessment approach">
+  <p>AI-enabled CI/CD risks are organized into three domains based on key decision points across the software delivery lifecycle, traditional SDLC control objectives, and AI-specific failure scenarios. The approach draws on the <strong>NIST AI Risk Management Framework (Govern, Map, Measure, Manage)</strong>, though the domains are an illustrative grouping rather than an official framework taxonomy.</p>
+  <p>The domains are not exhaustive and connect nine representative risk scenarios to potential impacts, safeguards, and assurance evidence. <strong>Select a domain below</strong> to explore its risks and how they could be managed.</p>
+</section></details>
 <section class="risk-more-tools"><span class="field-kicker">EXPLORE FURTHER</span><h2>Risk scenario library and supporting tools</h2><p>Additional scenarios, inventory tools and references.</p></section>
 <div class="risk-tabs" role="tablist" aria-label="Risk assessment workspace">
 <button type="button" role="tab" id="tab-register" aria-controls="risk-tab-register" aria-selected="true" data-risk-tab="register">Assessment &amp; Register</button>
