@@ -118,7 +118,27 @@ details.field-deep-dive>section{margin:0 14px 16px}
  .monitoring-journey-card>strong{margin:7px 0!important}
  .monitoring-journey-card p{margin-bottom:8px!important}
 }
-</style><link rel="stylesheet" href="./page-orientation.css?v=1"><link rel="stylesheet" href="./risk-stage-context.css?v=1"><link rel="stylesheet" href="./field-guide-journey.css"><script defer src="./field-guide-journey.js"></script></head><body><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a><a class="site-experiments" href="./playground.html">Advanced experiments ↗</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html">Overview</a><a href="./ai-sdlc-risk.html">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html" aria-current="page">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Assurance</a></nav></header><section class="hero" id="main-content" tabindex="-1"><span class="eyebrow">MONITORING &amp; OPERATIONS</span><h1>When an unsafe change reaches production, who notices—and what happens next?</h1><p class="lead">Follow the signal from detection to investigation, accountable response and retained evidence. A green dashboard does not establish that every change was authorized.</p><div class="monitoring-hero-actions"><a class="monitoring-primary-action" href="#monitoring-guide">Investigate a monitoring signal →</a><a class="monitoring-secondary-action" href="#monitoring-investigations">Explore failure cases →</a></div></section>
+</style><link rel="stylesheet" href="./page-orientation.css?v=1"><link rel="stylesheet" href="./risk-stage-context.css?v=1"><link rel="stylesheet" href="./field-guide-journey.css"><script defer src="./field-guide-journey.js"></script></head><body><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a><a class="site-experiments" href="./playground.html">Advanced experiments ↗</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html">Overview</a><a href="./ai-sdlc-risk.html">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html" aria-current="page">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Assurance</a></nav></header><section class="hero" id="main-content" tabindex="-1"><span class="eyebrow">MONITORING &amp; OPERATIONS</span><h1>When an unsafe change reaches production, who notices—and what happens next?</h1><p class="lead">Monitor reviewer quality, the complete authorized-change population, and what actually reached production. A green dashboard cannot prove a change was authorized if that change never entered its records.</p><div class="monitoring-hero-actions"><a class="monitoring-primary-action" href="#monitoring-guide">Investigate a monitoring signal →</a><a class="monitoring-secondary-action" href="#monitoring-investigations">Explore failure cases →</a></div></section>
+<section class="fg-monitoring-dashboard" id="fg-monitoring-dashboard" aria-labelledby="fg-monitor-title" style="margin:24px 0;padding:22px;border:1px solid #416071;border-radius:14px;background:#0d2230">
+<span class="eyebrow">ILLUSTRATIVE SIGNAL DASHBOARD / CASE-SHARED-01</span>
+<h2 id="fg-monitor-title">Detect what the AI assessed, what the system authorized, and what production received</h2>
+<p>Three connected monitoring dimensions for one fictional shared-library change. Select a signal to see how Engineering and GRC would investigate it. No live data or configured alerts are represented here.</p>
+<div class="fg-monitor-signal-switch" role="group" aria-label="Choose a monitoring signal" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:10px">
+<button type="button" data-monitor-signal="quality" aria-pressed="false" style="text-align:left;padding:14px;border-radius:9px;border:1px solid #557387;background:#173447;color:#f1f7f9;cursor:pointer"><strong>01 / REVIEWER QUALITY</strong><small style="display:block;margin-top:6px">A low-risk result conflicts with an adjudicated dependency case</small></button>
+<button type="button" data-monitor-signal="population" aria-pressed="true" style="text-align:left;padding:14px;border-radius:9px;border:2px solid #6ce0be;background:#194c49;color:#f1f7f9;cursor:pointer"><strong>02 / POPULATION</strong><small style="display:block;margin-top:6px">24 decisions / 25 independently identified merges</small></button>
+<button type="button" data-monitor-signal="release" aria-pressed="false" style="text-align:left;padding:14px;border-radius:9px;border:1px solid #557387;background:#173447;color:#f1f7f9;cursor:pointer"><strong>03 / RELEASE INTEGRITY</strong><small style="display:block;margin-top:6px">Approved revision A / deployed revision B</small></button>
+</div>
+<div id="fg-monitor-signal-detail" aria-live="polite" style="margin-top:16px;padding:17px;border-left:3px solid #6ce0be;background:#132c3b;border-radius:8px">
+<h3 id="fg-monitor-signal-title">A change is missing from the approval population</h3>
+<p id="fg-monitor-signal-observation">The illustrative independent merge population contains 25 changes; the dashboard records only 24 decisions.</p>
+<p id="fg-monitor-signal-meaning"><strong>Signal, not proof:</strong> determine whether the unmatched change was excluded, legitimately human-reviewed, not logged, or never subject to automation.</p>
+<p id="fg-monitor-signal-evidence"><strong>Request:</strong> independent merge population, decision records, exceptions and actor/timestamp linkage.</p>
+<a id="fg-monitor-signal-action" href="#monitoring-guide">Inspect the detailed monitoring controls →</a>
+</div>
+<p style="margin:12px 0 4px"><strong>Interpretation rule:</strong> a monitoring exception starts an investigation; neither a green dashboard nor a mismatch alone proves authorization or root cause. Efficiency measurements remain separate from assurance evidence.</p>
+<p><a href="./independent-assurance.html#fg-worked-investigation">Continue to the independent case investigation →</a></p>
+</section>
+<details class="fg-supplementary-guide" style="margin:15px 0 23px;padding:10px 14px;border:1px solid #416071;border-radius:9px"><summary style="cursor:pointer;font-weight:650;padding:8px 0">Optional deeper guide: operational response and investigation steps</summary>
 <section class="monitoring-chapter-guide" aria-labelledby="monitoring-chapter-guide-title" id="monitoring-chapter-guide">
  <span class="eyebrow">HOW TO USE THIS CHAPTER</span>
  <h2 id="monitoring-chapter-guide-title">Start with the signal. Establish what actually happened.</h2>
@@ -141,6 +161,8 @@ details.field-deep-dive>section{margin:0 14px 16px}
 </div>
 <p class="monitoring-journey-note">Illustrative operating model, not live monitoring, configured alerts or evidence of effectiveness. A detected mismatch may reflect an unauthorized change, incomplete records or faulty linkage.</p>
 </section>
+
+</details>
 <section class="monitoring-featured" id="monitoring-featured" aria-labelledby="monitoring-featured-title">
 <span class="eyebrow">02 / CHOOSE AN INVESTIGATION</span><h2 id="monitoring-featured-title">Two failures worth challenging</h2>
 <div class="monitoring-featured-grid">
@@ -212,4 +234,31 @@ reveal();
 </script><script>(function(){
  function revealMonitoringInvestigation(){const id=location.hash.slice(1);if(!id)return;const target=document.getElementById(id);if(!target)return;const disclosure=target.closest('#monitoring-investigations');if(disclosure)disclosure.open=true;}
  window.addEventListener('hashchange',revealMonitoringInvestigation);revealMonitoringInvestigation();
-})();</script></body></html>
+})();</script><script>
+/* Illustrative monitored case selector: no network data and no alerting side effects. */
+(function(){
+ const fixtures={
+  quality:{title:'A reviewer misses an adjudicated dependency',observation:'In a controlled teaching fixture, a potentially critical shared-library dependency receives an advisory low-risk result.',meaning:'This is a candidate false-low-risk outcome only if an independently established reference label and relevant context support that classification.',evidence:'Request the adjudication record, sampled PR/context, two raw reviewer outputs, model/prompt versions and related failure population.',href:'./ai-sdlc-risk.html?risk=RR-02#risk-explorer'},
+  population:{title:'A change is missing from the approval population',observation:'The illustrative independent merge population contains 25 changes; the dashboard records only 24 decisions.',meaning:'The unmatched change may be excluded, legitimately human-reviewed, missing a log, or outside the observed route. Reconcile it before drawing a conclusion.',evidence:'Request independent merged PRs, evaluations, approval events, exceptions, actors and timestamps.',href:'#monitoring-guide'},
+  release:{title:'The deployed artifact differs from the approved revision',observation:'Approval is linked to example-sha-A while a production record identifies example-sha-B.',meaning:'A mismatch needs an artifact-provenance investigation; it does not automatically establish that a release was unauthorized.',evidence:'Request approval/merge SHAs, build digest, deployment manifest, provenance, authorized post-approval changes and release decisions.',href:'#monitoring-featured'}
+ };
+ function init(){
+ const root=document.getElementById('fg-monitoring-dashboard');
+ if(!root)return;
+ const buttons=[...root.querySelectorAll('[data-monitor-signal]')];
+ function select(key){
+  const data=fixtures[key];if(!data)return;
+  buttons.forEach(b=>{const active=b.dataset.monitorSignal===key;b.setAttribute('aria-pressed',String(active));b.style.borderWidth=active?'2px':'1px';b.style.borderColor=active?'#6ce0be':'#557387';b.style.background=active?'#194c49':'#173447';});
+  root.querySelector('#fg-monitor-signal-title').textContent=data.title;
+  root.querySelector('#fg-monitor-signal-observation').textContent=data.observation;
+  root.querySelector('#fg-monitor-signal-meaning').textContent='What this establishes: '+data.meaning;
+  root.querySelector('#fg-monitor-signal-evidence').textContent='Evidence to investigate: '+data.evidence;
+  root.querySelector('#fg-monitor-signal-action').href=data.href;
+ }
+ buttons.forEach(b=>b.addEventListener('click',()=>select(b.dataset.monitorSignal)));
+ const requested=new URLSearchParams(location.search).get('signal');
+ select(fixtures[requested]?requested:'population');
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})();
+</script><script>(function(){function reveal(){const h=location.hash.slice(1);if(!h)return;const t=document.getElementById(h);const p=t&&t.closest('details.fg-supplementary-guide');if(p)p.open=true;}window.addEventListener('hashchange',reveal);if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',reveal,{once:true});else reveal();})();</script></body></html>
