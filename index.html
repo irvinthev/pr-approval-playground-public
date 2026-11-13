@@ -286,38 +286,22 @@ details.field-deep-dive>section{margin:0 14px 16px}
  .overview .overview-authority-steps small{font-size:12px}
 }
 </style></head>
-<body class="overview"><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a><a class="site-experiments" href="./playground.html">Advanced experiments ↗</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html" aria-current="page">Overview</a><a href="./ai-sdlc-risk.html">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Assurance</a></nav></header>
+<body class="overview"><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a><a class="site-experiments" href="./playground.html">Optional interactive lab ↗</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html" aria-current="page">Overview</a><a href="./ai-sdlc-risk.html">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Assurance</a></nav></header>
 
 <section class="hero overview-welcome" id="main-content" tabindex="-1">
 <span class="eyebrow">AI-ENABLED SDLC / FIELD GUIDE</span>
 <h1>When AI reviews code, who authorizes the change?</h1>
-<p class="lead">Follow a software change. Find where AI has authority, what independently enforces its limits, and what evidence would justify reliance.</p>
-<p class="overview-welcome-scope">Follow one illustrative change from pull request to production. The examples are fictional; they explain design and testing decisions, not an implemented approval system.</p>
-<div class="overview-hero-actions"><a class="guide-action" href="#workflow">Investigate a change →</a><a class="overview-quiet-link" href="./engineering-blueprint.html">Explore the safeguards →</a></div>
+<p class="lead">AI is changing how software is developed, reviewed, approved, and released. The harder question is not whether an AI reviewer labels a change low risk. It is who may authorize the exact change—and what independently prevents an unauthorized change from reaching production.</p>
+<p class="overview-welcome-scope">This practical field guide follows one illustrative pull request across Risk &amp; Governance, Engineering, Monitoring, and Assurance. It connects decisions about delegated authority to the safeguards Engineering can build and the evidence independent reviewers can examine.</p>
+<div class="overview-hero-actions"><a class="guide-action" href="#overview-authority-preview">See the end-to-end journey →</a><a class="overview-quiet-link" href="#field-guide-chapters">Read the five-page guide ↓</a></div>
 </section>
 <section class="overview-purpose-forward" id="overview-purpose" aria-labelledby="overview-purpose-title">
  <span class="section-kicker">WHY THIS GUIDE EXISTS</span>
- <h2 id="overview-purpose-title">AI assistance is familiar. Delegating approval authority is different.</h2>
- <p>AI-assisted development is increasingly familiar, but deciding when AI may authorize a software change raises separate questions about scope, failure modes, and evidence. Traditional SDLC safeguards still matter.</p>
- <p class="overview-purpose-roles"><strong>Engineering and leadership</strong> determine where AI may act. <strong>Engineering and Risk</strong> challenge enforcement and operational safeguards. <strong>Management and independent assurance</strong> distinguish a demonstrated process from evidence sufficient for reliance.</p>
-</section>
-<section class="lens-section overview-chapter-gateway" id="field-guide-chapters" aria-labelledby="lenses-title">
-<span class="section-kicker">01 / USE THIS GUIDE</span>
-<h2 id="lenses-title">Use this guide</h2>
-<p>Four practical chapters. Choose the question you need to answer.</p>
-<nav class="overview-chapter-grid" aria-label="Explore the field guide perspectives">
-<a href="./ai-sdlc-risk.html"><strong>Risk Assessment</strong><span>What could go wrong, and why does it matter?</span><small>Explore failure paths →</small></a>
-<a href="./engineering-blueprint.html"><strong>Engineering &amp; Safeguards</strong><span>What independently enforces the boundary?</span><small>Explore implementation →</small></a>
-<a href="./continuous-monitoring.html"><strong>Monitoring &amp; Operations</strong><span>Who notices and responds when controls fail?</span><small>Explore monitoring →</small></a>
-<a href="./independent-assurance.html"><strong>Assurance</strong><span>What must an independent reviewer establish?</span><small>Explore assurance →</small></a>
-</nav>
+ <h2 id="overview-purpose-title">Design for reliable delivery—and for evidence from the beginning.</h2>
+ <p>Established change-management and security principles still apply when AI enters the review process. The challenge is translating them into precise, testable requirements for eligibility, model behavior, authorization, release integrity, and oversight.</p>
+ <p class="overview-purpose-roles"><strong>Management</strong> owns authority and risk decisions. <strong>Engineering</strong> builds and operates the safeguards. <strong>Risk and GRC</strong> help frame and challenge the design. <strong>Independent assurance</strong> evaluates whether the claims are supported by evidence. Build what can be evaluated from the start—not controls reconstructed after deployment.</p>
 </section>
 
-<section class="overview-question-map" aria-label="Three questions for every AI-assisted change">
-  <div><span>01 / AUTHORITY</span><strong>Who may authorize?</strong><p>Define where an AI recommendation ends and an approved decision begins.</p></div>
-  <div><span>02 / ENFORCEMENT</span><strong>What prevents bypass?</strong><p>Verify independent gates, required checks, and restricted privileges.</p></div>
-  <div><span>03 / EVIDENCE</span><strong>What demonstrates it worked?</strong><p>Connect approval, policy, and release records to the same revision.</p></div>
-</section>
 
 <section class="overview-authority-preview" id="overview-authority-preview" aria-labelledby="overview-authority-preview-title">
  <div class="section-kicker">ARCHITECTURE / AUTHORITY AT A GLANCE</div>
@@ -334,6 +318,24 @@ details.field-deep-dive>section{margin:0 14px 16px}
  <p class="overview-authority-limit">Illustrative only. AI agreement does not override policy or create authorization; excluded changes follow the human-review route.</p>
  <a class="overview-authority-deep-link" href="#overview-authority-map">Explore the full authority and agent/model dependency map →</a>
 </section>
+<section class="lens-section overview-chapter-gateway" id="field-guide-chapters" aria-labelledby="lenses-title">
+<span class="section-kicker">01 / USE THIS GUIDE</span>
+<h2 id="lenses-title">Use this guide</h2>
+<p>Read the problem first, then follow the same change through four connected disciplinary chapters. The interactive lab is optional.</p>
+<nav class="overview-chapter-grid" aria-label="Explore the field guide perspectives">
+<a href="./ai-sdlc-risk.html"><strong>Risk &amp; Governance</strong><span>What could fail, and who decides what AI may do?</span><small>Explore failure paths →</small></a>
+<a href="./engineering-blueprint.html"><strong>Engineering &amp; Safeguards</strong><span>What independently enforces the boundary?</span><small>Explore implementation →</small></a>
+<a href="./continuous-monitoring.html"><strong>Monitoring &amp; Operations</strong><span>Who notices and responds when controls fail?</span><small>Explore monitoring →</small></a>
+<a href="./independent-assurance.html"><strong>Assurance</strong><span>What must an independent reviewer establish?</span><small>Explore assurance →</small></a>
+</nav>
+</section>
+<section class="overview-question-map" aria-label="Three questions for every AI-assisted change">
+  <div><span>01 / AUTHORITY</span><strong>Who may authorize?</strong><p>Define where an AI recommendation ends and an approved decision begins.</p></div>
+  <div><span>02 / ENFORCEMENT</span><strong>What prevents bypass?</strong><p>Verify independent gates, required checks, and restricted privileges.</p></div>
+  <div><span>03 / EVIDENCE</span><strong>What demonstrates it worked?</strong><p>Connect approval, policy, and release records to the same revision.</p></div>
+</section>
+
+
 <section class="overview-investigation-entrance"><span class="section-kicker">START THE INVESTIGATION</span><h2>Follow a change</h2><p>Trace an illustrative pull request from entry through enforcement, authorization, merge, release and monitoring.</p><a class="guide-action" href="#workflow">Investigate the eight touchpoints →</a></section>
 <section class="workflow-map" id="workflow" aria-labelledby="workflow-title">
 <div class="section-kicker">01 / FOLLOW A CHANGE</div>
