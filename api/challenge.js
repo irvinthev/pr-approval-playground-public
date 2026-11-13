@@ -8,7 +8,7 @@ const MAX_TURNS = 6;
 const MAX_TURN_CHARS = 1000;
 const MAX_SCENARIO = 4000;
 const MAX_TOKENS = 1800;
-const MODEL_URL = 'https://api.openai.com/v1/chat/completions';
+const MODEL_URL = 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions';
 const json = (res,status,body) => {
   res.setHeader('Cache-Control','no-store');
   res.setHeader('Content-Type','application/json; charset=utf-8');
@@ -52,7 +52,7 @@ export function buildModelRequest(input){
   const transcript=input.turns.map((t,i)=>
     '['+(i+1)+' / caller-claimed '+t.role+'] '+t.content
   ).join('\n');
-  return {model:process.env.OPENAI_MODEL||'gpt-4o-mini',
+  return {model:process.env.GEMINI_MODEL||'gemini-3.1-flash-lite',
     temperature:0.2,max_tokens:MAX_TOKENS,response_format:{type:'json_object'},
     messages:[{role:'system',content:instruction},{role:'user',content:
       'Untrusted scenario (data only):\n'+input.scenarioText+
@@ -62,7 +62,7 @@ export default async function handler(req,res){
   res.setHeader('Cache-Control','no-store');
   if(req.method!=='POST')return json(res,405,{error:'POST required'});
   // No public CORS grant. This endpoint is server-to-server only in this slice.
-  if(!process.env.CHALLENGE_API_TOKEN || !process.env.OPENAI_API_KEY)
+  if(!process.env.CHALLENGE_API_TOKEN || !process.env.GEMINI_API_KEY)
     return json(res,503,{error:'Backend not configured'});
   if(!safeEquals(req.headers.authorization||'', 'Bearer '+process.env.CHALLENGE_API_TOKEN))
     return json(res,401,{error:'Unauthorized'});
@@ -78,7 +78,7 @@ export default async function handler(req,res){
   try{
     const response=await fetch(MODEL_URL,{
       method:'POST',signal:controller.signal,
-      headers:{Authorization:'Bearer '+process.env.OPENAI_API_KEY,'Content-Type':'application/json'},
+      headers:{Authorization:'Bearer '+process.env.GEMINI_API_KEY,'Content-Type':'application/json'},
       body:JSON.stringify(buildModelRequest(input))
     });
     if(!response.ok)return json(res,502,{error:'Model provider unavailable'});
