@@ -47,7 +47,7 @@ test('legacy Assurance redirects are bounded and missing destinations still fail
 });
 test('homepage reconciles the interactive approval illustration with the broader AI-SDLC journey',()=>{
  const html=read('index.html');
- assert.match(html,/href="\.\/ai-sdlc-risk\.html">AI SDLC Risk Assessment/);
+ assert.match(html,/href="\.\/ai-sdlc-risk\.html">Risk &amp; Governance/);
  assert.match(html,/href="\.\/previous-overview\.html">See archived previous Overview/);
  assert.match(html,/When AI reviews code, who authorizes the change\?/i);
  assert.match(html,/not a mandated architecture/i);
