@@ -3,6 +3,13 @@ on:
   pull_request:
     paths:
       - 'rcm-explorer*'
+      - 'framework-registry.js'
+      - 'framework-source-catalog.js'
+      - 'data/framework-*.csv'
+      - 'tests/framework-source-catalog.test.mjs'
+      - 'docs/FRAMEWORK-SOURCE-LIBRARY.md'
+      - 'tests/framework-registry.test.mjs'
+      - 'docs/FRAMEWORK-REGISTRY-PILOT.md'
       - 'tests/rcm-explorer.test.mjs'
       - 'rcm-view.html'
       - '.github/workflows/rcm-explorer.yml'
@@ -22,5 +29,11 @@ jobs:
           node --check rcm-explorer-engine.js
           node --check rcm-explorer-data.js
           node --check rcm-explorer-app.js
+          node --check framework-registry.js
+          node --check framework-source-catalog.js
       - name: Test scenario recommendation logic
         run: node --test tests/rcm-explorer.test.mjs
+      - name: Test framework source integrity and pilot mappings
+        run: node --test tests/framework-registry.test.mjs
+      - name: Test source catalog schema and confidentiality boundary
+        run: node --test tests/framework-source-catalog.test.mjs
