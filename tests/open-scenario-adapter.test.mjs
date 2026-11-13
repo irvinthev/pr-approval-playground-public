@@ -42,3 +42,12 @@ test('topic coverage IDs unique',()=>{
  const ids=getTopicIds();
  assert.equal(ids.length,new Set(ids).size);
 });
+
+test('UI invalidates prior analysis after any scenario revision and gates export',async()=>{
+ const {readFile}=await import('node:fs/promises');
+ const ui=await readFile(new URL('../open-scenario.html',import.meta.url),'utf8');
+ assert.match(ui,/id="stale-note"/);
+ assert.match(ui,/addEventListener\('input'/);
+ assert.match(ui,/current=null;step=0;[\s\S]*?\$\('output'\)\.hidden=true;[\s\S]*?\$\('download'\)\.disabled=true;/);
+ assert.match(ui,/if\(!current \|\| \$\('scenario'\)\.value\.trim\(\)!==current\.input\)return;/);
+});

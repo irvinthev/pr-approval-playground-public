@@ -46,6 +46,7 @@ ul{padding-left:19px;margin:9px 0}li{margin:5px 0}.small{font-size:13px}
     <label for="scenario">What is being proposed?</label>
     <textarea id="scenario" maxlength="4000" placeholder="Here's a scenario: a human approves an AI-generated review plan. Agents execute the plan, report success and then approve the pull request..."></textarea>
     <p class="muted">Generic or sanitized content only. Do not paste real PRs, secrets, internal diagrams, personal information or confidential configurations. Text stays in this browser session; no model calls or network submission.</p>
+    <p id="stale-note" class="banner" hidden role="status">Scenario changed. Previous analysis was cleared; explore again before exporting.</p>
     <div class="actions"><button id="analyze" class="btn primary">Explore scenario →</button><button id="example" class="btn" type="button">Load fictional example</button><button id="clear" class="btn" type="button">Clear</button></div>
     <div class="section" id="output" hidden>
       <h2>02 · Explore the boundaries</h2>
@@ -88,7 +89,7 @@ function node(tag,txt,className){const e=document.createElement(tag);if(txt!==un
 function li(text){return node('li',text)}
 function display(){
   const text=$('scenario').value.trim();if(!text){$('scenario').focus();return;}
-  current=analyzeScenario(text);step=0;
+  current=analyzeScenario(text);step=0;$('stale-note').hidden=true;
   $('output').hidden=false;
   $('coverage').textContent='Coverage: '+current.coverage;
   $('methods').textContent='Method: '+current.detectionMethod+' · Catalog '+current.catalogVersion+' · Reviewed as of '+current.catalogAsOf;
@@ -123,13 +124,21 @@ function questions(){
   const tests=node('ul');t.tests.forEach(s=>tests.append(li(s)));root.append(tests);
   $('previous').disabled=step===0;$('next').disabled=step===current.topics.length-1;
 }
+$('scenario').addEventListener('input',()=>{
+  if(current && $('scenario').value.trim()!==current.input){
+    current=null;step=0;
+    $('output').hidden=true;
+    $('download').disabled=true;
+    $('stale-note').hidden=false;
+  }
+});
 $('analyze').addEventListener('click',display);
 $('example').addEventListener('click',()=>{$('scenario').value='A human signs off on an AI-generated review plan. Two agents execute it, say the tests passed, and use a bot to approve the pull request. A new commit can be pushed before the merge queue runs. Who authorizes the current change?';display()});
-$('clear').addEventListener('click',()=>{$('scenario').value='';current=null;step=0;$('output').hidden=true;$('scenario').focus()});
+$('clear').addEventListener('click',()=>{$('scenario').value='';current=null;step=0;$('output').hidden=true;$('stale-note').hidden=true;$('download').disabled=true;$('scenario').focus()});
 $('previous').addEventListener('click',()=>{if(step>0){step--;questions()}});
 $('next').addEventListener('click',()=>{if(current&&step<current.topics.length-1){step++;questions()}});
 $('download').addEventListener('click',()=>{
- if(!current)return;
+ if(!current || $('scenario').value.trim()!==current.input)return;
  const payload={artifact:'fictional educational scenario',version:CHALLENGE_V1,scenario:current.input,topics:current.topics.map(t=>({id:t.id,title:t.title,question:t.question,alternatives:t.alternatives,tests:t.tests})),references:current.references,uncertainties:current.uncertainties,coverage:current.coverage,sourceCatalog:{version:frameworkIndex.schemaVersion,asOf:frameworkIndex.asOf},disclaimer:'Not system evidence, framework compliance, or production authorization.'};
  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='ai-sdlc-scenario-brief.json';a.click();URL.revokeObjectURL(url);
