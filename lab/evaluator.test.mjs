@@ -1,0 +1,14 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {evaluate} from './evaluator.js';
+import {scenarios} from './scenarios.js';
+const input = id => {const x=scenarios.find(s=>s.id===id);return {...x.inputs,sha:x.sha};};
+test('low-risk only eligible with independent gates and evidence',()=>{const x=evaluate(input('pass'));assert.equal(x.releaseEligibility,true);assert.equal(x.riskAcceptance,'NOT_EVALUATED');});
+test('AI disagreement blocks authorization',()=>assert.equal(evaluate(input('split')).authorization,false));
+test('AI agreement cannot override deterministic scope',()=>{const x=evaluate(input('scope'));assert.equal(x.authorization,false);assert.equal(x.policyEligibility,false);});
+test('canary failure halts release but not prior merge authorization',()=>{const x=evaluate(input('canary'));assert.equal(x.authorization,true);assert.equal(x.releaseEligibility,false);assert.equal(x.outcome,'RELEASE_HALT');});
+test('stale commits invalidate authorization',()=>assert.equal(evaluate({...input('pass'),commitCurrent:false}).authorization,false));
+test('disabled CI blocks authorization',()=>assert.equal(evaluate({...input('pass'),ciPassed:false}).authorization,false));
+test('missing evidence blocks release',()=>{const x=evaluate({...input('pass'),evidenceCaptured:false});assert.equal(x.authorization,true);assert.equal(x.releaseEligibility,false);assert.equal(x.outcome,'EVIDENCE_HOLD');});
+test('emergency kill switch blocks authorization',()=>assert.equal(evaluate({...input('pass'),killSwitch:true}).authorization,false));
+test('no model output is risk acceptance',()=>assert.equal(evaluate(input('pass')).riskAcceptance,'NOT_EVALUATED'));
