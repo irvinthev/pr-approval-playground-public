@@ -1,0 +1,14 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {recommend,frameworkFamilies,rowsForExport} from '../rcm-explorer-engine.js';
+import {controls,sourceMetadata} from '../rcm-explorer-data.js';
+test('WEB15 catalog retains 15 distinct source-qualified records',()=>{assert.equal(controls.length,15);assert.equal(new Set(controls.map(c=>c.id)).size,15);assert.ok(controls.every(c=>/^WEB15:AI-\d{2}$/.test(c.id)));assert.equal(sourceMetadata.count,15)});
+test('all source controls retain evidence and framework limitations',()=>assert.ok(controls.every(c=>c.objective&&c.test&&c.evidence&&c.framework&&c.applicability)));
+test('deterministic output for identical selection',()=>{const input={useCase:'approval',authority:'authorize',risks:['sod','accuracy']};assert.deepEqual(recommend(input),recommend(input))});
+test('scope picks deterministic eligibility safeguard',()=>assert.ok(recommend({risks:['scope']}).find(c=>c.id==='WEB15:AI-01').recommended));
+test('AI disagreement elevates reviewer validation',()=>assert.ok(recommend({useCase:'approval',risks:['accuracy']}).find(c=>c.id==='WEB15:AI-05').recommended));
+test('higher delegated authority increases authorization relevance',()=>{const score=authority=>recommend({useCase:'agent',authority,risks:[]}).find(c=>c.id==='WEB15:AI-03').score;assert.ok(score('execute')>score('advisory'))});
+test('financial-impact toggle never declares SOX applicability',()=>{const result=recommend({financialImpact:true});assert.ok(result.find(c=>c.id==='WEB15:AI-01').reasons.some(r=>r.includes('ICFR scope unassessed')));assert.ok(result.every(c=>c.applicability.includes('SOX relevance depends')))});
+test('framework families do not replace source relationship text',()=>assert.deepEqual(frameworkFamilies('NIST AI RMF GOVERN; NIST SSDF PS.1'),['AI RMF','SSDF']));
+test('export preserves original IDs, rationale and not-assessed status',()=>{const rows=rowsForExport(recommend().filter(c=>c.recommended));assert.ok(rows.length>1);assert.ok(rows[1][0].startsWith('WEB15:'));assert.match(rows[1].at(-1),/Not assessed/)});
+test('invalid use case cannot silently create defaults',()=>assert.throws(()=>recommend({useCase:'invalid'})));
