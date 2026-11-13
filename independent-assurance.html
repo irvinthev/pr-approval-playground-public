@@ -133,6 +133,29 @@ details.field-deep-dive>section{margin:0 14px 16px}
 .simple-assurance .ace-picker button{min-height:60px;border-radius:10px}
 .simple-assurance .ace-picker button[aria-pressed=true]{border-color:#9ee7d5;background:#1d4748}
 @media(max-width:750px){.simple-assurance .ace-picker{grid-template-columns:1fr;gap:8px}.simple-assurance .ace-picker button{min-height:53px;padding:11px 14px}.simple-assurance .ace-picker button[aria-pressed=true]{padding:10px 13px}.simple-assurance .ace-picker button span{align-self:center}.simple-assurance .ace-selected{grid-template-columns:1fr}.simple-assurance .ace-management,.simple-assurance .ace-test,.simple-assurance .ace-evidence,.simple-assurance .ace-outcome{padding:17px}.simple-assurance .ace-links{grid-column:auto}.simple-assurance .ace-rcm-list{grid-template-columns:1fr}}
+
+/* Assurance chapter orientation complements, rather than reproduces, the four-card investigation. */
+.simple-assurance .assurance-chapter-guide{border:1px solid #507888;border-radius:13px;background:#102d3c;padding:20px 22px;margin:10px 0 24px}
+.simple-assurance .assurance-chapter-guide h2{font-size:clamp(21px,2.5vw,28px);line-height:1.3;margin:8px 0;color:#f0f8f8}
+.simple-assurance .assurance-chapter-guide>p{max-width:930px;color:#c9dce5;font-size:14px;line-height:1.6;margin:0 0 16px}
+.simple-assurance .assurance-chapter-guide nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.simple-assurance .assurance-chapter-guide nav a{min-width:0;min-height:112px;display:flex;flex-direction:column;gap:6px;border:1px solid #547d8d;border-radius:10px;padding:14px;background:#193747;text-decoration:none;color:#eef8fb}
+.simple-assurance .assurance-chapter-guide nav a:hover,.simple-assurance .assurance-chapter-guide nav a:focus-visible{border-color:#a4edda;background:#21485a}
+.simple-assurance .assurance-chapter-guide nav a span{font-size:10px;letter-spacing:.07em;font-weight:850;color:#a4edda}
+.simple-assurance .assurance-chapter-guide nav a strong{font-size:15px;line-height:1.3}
+.simple-assurance .assurance-chapter-guide nav a small{font-size:12px;line-height:1.5;color:#c9dce4}
+#assurance-control-explorer,#ace-rcm-crosswalk,#assurance-advanced{scroll-margin-top:22px}
+@media(max-width:650px){
+ .simple-assurance .assurance-chapter-guide{padding:15px;margin:10px 0 19px}
+ .simple-assurance .assurance-chapter-guide>p{font-size:13px}
+ .simple-assurance .assurance-chapter-guide nav{grid-template-columns:1fr;gap:8px}
+ .simple-assurance .assurance-chapter-guide nav a{min-height:0;padding:11px 13px;gap:4px}
+ .simple-assurance .assurance-chapter-guide nav a strong{font-size:14px}
+ .simple-assurance .assurance-sequence{white-space:normal;overflow-wrap:anywhere}
+ .simple-assurance .ace-footer{flex-direction:column;align-items:stretch}
+ .simple-assurance .ace-footer>div{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+ .simple-assurance .ace-footer button{min-height:44px}
+}
 </style><link rel="stylesheet" href="./page-orientation.css?v=1"><link rel="stylesheet" href="./risk-stage-context.css?v=1"></head>
 <body><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html">Overview</a><a href="./ai-sdlc-risk.html">AI SDLC Risk Assessment</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html" aria-current="page">Assurance</a></nav></header>
 <article class="simple-assurance">
@@ -144,6 +167,16 @@ details.field-deep-dive>section{margin:0 14px 16px}
 
 
 <nav class="assurance-hero-actions" aria-label="Assurance starting points"><a href="#assurance-control-explorer" class="assurance-primary-action">Investigate a control →</a><a href="./rcm-view.html#download-current-rcm" class="assurance-secondary-action">View proposed RCM →</a></nav></header>
+<section class="assurance-chapter-guide" aria-labelledby="assurance-chapter-guide-title" id="assurance-chapter-guide">
+ <span class="simple-eyebrow">HOW TO USE THIS CHAPTER</span>
+ <h2 id="assurance-chapter-guide-title">Begin with a control claim. Challenge the boundary. Decide what the evidence supports.</h2>
+ <p>This is an independent evaluation path, not another approval workflow. A management demonstration is the starting point; a conclusion needs sufficiently complete and reliable evidence of the actual enforcement.</p>
+ <nav aria-label="Assurance chapter starting points">
+  <a href="#assurance-control-explorer"><span>01 / CONTROL</span><strong>Investigate a domain</strong><small>Select one of six safeguard boundaries and inspect its test.</small></a>
+  <a href="#ace-rcm-crosswalk"><span>02 / EVIDENCE</span><strong>Examine the control crosswalk</strong><small>Find proposed controls and relevant lifecycle records.</small></a>
+  <a href="#assurance-advanced"><span>03 / CHALLENGE</span><strong>Go deeper</strong><small>Negative cases, operating evidence and test methods.</small></a>
+ </nav>
+</section>
 <section class="assurance-control-explorer" id="assurance-control-explorer" aria-labelledby="ace-title">
  <div class="ace-head">
   <div><span class="simple-eyebrow">01 / INVESTIGATE A CONTROL BOUNDARY</span><h2 id="ace-title">Six control domains. One assurance method.</h2>
