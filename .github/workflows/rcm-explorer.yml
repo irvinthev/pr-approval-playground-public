@@ -3,6 +3,8 @@ on:
   pull_request:
     paths:
       - 'rcm-explorer*'
+      - 'rcm-scenario-reasoning.js'
+      - 'tests/rcm-scenario-reasoning.test.mjs'
       - 'framework-registry.js'
       - 'framework-source-catalog.js'
       - 'data/framework-*.csv'
@@ -32,6 +34,7 @@ jobs:
           node --check rcm-explorer-app.js
           node --check framework-registry.js
           node --check framework-source-catalog.js
+          node --check rcm-scenario-reasoning.js
       - name: Test scenario recommendation logic
         run: node --test tests/rcm-explorer.test.mjs
       - name: Test framework source integrity and pilot mappings
@@ -40,3 +43,5 @@ jobs:
         run: node --test tests/framework-source-catalog.test.mjs
       - name: Test compatibility adapter and canonical catalog parity
         run: node --test tests/framework-catalog-consolidation.test.mjs
+      - name: Test concise scenario reasoning and source lineage
+        run: node --test tests/rcm-scenario-reasoning.test.mjs
