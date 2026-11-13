@@ -13,7 +13,9 @@ test('shared case has eight named stages and preserves separate approval authori
  }
  assert.match(js, /aria-current','step'/);
  assert.match(js, /does not synchronize or validate the separate interactive labs/);
- assert.match(js, /Authorization, merge eligibility and release eligibility are separate decisions/);
+ assert.match(js, /Two nondeterministic reviewers provide advice, but neither reviewer authorizes/);
+ assert.match(js, /Only a permitted actor and policy can authorize the evaluated revision/);
+ assert.match(js, /The illustrative release mismatch compares an approval for A with deployment of B/);
 });
 
 test('the five chapters use the common journey without replacing their existing advanced cases', () => {
