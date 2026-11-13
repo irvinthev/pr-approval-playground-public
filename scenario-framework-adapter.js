@@ -47,7 +47,10 @@ export function normalizeFrameworkCatalog(catalog=sourceCatalog){
 export const frameworkIndex=normalizeFrameworkCatalog();
 export function analyzeScenario(raw){
   const text=String(raw??'').trim().slice(0,4000);
-  const matched=text ? TOPICS.filter(t=>t.terms.test(text)) : [];
+  // Avoid classifying HTML script content (e.g., alert(1)) as a real monitoring intent.
+  // This is only match-time normalization, NOT HTML sanitization or privacy screening.
+  const matchText=text.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<[^>]*>/g,' ');
+  const matched=matchText ? TOPICS.filter(t=>t.terms.test(matchText)) : [];
   const topics=matched.slice(0,5);
   const references=uniq(topics.flatMap(t=>t.provisions)).map(id=>{
     const p=frameworkIndex.provisions.get(id);
