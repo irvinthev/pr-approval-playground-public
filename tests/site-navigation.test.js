@@ -226,7 +226,7 @@ test('Homepage retains one interactive simulator with the workflow preceding sce
  const html=read('index.html'),engineering=read('engineering-blueprint.html');
  assert.match(html,/When AI reviews code, who authorizes the change\?/);
  assert.doesNotMatch(html,/id="overview-stages"|class="overview-simple-journey"|class="overview-simple-stages"/);
- assert.match(html,/href="#workflow">Investigate a change/);
+ assert.match(html,/href="#overview-authority-preview">See the end-to-end journey/);
  assert.deepEqual([...html.matchAll(/<button class="workflow-stage"[^>]*data-stage="(\d+)"/g)].map(m=>Number(m[1])),[0,1,2,3,4,5,6,7]);
  assert.deepEqual([...html.matchAll(/<button type="button" data-scenario="([^"]+)"/g)].map(m=>m[1]),['pass','split','excluded','canary']);
  for(const id of ['scenario-output','decision-panel','stage-inspector','trust-boundaries','investigation-panel','field-guide-chapters'])
@@ -236,12 +236,12 @@ test('Homepage retains one interactive simulator with the workflow preceding sce
  assert.ok(at('id="workflow-stages"')<at('Authorization routes'));
  assert.ok(at('Authorization routes')<at('id="stage-inspector"'));
  assert.ok(at('id="stage-inspector"')<at('id="trust-boundaries"'));
- // Approved UX order: explain purpose and chapter choices before the simulator.
+ // Approved editorial order: purpose -> primary visual -> chapters -> optional simulator.
  assert.ok(at('id="main-content"')<at('id="overview-purpose"'));
- assert.ok(at('id="overview-purpose"')<at('id="field-guide-chapters"'));
+ assert.ok(at('id="overview-purpose"')<at('id="overview-authority-preview"'));
+ assert.ok(at('id="overview-authority-preview"')<at('id="field-guide-chapters"'));
  assert.ok(at('id="field-guide-chapters"')<at('class="overview-question-map"'));
- assert.ok(at('class="overview-question-map"')<at('id="overview-authority-preview"'));
- assert.ok(at('id="overview-authority-preview"')<at('id="workflow"'));
+ assert.ok(at('class="overview-question-map"')<at('id="workflow"'));
  assert.ok(at('id="trust-boundaries"')<at('<details class="overview-reference-collapse">'));
  assert.match(html,/class="overview-authority-steps"/);
  assert.match(html,/Protected merge &amp; release/);
