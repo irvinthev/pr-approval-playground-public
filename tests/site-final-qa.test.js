@@ -52,8 +52,10 @@ test('the shared case appears across all chapters and preserves a canonical revi
  const journey=read('field-guide-journey.js');
  assert.match(journey,/const stages = \[/);
  assert.match(journey,/does not synchronize or validate the separate interactive labs/);
- assert.match(journey,/if\(i===selected\)/);
- assert.match(journey,/aria-current','step'/);
+ assert.match(journey,/function select\(index\)/);
+ assert.match(journey,/button\.addEventListener\('click',\(\)=>select\(i\)\)/);
+ assert.match(journey,/deeper\.href=/);
+ assert.doesNotMatch(journey,/history\.(pushState|replaceState)|location\.(assign|replace)/);
 });
 
 test('mobile and keyboard contracts keep stage navigation operable', () => {
