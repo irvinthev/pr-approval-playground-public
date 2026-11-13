@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Private Gemini Challenge Lab | AI SDLC Field Guide</title>
+<style>
+:root{color-scheme:dark;font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;background:#081824;color:#eff8fc;--line:#365766;--mint:#a8f2d6;--muted:#c6d9e3}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top left,#174453,#081824 65%);min-height:100vh}
+main{max-width:980px;margin:auto;padding:20px 18px 80px}nav{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:15px;font-size:13px}
+a{color:var(--mint)}h1{font-size:clamp(31px,6vw,48px);letter-spacing:-.04em;line-height:1.12;margin:18px 0 14px}h2{font-size:20px;margin:0 0 14px}h3{font-size:16px;margin:0 0 9px}
+.eyebrow{letter-spacing:.12em;text-transform:uppercase;color:var(--mint);font-size:11px;font-weight:800;margin-top:30px}
+.lead{font-size:17px;color:var(--muted);max-width:740px}.panel{background:#102d3c;border:1px solid var(--line);padding:20px;border-radius:16px;margin-top:18px}
+label{display:block;font-weight:700;margin-bottom:9px}textarea,input{font:inherit;color:#fff;width:100%;padding:13px;border-radius:10px;border:1px solid #82a5b0;background:#091f2c}
+textarea{min-height:140px;resize:vertical}.small{color:var(--muted);font-size:13px}.small a{font-size:inherit}.field{margin-bottom:19px}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+button{border:1px solid #7cabb1;border-radius:9px;padding:12px 16px;font:700 14px system-ui;background:#1c4653;color:white;cursor:pointer}
+button.primary{background:var(--mint);color:#10302e;border-color:var(--mint)}button:disabled{opacity:.5;cursor:wait}
+button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid var(--mint);outline-offset:3px}
+.notice{border:1px solid #6d9fa8;background:#183e4a;border-radius:10px;padding:12px 15px;color:#dcecf3;font-size:13px}
+#status{min-height:24px;font-size:14px;color:var(--mint);margin-top:12px}#status.error{color:#ffb0a5}
+.card{padding:17px;border:1px solid #3d6475;border-radius:11px;margin:14px 0;background:#123646}
+.card h3{color:#defaed}.tag{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:#a8f2d6}
+ul{padding-left:23px;margin:8px 0}.citation{padding:10px 0;border-top:1px solid #3d6475}.citation:first-child{border:0}
+#result[hidden],#followup[hidden]{display:none}.section{margin-top:21px}.mono{font-family:ui-monospace,monospace;word-break:break-all}
+</style>
+</head>
+<body><main>
+<nav><strong>AI-Enabled SDLC Risk &amp; Assurance Field Guide</strong><a href="./open-scenario.html">← Rule-based public lab</a></nav>
+<div class="eyebrow">Private prototype · Vercel Preview only</div>
+<h1>Challenge your software-delivery design.</h1>
+<p class="lead">Describe a fictional AI review, approval, or deployment workflow. Gemini will challenge assumptions, suggest tests, and identify potentially relevant framework references.</p>
+<div class="notice"><strong>Privacy and scope:</strong> Use fictional or publicly shareable scenarios only. Do not enter Braze information, live PRs, credentials, internal diagrams, or personal data. Gemini free-tier requests may be used by Google to improve its services. This experience does not authorize changes or verify implemented controls.</div>
+<section class="panel" aria-labelledby="formtitle">
+<h2 id="formtitle">01 · Your scenario</h2>
+<div class="field"><label for="token">Private test access token</label>
+<input id="token" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Paste your CHALLENGE_API_TOKEN" aria-describedby="tokenhelp">
+<p class="small" id="tokenhelp">This is the separate private test token you saved in Vercel, <strong>not</strong> your Gemini API key. It stays in this browser tab's memory and is never stored or included in the page URL.</p></div>
+<div class="field"><label for="scenario">What should the AI challenge?</label>
+<textarea id="scenario" maxlength="4000" placeholder="Two AI agents agree that a pull request is low risk. Is that enough to allow automatic approval?"></textarea>
+</div>
+<div class="row"><button class="primary" id="ask" type="button">Challenge my design</button><button id="example" type="button">Load example</button><button id="reset" type="button">Clear session</button></div>
+<p id="status" role="status" aria-live="polite"></p>
+</section>
+<section id="result" class="panel" hidden aria-labelledby="resulttitle">
+<h2 id="resulttitle">02 · Gemini's design challenge</h2>
+<p class="small">Model-generated interpretation; facts, references, and implications require independent validation.</p>
+<div id="facts"></div>
+<div id="challenges"></div>
+<div id="unknowns"></div>
+<div class="section"><h3>Suggested framework references</h3><div id="citations"></div></div>
+</section>
+<section class="panel" id="followup" hidden aria-labelledby="followtitle">
+<h2 id="followtitle">03 · Ask a follow-up</h2>
+<label for="question">What would you challenge next?</label>
+<textarea id="question" maxlength="1000" style="min-height:94px" placeholder="What independent safeguard would make this safer?"></textarea>
+<div class="row"><button class="primary" id="continue" type="button">Continue the challenge</button><span class="small" id="turncount"></span></div>
+</section>
+<p class="small section">Private test only. Vercel Authentication and an independent test token restrict access. No unlimited public chat, saved history, or automatic approval. The model provider and service limits may change.</p>
+</main>
+<script type="module">
+const el=id=>document.getElementById(id);
+const state={scenario:null,turns:[],busy:false};
+function clear(node){node.replaceChildren()}
+function add(tag,parent,text,cls){
+  const node=document.createElement(tag);
+  if(cls)node.className=cls;
+  node.textContent=String(text??'');
+  parent.append(node);
+  return node;
+}
+function list(parent,items){
+  if(!Array.isArray(items)||!items.length)return;
+  const ul=document.createElement('ul');parent.append(ul);
+  for(const item of items)add('li',ul,item);
+}
+function title(parent,value){add('h3',parent,value)}
+function status(message,error=false){el('status').textContent=message;el('status').classList.toggle('error',error)}
+function busy(value){
+  state.busy=value;
+  el('ask').disabled=value;el('continue').disabled=value;
+  el('ask').textContent=value?'Analyzing…':'Challenge my design';
+  el('continue').textContent=value?'Analyzing…':'Continue the challenge';
+}
+function render(data){
+  for(const id of ['facts','challenges','unknowns','citations'])clear(el(id));
+  title(el('facts'),'Facts, inferences and unknowns');
+  for(const f of data.facts||[]){
+    const box=add('div',el('facts'),'', 'card');
+    add('div',box,f.support||'unknown','tag');
+    add('p',box,f.statement||'');
+  }
+  title(el('challenges'),'Questions worth testing');
+  for(const ch of data.challenges||[]){
+    const box=add('div',el('challenges'),'', 'card');
+    add('h3',box,ch.question||'');
+    if(ch.reason)add('p',box,ch.reason);
+    if(ch.tests?.length){add('strong',box,'What to test');list(box,ch.tests)}
+    if(ch.alternatives?.length){add('strong',box,'Alternatives');list(box,ch.alternatives)}
+  }
+  if(data.unknowns?.length){title(el('unknowns'),'Still unknown');list(el('unknowns'),data.unknowns)}
+  for(const c of data.citations||[]){
+    const box=add('div',el('citations'),'', 'citation');
+    add('strong',box,(c.sourceTitle||'Source')+' — '+(c.provisionTitle||c.provisionId));
+    add('p',box,(c.sourceVersion||'')+' · '+(c.qualification||'Suggested relevance only'),'small');
+    if(typeof c.url==='string'){
+      try{
+        const url=new URL(c.url);
+        if(url.protocol==='https:'){
+          const a=add('a',box,'Publisher reference');
+          a.href=url.href;a.target='_blank';a.rel='noopener noreferrer';
+        }
+      }catch{}
+    }
+  }
+  el('result').hidden=false;el('followup').hidden=false;
+  el('turncount').textContent=state.turns.length+' of 6 follow-up turns used';
+  el('continue').disabled=state.turns.length>=6;
+}
+async function ask(follow){
+  if(state.busy)return;
+  const token=el('token').value.trim(),scenario=el('scenario').value.trim(),question=el('question').value.trim();
+  if(!token){status('Enter your private test access token. Do not use the Gemini API key.',true);el('token').focus();return}
+  if(!scenario || scenario.length>4000){status('Describe a fictional scenario (up to 4,000 characters).',true);return}
+  if(follow && !state.scenario){status('Analyze a scenario first.',true);return}
+  if(follow && state.scenario!==scenario){status('Scenario changed. Start a new challenge to avoid mixing analyses.',true);return}
+  if(follow && (!question||state.turns.length>=6)){status('Enter a follow-up, or clear to start a new session.',true);return}
+  const turns=follow?[...state.turns,{role:'user',content:question}]:[];
+  busy(true);status('Asking Gemini…');
+  try{
+    const resp=await fetch('./api/challenge',{method:'POST',cache:'no-store',credentials:'same-origin',
+      headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},
+      body:JSON.stringify({scenarioText:scenario,turns})});
+    const data=await resp.json().catch(()=>null);
+    if(!resp.ok || !data || data.mode!=='live-model'){
+      throw new Error(data?.error||('Request failed ('+resp.status+'). Check the preview environment and access token.'));
+    }
+    state.scenario=scenario;
+    state.turns=turns.slice(-6);
+    if(follow)el('question').value='';
+    render(data);status('Gemini response received. Review its reasoning and source relevance.');
+    el('result').scrollIntoView({behavior:'smooth',block:'start'});
+  }catch(err){status(err.message||'The request could not be completed.',true)}
+  finally{busy(false);if(state.turns.length>=6)el('continue').disabled=true}
+}
+el('ask').addEventListener('click',()=>ask(false));
+el('continue').addEventListener('click',()=>ask(true));
+el('example').addEventListener('click',()=>{el('scenario').value='Two AI agents agree that a pull request is low risk. Is that enough to allow automatic approval?';status('Fictional example loaded. Add your private test token, then challenge the design.')});
+el('reset').addEventListener('click',()=>{
+  state.scenario=null;state.turns=[];el('token').value='';el('scenario').value='';el('question').value='';
+  el('result').hidden=true;el('followup').hidden=true;status('Session cleared. No history was stored.');
+});
+el('scenario').addEventListener('input',()=>{
+ if(state.scenario && el('scenario').value.trim()!==state.scenario){
+   el('result').hidden=true;el('followup').hidden=true;state.scenario=null;state.turns=[];
+   status('Scenario changed. Challenge it again to start a new analysis.');
+ }
+});
+</script>
+</body></html>
