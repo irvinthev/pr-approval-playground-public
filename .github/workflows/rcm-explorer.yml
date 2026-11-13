@@ -3,6 +3,9 @@ on:
   pull_request:
     paths:
       - 'rcm-explorer*'
+      - 'framework-registry.js'
+      - 'tests/framework-registry.test.mjs'
+      - 'docs/FRAMEWORK-REGISTRY-PILOT.md'
       - 'tests/rcm-explorer.test.mjs'
       - 'rcm-view.html'
       - '.github/workflows/rcm-explorer.yml'
@@ -22,5 +25,8 @@ jobs:
           node --check rcm-explorer-engine.js
           node --check rcm-explorer-data.js
           node --check rcm-explorer-app.js
+          node --check framework-registry.js
       - name: Test scenario recommendation logic
         run: node --test tests/rcm-explorer.test.mjs
+      - name: Test framework source integrity and pilot mappings
+        run: node --test tests/framework-registry.test.mjs
