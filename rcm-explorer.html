@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RCM & AI Framework Explorer | SDLC Field Guide</title><link rel="stylesheet" href="./rcm-explorer.css"></head>
+<body>
+<header class="topbar"><a href="./index.html" class="brand"><span class="mark">◈</span><span>SDLC / ASSURANCE<small>RCM & AI FRAMEWORK EXPLORER</small></span></a><span class="prototype">PUBLIC EDUCATIONAL TOOL</span></header>
+<main class="wrap">
+<div class="headline"><div><p class="eyebrow">SCENARIO → RISK → CONTROL → FRAMEWORK</p><h1>Build a tailored RCM, not another checklist.</h1><p>Select an AI workflow and risk areas. See which existing controls are relevant, why they're matched, and the evidence needed to assess them.</p></div><button id="export" class="primary">↓ Export tailored RCM CSV</button></div>
+<div class="workspace">
+<aside class="sidebar">
+<section class="panel"><div class="sidehead"><h2>1. Choose the AI use case</h2><span>WORKFLOW</span></div><div id="scenarios" class="choices"></div></section>
+<section class="panel"><h2>2. Define AI authority</h2><fieldset id="authority" class="choicefieldset"><legend class="sr-only">AI authority</legend></fieldset><label class="checkbox financial"><input type="checkbox" id="financial"> Potential financial-reporting impact</label></section>
+<section class="panel"><div class="sidehead"><h2>3. Focus the risks</h2><span id="risk-count"></span></div><div id="risks" class="risks"></div></section>
+</aside>
+<section class="results">
+<div class="stats"><div><span>MATCHED SAFEGUARDS</span><b id="match-count">0</b><small>Existing WEB15 inventory</small></div><div><span>SELECTED RISKS</span><b id="stat-risk">0</b><small>Choose areas to focus</small></div><div><span>FRAMEWORK FAMILIES</span><b id="stat-framework">0</b><small>Reference lens only</small></div></div>
+<section class="panel mainpanel">
+<div class="tabs" role="tablist" aria-label="Explorer views"><button data-tab="controls" role="tab" aria-selected="true">Recommended controls</button><button data-tab="frameworks" role="tab" aria-selected="false">Framework crosswalk</button><button data-tab="method" role="tab" aria-selected="false">How recommendations work</button></div>
+<div id="controls-panel" role="tabpanel">
+<div class="controls-head"><div><h2>Tailored control recommendations</h2><p>Deterministic matching from the existing web safeguard inventory. A candidate is not a mandatory requirement.</p></div><label class="checkbox"><input type="checkbox" id="all-controls"> Show all 15</label></div>
+<label class="sr-only" for="search">Search controls</label><input id="search" placeholder="Search control ID, title, risk or objective...">
+<div class="control-layout"><div id="controls" class="control-list"></div><article id="inspector" class="inspector" aria-live="polite"></article></div>
+</div>
+<div id="frameworks-panel" role="tabpanel" hidden><h2>Framework reference crosswalk</h2><p>Select the framework lenses you want to inspect. Mappings are indicative relationships, not certifications or compliance determinations.</p><div id="framework-options" class="framework-grid"></div><div id="framework-controls" class="mapping-list"></div></div>
+<div id="method-panel" role="tabpanel" hidden><h2>How recommendations work</h2><p>This is a transparent rules-based exploration of the existing control inventory, not an AI-generated compliance conclusion.</p><div class="method"><div><b>Workflow relationship</b><p>Controls linked to the selected workflow receive additional relevance.</p></div><div><b>Risk relationship</b><p>Each selected risk elevates controls mapped to that specific concern.</p></div><div><b>Authority and impact</b><p>Delegated authority raises safeguards for approval, privileged identities and release. Potential ICFR impact raises candidates, but does not determine SOX scope.</p></div><div><b>Framework lens</b><p>Filters which reference families are displayed; it never removes a control from the recommendation population.</p></div><div><b>Existing inventory</b><p>WEB15:AI-xx = 15 web safeguards; OBJ:xx = 14 objectives; WB16:AI-xx = 16 workbook controls. Similar IDs cannot be treated as equivalent.</p></div></div></div>
+</section>
+<div class="boundary"><div><span class="eyebrow">CONCLUSION BOUNDARY</span><h2>A relevant control is not an effective control.</h2><p>A real RCM still needs accountable ownership, applicability assessment, implementation evidence, complete populations, testing, and validation. No SOX determination or framework compliance assertion is made here.</p></div><button id="reset">↻ Reset selections</button></div>
+</section></div>
+<footer><span>Source: <a href="./rcm-view.html">Web RCM</a> · <a href="./control-matrix.html">Control objectives</a> · <a href="./rcm-view.html#inventory-crosswalk">Inventory crosswalk</a></span><span>No live organizational data · No API calls · All exports illustrative</span></footer>
+</main><script type="module" src="./rcm-explorer-app.js"></script></body></html>
