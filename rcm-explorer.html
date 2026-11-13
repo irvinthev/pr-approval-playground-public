@@ -15,6 +15,7 @@
 <section class="panel mainpanel">
 <div class="tabs" role="tablist" aria-label="Explorer views"><button data-tab="controls" role="tab" aria-selected="true">Recommended controls</button><button data-tab="frameworks" role="tab" aria-selected="false">Framework crosswalk</button><button data-tab="method" role="tab" aria-selected="false">How recommendations work</button></div>
 <div id="controls-panel" role="tabpanel">
+<div class="scenario-reasoning-launch"><div><b>Try a real failure question</b><p>What if an untrusted PR comment manipulates an AI reviewer?</p></div><button id="load-adversarial-case" type="button">Try example</button></div><div id="scenario-reasoning" class="scenario-reasoning" aria-live="polite" hidden></div>
 <div class="controls-head"><div><h2>Tailored control recommendations</h2><p>Deterministic matching from the existing web safeguard inventory. A candidate is not a mandatory requirement.</p></div><label class="checkbox"><input type="checkbox" id="all-controls"> Show all 15</label></div>
 <label class="sr-only" for="search">Search controls</label><input id="search" placeholder="Search control ID, title, risk or objective...">
 <div class="control-layout"><div id="controls" class="control-list"></div><article id="inspector" class="inspector" aria-live="polite"></article></div>
