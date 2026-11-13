@@ -9,7 +9,7 @@ Provide a responsive, mobile-first **private test page** for Gemini-backed scena
 1. Open the PR's Vercel Preview deployment and visit `/private-challenge.html`. Vercel Authentication may require signing in.
 2. In the first input, paste your **CHALLENGE_API_TOKEN** (the separate test password kept in your password manager). **Do not use the Gemini API key.**
 3. Tap **Load example** and then **Challenge my design**.
-4. Review the challenges and citations. Use follow-up questions as desired.
+4. Review each conclusion’s scenario basis, cited provision, application, and open question. Use follow-up questions as desired.
 5. Tap **Clear session** to erase the input token and visible results from this tab.
 
 ## Boundaries
@@ -21,7 +21,7 @@ Provide a responsive, mobile-first **private test page** for Gemini-backed scena
 - No durable chat history or multiuser account model. Past turns remain **caller-provided text**, not authenticated model history.
 - Vercel protection alone is not a public user authentication architecture. Shared test token must not be distributed; no production model keys, per-user quotas, hard cost cap, or abuse prevention are in place.
 - Google's Gemini **free-tier data-use terms** mean fictional/public-safe material only. Do not submit real Braze materials.
-- Citation IDs and URLs are validated by the backend against the canonical catalog; **semantic relevance is not automatically verified**.
+- The backend requires citations to be attached to specific conclusions and resolves titles, publisher links, and source summaries from the canonical catalog. Scenario-only reasoning is labeled separately. The reader still needs to assess whether each provision supports the application.
 
 ## Acceptance
 - Test and visual QA GitHub workflows green

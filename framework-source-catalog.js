@@ -1,7 +1,20 @@
 export const sourceCatalog = {
-  "schemaVersion": "1.1.0",
-  "asOf": "2026-11-12",
+  "schemaVersion": "1.2.0",
+  "asOf": "2026-11-13",
   "sources": [
+    {
+      "id": "NIST-SP-800-53-R5",
+      "title": "Security and Privacy Controls for Information Systems and Organizations",
+      "issuer": "NIST",
+      "version": "SP 800-53 Rev. 5",
+      "status": "final",
+      "sourceType": "security-privacy-control-catalog",
+      "url": "https://doi.org/10.6028/NIST.SP.800-53r5",
+      "published": "2020-09",
+      "access": "Public publisher",
+      "limitations": "Control selection and organization-defined parameters depend on context.",
+      "reviewedAsOf": "2026-11-13"
+    },
     {
       "id": "NIST-SSDF-1.1",
       "title": "Secure Software Development Framework",
@@ -149,6 +162,54 @@ export const sourceCatalog = {
     }
   ],
   "provisions": [
+    {
+      "id": "AI-RMF:GOVERN-3.2",
+      "sourceId": "NIST-AI-RMF-1.0",
+      "provisionId": "GOVERN 3.2",
+      "title": "Human and AI roles and oversight",
+      "referenceType": "subcategory",
+      "url": "https://doi.org/10.6028/NIST.AI.100-1",
+      "summary": "Define distinct roles and responsibilities for human-AI configurations and oversight through policies and procedures.",
+      "qualification": "The organization assigns specific decision and delegation authority.",
+      "reviewStatus": "publisher-id-observed",
+      "reviewedAsOf": "2026-11-13"
+    },
+    {
+      "id": "NIST-800-53:CM-3",
+      "sourceId": "NIST-SP-800-53-R5",
+      "provisionId": "CM-3",
+      "title": "Configuration change control",
+      "referenceType": "control",
+      "url": "https://doi.org/10.6028/NIST.SP.800-53r5",
+      "summary": "Define controlled changes, review proposed changes, document approval decisions, and retain change records.",
+      "qualification": "The organization defines controlled changes and retention. Commit and policy binding are implementation choices.",
+      "reviewStatus": "publisher-id-observed",
+      "reviewedAsOf": "2026-11-13"
+    },
+    {
+      "id": "NIST-800-53:CM-3(1)",
+      "sourceId": "NIST-SP-800-53-R5",
+      "provisionId": "CM-3(1)",
+      "title": "Automated documentation, notification, and prohibition of changes",
+      "referenceType": "control-enhancement",
+      "url": "https://doi.org/10.6028/NIST.SP.800-53r5",
+      "summary": "Use organization-defined automation to prevent changes until designated approvals are received.",
+      "qualification": "The organization selects the mechanism and designated approvals.",
+      "reviewStatus": "publisher-id-observed",
+      "reviewedAsOf": "2026-11-13"
+    },
+    {
+      "id": "NIST-800-53:CM-5",
+      "sourceId": "NIST-SP-800-53-R5",
+      "provisionId": "CM-5",
+      "title": "Access restrictions for change",
+      "referenceType": "control",
+      "url": "https://doi.org/10.6028/NIST.SP.800-53r5",
+      "summary": "Define, document, approve, and enforce physical and logical access limits associated with system changes.",
+      "qualification": "The organization defines restrictions and the workflow that enforces them.",
+      "reviewStatus": "publisher-id-observed",
+      "reviewedAsOf": "2026-11-13"
+    },
     {
       "id": "SSDF:PO.4",
       "sourceId": "NIST-SSDF-1.1",

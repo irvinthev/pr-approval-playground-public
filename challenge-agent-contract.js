@@ -24,9 +24,22 @@ function validateChallenge(ch){
 function citeProvision(id){
  const p=knownProvisions.get(id),s=p&&knownSources.get(p.sourceId);
  if(!p||!s||!/^https:\/\//.test(p.url||s.url||''))return null;
- return {provisionId:p.id,provisionTitle:p.title,sourceId:s.id,sourceTitle:s.title,sourceVersion:s.version,sourceStatus:s.status,url:p.url||s.url,qualification:p.qualification||s.limitations||'',reviewStatus:p.reviewStatus||'unreviewed'};
+ return {provisionId:p.id,sourceLocator:p.provisionId,provisionTitle:p.title,sourceSummary:p.summary,sourceId:s.id,sourceTitle:s.title,sourceVersion:s.version,sourceStatus:s.status,url:p.url||s.url,qualification:p.qualification||s.limitations||'',reviewStatus:p.reviewStatus||'unreviewed'};
 }
-export function validateAgentResponse(input,{scenarioText}={}){
+function validateConclusion(conclusion, citations){
+ if(!isPlainObject(conclusion))return null;
+ const {scenarioBasis, application, openQuestion, citationIds}=conclusion;
+ if([scenarioBasis,application,openQuestion].some(text=>typeof text!=='string' || !text.trim()))return null;
+ if(!Array.isArray(citationIds) || citationIds.length>3 ||
+    citationIds.some(id=>!citations.has(id)) || new Set(citationIds).size!==citationIds.length)return null;
+ return {
+   scenarioBasis:maxLength(scenarioBasis,450),
+   application:maxLength(application,650),
+   openQuestion:maxLength(openQuestion,400),
+   citations:citationIds.map(id=>citations.get(id))
+ };
+}
+export function validateAgentResponse(input,{scenarioText,requireGrounding=false}={}){
  const errors=[];
  if(!isPlainObject(input))return {ok:false,errors:['Response must be an object'],data:null};
  if(input.contractVersion!==AGENT_CONTRACT_VERSION)errors.push('Unknown contract version');
@@ -46,6 +59,17 @@ export function validateAgentResponse(input,{scenarioText}={}){
  if(challenges.length===0)errors.push('At least one challenge question is required');
  if(facts.length===0)errors.push('At least one explicit fact, inference or unknown is required');
  if(citations.length===0)errors.push('No validated framework citations');
+ let conclusions;
+ if(requireGrounding){
+   const byId=new Map(citations.map(c=>[c.provisionId,c]));
+   conclusions=Array.isArray(input.conclusions) && input.conclusions.length>=1 && input.conclusions.length<=3
+     ? input.conclusions.map(conclusion=>validateConclusion(conclusion,byId)) : [];
+   if(!conclusions.length || conclusions.some(conclusion=>!conclusion)){
+     errors.push('Expected 1–3 conclusions with scenario basis, application, open question and canonical citation IDs');
+   }else if(citations.some(citation=>!conclusions.some(conclusion=>conclusion.citations.includes(citation)))){
+     errors.push('Every framework citation must support a specific conclusion');
+   }
+ }
  const state={
    contractVersion:AGENT_CONTRACT_VERSION,
    scenarioText:scenario,
@@ -54,6 +78,7 @@ export function validateAgentResponse(input,{scenarioText}={}){
    facts,
    challenges,
    citations,
+   ...(requireGrounding ? {conclusions} : {}),
    unknowns:strings(input.unknowns,12,400),
    alternatives:strings(input.alternatives,6,400),
    // This is model-derived technical reasoning, not an attestation of implementation or compliance.
