@@ -53,3 +53,16 @@ test('Private lab explicitly labels reasoning basis and does not imply every cla
  assert.match(source,/No directly applicable catalog provision cited/);
  assert.match(source,/option\.replace\(\/\^Option/);
 });
+
+
+test('V5 research is explicit opt-in with optional URL and source provenance',()=>{
+ assert.match(source,/id="research" type="checkbox"/);
+ assert.match(source,/id="reference" type="url"/);
+ assert.match(source,/researchMode=el\('research'\)\.checked\?'discover':'catalog'/);
+ assert.match(source,/body:JSON\.stringify\(\{scenarioText:scenario,turns,researchMode,referenceUrl,/);
+ assert.match(source,/data\?\.research/);
+ assert.match(source,/source\.url/);
+ assert.match(source,/frame\.srcdoc=research\.suggestionHtml/);
+ assert.match(source,/allow-popups allow-popups-to-escape-sandbox/);
+ assert.match(source,/el\('research'\)\.checked=false/);
+});

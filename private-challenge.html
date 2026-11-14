@@ -24,6 +24,11 @@ ul{padding-left:23px;margin:8px 0}.citation{padding:10px 0;border-top:1px solid 
 #result[hidden],#followup[hidden]{display:none}.section{margin-top:21px}.mono{font-family:ui-monospace,monospace;word-break:break-all}
 #remember-option{display:flex;align-items:center;gap:9px;margin-top:12px;font-size:14px}
 #remember-option input{width:auto;accent-color:var(--mint)}
+#research-option{display:flex;align-items:center;gap:9px;font-size:14px}
+#research-option input{width:auto;accent-color:var(--mint)}
+#research-evidence[hidden]{display:none}
+.search-suggestions{width:100%;min-height:110px;border:0;background:transparent;display:block}
+.research-link{display:block;margin:8px 0;overflow-wrap:anywhere}
 .decision-first{border-left:4px solid var(--mint);background:#173b45}
 .decision-first p{font-size:17px;line-height:1.6;margin:10px 0 0}
 .option-card{padding:14px;border:1px solid #3d6475;border-radius:11px;margin:10px 0;background:#123646}
@@ -49,6 +54,11 @@ details.deep-dive summary:focus-visible{outline:3px solid var(--mint);outline-of
 <div class="field"><label for="scenario">What should the AI challenge?</label>
 <textarea id="scenario" maxlength="4000" placeholder="Two AI agents agree that a pull request is low risk. Is that enough to allow automatic approval?"></textarea>
 </div>
+<div class="field"><label id="research-option"><input id="research" type="checkbox"> Research public technical sources with Google Search</label>
+<p class="small">Optional. Uses native Gemini web grounding, may be slower and incur per-query charges. Prefer publisher documentation; retrieved sources do not verify an implementation.</p>
+<label for="reference">Optional public reference URL</label>
+<input id="reference" type="url" inputmode="url" maxlength="1600" placeholder="https://docs.github.com/..." />
+<p class="small">Enable research to investigate this URL. Do not supply private or authenticated links.</p></div>
 <div class="row"><button class="primary" id="ask" type="button">Challenge my design</button><button id="example" type="button">Load example</button><button id="reset" type="button">Clear session</button></div>
 <p id="status" role="status" aria-live="polite"></p>
 </section>
@@ -57,6 +67,7 @@ details.deep-dive summary:focus-visible{outline:3px solid var(--mint);outline-of
 <p class="small">Model-generated reasoning. Evidence-basis labels are classifications, not independent verification. References appear only when relevant.</p>
 <div class="card decision-first" id="decision-summary" aria-live="polite"></div>
 <div id="approaches"></div>
+<div id="research-evidence" class="card" hidden aria-label="Live retrieved research references"></div>
 <details class="deep-dive" id="evidence-details"><summary>Evidence, framework references and technical questions</summary>
 <div id="approval-outcomes"></div>
 <div id="conclusions"></div>
@@ -122,6 +133,52 @@ function renderCitation(parent,citation){
     }
   }catch{}
 }
+function renderResearch(data){
+  const section=el('research-evidence');
+  clear(section);
+  const research=data?.research;
+  section.hidden=!research;
+  if(!research)return;
+  title(section,'Live public research');
+  add('p',section,research.note||'Research provider did not report source metadata.','small');
+  for(const source of (research.sources||[]).slice(0,8)){
+    try{
+      const url=new URL(source.url);
+      if(url.protocol!=='https:')continue;
+      const link=add('a',section,source.title||url.hostname,'research-link');
+      link.href=url.href;link.target='_blank';link.rel='noopener noreferrer';
+    }catch{}
+  }
+  if(research.evidence?.length){
+    const detail=document.createElement('details');
+    const summary=document.createElement('summary');
+    summary.textContent='View source-linked research passages';
+    detail.append(summary);section.append(detail);
+    for(const item of research.evidence.slice(0,8)){
+      const card=add('div',detail,'','citation');
+      add('p',card,item.statement||'','small');
+      for(const href of (item.sourceUrls||[]).slice(0,2)){
+        try{
+          const u=new URL(href);
+          if(u.protocol!=='https:')continue;
+          const link=add('a',card,u.hostname,'research-link');
+          link.href=u.href;link.target='_blank';link.rel='noopener noreferrer';
+        }catch{}
+      }
+    }
+  }
+  if(typeof research.suggestionHtml==='string' && research.suggestionHtml){
+    // Google-supplied Search Suggestions are displayed without editing the markup.
+    // Isolate provider HTML in a sandboxed frame; scripts and same-origin access stay disabled.
+    const frame=document.createElement('iframe');
+    frame.title='Google Search suggestions';
+    frame.className='search-suggestions';
+    frame.setAttribute('sandbox','allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation');
+    frame.setAttribute('referrerpolicy','no-referrer');
+    frame.srcdoc=research.suggestionHtml;
+    section.append(frame);
+  }
+}
 function evidenceLabel(type){
   return ({
     'framework-interpretation':'Framework interpretation · applicability not independently verified',
@@ -131,6 +188,7 @@ function evidenceLabel(type){
 }
 function render(data){
   for(const id of ['decision-summary','approaches','approval-outcomes','conclusions','facts','challenges','unknowns'])clear(el(id));
+  renderResearch(data);
   const primary=data.conclusions?.[0];
   if(primary){
     title(el('decision-summary'),'Direct answer');
@@ -205,6 +263,9 @@ async function ask(follow){
   if(follow && !state.scenario){status('Analyze a scenario first.',true);return}
   if(follow && state.scenario!==scenario){status('Scenario changed. Start a new challenge to avoid mixing analyses.',true);return}
   if(follow && (!question||state.turns.length>=6)){status('Enter a follow-up, or clear to start a new session.',true);return}
+  const researchMode=el('research').checked?'discover':'catalog';
+  const referenceUrl=el('reference').value.trim();
+  if(referenceUrl && researchMode==='catalog'){status('Enable research to investigate the reference URL.',true);return}
   const turns=follow?[...state.turns,{role:'user',content:question}]:[];
   busy(true);status('Asking Gemini…');
   try{
@@ -218,7 +279,7 @@ async function ask(follow){
     }
     const resp=await fetch('./api/challenge',{method:'POST',cache:'no-store',credentials:'same-origin',
       headers,
-      body:JSON.stringify({scenarioText:scenario,turns,continuityReceipts:follow?state.continuityReceipts:[]})});
+      body:JSON.stringify({scenarioText:scenario,turns,researchMode,referenceUrl,continuityReceipts:follow?state.continuityReceipts:[]})});
     if(resp.status===401 && state.remembered){
       setRemembered(false);
       el('token').focus();
@@ -246,7 +307,7 @@ el('example').addEventListener('click',()=>{el('scenario').value='Two AI agents 
 el('reset').addEventListener('click',async()=>{
   if(state.busy)return;
   const remembered=state.remembered;
-  state.scenario=null;state.turns=[];state.continuityReceipts=[];el('token').value='';el('scenario').value='';el('question').value='';
+  state.scenario=null;state.turns=[];state.continuityReceipts=[];el('token').value='';el('scenario').value='';el('question').value='';el('reference').value='';el('research').checked=false;
   el('remember').checked=false;
   el('result').hidden=true;el('followup').hidden=true;
   if(!remembered){status('Session cleared.');return}
