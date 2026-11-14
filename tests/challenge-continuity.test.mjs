@@ -29,7 +29,8 @@ test('receipts authenticate prior model answers, enforce scenario and expiry and
  assert.equal(decodeReceipt(receipt,scenario,now).answer,response.conclusions[0].application);
  assert.equal(decodeReceipt(receipt,scenario+' changed',now),null);
  assert.equal(decodeReceipt(receipt,scenario,now+8*60*60+1),null);
- assert.equal(decodeReceipt(receipt.slice(0,-1)+'0',scenario,now),null);
+ const altered=receipt.slice(0,-1)+(receipt.endsWith('0')?'1':'0');
+ assert.equal(decodeReceipt(altered,scenario,now),null);
  assert.equal(verifiedHistory([receipt],scenario).length,1);
  assert.equal(verifiedHistory(Array(MAX_RECEIPTS+1).fill(receipt),scenario),null);
 });
