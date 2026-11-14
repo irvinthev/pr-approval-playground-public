@@ -78,6 +78,7 @@ test('live Gemini response binds each citation to a conclusion and supplies publ
       scenarioBasis:'The agent submits approval for an out-of-scope PR.',
       application:'An independent merge gate could require the designated human approval.',
       openQuestion:'Did the submitted review satisfy the merge gate?',
+      basisType:'framework-interpretation',
       citationIds:['NIST-800-53:CM-3(1)']
     }],
     challenges:[{question:'What controls merge eligibility?'}],
@@ -100,12 +101,23 @@ test('live Gemini response binds each citation to a conclusion and supplies publ
       scenarioBasis:'The GitHub account submitted the review.',
       application:'The account identifies the submitter for this scenario.',
       openQuestion:'What separate record establishes the decision-maker?',
+      basisType:'scenario-inference',
       citationIds:[]
     }];
     const mixed=mockRes();
     await handler(request,mixed);
     assert.equal(mixed.statusCode,200);
     assert.deepEqual(mixed.body.conclusions[1].citations,[]);
+
+    modelOutput.conclusions=[{...conclusion,basisType:'engineering-judgment',citationIds:[]}];
+    modelOutput.citationIds=[];
+    const uncited=mockRes();
+    await handler(request,uncited);
+    assert.equal(uncited.statusCode,200);
+    assert.equal(uncited.body.citations.length,0);
+    assert.equal(uncited.body.conclusions[0].basisType,'engineering-judgment');
+    modelOutput.conclusions=[conclusion];
+    modelOutput.citationIds=['NIST-800-53:CM-3(1)'];
 
     const submitted={review:'Agent review for the billing PR',submission:'submitted',gate:'unknown',merge:'unknown'};
     modelOutput.approvalOutcomes=[submitted];
