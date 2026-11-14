@@ -9,7 +9,7 @@ const response={
   contractVersion:'0.1.0',
   approvalOutcomes:[],
   facts:[{statement:'A fictional engineer delegated execution.',support:'explicit-user-statement'}],
-  conclusions:[{scenarioBasis:'Explicit delegation is claimed.',application:'A manual click is not inherently safer than a properly bound delegated approval.',openQuestion:'What revision was reviewed?',citationIds:['NIST-800-53:CM-3(1)']}],
+  conclusions:[{scenarioBasis:'Explicit delegation is claimed.',application:'A manual click is not inherently safer than a properly bound delegated approval.',openQuestion:'What revision was reviewed?',basisType:'framework-interpretation',citationIds:['NIST-800-53:CM-3(1)']}],
   challenges:[{question:'What enforcement preserves revision identity?'}],
   citationIds:['NIST-800-53:CM-3(1)'],
   alternatives:['Direct manual UI approval: familiar but click does not prove judgment.','Explicit delegated CLI approval: fewer clicks but requires binding.']
@@ -29,7 +29,8 @@ test('receipts authenticate prior model answers, enforce scenario and expiry and
  assert.equal(decodeReceipt(receipt,scenario,now).answer,response.conclusions[0].application);
  assert.equal(decodeReceipt(receipt,scenario+' changed',now),null);
  assert.equal(decodeReceipt(receipt,scenario,now+8*60*60+1),null);
- assert.equal(decodeReceipt(receipt.slice(0,-1)+'0',scenario,now),null);
+ const altered=receipt.slice(0,-1)+(receipt.endsWith('0')?'1':'0');
+ assert.equal(decodeReceipt(altered,scenario,now),null);
  assert.equal(verifiedHistory([receipt],scenario).length,1);
  assert.equal(verifiedHistory(Array(MAX_RECEIPTS+1).fill(receipt),scenario),null);
 });

@@ -54,7 +54,7 @@ details.deep-dive summary:focus-visible{outline:3px solid var(--mint);outline-of
 </section>
 <section id="result" class="panel" hidden aria-labelledby="resulttitle">
 <h2 id="resulttitle">02 · Gemini's design challenge</h2>
-<p class="small">Model-generated interpretation; facts, references, and implications require independent validation.</p>
+<p class="small">Model-generated reasoning. Evidence-basis labels are classifications, not independent verification. References appear only when relevant.</p>
 <div class="card decision-first" id="decision-summary" aria-live="polite"></div>
 <div id="approaches"></div>
 <details class="deep-dive" id="evidence-details"><summary>Evidence, framework references and technical questions</summary>
@@ -122,11 +122,19 @@ function renderCitation(parent,citation){
     }
   }catch{}
 }
+function evidenceLabel(type){
+  return ({
+    'framework-interpretation':'Framework interpretation · applicability not independently verified',
+    'scenario-inference':'Scenario inference · conditional on stated facts',
+    'engineering-judgment':'Engineering judgment · comparison, not a documented requirement'
+  })[type]||'Evidence basis not established';
+}
 function render(data){
   for(const id of ['decision-summary','approaches','approval-outcomes','conclusions','facts','challenges','unknowns'])clear(el(id));
   const primary=data.conclusions?.[0];
   if(primary){
     title(el('decision-summary'),'Direct answer');
+    add('div',el('decision-summary'),evidenceLabel(primary.basisType),'tag');
     add('p',el('decision-summary'),primary.application);
     if(primary.openQuestion)add('p',el('decision-summary'),'What could change this: '+primary.openQuestion,'small');
   }
@@ -135,7 +143,7 @@ function render(data){
     for(const [i,option] of data.alternatives.slice(0,3).entries()){
       const card=add('div',el('approaches'),'','option-card');
       add('strong',card,'Option '+(i+1));
-      add('p',card,option);
+      add('p',card,option.replace(/^Option\s+\d+\s*[:.)-]?\s*/i,''));
     }
   }
   if(data.approvalOutcomes?.length){
@@ -155,11 +163,13 @@ function render(data){
     title(el('conclusions'),'Supporting reasoning and framework basis');
     for(const conclusion of data.conclusions){
       const box=add('div',el('conclusions'),'','card');
+      add('div',box,evidenceLabel(conclusion.basisType),'tag');
       add('strong',box,'Scenario basis');
       add('p',box,conclusion.scenarioBasis);
-      add('strong',box,'Framework basis');
-      for(const citation of conclusion.citations)renderCitation(box,citation);
-      if(!conclusion.citations.length)add('p',box,'Scenario reasoning only','small');
+      if(conclusion.citations.length){
+        add('strong',box,'Relevant catalog references');
+        for(const citation of conclusion.citations)renderCitation(box,citation);
+      }else add('p',box,'No directly applicable catalog provision cited. This is not verification of product behavior.','small');
       add('strong',box,'Application to this design');
       add('p',box,conclusion.application);
       add('strong',box,'Still to establish');

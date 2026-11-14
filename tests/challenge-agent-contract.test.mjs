@@ -44,3 +44,40 @@ test('request is bounded and does not embed provider credentials',()=>{
  assert.equal(r.ok,true);assert.equal(r.scenarioText.length,4000);
  assert.deepEqual(Object.keys(r).sort(),['contractVersion','ok','requestedCapabilities','scenarioText'].sort());
 });
+
+
+test('engineered reasoning can be valid without any framework citation',()=>{
+ const response={
+  contractVersion:AGENT_CONTRACT_VERSION,
+  facts:[{statement:'The engineer chooses to delegate execution.',support:'explicit-user-statement'}],
+  approvalOutcomes:[],
+  challenges:[{question:'Does the CLI preserve exact revision authorization?'}],
+  citationIds:[],
+  conclusions:[{scenarioBasis:'The user described an explicit delegation.',application:'A CLI action may be a reasonable interface when revision checks are equivalent.',openQuestion:'Which revision did the engineer review?',basisType:'engineering-judgment',citationIds:[]}]
+ };
+ const result=validateAgentResponse(response,{scenarioText:scenario,requireGrounding:true});
+ assert.equal(result.ok,true,JSON.stringify(result.errors));
+ assert.equal(result.data.citations.length,0);
+ assert.equal(result.data.conclusions[0].basisType,'engineering-judgment');
+ assert.deepEqual(result.data.conclusions[0].citations,[]);
+});
+test('framework-based interpretations require a real canonical provision',()=>{
+ const base={
+  contractVersion:AGENT_CONTRACT_VERSION,
+  facts:[{statement:'Approval policy has not been established.',support:'unknown'}],
+  approvalOutcomes:[],
+  challenges:[{question:'What can the repository enforce?'}],
+  conclusions:[{scenarioBasis:'The repository has unspecified policies.',application:'Documented approval can be useful.',openQuestion:'What rules are configured?',basisType:'framework-interpretation',citationIds:[]}],
+  citationIds:[]
+ };
+ const noSupport=validateAgentResponse(base,{scenarioText:scenario,requireGrounding:true});
+ assert.equal(noSupport.ok,false);
+ assert.ok(noSupport.errors.some(e=>e.includes('Expected 1–3 conclusions')));
+ const invented=validateAgentResponse({...base,citationIds:['INVENTED:CLAUDE-REQUIRES-UI']},{scenarioText:scenario,requireGrounding:true});
+ assert.equal(invented.ok,false);
+ assert.ok(invented.errors.some(e=>e.includes('Unsupported catalog citation')));
+ const valid=validateAgentResponse({...base,citationIds:['NIST-800-53:CM-3(1)'],conclusions:[{...base.conclusions[0],citationIds:['NIST-800-53:CM-3(1)']}]},{scenarioText:scenario,requireGrounding:true});
+ assert.equal(valid.ok,true,JSON.stringify(valid.errors));
+ const invalidBasis=validateAgentResponse({...base,conclusions:[{...base.conclusions[0],basisType:'verified-technical-fact',citationIds:[]}]},{scenarioText:scenario,requireGrounding:true});
+ assert.equal(invalidBasis.ok,false);
+});
