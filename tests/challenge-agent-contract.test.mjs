@@ -8,7 +8,7 @@ const good={
  challenges:[{question:'Who authorizes the final code revision?',reason:'Plan execution and change authorization are different decisions.',tests:['Try out-of-scope code'],alternatives:['Human review','Bounded policy delegation']}],
  citationIds:['SSDF:PS.1','OWASP-2026:LLM03'],
  unknowns:['Protected branch rules unknown'],
- assessments:[{risk:'Bot can approve beyond delegated scope',expectedControl:'Approval actions restricted to authorized scope',demonstration:['Effective GitHub permissions','Denied approval test'],citationIds:['SSDF:PS.1']}]
+ assessments:[{risk:'Bot can approve beyond delegated scope',expectedControl:'Approval actions restricted to authorized scope',demonstration:['Effective GitHub permissions','Denied approval test'],citationIds:['SSDF:PS.1'],scenarioExcerpt:'agents approve a pull request'}]
 };
 test('positive structured model response resolves canonical citations and separates facts',()=>{
  const r=validateAgentResponse(good,{scenarioText:scenario});
@@ -17,6 +17,9 @@ test('positive structured model response resolves canonical citations and separa
  assert.equal(r.data.citations.length,2);
  assert.equal(r.data.assessments[0].evidenceStatus,'not-demonstrated');
  assert.equal(r.data.assessments[0].assessmentStatus,'not-assessed');
+ assert.equal(r.data.assessments[0].expectedControlOrigin,'assessment-derived-recommendation');
+ assert.equal(r.data.assessments[0].scenarioClaimStatus,'verbatim-scenario-claim-unverified');
+ assert.match(r.data.assessments[0].frameworkBasisStatus,/applicability-unverified/);
  assert.equal(r.data.provenance.decisionStatus,'no-approval-or-certification');
  assert.ok(r.data.citations.every(c=>c.url.startsWith('https://') && c.sourceVersion));
 });
@@ -56,4 +59,15 @@ test('assessment citation must be present in validated source references',()=>{
 test('assessment can only refer to citations included in response',()=>{
  const r=validateAgentResponse({...good,assessments:[{risk:'R',expectedControl:'C',citationIds:['SSDF:PW.1']}]},{scenarioText:scenario});
  assert.equal(r.ok,false);
+});
+
+test('invented design commitment is rejected even if framework citation exists',()=>{
+ const r=validateAgentResponse({...good,assessments:[{risk:'R',expectedControl:'C',citationIds:['SSDF:PS.1'],scenarioExcerpt:'Engineering has fully deployed the safeguard'}]},{scenarioText:scenario});
+ assert.equal(r.ok,false);
+ assert.ok(r.errors.some(e=>e.includes('not present verbatim')));
+});
+test('absence of design commitment never implies management evidence',()=>{
+ const r=validateAgentResponse({...good,assessments:[{risk:'R',expectedControl:'C',citationIds:['SSDF:PS.1']}]},{scenarioText:scenario});
+ assert.equal(r.ok,true);
+ assert.equal(r.data.assessments[0].scenarioClaimStatus,'no-management-design-commitment-established');
 });
