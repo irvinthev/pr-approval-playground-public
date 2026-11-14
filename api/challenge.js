@@ -1,5 +1,6 @@
 // Vercel Node API: private, authenticated prototype endpoint.
-// No browser credentials, no database, no external authority over code changes.
+// No database or external authority over code changes.
+import { hasBrowserSession, hasChallengeToken } from '../lab/challenge-browser-session.js';
 import { sourceCatalog } from '../framework-source-catalog.js';
 import { AGENT_CONTRACT_VERSION, validateAgentResponse } from '../challenge-agent-contract.js';
 
@@ -13,12 +14,6 @@ const json = (res,status,body) => {
   res.setHeader('Cache-Control','no-store');
   res.setHeader('Content-Type','application/json; charset=utf-8');
   return res.status(status).json(body);
-};
-const safeEquals = (a,b) => {
-  if (!a || !b || a.length !== b.length) return false;
-  let diff=0;
-  for(let i=0;i<a.length;i++)diff |= a.charCodeAt(i)^b.charCodeAt(i);
-  return diff===0;
 };
 const validTurn=t=>t && typeof t==='object' && !Array.isArray(t) &&
   (t.role==='user'||t.role==='assistant') &&
@@ -72,10 +67,10 @@ export function buildModelRequest(input){
 export default async function handler(req,res){
   res.setHeader('Cache-Control','no-store');
   if(req.method!=='POST')return json(res,405,{error:'POST required'});
-  // No public CORS grant. This endpoint is server-to-server only in this slice.
+  // No public CORS grant. Browser sessions require a same-origin lab request.
   if(!process.env.CHALLENGE_API_TOKEN || !process.env.GEMINI_API_KEY)
     return json(res,503,{error:'Backend not configured'});
-  if(!safeEquals(req.headers.authorization||'', 'Bearer '+process.env.CHALLENGE_API_TOKEN))
+  if(!hasChallengeToken(req.headers.authorization) && !hasBrowserSession(req))
     return json(res,401,{error:'Unauthorized'});
   if(Number(req.headers['content-length']||0)>MAX_BODY)
     return json(res,413,{error:'Body too large'});

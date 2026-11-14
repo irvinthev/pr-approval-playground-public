@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 const source=fs.readFileSync(new URL('../private-challenge.html',import.meta.url),'utf8');
 test('Private challenge lab has mobile accessible scenario input and follow-up',()=>{
- for(const id of ['token','scenario','ask','question','continue','reset','result','status']){
+ for(const id of ['token','scenario','ask','question','continue','reset','result','status','remember','remembered']){
    assert.match(source,new RegExp('id="'+id+'"'));
  }
  assert.match(source,/name="viewport"/);
@@ -11,7 +11,7 @@ test('Private challenge lab has mobile accessible scenario input and follow-up',
 });
 test('Private lab uses same-origin API, no embedded tokens or model credential',()=>{
  assert.match(source,/fetch\('\.\/api\/challenge'/);
- assert.match(source,/Authorization:'Bearer '\+token/);
+ assert.match(source,/headers\.Authorization='Bearer '\+token/);
  assert.doesNotMatch(source,/AIza[A-Za-z0-9_-]{25,}/);
  assert.doesNotMatch(source,/localStorage|sessionStorage|document\.cookie/);
  assert.match(source,/type="password"/);
