@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {createRequire} from 'node:module';
 import assert from 'node:assert/strict';
 import handler,{validateRequest,buildModelRequest} from '../api/challenge.js';
 import {validateReferenceUrl,buildNativeResearchRequest,readNativeResearchResponse} from '../lab/challenge-grounding.cjs';
@@ -118,4 +119,12 @@ test('search endpoint failure does not silently fall back to ungrounded output',
  await handler({method:'POST',headers:{authorization:'Bearer private-preview-secret'},body:{scenarioText:scenario,researchMode:'discover'}},res);
  assert.equal(res.statusCode,502);
  assert.match(res.body.error,/research is unavailable/);
+});
+
+test('grounding helper can be loaded by Vercel CommonJS function runtime',()=>{
+ const require=createRequire(import.meta.url);
+ const module=require('../lab/challenge-grounding.cjs');
+ assert.equal(typeof module.validateReferenceUrl,'function');
+ assert.equal(typeof module.buildNativeResearchRequest,'function');
+ assert.equal(typeof module.readNativeResearchResponse,'function');
 });
