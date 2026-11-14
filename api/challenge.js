@@ -7,7 +7,7 @@ const MAX_BODY = 10000;
 const MAX_TURNS = 6;
 const MAX_TURN_CHARS = 1000;
 const MAX_SCENARIO = 4000;
-const MAX_TOKENS = 1800;
+const MAX_TOKENS = 2600;
 const MODEL_URL = 'https://api.openai.com/v1/chat/completions';
 const json = (res,status,body) => {
   res.setHeader('Cache-Control','no-store');
@@ -43,6 +43,10 @@ export function buildModelRequest(input){
     'Required: facts [{statement,support:"explicit-user-statement"|"inference"|"unknown"}],',
     'challenges [{question,reason,tests:[string],alternatives:[string]}],',
     'citationIds [canonical IDs], unknowns [string], alternatives [string].',
+    'Also provide assessments: 1-2 concise objects [{risk,expectedControl,demonstration:[string],citationIds:[string]}].',
+    'Control outcomes should be testable and technology-neutral; demonstration items must name actual artifacts, configuration or negative tests management could provide.',
+    'Use only IDs already included in citationIds inside each assessment; cite the relevant principles, not invented mandatory requirements.',
+    'Do not assert safeguards exist, describe tests as executed, or claim design/evidence maturity. Model output is proposed only.',
     'At least one fact, one challenge and one citation. Do not include scenarioDigest.',
     'Only cite these catalog IDs: '+eligibleIds.join(', ')+'.',
     'Framework connections are tentative; do not invent source requirements.',

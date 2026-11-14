@@ -22,3 +22,10 @@ test('Model response rendered as text, citations require https and new session c
  assert.match(source,/el\('token'\)\.value=''/);
  assert.match(source,/state\.scenario!==scenario/);
 });
+
+test('private lab renders bounded evidence-based control assessment without claiming effectiveness',()=>{
+ for(const id of ['assessment-section','assessments'])assert.match(source,new RegExp('id="'+id+'"'));
+ assert.match(source,/EXPECTED CONTROL/);
+ assert.match(source,/MANAGEMENT DEMONSTRATION/);
+ assert.match(source,/Not assessed — implementation and effectiveness have not been verified/);
+});
