@@ -34,7 +34,8 @@ test('native research mode is opt-in and uses Google Search with optional URL Co
  const base=buildModelRequest({scenarioText:scenario,turns:[],history:[]});
  const search=buildNativeResearchRequest(base);
  assert.deepEqual(search.tools,[{googleSearch:{}}]);
- assert.equal(search.generationConfig.responseMimeType,'application/json');
+ assert.equal(search.generationConfig.responseMimeType,undefined);
+ assert.match(search.systemInstruction.parts[0].text,/plain text research notes/);
  assert.match(search.systemInstruction.parts[0].text,/Search only if it materially helps/);
  assert.match(search.contents[0].parts[0].text,/CODEOWNERS/);
  const url=buildNativeResearchRequest(base,'https://docs.github.com/en/get-started');
@@ -79,9 +80,10 @@ test('live opt-in request returns provider-grounded sources and keeps old catalo
    assert.equal(options.headers['x-goog-api-key'],'fake-provider-key');
    assert.equal(body.tools[0].googleSearch!==undefined,true);
    assert.equal(body.tools[1]?.urlContext!==undefined,true);
-   assert.equal(body.generationConfig.responseMimeType,'application/json');
+   assert.equal(body.generationConfig.responseMimeType,undefined);
+   assert.match(String(url),/gemini-2\.5-flash-lite/);
    return {ok:true,json:async()=>({
-    candidates:[{content:{parts:[{text:JSON.stringify(modelOutput)}]},
+    candidates:[{content:{parts:[{text:'GitHub docs: CODEOWNERS requests reviews; it does not submit approvals.'}]},
       groundingMetadata:{
        webSearchQueries:['GitHub CODEOWNERS review'],
        searchEntryPoint:{renderedContent:'<a target="_blank" href="https://google.com/search?q=codeowners">Search</a>'},
@@ -91,6 +93,7 @@ test('live opt-in request returns provider-grounded sources and keeps old catalo
   }
   assert.ok(String(url).includes('openai/chat/completions'));
   assert.equal(body.response_format.type,'json_object');
+  if(count===2)assert.match(body.messages[1].content,/CODEOWNERS requests reviews/);
   return {ok:true,json:async()=>({choices:[{message:{content:JSON.stringify(modelOutput)}}]})};
  });
  const req={method:'POST',headers:{authorization:'Bearer private-preview-secret'},body:{scenarioText:scenario,researchMode:'discover',referenceUrl:'https://docs.github.com/en/repositories'}};
@@ -104,7 +107,7 @@ test('live opt-in request returns provider-grounded sources and keeps old catalo
  await handler({...req,body:{scenarioText:scenario}},normal);
  assert.equal(normal.statusCode,200);
  assert.equal(normal.body.research,null);
- assert.equal(count,2);
+ assert.equal(count,3);
 });
 test('search endpoint failure does not silently fall back to ungrounded output',async t=>{
  const prevKey=process.env.GEMINI_API_KEY,prevToken=process.env.CHALLENGE_API_TOKEN;
@@ -118,7 +121,7 @@ test('search endpoint failure does not silently fall back to ungrounded output',
  const res=mockRes();
  await handler({method:'POST',headers:{authorization:'Bearer private-preview-secret'},body:{scenarioText:scenario,researchMode:'discover'}},res);
  assert.equal(res.statusCode,502);
- assert.match(res.body.error,/research is unavailable/);
+ assert.match(res.body.error,/rate limit/);
 });
 
 test('grounding helper can be loaded by Vercel CommonJS function runtime',()=>{
@@ -127,4 +130,30 @@ test('grounding helper can be loaded by Vercel CommonJS function runtime',()=>{
  assert.equal(typeof module.validateReferenceUrl,'function');
  assert.equal(typeof module.buildNativeResearchRequest,'function');
  assert.equal(typeof module.readNativeResearchResponse,'function');
+});
+
+test('search provider rejection exposes safe HTTP diagnostic without leaking request body',async t=>{
+ const prevKey=process.env.GEMINI_API_KEY,prevToken=process.env.CHALLENGE_API_TOKEN;
+ process.env.GEMINI_API_KEY='fake-provider-key';
+ process.env.CHALLENGE_API_TOKEN='private-preview-secret';
+ t.after(()=>{
+  if(prevKey===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=prevKey;
+  if(prevToken===undefined)delete process.env.CHALLENGE_API_TOKEN;else process.env.CHALLENGE_API_TOKEN=prevToken;
+ });
+ t.mock.method(console,'warn',()=>{});
+ t.mock.method(globalThis,'fetch',async()=>({ok:false,status:403}));
+ const res=mockRes();
+ await handler({method:'POST',headers:{authorization:'Bearer private-preview-secret'},body:{scenarioText:scenario,researchMode:'discover'}},res);
+ assert.equal(res.statusCode,502);
+ assert.match(res.body.error,/Search request rejected \(403\)/);
+ assert.doesNotMatch(JSON.stringify(res.body),/fake-provider-key/);
+});
+test('native source notes, not model-authored links, feed the structured formatter',()=>{
+ const result=readNativeResearchResponse({candidates:[{
+  content:{parts:[{text:'Official GitHub docs: CODEOWNERS assigns review responsibility.'}]},
+  groundingMetadata:{groundingChunks:[{web:{uri:'https://docs.github.com/en/repositories',title:'GitHub docs'}}]}
+ }]});
+ assert.equal(result.parsed,null);
+ assert.match(result.researchText,/CODEOWNERS assigns/);
+ assert.equal(result.research.sources[0].url,'https://docs.github.com/en/repositories');
 });
