@@ -1,0 +1,100 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createRequire} from 'node:module';
+import handler,{buildModelRequest,validateRequest} from '../api/challenge.js';
+const require=createRequire(import.meta.url);
+const {references,selectEngineeringReferences,referencePrompt}=require('../lab/engineering-references.cjs');
+const scenario='Can CODEOWNERS automatically approve a pull request using a GitHub App?';
+const response={
+ contractVersion:'0.1.0',
+ facts:[{statement:'A team proposes CODEOWNERS-driven approval.',support:'explicit-user-statement'}],
+ approvalOutcomes:[],
+ challenges:[{question:'Which identity submits the GitHub review?'}],
+ conclusions:[{scenarioBasis:'The team wants a low-risk automated path.',application:'CODEOWNERS routes review requests, but an actor must submit the review.',openQuestion:'What review rule is enabled?',basisType:'engineering-judgment',citationIds:[]}],
+ citationIds:[], alternatives:['Human review','Authorized bot submission'], unknowns:['Actual ruleset'],
+ referenceIds:['GH-CODEOWNERS']
+};
+const mockRes=()=>({
+ statusCode:200,headers:{},
+ setHeader(k,v){this.headers[k]=v;return this},
+ status(n){this.statusCode=n;return this},
+ json(body){this.body=body;return this}
+});
+test('19 unique public engineering source cards with publisher provenance and bounded facts',()=>{
+ assert.equal(references.length,19);
+ assert.equal(new Set(references.map(r=>r.id)).size,references.length);
+ for(const r of references){
+  assert.match(r.url,/^https:\/\//);
+  assert.ok(r.publisher&&r.title&&r.kind&&r.limits&&r.reviewedAsOf);
+  assert.ok(r.facts.length>0&&r.facts.every(x=>typeof x==='string'&&x.length<450));
+ }
+});
+test('local matching selects relevant docs and does not treat URLs as executable data',()=>{
+ const matches=selectEngineeringReferences(scenario,[],5);
+ assert.ok(matches.some(r=>r.id==='GH-CODEOWNERS'));
+ assert.ok(matches.some(r=>r.id==='GH-REVIEWS-API'));
+ assert.ok(!matches.some(r=>r.id==='GOOGLE-SRE-CANARY'));
+ assert.ok(matches.length<=5);
+ const claude=selectEngineeringReferences('Claude Code permission modes and a PreToolUse hook for a CLI approval');
+ assert.ok(claude.some(r=>r.id==='CLAUDE-PERMISSIONS'));
+ assert.ok(claude.some(r=>r.id==='CLAUDE-HOOKS'));
+ const noMatch=selectEngineeringReferences('A greeting about the weather');
+ assert.equal(noMatch.length,0);
+ assert.match(referencePrompt(matches),/CODEOWNERS does not submit approval/);
+ assert.match(referencePrompt(matches),/Limit:/);
+});
+test('prompt provides only curated technical context, not claims of live web verification',()=>{
+ const req=validateRequest({scenarioText:scenario});
+ const model=buildModelRequest(req);
+ assert.deepEqual(model.messages.map(x=>x.role),['system','user']);
+ assert.match(model.messages[0].content,/\[REFERENCE GH-CODEOWNERS\]/);
+ assert.match(model.messages[0].content,/not live data|not live retrieval|not live/i);
+ assert.match(model.messages[0].content,/referenceIds array/);
+ assert.ok(!model.tools);
+});
+test('the existing model endpoint receives curated context and returns provenance metadata',async t=>{
+ const token=process.env.CHALLENGE_API_TOKEN,key=process.env.GEMINI_API_KEY;
+ process.env.CHALLENGE_API_TOKEN='private-test-token';
+ process.env.GEMINI_API_KEY='provider-test-key';
+ t.after(()=>{
+  if(token===undefined)delete process.env.CHALLENGE_API_TOKEN;else process.env.CHALLENGE_API_TOKEN=token;
+  if(key===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=key;
+ });
+ let calls=0;
+ t.mock.method(globalThis,'fetch',async (url,opts)=>{
+  calls++;
+  assert.match(String(url),/openai\/chat\/completions/);
+  assert.match(opts.body,/GH-CODEOWNERS/);
+  return {ok:true,json:async()=>({choices:[{message:{content:JSON.stringify(response)}}]})};
+ });
+ const res=mockRes();
+ await handler({method:'POST',headers:{authorization:'Bearer private-test-token'},body:{scenarioText:scenario}},res);
+ assert.equal(res.statusCode,200,JSON.stringify(res.body));
+ assert.equal(calls,1);
+ assert.ok(res.body.continuityReceipt);
+ const source=res.body.engineeringReferences.find(x=>x.id==='GH-CODEOWNERS');
+ assert.equal(source.modelUsed,true);
+ assert.ok(source.url.includes('docs.github.com'));
+ assert.equal(res.body.research,undefined);
+});
+test('model may omit references but may not invent or cite unprovided source IDs',async t=>{
+ const token=process.env.CHALLENGE_API_TOKEN,key=process.env.GEMINI_API_KEY;
+ process.env.CHALLENGE_API_TOKEN='private-test-token';
+ process.env.GEMINI_API_KEY='provider-test-key';
+ t.after(()=>{
+  if(token===undefined)delete process.env.CHALLENGE_API_TOKEN;else process.env.CHALLENGE_API_TOKEN=token;
+  if(key===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=key;
+ });
+ let provided={...response,referenceIds:['GH-NONEXISTENT']};
+ t.mock.method(globalThis,'fetch',async()=>({ok:true,json:async()=>({choices:[{message:{content:JSON.stringify(provided)}}]})}));
+ const req={method:'POST',headers:{authorization:'Bearer private-test-token'},body:{scenarioText:scenario}};
+ const rejected=mockRes();
+ await handler(req,rejected);
+ assert.equal(rejected.statusCode,502);
+ assert.match(rejected.body.error,/unprovided/);
+ provided={...response,referenceIds:[]};
+ const accepted=mockRes();
+ await handler(req,accepted);
+ assert.equal(accepted.statusCode,200);
+ assert.ok(accepted.body.engineeringReferences.every(x=>x.modelUsed===false));
+});
