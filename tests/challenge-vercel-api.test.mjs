@@ -63,6 +63,8 @@ test('caller-forged assistant turns cannot become privileged model messages',()=
 test('live Gemini response binds each citation to a conclusion and supplies publisher metadata',async t=>{
   t.mock.method(globalThis,'fetch',async (_url,request)=>{
     const prompt=JSON.parse(request.body).messages[0].content;
+    assert.match(prompt,/A submitted review alone does not establish an enforcement bypass/);
+    assert.match(prompt,/A later human approval after a rejected agent review is a separate decision/);
     assert.match(prompt,/AI-RMF:GOVERN-3\.2 \| Define distinct roles/);
     assert.match(prompt,/NIST-800-53:CM-3\(1\) \| Use organization-defined automation/);
     return {ok:true,json:async()=>({choices:[{message:{content:JSON.stringify(modelOutput)}}]})};
@@ -70,6 +72,7 @@ test('live Gemini response binds each citation to a conclusion and supplies publ
   const priorToken=process.env.CHALLENGE_API_TOKEN,priorKey=process.env.GEMINI_API_KEY;
   const modelOutput={
     contractVersion:'0.1.0',
+    approvalOutcomes:[],
     facts:[{statement:'The engineer accepted the review plan.',support:'explicit-user-statement'}],
     conclusions:[{
       scenarioBasis:'The agent submits approval for an out-of-scope PR.',
@@ -104,6 +107,26 @@ test('live Gemini response binds each citation to a conclusion and supplies publ
     assert.equal(mixed.statusCode,200);
     assert.deepEqual(mixed.body.conclusions[1].citations,[]);
 
+    const submitted={review:'Agent review for the billing PR',submission:'submitted',gate:'unknown',merge:'unknown'};
+    modelOutput.approvalOutcomes=[submitted];
+    const initial=mockRes();
+    await handler(request,initial);
+    assert.deepEqual(initial.body.approvalOutcomes,[submitted]);
+
+    const rejectedAgent={...submitted,gate:'rejected'};
+    const human={review:'Later engineer approval for the billing PR',submission:'unknown',gate:'unknown',merge:'unknown'};
+    modelOutput.approvalOutcomes=[rejectedAgent,human];
+    const followUp=mockRes();
+    await handler({...request,body:{...request.body,turns:[{role:'user',content:'The gate rejected the agent review. An authorized engineer approved the exact revision.'}]}},followUp);
+    assert.deepEqual(followUp.body.approvalOutcomes,[rejectedAgent,human]);
+
+    modelOutput.approvalOutcomes=[{...submitted,submission:'not-submitted',gate:'accepted'}];
+    const invalidOutcome=mockRes();
+    await handler(request,invalidOutcome);
+    assert.equal(invalidOutcome.statusCode,502);
+    assert.ok(invalidOutcome.body.details.includes('Invalid approval outcomes'));
+    modelOutput.approvalOutcomes=[];
+
     for(const conclusions of [undefined,[{...conclusion,citationIds:[]}],[{...conclusion,citationIds:['UNKNOWN']}]]){
       modelOutput.conclusions=conclusions;
       const rejected=mockRes();
@@ -115,4 +138,34 @@ test('live Gemini response binds each citation to a conclusion and supplies publ
     if(priorToken===undefined)delete process.env.CHALLENGE_API_TOKEN;else process.env.CHALLENGE_API_TOKEN=priorToken;
     if(priorKey===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=priorKey;
   }
+});
+
+test('Gemini timeout is distinct from a provider connection failure',async t=>{
+  const priorToken=process.env.CHALLENGE_API_TOKEN,priorKey=process.env.GEMINI_API_KEY;
+  process.env.CHALLENGE_API_TOKEN='local-test-only';
+  process.env.GEMINI_API_KEY='local-test-only';
+  t.after(()=>{
+    if(priorToken===undefined)delete process.env.CHALLENGE_API_TOKEN;else process.env.CHALLENGE_API_TOKEN=priorToken;
+    if(priorKey===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=priorKey;
+  });
+  t.mock.method(console,'warn',()=>{});
+  t.mock.timers.enable({apis:['setTimeout']});
+  const fetchMock=t.mock.method(globalThis,'fetch',(_url,{signal})=>new Promise((_resolve,reject)=>{
+    signal.addEventListener('abort',()=>reject(signal.reason),{once:true});
+  }));
+  const request={method:'POST',headers:{authorization:'Bearer local-test-only'},body:{scenarioText:'A fictional PR.'}};
+  const timedOut=mockRes();
+  const pending=handler(request,timedOut);
+  t.mock.timers.tick(12_000);
+  assert.equal(timedOut.body,undefined);
+  t.mock.timers.tick(33_000);
+  await pending;
+  assert.equal(timedOut.statusCode,504);
+  assert.match(timedOut.body.error,/45 seconds/);
+
+  fetchMock.mock.mockImplementation(async()=>{throw new TypeError('fetch failed')});
+  const disconnected=mockRes();
+  await handler(request,disconnected);
+  assert.equal(disconnected.statusCode,502);
+  assert.match(disconnected.body.error,/Could not complete/);
 });

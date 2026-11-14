@@ -39,6 +39,17 @@ function validateConclusion(conclusion, citations){
    citations:citationIds.map(id=>citations.get(id))
  };
 }
+const submissionStates=['submitted','not-submitted','unknown'];
+const gateStates=['accepted','rejected','unknown'];
+const mergeStates=['merged','not-merged','unknown'];
+function validateApprovalOutcome(outcome){
+ if(!isPlainObject(outcome))return null;
+ const {review,submission,gate,merge}=outcome;
+ if(typeof review!=='string' || !review.trim() ||
+    !submissionStates.includes(submission) || !gateStates.includes(gate) || !mergeStates.includes(merge))return null;
+ if(submission==='not-submitted' && gate==='accepted')return null;
+ return {review:maxLength(review,240),submission,gate,merge};
+}
 export function validateAgentResponse(input,{scenarioText,requireGrounding=false}={}){
  const errors=[];
  if(!isPlainObject(input))return {ok:false,errors:['Response must be an object'],data:null};
@@ -59,8 +70,13 @@ export function validateAgentResponse(input,{scenarioText,requireGrounding=false
  if(challenges.length===0)errors.push('At least one challenge question is required');
  if(facts.length===0)errors.push('At least one explicit fact, inference or unknown is required');
  if(citations.length===0)errors.push('No validated framework citations');
- let conclusions;
+ let conclusions,approvalOutcomes;
  if(requireGrounding){
+   approvalOutcomes=Array.isArray(input.approvalOutcomes) && input.approvalOutcomes.length<=4
+     ? input.approvalOutcomes.map(validateApprovalOutcome) : null;
+   if(!approvalOutcomes || approvalOutcomes.some(outcome=>!outcome)){
+     errors.push('Invalid approval outcomes');
+   }
    const byId=new Map(citations.map(c=>[c.provisionId,c]));
    conclusions=Array.isArray(input.conclusions) && input.conclusions.length>=1 && input.conclusions.length<=3
      ? input.conclusions.map(conclusion=>validateConclusion(conclusion,byId)) : [];
@@ -78,7 +94,7 @@ export function validateAgentResponse(input,{scenarioText,requireGrounding=false
    facts,
    challenges,
    citations,
-   ...(requireGrounding ? {conclusions} : {}),
+   ...(requireGrounding ? {conclusions,approvalOutcomes} : {}),
    unknowns:strings(input.unknowns,12,400),
    alternatives:strings(input.alternatives,6,400),
    // This is model-derived technical reasoning, not an attestation of implementation or compliance.

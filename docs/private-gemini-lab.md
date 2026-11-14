@@ -3,18 +3,18 @@
 ## Objective
 Provide a responsive, mobile-first **private test page** for Gemini-backed scenario challenges, using the existing `POST /api/challenge` endpoint.
 
-**Preview URL after deployment:** `https://<preview-host>/private-challenge.html` — must use the **Vercel preview**, not the GitHub Pages URL.
+**Preview URL after deployment:** Open `/private-challenge.html` on the protected Vercel Preview. Bookmark the branch alias for the Preview you plan to keep using. A browser session applies to that hostname.
 
 ## Private owner walkthrough (iPhone)
 1. Open the PR's Vercel Preview deployment and visit `/private-challenge.html`. Vercel Authentication may require signing in.
 2. In the first input, paste your **CHALLENGE_API_TOKEN** (the separate test password kept in your password manager). **Do not use the Gemini API key.**
-3. Tap **Load example** and then **Challenge my design**.
+3. Optionally select **Remember this browser for 8 hours** before tapping **Challenge my design**. For a quick test, tap **Load example** first.
 4. Review each conclusion’s scenario basis, cited provision, application, and open question. Use follow-up questions as desired.
-5. Tap **Clear session** to erase the input token and visible results from this tab.
+5. Tap **Clear session** to remove the remembered browser cookie, clear the input token, and erase the visible results.
 
 ## Boundaries
 - Gemini API credential stays only in the Vercel backend environment. No key is embedded in HTML or GitHub.
-- The test access token is entered directly by the owner, held in browser memory, and used as an authorization header; it is never written to browser storage or the URL.
+- The test access token is entered directly by the owner and used as an authorization header. If opted in, the Preview issues a separate host-only Secure, HttpOnly, SameSite=Strict cookie with an eight-hour expiry. The raw token stays out of the cookie, browser storage, and URL. Rotating the test token invalidates existing remembered sessions.
 - The page can be loaded as static source outside Vercel but **cannot use the model unless the Vercel backend and valid private token are present**. It is deliberately not linked from the public field guide.
 - User input and AI results are rendered via text nodes, not untrusted HTML.
 - Same-origin API only, bounded scenario and follow-up length.

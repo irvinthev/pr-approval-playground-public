@@ -1,5 +1,6 @@
 // Vercel Node API: private, authenticated prototype endpoint.
-// No browser credentials, no database, no external authority over code changes.
+// No database or external authority over code changes.
+import { hasBrowserSession, hasChallengeToken } from '../lab/challenge-browser-session.cjs';
 import { sourceCatalog } from '../framework-source-catalog.js';
 import { AGENT_CONTRACT_VERSION, validateAgentResponse } from '../challenge-agent-contract.js';
 
@@ -8,17 +9,12 @@ const MAX_TURNS = 6;
 const MAX_TURN_CHARS = 1000;
 const MAX_SCENARIO = 4000;
 const MAX_TOKENS = 3000;
+const MODEL_TIMEOUT_MS = 45_000;
 const MODEL_URL = 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions';
 const json = (res,status,body) => {
   res.setHeader('Cache-Control','no-store');
   res.setHeader('Content-Type','application/json; charset=utf-8');
   return res.status(status).json(body);
-};
-const safeEquals = (a,b) => {
-  if (!a || !b || a.length !== b.length) return false;
-  let diff=0;
-  for(let i=0;i<a.length;i++)diff |= a.charCodeAt(i)^b.charCodeAt(i);
-  return diff===0;
 };
 const validTurn=t=>t && typeof t==='object' && !Array.isArray(t) &&
   (t.role==='user'||t.role==='assistant') &&
@@ -44,6 +40,11 @@ export function buildModelRequest(input){
     'Return a JSON object only. contractVersion must be '+AGENT_CONTRACT_VERSION+'.',
     'Required: facts [{statement,support:"explicit-user-statement"|"inference"|"unknown"}],',
     'challenges [{question,reason,tests:[string],alternatives:[string]}],',
+    'approvalOutcomes [{review, submission:"submitted"|"not-submitted"|"unknown", gate:"accepted"|"rejected"|"unknown", merge:"merged"|"not-merged"|"unknown"}],',
+    'For questions where PR approval outcomes matter, report each material review separately (up to four), including a rejected agent review and any later human review as distinct entries. Name the decision-maker in review when known. Use [] for other scenarios.',
+    'Submission means the review was recorded or submitted. A decision alone does not establish submission. Gate status means whether this specific review counted. Merge means whether the PR ultimately merged, independent of which review counted. Mark each unknown unless the scenario or latest follow-up establishes it. Earlier unknowns can be resolved by new evidence.',
+    'Keep every section consistent with those statuses. A submitted review alone does not establish an enforcement bypass. A later human approval after a rejected agent review is a separate decision. Use override only when an override is evidenced. A human approval does not establish that the gate accepted it or that the PR merged.',
+    'When asked for change evidence, address decision-maker, submitting identity, exact revision, policy version and gate result as proposed evidence fields; distinguish those from framework language.',
     'conclusions [{scenarioBasis, application, openQuestion, citationIds:[canonical IDs]}],',
     'citationIds [union of the conclusions’ citation IDs], unknowns [string], alternatives [string].',
     'Answer the latest question directly in 1–3 concise conclusions. State the scenario basis, then apply the cited provision to that fact and name the material open question. Keep proposed implementation choices explicit.',
@@ -67,10 +68,10 @@ export function buildModelRequest(input){
 export default async function handler(req,res){
   res.setHeader('Cache-Control','no-store');
   if(req.method!=='POST')return json(res,405,{error:'POST required'});
-  // No public CORS grant. This endpoint is server-to-server only in this slice.
+  // No public CORS grant. Browser sessions require a same-origin lab request.
   if(!process.env.CHALLENGE_API_TOKEN || !process.env.GEMINI_API_KEY)
     return json(res,503,{error:'Backend not configured'});
-  if(!safeEquals(req.headers.authorization||'', 'Bearer '+process.env.CHALLENGE_API_TOKEN))
+  if(!hasChallengeToken(req.headers.authorization) && !hasBrowserSession(req))
     return json(res,401,{error:'Unauthorized'});
   if(Number(req.headers['content-length']||0)>MAX_BODY)
     return json(res,413,{error:'Body too large'});
@@ -80,7 +81,7 @@ export default async function handler(req,res){
   const input=validateRequest(body);
   if(input.error)return json(res,400,{error:input.error});
   const controller=new AbortController();
-  const timeout=setTimeout(()=>controller.abort(),12000);
+  const timeout=setTimeout(()=>controller.abort(),MODEL_TIMEOUT_MS);
   try{
     const response=await fetch(MODEL_URL,{
       method:'POST',signal:controller.signal,
@@ -95,6 +96,13 @@ export default async function handler(req,res){
     const checked=validateAgentResponse(parsed,{scenarioText:input.scenarioText,requireGrounding:true});
     if(!checked.ok)return json(res,502,{error:'Model output failed contract validation',details:checked.errors});
     return json(res,200,{...checked.data,turnsUsed:input.turns.length,mode:'live-model'});
-  }catch{return json(res,502,{error:'Model request failed or timed out'})}
+  }catch{
+    if(controller.signal.aborted){
+      console.warn('Challenge Lab: Gemini response timed out.');
+      return json(res,504,{error:'Gemini took longer than 45 seconds. Try the challenge again.'});
+    }
+    console.warn('Challenge Lab: Gemini request failed.');
+    return json(res,502,{error:'Could not complete the Gemini request. Try again.'});
+  }
   finally{clearTimeout(timeout)}
 }

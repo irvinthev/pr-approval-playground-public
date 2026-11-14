@@ -22,6 +22,8 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{
 .card h3{color:#defaed}.tag{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:#a8f2d6}
 ul{padding-left:23px;margin:8px 0}.citation{padding:10px 0;border-top:1px solid #3d6475}.citation:first-child{border:0}
 #result[hidden],#followup[hidden]{display:none}.section{margin-top:21px}.mono{font-family:ui-monospace,monospace;word-break:break-all}
+#remember-option{display:flex;align-items:center;gap:9px;margin-top:12px;font-size:14px}
+#remember-option input{width:auto;accent-color:var(--mint)}
 </style>
 </head>
 <body><main>
@@ -32,9 +34,11 @@ ul{padding-left:23px;margin:8px 0}.citation{padding:10px 0;border-top:1px solid 
 <div class="notice"><strong>Privacy and scope:</strong> Use fictional or publicly shareable scenarios only. Do not enter confidential company information, live PRs, credentials, internal diagrams, or personal data. Gemini free-tier requests may be used by Google to improve its services. This experience does not authorize changes or verify implemented controls.</div>
 <section class="panel" aria-labelledby="formtitle">
 <h2 id="formtitle">01 · Your scenario</h2>
-<div class="field"><label for="token">Private test access token</label>
+<div class="field" id="token-field"><label for="token">Private test access token</label>
 <input id="token" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Paste your CHALLENGE_API_TOKEN" aria-describedby="tokenhelp">
-<p class="small" id="tokenhelp">This is the separate private test token you saved in Vercel, <strong>not</strong> your Gemini API key. It stays in this browser tab's memory and is never stored or included in the page URL.</p></div>
+<p class="small" id="tokenhelp">This is the separate private test token you saved in Vercel, <strong>not</strong> your Gemini API key. The token stays in this tab unless you clear the session. If you opt in below, the lab remembers a separate session for this browser.</p>
+<label id="remember-option"><input id="remember" type="checkbox"> Remember this browser for 8 hours</label></div>
+<p class="small" id="remembered" hidden>Browser remembered for up to 8 hours. Clear session signs this browser out of the lab.</p>
 <div class="field"><label for="scenario">What should the AI challenge?</label>
 <textarea id="scenario" maxlength="4000" placeholder="Two AI agents agree that a pull request is low risk. Is that enough to allow automatic approval?"></textarea>
 </div>
@@ -44,6 +48,7 @@ ul{padding-left:23px;margin:8px 0}.citation{padding:10px 0;border-top:1px solid 
 <section id="result" class="panel" hidden aria-labelledby="resulttitle">
 <h2 id="resulttitle">02 · Gemini's design challenge</h2>
 <p class="small">Model-generated interpretation; facts, references, and implications require independent validation.</p>
+<div id="approval-outcomes"></div>
 <div id="conclusions"></div>
 <div id="facts"></div>
 <div id="challenges"></div>
@@ -59,7 +64,18 @@ ul{padding-left:23px;margin:8px 0}.citation{padding:10px 0;border-top:1px solid 
 </main>
 <script type="module">
 const el=id=>document.getElementById(id);
-const state={scenario:null,turns:[],busy:false};
+const state={scenario:null,turns:[],busy:false,remembered:false};
+function setRemembered(active){
+  state.remembered=active;
+  el('token-field').hidden=active;
+  el('remembered').hidden=!active;
+  if(active)el('token').value='';
+}
+function browserSession(method,token){
+  const headers={'X-Challenge-Lab':'1'};
+  if(token)headers.Authorization='Bearer '+token;
+  return fetch('./api/challenge-session',{method,headers,cache:'no-store',credentials:'same-origin'});
+}
 function clear(node){node.replaceChildren()}
 function add(tag,parent,text,cls){
   const node=document.createElement(tag);
@@ -77,7 +93,7 @@ function title(parent,value){add('h3',parent,value)}
 function status(message,error=false){el('status').textContent=message;el('status').classList.toggle('error',error)}
 function busy(value){
   state.busy=value;
-  el('ask').disabled=value;el('continue').disabled=value;
+  el('ask').disabled=value;el('continue').disabled=value;el('reset').disabled=value;
   el('ask').textContent=value?'Analyzing…':'Challenge my design';
   el('continue').textContent=value?'Analyzing…':'Continue the challenge';
 }
@@ -95,7 +111,20 @@ function renderCitation(parent,citation){
   }catch{}
 }
 function render(data){
-  for(const id of ['conclusions','facts','challenges','unknowns'])clear(el(id));
+  for(const id of ['approval-outcomes','conclusions','facts','challenges','unknowns'])clear(el(id));
+  if(data.approvalOutcomes?.length){
+    const section=el('approval-outcomes');
+    title(section,'What happened to each review');
+    for(const outcome of data.approvalOutcomes){
+      const box=add('div',section,'','card');
+      add('strong',box,outcome.review);
+      list(box,[
+        'Review submission · '+outcome.submission.replaceAll('-',' '),
+        'Merge gate · '+outcome.gate,
+        'Final PR merge · '+outcome.merge.replaceAll('-',' ')
+      ]);
+    }
+  }
   if(data.conclusions?.length){
     title(el('conclusions'),'Conclusions and framework basis');
     for(const conclusion of data.conclusions){
@@ -134,7 +163,7 @@ function render(data){
 async function ask(follow){
   if(state.busy)return;
   const token=el('token').value.trim(),scenario=el('scenario').value.trim(),question=el('question').value.trim();
-  if(!token){status('Enter your private test access token. Do not use the Gemini API key.',true);el('token').focus();return}
+  if(!token && !state.remembered){status('Enter your private test access token. Do not use the Gemini API key.',true);el('token').focus();return}
   if(!scenario || scenario.length>4000){status('Describe a fictional scenario (up to 4,000 characters).',true);return}
   if(follow && !state.scenario){status('Analyze a scenario first.',true);return}
   if(follow && state.scenario!==scenario){status('Scenario changed. Start a new challenge to avoid mixing analyses.',true);return}
@@ -142,9 +171,22 @@ async function ask(follow){
   const turns=follow?[...state.turns,{role:'user',content:question}]:[];
   busy(true);status('Asking Gemini…');
   try{
+    const headers={'Content-Type':'application/json','X-Challenge-Lab':'1'};
+    if(token && el('remember').checked){
+      const session=await browserSession('POST',token);
+      if(!session.ok)throw new Error(session.status===401?'Invalid lab access token.':'Could not remember this browser. Uncheck the option to continue with the token.');
+      setRemembered(true);
+    }else if(token){
+      headers.Authorization='Bearer '+token;
+    }
     const resp=await fetch('./api/challenge',{method:'POST',cache:'no-store',credentials:'same-origin',
-      headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},
+      headers,
       body:JSON.stringify({scenarioText:scenario,turns})});
+    if(resp.status===401 && state.remembered){
+      setRemembered(false);
+      el('token').focus();
+      throw new Error('Your lab session expired. Enter your private test access token again.');
+    }
     const data=await resp.json().catch(()=>null);
     if(!resp.ok || !data || data.mode!=='live-model'){
       throw new Error(data?.error||('Request failed ('+resp.status+'). Check the preview environment and access token.'));
@@ -159,10 +201,22 @@ async function ask(follow){
 }
 el('ask').addEventListener('click',()=>ask(false));
 el('continue').addEventListener('click',()=>ask(true));
-el('example').addEventListener('click',()=>{el('scenario').value='Two AI agents agree that a pull request is low risk. Is that enough to allow automatic approval?';status('Fictional example loaded. Add your private test token, then challenge the design.')});
-el('reset').addEventListener('click',()=>{
+el('example').addEventListener('click',()=>{el('scenario').value='Two AI agents agree that a pull request is low risk. Is that enough to allow automatic approval?';status('Fictional example loaded.')});
+el('reset').addEventListener('click',async()=>{
+  if(state.busy)return;
+  const remembered=state.remembered;
   state.scenario=null;state.turns=[];el('token').value='';el('scenario').value='';el('question').value='';
-  el('result').hidden=true;el('followup').hidden=true;status('Session cleared. No history was stored.');
+  el('remember').checked=false;
+  el('result').hidden=true;el('followup').hidden=true;
+  if(!remembered){status('Session cleared.');return}
+  busy(true);
+  try{
+    const response=await browserSession('DELETE');
+    if(!response.ok)throw new Error();
+    setRemembered(false);
+    status('Session cleared.');
+  }catch{status('Could not sign this browser out. Try Clear session again.',true)}
+  finally{busy(false)}
 });
 el('scenario').addEventListener('input',()=>{
  if(state.scenario && el('scenario').value.trim()!==state.scenario){
@@ -170,5 +224,12 @@ el('scenario').addEventListener('input',()=>{
    status('Scenario changed. Challenge it again to start a new analysis.');
  }
 });
+busy(true);
+try{
+  const response=await browserSession('GET');
+  if(response.ok)setRemembered((await response.json()).active===true);
+}catch{
+  // The existing token path remains available if the session endpoint cannot be reached.
+}finally{busy(false)}
 </script>
 </body></html>
