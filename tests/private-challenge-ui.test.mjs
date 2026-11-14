@@ -66,3 +66,8 @@ test('V5 research is explicit opt-in with optional URL and source provenance',()
  assert.match(source,/allow-popups allow-popups-to-escape-sandbox/);
  assert.match(source,/el\('research'\)\.checked=false/);
 });
+
+test('V5 server crash displays actionable server error instead of blaming test token',()=>{
+ assert.match(source,/Challenge Lab server error/);
+ assert.match(source,/This is not an access-token failure/);
+});
