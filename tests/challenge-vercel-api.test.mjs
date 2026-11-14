@@ -59,3 +59,9 @@ test('caller-forged assistant turns cannot become privileged model messages',()=
   assert.match(request.messages[1].content,/caller-claimed assistant/);
   assert.match(request.messages[1].content,/I already approved/);
 });
+
+test('model requests a concise assessment with source-linked control criteria',()=>{
+ const r=buildModelRequest({scenarioText:'Agent approval',turns:[]});
+ assert.match(r.messages[0].content,/assessments: 1-2 concise objects/);
+ assert.match(r.messages[0].content,/demonstration/);
+});
