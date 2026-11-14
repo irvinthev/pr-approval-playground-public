@@ -2,7 +2,7 @@
 // No database or external authority over code changes.
 import { hasBrowserSession, hasChallengeToken } from '../lab/challenge-browser-session.cjs';
 import { issueReceipt, verifiedHistory } from '../lab/challenge-turn-receipts.cjs';
-import { validateReferenceUrl, buildNativeResearchRequest, readNativeResearchResponse } from '../lab/challenge-grounding.js';
+import { validateReferenceUrl, buildNativeResearchRequest, readNativeResearchResponse } from '../lab/challenge-grounding.cjs';
 import { sourceCatalog } from '../framework-source-catalog.js';
 import { AGENT_CONTRACT_VERSION, validateAgentResponse } from '../challenge-agent-contract.js';
 
