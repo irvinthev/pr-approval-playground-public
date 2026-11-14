@@ -33,3 +33,12 @@ test('Private lab surfaces the direct answer and alternatives before expandable 
  assert.match(source,/data\.alternatives\.slice\(0,3\)/);
  assert.match(source,/el\('evidence-details'\)\.open=false/);
 });
+
+test('Follow-ups send signed prior model answers without browser storage',()=>{
+ assert.match(source,/continuityReceipts:\[\]/);
+ assert.match(source,/continuityReceipts:follow\?state\.continuityReceipts:\[\]/);
+ assert.match(source,/typeof data\.continuityReceipt!=='string'/);
+ assert.match(source,/state\.continuityReceipts=\(follow\?state\.continuityReceipts:\[\]\)\.concat\(data\.continuityReceipt\)\.slice\(-3\)/);
+ assert.match(source,/state\.continuityReceipts=\[\]/);
+ assert.match(source,/server-signed snapshots of Gemini's prior answers/);
+});

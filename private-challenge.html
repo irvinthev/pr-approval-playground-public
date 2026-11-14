@@ -67,6 +67,7 @@ details.deep-dive summary:focus-visible{outline:3px solid var(--mint);outline-of
 </section>
 <section class="panel" id="followup" hidden aria-labelledby="followtitle">
 <h2 id="followtitle">03 · Ask a follow-up</h2>
+<p class="small">Follow-ups include bounded, server-signed snapshots of Gemini's prior answers, so it can revisit its own reasoning. History stays in this tab and is cleared when you reset.</p>
 <label for="question">What would you challenge next?</label>
 <textarea id="question" maxlength="1000" style="min-height:94px" placeholder="What independent safeguard would make this safer?"></textarea>
 <div class="row"><button class="primary" id="continue" type="button">Continue the challenge</button><span class="small" id="turncount"></span></div>
@@ -75,7 +76,7 @@ details.deep-dive summary:focus-visible{outline:3px solid var(--mint);outline-of
 </main>
 <script type="module">
 const el=id=>document.getElementById(id);
-const state={scenario:null,turns:[],busy:false,remembered:false};
+const state={scenario:null,turns:[],continuityReceipts:[],busy:false,remembered:false};
 function setRemembered(active){
   state.remembered=active;
   el('token-field').hidden=active;
@@ -183,7 +184,7 @@ function render(data){
   if(data.unknowns?.length){title(el('unknowns'),'Still unknown');list(el('unknowns'),data.unknowns)}
   el('evidence-details').open=false;
   el('result').hidden=false;el('followup').hidden=false;
-  el('turncount').textContent=state.turns.length+' of 6 follow-up turns used';
+  el('turncount').textContent=state.turns.length+' of 6 follow-up turns used · '+state.continuityReceipts.length+' prior response snapshot(s) retained in this tab';
   el('continue').disabled=state.turns.length>=6;
 }
 async function ask(follow){
@@ -207,7 +208,7 @@ async function ask(follow){
     }
     const resp=await fetch('./api/challenge',{method:'POST',cache:'no-store',credentials:'same-origin',
       headers,
-      body:JSON.stringify({scenarioText:scenario,turns})});
+      body:JSON.stringify({scenarioText:scenario,turns,continuityReceipts:follow?state.continuityReceipts:[]})});
     if(resp.status===401 && state.remembered){
       setRemembered(false);
       el('token').focus();
@@ -218,7 +219,11 @@ async function ask(follow){
       throw new Error(data?.error||('Request failed ('+resp.status+'). Check the preview environment and access token.'));
     }
     state.scenario=scenario;
+    if(typeof data.continuityReceipt!=='string' || !data.continuityReceipt){
+      throw new Error('Model response arrived without conversation continuity; no turn was saved.');
+    }
     state.turns=turns.slice(-6);
+    state.continuityReceipts=(follow?state.continuityReceipts:[]).concat(data.continuityReceipt).slice(-3);
     if(follow)el('question').value='';
     render(data);status('Gemini response received. Review its reasoning and source relevance.');
     el('result').scrollIntoView({behavior:'smooth',block:'start'});
@@ -231,7 +236,7 @@ el('example').addEventListener('click',()=>{el('scenario').value='Two AI agents 
 el('reset').addEventListener('click',async()=>{
   if(state.busy)return;
   const remembered=state.remembered;
-  state.scenario=null;state.turns=[];el('token').value='';el('scenario').value='';el('question').value='';
+  state.scenario=null;state.turns=[];state.continuityReceipts=[];el('token').value='';el('scenario').value='';el('question').value='';
   el('remember').checked=false;
   el('result').hidden=true;el('followup').hidden=true;
   if(!remembered){status('Session cleared.');return}
@@ -246,7 +251,7 @@ el('reset').addEventListener('click',async()=>{
 });
 el('scenario').addEventListener('input',()=>{
  if(state.scenario && el('scenario').value.trim()!==state.scenario){
-   el('result').hidden=true;el('followup').hidden=true;state.scenario=null;state.turns=[];
+   el('result').hidden=true;el('followup').hidden=true;state.scenario=null;state.turns=[];state.continuityReceipts=[];
    status('Scenario changed. Challenge it again to start a new analysis.');
  }
 });

@@ -1,0 +1,24 @@
+name: Private Challenge Lab API Tests
+on:
+  pull_request:
+    paths:
+      - 'api/challenge.js'
+      - 'lab/challenge-turn-receipts.cjs'
+      - 'private-challenge.html'
+      - 'challenge-agent-contract.js'
+      - 'tests/challenge-*.test.mjs'
+      - 'tests/private-challenge-ui.test.mjs'
+      - '.github/workflows/challenge-api-tests.yml'
+  workflow_dispatch:
+jobs:
+  challenge-api:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run private Challenge Lab regression tests
+        run: node --test tests/challenge-*.test.mjs tests/private-challenge-ui.test.mjs
