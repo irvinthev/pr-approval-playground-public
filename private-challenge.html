@@ -106,10 +106,12 @@ function render(data){
     for(const a of data.assessments){
       const box=add('div',el('assessments'),'', 'card');
       add('div',box,'RISK','tag');add('p',box,a.risk);
-      add('div',box,'EXPECTED CONTROL · PROPOSED','tag');add('p',box,a.expectedControl);
-      add('div',box,'FRAMEWORK BASIS · SUGGESTED RELEVANCE','tag');
+      add('div',box,'SCENARIO-STATED DESIGN · NOT VERIFIED','tag');
+      add('p',box,a.scenarioExcerpt ? '“'+a.scenarioExcerpt+'”' : 'No explicit design commitment quoted from the scenario.');
+      add('div',box,'EXPECTED CONTROL · ASSESSMENT RECOMMENDATION','tag');add('p',box,a.expectedControl);
+      add('div',box,'FRAMEWORK PRINCIPLE · CATALOG REFERENCE, APPLICABILITY UNVERIFIED','tag');
       const refs=(a.citationIds||[]).map(id=>(data.citations||[]).find(c=>c.provisionId===id)).filter(Boolean);
-      if(refs.length)list(box,refs.map(c=>c.sourceTitle+' — '+(c.provisionTitle||c.provisionId)+' ('+c.provisionId+')'));
+      if(refs.length)list(box,refs.map(c=>c.sourceTitle+' — '+(c.provisionTitle||c.provisionId)+' ('+c.provisionId+') · Suggested principle only; not a mandated implementation'));
       else add('p',box,'No provision mapping established.');
       add('div',box,'MANAGEMENT DEMONSTRATION · REQUESTED EVIDENCE','tag');list(box,a.demonstration||[]);
       add('div',box,'ASSESSMENT','tag');
