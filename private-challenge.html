@@ -287,7 +287,10 @@ async function ask(follow){
     }
     const data=await resp.json().catch(()=>null);
     if(!resp.ok || !data || data.mode!=='live-model'){
-      throw new Error(data?.error||('Request failed ('+resp.status+'). Check the preview environment and access token.'));
+      const fallback=resp.status>=500
+        ?'Challenge Lab server error ('+resp.status+'). This is not an access-token failure; check the Preview function logs.'
+        :'Request failed ('+resp.status+'). Check the Preview access token.';
+      throw new Error(data?.error||fallback);
     }
     state.scenario=scenario;
     if(typeof data.continuityReceipt!=='string' || !data.continuityReceipt){
