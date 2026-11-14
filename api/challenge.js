@@ -126,7 +126,9 @@ export default async function handler(req,res){
       if(!response.ok){
         // Do not log provider messages (which may repeat input or contain secrets).
         console.warn('Challenge Lab: Google Search provider response status:',response.status);
-        const error=response.status===429
+        const error=response.status===404
+          ?'Google Search model is unavailable to this API project (404). Gemini 2.5 access may be restricted to established projects; no research result was returned.'
+          :response.status===429
           ?'Google Search quota or rate limit reached. Try again later or turn off research.'
           :response.status===400||response.status===403
             ?'Google Search request rejected ('+response.status+'). Check model availability and API billing tier.'
