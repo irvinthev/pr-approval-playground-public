@@ -1,6 +1,6 @@
 // Vercel Node API: private, authenticated prototype endpoint.
 // No database or external authority over code changes.
-import { hasBrowserSession, hasChallengeToken } from '../lab/challenge-browser-session.js';
+import { hasBrowserSession, hasChallengeToken } from '../lab/challenge-browser-session.cjs';
 import { sourceCatalog } from '../framework-source-catalog.js';
 import { AGENT_CONTRACT_VERSION, validateAgentResponse } from '../challenge-agent-contract.js';
 

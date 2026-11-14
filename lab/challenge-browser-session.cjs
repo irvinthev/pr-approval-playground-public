@@ -1,10 +1,12 @@
-import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
+'use strict';
+
+const { createHmac, randomBytes, timingSafeEqual } = require('node:crypto');
 
 const cookieName = '__Host-challenge-lab';
 const lifetime = 8 * 60 * 60;
 const attributes = 'Path=/; HttpOnly; Secure; SameSite=Strict';
 
-export function hasChallengeToken(authorization) {
+function hasChallengeToken(authorization) {
   const token = process.env.CHALLENGE_API_TOKEN;
   if (!token || typeof authorization !== 'string') return false;
   const actual = Buffer.from(authorization);
@@ -12,11 +14,11 @@ export function hasChallengeToken(authorization) {
   return actual.length === expected.length && timingSafeEqual(actual, expected);
 }
 
-export function browserSessionsEnabled() {
+function browserSessionsEnabled() {
   return process.env.VERCEL_ENV === 'preview' && Boolean(process.env.CHALLENGE_API_TOKEN);
 }
 
-export function isBrowserRequest(req) {
+function isBrowserRequest(req) {
   return req.headers['x-challenge-lab'] === '1';
 }
 
@@ -26,7 +28,7 @@ function sign(payload) {
     .digest();
 }
 
-export function hasBrowserSession(req) {
+function hasBrowserSession(req) {
   if (!browserSessionsEnabled() || !isBrowserRequest(req)) return false;
   const entry = (req.headers.cookie || '').split(';').map(part => part.trim())
     .find(part => part.startsWith(cookieName + '='));
@@ -36,13 +38,20 @@ export function hasBrowserSession(req) {
   return timingSafeEqual(Buffer.from(match[3], 'hex'), sign(match[1] + '.' + match[2]));
 }
 
-export function createBrowserSessionCookie() {
+function createBrowserSessionCookie() {
   const expires = Math.floor(Date.now() / 1000) + lifetime;
   const payload = expires + '.' + randomBytes(16).toString('hex');
   return cookieName + '=' + payload + '.' + sign(payload).toString('hex') +
     '; Max-Age=' + lifetime + '; ' + attributes;
 }
 
-export function clearBrowserSessionCookie() {
+function clearBrowserSessionCookie() {
   return cookieName + '=; Max-Age=0; ' + attributes;
 }
+
+exports.hasChallengeToken = hasChallengeToken;
+exports.browserSessionsEnabled = browserSessionsEnabled;
+exports.isBrowserRequest = isBrowserRequest;
+exports.hasBrowserSession = hasBrowserSession;
+exports.createBrowserSessionCookie = createBrowserSessionCookie;
+exports.clearBrowserSessionCookie = clearBrowserSessionCookie;
