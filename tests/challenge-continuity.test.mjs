@@ -9,7 +9,7 @@ const response={
   contractVersion:'0.1.0',
   approvalOutcomes:[],
   facts:[{statement:'A fictional engineer delegated execution.',support:'explicit-user-statement'}],
-  conclusions:[{scenarioBasis:'Explicit delegation is claimed.',application:'A manual click is not inherently safer than a properly bound delegated approval.',openQuestion:'What revision was reviewed?',citationIds:['NIST-800-53:CM-3(1)']}],
+  conclusions:[{scenarioBasis:'Explicit delegation is claimed.',application:'A manual click is not inherently safer than a properly bound delegated approval.',openQuestion:'What revision was reviewed?',basisType:'framework-interpretation',citationIds:['NIST-800-53:CM-3(1)']}],
   challenges:[{question:'What enforcement preserves revision identity?'}],
   citationIds:['NIST-800-53:CM-3(1)'],
   alternatives:['Direct manual UI approval: familiar but click does not prove judgment.','Explicit delegated CLI approval: fewer clicks but requires binding.']
