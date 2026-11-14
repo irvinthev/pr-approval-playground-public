@@ -11,6 +11,6 @@ test('Challenge endpoint uses the Gemini credentials configured for Preview',()=
 });
 test('Gemini provider selected without exposing credentials or disabling authorization',()=>{
  assert.match(source,/GEMINI_MODEL\|\|'gemini-3\.1-flash-lite'/);
- assert.match(source,/safeEquals\(req\.headers\.authorization/);
+ assert.match(source,/hasChallengeToken\(req\.headers\.authorization/);
  assert.match(source,/response_format:\{type:'json_object'\}/);
 });
