@@ -9,6 +9,7 @@ const MAX_TURNS = 6;
 const MAX_TURN_CHARS = 1000;
 const MAX_SCENARIO = 4000;
 const MAX_TOKENS = 3000;
+const MODEL_TIMEOUT_MS = 45_000;
 const MODEL_URL = 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions';
 const json = (res,status,body) => {
   res.setHeader('Cache-Control','no-store');
@@ -80,7 +81,7 @@ export default async function handler(req,res){
   const input=validateRequest(body);
   if(input.error)return json(res,400,{error:input.error});
   const controller=new AbortController();
-  const timeout=setTimeout(()=>controller.abort(),12000);
+  const timeout=setTimeout(()=>controller.abort(),MODEL_TIMEOUT_MS);
   try{
     const response=await fetch(MODEL_URL,{
       method:'POST',signal:controller.signal,
@@ -95,6 +96,13 @@ export default async function handler(req,res){
     const checked=validateAgentResponse(parsed,{scenarioText:input.scenarioText,requireGrounding:true});
     if(!checked.ok)return json(res,502,{error:'Model output failed contract validation',details:checked.errors});
     return json(res,200,{...checked.data,turnsUsed:input.turns.length,mode:'live-model'});
-  }catch{return json(res,502,{error:'Model request failed or timed out'})}
+  }catch{
+    if(controller.signal.aborted){
+      console.warn('Challenge Lab: Gemini response timed out.');
+      return json(res,504,{error:'Gemini took longer than 45 seconds. Try the challenge again.'});
+    }
+    console.warn('Challenge Lab: Gemini request failed.');
+    return json(res,502,{error:'Could not complete the Gemini request. Try again.'});
+  }
   finally{clearTimeout(timeout)}
 }

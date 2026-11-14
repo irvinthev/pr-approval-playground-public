@@ -139,3 +139,33 @@ test('live Gemini response binds each citation to a conclusion and supplies publ
     if(priorKey===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=priorKey;
   }
 });
+
+test('Gemini timeout is distinct from a provider connection failure',async t=>{
+  const priorToken=process.env.CHALLENGE_API_TOKEN,priorKey=process.env.GEMINI_API_KEY;
+  process.env.CHALLENGE_API_TOKEN='local-test-only';
+  process.env.GEMINI_API_KEY='local-test-only';
+  t.after(()=>{
+    if(priorToken===undefined)delete process.env.CHALLENGE_API_TOKEN;else process.env.CHALLENGE_API_TOKEN=priorToken;
+    if(priorKey===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=priorKey;
+  });
+  t.mock.method(console,'warn',()=>{});
+  t.mock.timers.enable({apis:['setTimeout']});
+  const fetchMock=t.mock.method(globalThis,'fetch',(_url,{signal})=>new Promise((_resolve,reject)=>{
+    signal.addEventListener('abort',()=>reject(signal.reason),{once:true});
+  }));
+  const request={method:'POST',headers:{authorization:'Bearer local-test-only'},body:{scenarioText:'A fictional PR.'}};
+  const timedOut=mockRes();
+  const pending=handler(request,timedOut);
+  t.mock.timers.tick(12_000);
+  assert.equal(timedOut.body,undefined);
+  t.mock.timers.tick(33_000);
+  await pending;
+  assert.equal(timedOut.statusCode,504);
+  assert.match(timedOut.body.error,/45 seconds/);
+
+  fetchMock.mock.mockImplementation(async()=>{throw new TypeError('fetch failed')});
+  const disconnected=mockRes();
+  await handler(request,disconnected);
+  assert.equal(disconnected.statusCode,502);
+  assert.match(disconnected.body.error,/Could not complete/);
+});
