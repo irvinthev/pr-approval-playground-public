@@ -169,3 +169,13 @@ test('Gemini timeout is distinct from a provider connection failure',async t=>{
   assert.equal(disconnected.statusCode,502);
   assert.match(disconnected.body.error,/Could not complete/);
 });
+
+test('model reasoning compares existing and proposed approval architectures fairly',()=>{
+  const prompt=buildModelRequest({scenarioText:'A fictional engineer explicitly authorizes an agent to submit PR approvals.',turns:[]}).messages[0].content;
+  assert.match(prompt,/engineering problem, including developer friction/);
+  assert.match(prompt,/Steelman both the proposed design and the status quo/);
+  assert.match(prompt,/A GitHub UI click is not inherently more meaningful/);
+  assert.match(prompt,/Compare 2–3 concrete, feasible architectures/);
+  assert.match(prompt,/explicitly reconsider the previous recommendation/);
+  assert.match(prompt,/frameworks provide relevant principles/);
+});
