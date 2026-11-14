@@ -42,3 +42,14 @@ test('Follow-ups send signed prior model answers without browser storage',()=>{
  assert.match(source,/state\.continuityReceipts=\[\]/);
  assert.match(source,/server-signed snapshots of Gemini's prior answers/);
 });
+
+
+test('Private lab explicitly labels reasoning basis and does not imply every claim has a framework source',()=>{
+ assert.match(source,/function evidenceLabel\(type\)/);
+ assert.match(source,/framework-interpretation/);
+ assert.match(source,/scenario-inference/);
+ assert.match(source,/engineering-judgment/);
+ assert.match(source,/evidenceLabel\(primary\.basisType\)/);
+ assert.match(source,/No directly applicable catalog provision cited/);
+ assert.match(source,/option\.replace\(\/\^Option/);
+});
