@@ -36,7 +36,7 @@ test('native research mode is opt-in and uses Google Search with optional URL Co
  assert.deepEqual(search.tools,[{googleSearch:{}}]);
  assert.equal(search.generationConfig.responseMimeType,undefined);
  assert.match(search.systemInstruction.parts[0].text,/plain text research notes/);
- assert.match(search.systemInstruction.parts[0].text,/Search only if it materially helps/);
+ assert.match(search.systemInstruction.parts[0].text,/Search when the question needs external technical facts/);
  assert.match(search.contents[0].parts[0].text,/CODEOWNERS/);
  const url=buildNativeResearchRequest(base,'https://docs.github.com/en/get-started');
  assert.deepEqual(url.tools,[{googleSearch:{}},{urlContext:{}}]);
