@@ -46,6 +46,11 @@ ul{padding-left:23px;margin:8px 0}.citation{padding:10px 0;border-top:1px solid 
 <p class="small">Model-generated interpretation; facts, references, and implications require independent validation.</p>
 <div id="facts"></div>
 <div id="challenges"></div>
+<div class="section" id="assessment-section" aria-label="Risk and control assessment">
+  <h3>Risk → Expected control → Framework → Evidence → Assessment</h3>
+  <p class="small">Proposed control expectations for discussion, not evidence of implementation. Management must demonstrate the safeguard; this lab cannot verify it.</p>
+  <div id="assessments"></div>
+</div>
 <div id="unknowns"></div>
 <div class="section"><h3>Suggested framework references</h3><div id="citations"></div></div>
 </section>
@@ -82,7 +87,7 @@ function busy(value){
   el('continue').textContent=value?'Analyzing…':'Continue the challenge';
 }
 function render(data){
-  for(const id of ['facts','challenges','unknowns','citations'])clear(el(id));
+  for(const id of ['facts','challenges','assessments','unknowns','citations'])clear(el(id));
   title(el('facts'),'Facts, inferences and unknowns');
   for(const f of data.facts||[]){
     const box=add('div',el('facts'),'', 'card');
@@ -97,6 +102,20 @@ function render(data){
     if(ch.tests?.length){add('strong',box,'What to test');list(box,ch.tests)}
     if(ch.alternatives?.length){add('strong',box,'Alternatives');list(box,ch.alternatives)}
   }
+  if(data.assessments?.length){
+    for(const a of data.assessments){
+      const box=add('div',el('assessments'),'', 'card');
+      add('div',box,'RISK','tag');add('p',box,a.risk);
+      add('div',box,'EXPECTED CONTROL · PROPOSED','tag');add('p',box,a.expectedControl);
+      add('div',box,'FRAMEWORK BASIS · SUGGESTED RELEVANCE','tag');
+      const refs=(a.citationIds||[]).map(id=>(data.citations||[]).find(c=>c.provisionId===id)).filter(Boolean);
+      if(refs.length)list(box,refs.map(c=>c.sourceTitle+' — '+(c.provisionTitle||c.provisionId)+' ('+c.provisionId+')'));
+      else add('p',box,'No provision mapping established.');
+      add('div',box,'MANAGEMENT DEMONSTRATION · REQUESTED EVIDENCE','tag');list(box,a.demonstration||[]);
+      add('div',box,'ASSESSMENT','tag');
+      add('p',box,'Not assessed — implementation and effectiveness have not been verified.');
+    }
+  }else add('p',el('assessments'),'No structured assessment returned. Review the challenges and framework references; do not infer a control conclusion.','small');
   if(data.unknowns?.length){title(el('unknowns'),'Still unknown');list(el('unknowns'),data.unknowns)}
   for(const c of data.citations||[]){
     const box=add('div',el('citations'),'', 'citation');
