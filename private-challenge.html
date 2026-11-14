@@ -24,13 +24,20 @@ ul{padding-left:23px;margin:8px 0}.citation{padding:10px 0;border-top:1px solid 
 #result[hidden],#followup[hidden]{display:none}.section{margin-top:21px}.mono{font-family:ui-monospace,monospace;word-break:break-all}
 #remember-option{display:flex;align-items:center;gap:9px;margin-top:12px;font-size:14px}
 #remember-option input{width:auto;accent-color:var(--mint)}
+.decision-first{border-left:4px solid var(--mint);background:#173b45}
+.decision-first p{font-size:17px;line-height:1.6;margin:10px 0 0}
+.option-card{padding:14px;border:1px solid #3d6475;border-radius:11px;margin:10px 0;background:#123646}
+details.deep-dive{border:1px solid var(--line);border-radius:12px;padding:12px 15px;margin-top:16px}
+details.deep-dive summary{cursor:pointer;font-weight:750;color:var(--mint);padding:7px 0}
+details.deep-dive summary:focus-visible{outline:3px solid var(--mint);outline-offset:3px}
+#result[hidden],#followup[hidden]{display:none}
 </style>
 </head>
 <body><main>
 <nav><strong>AI-Enabled SDLC Risk &amp; Assurance Field Guide</strong><a href="./open-scenario.html">← Rule-based public lab</a></nav>
 <div class="eyebrow">Private prototype · Vercel Preview only</div>
 <h1>Challenge your software-delivery design.</h1>
-<p class="lead">Describe a fictional AI review, approval, or deployment workflow. Gemini will challenge assumptions, apply relevant framework provisions, and suggest tests.</p>
+<p class="lead">Describe a fictional AI review, approval, or deployment workflow. Gemini will compare the design with competing engineering approaches, challenge assumptions, and link relevant evidence and frameworks.</p>
 <div class="notice"><strong>Privacy and scope:</strong> Use fictional or publicly shareable scenarios only. Do not enter confidential company information, live PRs, credentials, internal diagrams, or personal data. Gemini free-tier requests may be used by Google to improve its services. This experience does not authorize changes or verify implemented controls.</div>
 <section class="panel" aria-labelledby="formtitle">
 <h2 id="formtitle">01 · Your scenario</h2>
@@ -48,11 +55,15 @@ ul{padding-left:23px;margin:8px 0}.citation{padding:10px 0;border-top:1px solid 
 <section id="result" class="panel" hidden aria-labelledby="resulttitle">
 <h2 id="resulttitle">02 · Gemini's design challenge</h2>
 <p class="small">Model-generated interpretation; facts, references, and implications require independent validation.</p>
+<div class="card decision-first" id="decision-summary" aria-live="polite"></div>
+<div id="approaches"></div>
+<details class="deep-dive" id="evidence-details"><summary>Evidence, framework references and technical questions</summary>
 <div id="approval-outcomes"></div>
 <div id="conclusions"></div>
 <div id="facts"></div>
 <div id="challenges"></div>
 <div id="unknowns"></div>
+</details>
 </section>
 <section class="panel" id="followup" hidden aria-labelledby="followtitle">
 <h2 id="followtitle">03 · Ask a follow-up</h2>
@@ -111,7 +122,21 @@ function renderCitation(parent,citation){
   }catch{}
 }
 function render(data){
-  for(const id of ['approval-outcomes','conclusions','facts','challenges','unknowns'])clear(el(id));
+  for(const id of ['decision-summary','approaches','approval-outcomes','conclusions','facts','challenges','unknowns'])clear(el(id));
+  const primary=data.conclusions?.[0];
+  if(primary){
+    title(el('decision-summary'),'Direct answer');
+    add('p',el('decision-summary'),primary.application);
+    if(primary.openQuestion)add('p',el('decision-summary'),'What could change this: '+primary.openQuestion,'small');
+  }
+  if(data.alternatives?.length){
+    title(el('approaches'),'Competing architectural options');
+    for(const [i,option] of data.alternatives.slice(0,3).entries()){
+      const card=add('div',el('approaches'),'','option-card');
+      add('strong',card,'Option '+(i+1));
+      add('p',card,option);
+    }
+  }
   if(data.approvalOutcomes?.length){
     const section=el('approval-outcomes');
     title(section,'What happened to each review');
@@ -126,7 +151,7 @@ function render(data){
     }
   }
   if(data.conclusions?.length){
-    title(el('conclusions'),'Conclusions and framework basis');
+    title(el('conclusions'),'Supporting reasoning and framework basis');
     for(const conclusion of data.conclusions){
       const box=add('div',el('conclusions'),'','card');
       add('strong',box,'Scenario basis');
@@ -156,6 +181,7 @@ function render(data){
     if(ch.alternatives?.length){add('strong',box,'Alternatives');list(box,ch.alternatives)}
   }
   if(data.unknowns?.length){title(el('unknowns'),'Still unknown');list(el('unknowns'),data.unknowns)}
+  el('evidence-details').open=false;
   el('result').hidden=false;el('followup').hidden=false;
   el('turncount').textContent=state.turns.length+' of 6 follow-up turns used';
   el('continue').disabled=state.turns.length>=6;
