@@ -157,3 +157,20 @@ test('native source notes, not model-authored links, feed the structured formatt
  assert.match(result.researchText,/CODEOWNERS assigns/);
  assert.equal(result.research.sources[0].url,'https://docs.github.com/en/repositories');
 });
+
+test('legacy Gemini 2.5 model 404 is clearly reported to the authenticated user',async t=>{
+ const key=process.env.GEMINI_API_KEY,token=process.env.CHALLENGE_API_TOKEN;
+ process.env.GEMINI_API_KEY='test-api-key';
+ process.env.CHALLENGE_API_TOKEN='test-private-token';
+ t.after(()=>{
+  if(key===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=key;
+  if(token===undefined)delete process.env.CHALLENGE_API_TOKEN;else process.env.CHALLENGE_API_TOKEN=token;
+ });
+ t.mock.method(console,'warn',()=>{});
+ t.mock.method(globalThis,'fetch',async()=>({ok:false,status:404}));
+ const res=mockRes();
+ await handler({method:'POST',headers:{authorization:'Bearer test-private-token'},body:{scenarioText:scenario,researchMode:'discover'}},res);
+ assert.equal(res.statusCode,502);
+ assert.match(res.body.error,/model is unavailable.*\(404\)/);
+ assert.doesNotMatch(JSON.stringify(res.body),/test-api-key/);
+});
