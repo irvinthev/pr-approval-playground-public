@@ -21,6 +21,13 @@ function validateChallenge(ch){
  if(!question)return null;
  return {question,reason:maxLength(ch.reason,650),tests:strings(ch.tests,5,350),alternatives:strings(ch.alternatives,4,350)};
 }
+function validateAssessment(item){
+ if(!isPlainObject(item))return null;
+ const risk=maxLength(item.risk,350),expectedControl=maxLength(item.expectedControl,450);
+ if(!risk||!expectedControl)return null;
+ const refs=Array.isArray(item.citationIds)?item.citationIds.slice(0,6):[];
+ return {risk,expectedControl,demonstration:strings(item.demonstration,5,240),citationIds:refs};
+}
 function citeProvision(id){
  const p=knownProvisions.get(id),s=p&&knownSources.get(p.sourceId);
  if(!p||!s||!/^https:\/\//.test(p.url||s.url||''))return null;
@@ -36,7 +43,15 @@ export function validateAgentResponse(input,{scenarioText}={}){
  const facts=Array.isArray(input.facts)?input.facts.slice(0,12).map(validateFact).filter(Boolean):[];
  const challenges=Array.isArray(input.challenges)?input.challenges.slice(0,6).map(validateChallenge).filter(Boolean):[];
  const ids=Array.isArray(input.citationIds)?input.citationIds.slice(0,20):[];
+ const assessments=Array.isArray(input.assessments)?input.assessments.slice(0,3).map(validateAssessment).filter(Boolean):[];
+ if(input.assessments!==undefined && (!Array.isArray(input.assessments)||assessments.length===0))errors.push('Malformed control assessment');
  const citations=[],seen=new Set();
+ for(const item of assessments){
+   for(const id of item.citationIds){
+     if(typeof id!=='string'||!knownProvisions.has(id))errors.push('Unsupported assessment citation: '+maxLength(id,80));
+     else if(!ids.includes(id))errors.push('Assessment citation not in validated response references: '+id);
+   }
+ }
  for(const id of ids){
    if(typeof id!=='string'){errors.push('Nonstring citation ID');continue;}
    const citation=citeProvision(id);
@@ -53,6 +68,7 @@ export function validateAgentResponse(input,{scenarioText}={}){
    catalogAsOf:sourceCatalog.asOf,
    facts,
    challenges,
+   assessments:assessments.map(a=>({...a,sourceStatus:'suggested-relevance-only',evidenceStatus:'not-demonstrated',assessmentStatus:'not-assessed'})),
    citations,
    unknowns:strings(input.unknowns,12,400),
    alternatives:strings(input.alternatives,6,400),
