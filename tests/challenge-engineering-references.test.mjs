@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
-import handler,{buildModelRequest,validateRequest,buildContractRepairRequest,contractFailureCodes} from '../api/challenge.js';
+import handler,{buildModelRequest,validateRequest,buildContractRepairRequest,contractFailureCodes,invalidSourceIds} from '../api/challenge.js';
 const require=createRequire(import.meta.url);
 const {references,selectEngineeringReferences,referencePrompt}=require('../lab/engineering-references.cjs');
 const scenario='Can CODEOWNERS automatically approve a pull request using a GitHub App?';
@@ -160,4 +160,56 @@ test('structural diagnostics do not expose model or scenario content',()=>{
  assert.match(repair.messages[1].content,/APPROVAL_OUTCOMES/);
  assert.deepEqual(repair.messages.map(x=>x.role),['system','user']);
  assert.ok(repair.messages[1].content.length<original.messages[1].content.length+9000);
+});
+
+
+test('misplaced selected technical source is repaired into referenceIds without claiming framework authority',async t=>{
+ const token=process.env.CHALLENGE_API_TOKEN,key=process.env.GEMINI_API_KEY;
+ process.env.CHALLENGE_API_TOKEN='private-test-token';
+ process.env.GEMINI_API_KEY='provider-test-key';
+ t.after(()=>{
+  if(token===undefined)delete process.env.CHALLENGE_API_TOKEN;else process.env.CHALLENGE_API_TOKEN=token;
+  if(key===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=key;
+ });
+ const misplaced={...response,
+  citationIds:['GH-CODEOWNERS'],
+  conclusions:[{...response.conclusions[0],citationIds:['GH-CODEOWNERS'],basisType:'framework-interpretation'}]
+ };
+ assert.deepEqual(invalidSourceIds(misplaced,[{id:'GH-CODEOWNERS'}]).misplaced,['GH-CODEOWNERS','GH-CODEOWNERS']);
+ let calls=0;
+ t.mock.method(globalThis,'fetch',async (_url,opts)=>{
+  calls++;
+  if(calls===2)assert.match(JSON.parse(opts.body).messages[1].content,/technical source IDs only into referenceIds/);
+  return {ok:true,json:async()=>({choices:[{message:{content:JSON.stringify(calls===1?misplaced:response)}}]})};
+ });
+ const res=mockRes();
+ await handler({method:'POST',headers:{authorization:'Bearer private-test-token'},body:{scenarioText:scenario}},res);
+ assert.equal(res.statusCode,200,JSON.stringify(res.body));
+ assert.equal(res.body.responseRepaired,true);
+ assert.equal(res.body.citations.length,0);
+ assert.equal(calls,2);
+});
+test('invented framework or technical source IDs fail without retry',async t=>{
+ const token=process.env.CHALLENGE_API_TOKEN,key=process.env.GEMINI_API_KEY;
+ process.env.CHALLENGE_API_TOKEN='private-test-token';
+ process.env.GEMINI_API_KEY='provider-test-key';
+ t.after(()=>{
+  if(token===undefined)delete process.env.CHALLENGE_API_TOKEN;else process.env.CHALLENGE_API_TOKEN=token;
+  if(key===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=key;
+ });
+ const invented={...response,
+  citationIds:['GH-IMAGINARY'],
+  conclusions:[{...response.conclusions[0],citationIds:['GH-IMAGINARY']}]};
+ assert.deepEqual(invalidSourceIds(invented,[{id:'GH-CODEOWNERS'}]).invented,['GH-IMAGINARY','GH-IMAGINARY']);
+ let calls=0;
+ t.mock.method(globalThis,'fetch',async()=>{
+  calls++;
+  return {ok:true,json:async()=>({choices:[{message:{content:JSON.stringify(invented)}}]})};
+ });
+ t.mock.method(console,'warn',()=>{});
+ const res=mockRes();
+ await handler({method:'POST',headers:{authorization:'Bearer private-test-token'},body:{scenarioText:scenario}},res);
+ assert.equal(res.statusCode,502);
+ assert.match(res.body.error,/UNRECOGNIZED_CITATION/);
+ assert.equal(calls,1);
 });
