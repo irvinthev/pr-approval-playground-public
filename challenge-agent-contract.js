@@ -26,7 +26,9 @@ function validateAssessment(item){
  const risk=maxLength(item.risk,350),expectedControl=maxLength(item.expectedControl,450);
  if(!risk||!expectedControl)return null;
  const refs=Array.isArray(item.citationIds)?item.citationIds.slice(0,6):[];
- return {risk,expectedControl,demonstration:strings(item.demonstration,5,240),citationIds:refs};
+ // A quoted management/design statement is only treated as scenario-stated if it occurs verbatim.
+ const scenarioExcerpt=maxLength(item.scenarioExcerpt,320);
+ return {risk,expectedControl,demonstration:strings(item.demonstration,5,240),citationIds:refs,scenarioExcerpt};
 }
 function citeProvision(id){
  const p=knownProvisions.get(id),s=p&&knownSources.get(p.sourceId);
@@ -46,6 +48,10 @@ export function validateAgentResponse(input,{scenarioText}={}){
  const assessments=Array.isArray(input.assessments)?input.assessments.slice(0,3).map(validateAssessment).filter(Boolean):[];
  if(input.assessments!==undefined && (!Array.isArray(input.assessments)||assessments.length===0))errors.push('Malformed control assessment');
  const citations=[],seen=new Set();
+ for(const item of assessments){
+   if(item.scenarioExcerpt && !scenario.toLowerCase().includes(item.scenarioExcerpt.toLowerCase()))
+     errors.push('Design commitment not present verbatim in scenario');
+ }
  for(const item of assessments){
    for(const id of item.citationIds){
      if(typeof id!=='string'||!knownProvisions.has(id))errors.push('Unsupported assessment citation: '+maxLength(id,80));
@@ -68,7 +74,11 @@ export function validateAgentResponse(input,{scenarioText}={}){
    catalogAsOf:sourceCatalog.asOf,
    facts,
    challenges,
-   assessments:assessments.map(a=>({...a,sourceStatus:'suggested-relevance-only',evidenceStatus:'not-demonstrated',assessmentStatus:'not-assessed'})),
+   assessments:assessments.map(a=>({...a,
+     expectedControlOrigin:'assessment-derived-recommendation',
+     frameworkBasisStatus:'catalog-record-validated; applicability-unverified',
+     scenarioClaimStatus:a.scenarioExcerpt?'verbatim-scenario-claim-unverified':'no-management-design-commitment-established',
+     evidenceStatus:'not-demonstrated',assessmentStatus:'not-assessed'})),
    citations,
    unknowns:strings(input.unknowns,12,400),
    alternatives:strings(input.alternatives,6,400),
