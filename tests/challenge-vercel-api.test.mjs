@@ -64,4 +64,5 @@ test('model requests a concise assessment with source-linked control criteria',(
  const r=buildModelRequest({scenarioText:'Agent approval',turns:[]});
  assert.match(r.messages[0].content,/assessments: 1-2 concise objects/);
  assert.match(r.messages[0].content,/demonstration/);
+ assert.match(r.messages[0].content,/verbatim quotation/);
 });
