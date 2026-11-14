@@ -4,6 +4,8 @@ on:
     paths:
       - 'api/challenge.js'
       - 'lab/challenge-turn-receipts.cjs'
+      - 'lab/engineering-references.cjs'
+      - 'lab/challenge-grounding.js'
       - 'private-challenge.html'
       - 'challenge-agent-contract.js'
       - 'tests/challenge-*.test.mjs'
