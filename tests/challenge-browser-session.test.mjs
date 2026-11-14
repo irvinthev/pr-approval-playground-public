@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { createRequire } from 'node:module';
 import session from '../api/challenge-session.js';
 import challenge from '../api/challenge.js';
 
@@ -69,4 +70,11 @@ test('remembered browser works across requests, expires, and remains Preview-onl
   process.env.VERCEL_ENV='production';
   assert.equal(call('POST',access).code,404);
   assert.equal(await challengeStatus({...browser,cookie}),401);
+});
+
+test('the session helper loads from a CommonJS Vercel function bundle', ()=>{
+  const require=createRequire(new URL('../api/challenge.js',import.meta.url));
+  const helper=require('../lab/challenge-browser-session.cjs');
+  assert.equal(typeof helper.hasBrowserSession,'function');
+  assert.equal(typeof helper.hasChallengeToken,'function');
 });

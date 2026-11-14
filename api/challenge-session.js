@@ -5,7 +5,7 @@ import {
   hasBrowserSession,
   hasChallengeToken,
   isBrowserRequest
-} from '../lab/challenge-browser-session.js';
+} from '../lab/challenge-browser-session.cjs';
 
 export default function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
