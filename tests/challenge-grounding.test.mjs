@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import handler,{validateRequest,buildModelRequest} from '../api/challenge.js';
-import {validateReferenceUrl,buildNativeResearchRequest,readNativeResearchResponse} from '../lab/challenge-grounding.js';
+import {validateReferenceUrl,buildNativeResearchRequest,readNativeResearchResponse} from '../lab/challenge-grounding.cjs';
 
 const scenario='A fictional team uses CODEOWNERS for low-risk PR reviews.';
 const modelOutput={
