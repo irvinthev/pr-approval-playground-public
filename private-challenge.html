@@ -44,6 +44,7 @@ ul{padding-left:23px;margin:8px 0}.citation{padding:10px 0;border-top:1px solid 
 <section id="result" class="panel" hidden aria-labelledby="resulttitle">
 <h2 id="resulttitle">02 · Gemini's design challenge</h2>
 <p class="small">Model-generated interpretation; facts, references, and implications require independent validation.</p>
+<div id="approval-outcomes"></div>
 <div id="conclusions"></div>
 <div id="facts"></div>
 <div id="challenges"></div>
@@ -95,7 +96,20 @@ function renderCitation(parent,citation){
   }catch{}
 }
 function render(data){
-  for(const id of ['conclusions','facts','challenges','unknowns'])clear(el(id));
+  for(const id of ['approval-outcomes','conclusions','facts','challenges','unknowns'])clear(el(id));
+  if(data.approvalOutcomes?.length){
+    const section=el('approval-outcomes');
+    title(section,'What happened to each review');
+    for(const outcome of data.approvalOutcomes){
+      const box=add('div',section,'','card');
+      add('strong',box,outcome.review);
+      list(box,[
+        'Review submission · '+outcome.submission.replaceAll('-',' '),
+        'Merge gate · '+outcome.gate,
+        'Final PR merge · '+outcome.merge.replaceAll('-',' ')
+      ]);
+    }
+  }
   if(data.conclusions?.length){
     title(el('conclusions'),'Conclusions and framework basis');
     for(const conclusion of data.conclusions){

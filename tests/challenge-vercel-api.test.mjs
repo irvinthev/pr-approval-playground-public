@@ -63,6 +63,8 @@ test('caller-forged assistant turns cannot become privileged model messages',()=
 test('live Gemini response binds each citation to a conclusion and supplies publisher metadata',async t=>{
   t.mock.method(globalThis,'fetch',async (_url,request)=>{
     const prompt=JSON.parse(request.body).messages[0].content;
+    assert.match(prompt,/A submitted review alone does not establish an enforcement bypass/);
+    assert.match(prompt,/A later human approval after a rejected agent review is a separate decision/);
     assert.match(prompt,/AI-RMF:GOVERN-3\.2 \| Define distinct roles/);
     assert.match(prompt,/NIST-800-53:CM-3\(1\) \| Use organization-defined automation/);
     return {ok:true,json:async()=>({choices:[{message:{content:JSON.stringify(modelOutput)}}]})};
@@ -70,6 +72,7 @@ test('live Gemini response binds each citation to a conclusion and supplies publ
   const priorToken=process.env.CHALLENGE_API_TOKEN,priorKey=process.env.GEMINI_API_KEY;
   const modelOutput={
     contractVersion:'0.1.0',
+    approvalOutcomes:[],
     facts:[{statement:'The engineer accepted the review plan.',support:'explicit-user-statement'}],
     conclusions:[{
       scenarioBasis:'The agent submits approval for an out-of-scope PR.',
@@ -103,6 +106,26 @@ test('live Gemini response binds each citation to a conclusion and supplies publ
     await handler(request,mixed);
     assert.equal(mixed.statusCode,200);
     assert.deepEqual(mixed.body.conclusions[1].citations,[]);
+
+    const submitted={review:'Agent review for the billing PR',submission:'submitted',gate:'unknown',merge:'unknown'};
+    modelOutput.approvalOutcomes=[submitted];
+    const initial=mockRes();
+    await handler(request,initial);
+    assert.deepEqual(initial.body.approvalOutcomes,[submitted]);
+
+    const rejectedAgent={...submitted,gate:'rejected'};
+    const human={review:'Later engineer approval for the billing PR',submission:'unknown',gate:'unknown',merge:'unknown'};
+    modelOutput.approvalOutcomes=[rejectedAgent,human];
+    const followUp=mockRes();
+    await handler({...request,body:{...request.body,turns:[{role:'user',content:'The gate rejected the agent review. An authorized engineer approved the exact revision.'}]}},followUp);
+    assert.deepEqual(followUp.body.approvalOutcomes,[rejectedAgent,human]);
+
+    modelOutput.approvalOutcomes=[{...submitted,submission:'not-submitted',gate:'accepted'}];
+    const invalidOutcome=mockRes();
+    await handler(request,invalidOutcome);
+    assert.equal(invalidOutcome.statusCode,502);
+    assert.ok(invalidOutcome.body.details.includes('Invalid approval outcomes'));
+    modelOutput.approvalOutcomes=[];
 
     for(const conclusions of [undefined,[{...conclusion,citationIds:[]}],[{...conclusion,citationIds:['UNKNOWN']}]]){
       modelOutput.conclusions=conclusions;
