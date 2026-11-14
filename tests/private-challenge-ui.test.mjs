@@ -22,3 +22,14 @@ test('Model response rendered as text, citations require https and new session c
  assert.match(source,/el\('token'\)\.value=''/);
  assert.match(source,/state\.scenario!==scenario/);
 });
+
+test('Private lab surfaces the direct answer and alternatives before expandable framework evidence',()=>{
+ const summary=source.indexOf('id="decision-summary"');
+ const options=source.indexOf('id="approaches"');
+ const details=source.indexOf('id="evidence-details"');
+ assert.ok(summary>=0 && options>summary && details>options);
+ assert.match(source,/<details class="deep-dive"/);
+ assert.match(source,/primary\.application/);
+ assert.match(source,/data\.alternatives\.slice\(0,3\)/);
+ assert.match(source,/el\('evidence-details'\)\.open=false/);
+});
