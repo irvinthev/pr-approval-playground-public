@@ -2,6 +2,7 @@
 // No database or external authority over code changes.
 import { hasBrowserSession, hasChallengeToken } from '../lab/challenge-browser-session.cjs';
 import { issueReceipt, verifiedHistory } from '../lab/challenge-turn-receipts.cjs';
+import { validateReferenceUrl, buildNativeResearchRequest, readNativeResearchResponse } from '../lab/challenge-grounding.js';
 import { sourceCatalog } from '../framework-source-catalog.js';
 import { AGENT_CONTRACT_VERSION, validateAgentResponse } from '../challenge-agent-contract.js';
 
@@ -31,9 +32,14 @@ export function validateRequest(body){
   // A caller may replay signed model responses, but cannot invent or edit them.
   if(receipts.length && (!turns.length || turns[turns.length-1]?.role!=='user'))
     return {error:'A follow-up question is required with previous answers'};
+  const researchMode=body.researchMode===undefined?'catalog':body.researchMode;
+  if(researchMode!=='catalog'&&researchMode!=='discover')return {error:'Invalid research mode'};
+  const reference=validateReferenceUrl(body.referenceUrl);
+  if(reference.error)return {error:reference.error};
+  if(reference.url && researchMode!=='discover')return {error:'Enable research to investigate the reference URL'};
   const history=verifiedHistory(receipts,body.scenarioText.trim());
   if(!history)return {error:'Previous answer history is invalid or expired; start a new challenge'};
-  return {scenarioText:body.scenarioText.trim(),turns:turns.map(t=>({role:t.role,content:t.content})),history};
+  return {scenarioText:body.scenarioText.trim(),turns:turns.map(t=>({role:t.role,content:t.content})),history,researchMode,referenceUrl:reference.url};
 }
 export function buildModelRequest(input){
   const provisions=sourceCatalog.provisions.map(p=>
@@ -68,7 +74,7 @@ export function buildModelRequest(input){
     'References are OPTIONAL. If no catalog provision directly contributes to an answer, return citationIds:[] at both the conclusion and top level. Never search for an irrelevant citation merely to fill a requirement.',
     'For each conclusion set basisType accurately: framework-interpretation means a specific cited provision provides relevant guidance (and requires at least one citation); scenario-inference means a conditional inference from the supplied facts or unknowns; engineering-judgment means your architecture, economic, or tradeoff reasoning. Framework references do not validate deployment facts.',
     'Limit each conclusion to at most three directly relevant catalog IDs. Use no new IDs or links invented by the model. Always distinguish product behavior requiring official technical documentation from assumptions: the catalog is not a live technical-doc lookup.',
-    'Use only the source basis provided below. Do not present a design choice as a framework requirement or infer what an organization has implemented.',
+    'Use only source basis provided in the scenario and catalog unless optional research is explicitly enabled. Do not present a design choice as a framework requirement or infer what an organization has implemented.',
     'At least one fact and one challenge. Zero citations is acceptable. Do not include scenarioDigest.',
     'Catalog provisions (ID | source basis | limits):\n'+provisions,
     'No secrets, corporate internal data, personal information or real pull requests should be entered.'
@@ -105,20 +111,37 @@ export default async function handler(req,res){
   const controller=new AbortController();
   const timeout=setTimeout(()=>controller.abort(),MODEL_TIMEOUT_MS);
   try{
-    const response=await fetch(MODEL_URL,{
-      method:'POST',signal:controller.signal,
-      headers:{Authorization:'Bearer '+process.env.GEMINI_API_KEY,'Content-Type':'application/json'},
-      body:JSON.stringify(buildModelRequest(input))
-    });
-    if(!response.ok)return json(res,502,{error:'Model provider unavailable'});
-    const envelope=await response.json();
-    const raw=envelope?.choices?.[0]?.message?.content;
-    let parsed;
-    try{parsed=JSON.parse(raw)}catch{return json(res,502,{error:'Model returned invalid JSON'})}
+    let parsed,research=null;
+    const modelRequest=buildModelRequest(input);
+    if(input.researchMode==='discover'){
+      // Native generateContent supports Google Search and optional URL context.
+      // No client-provided source link is accepted as verified evidence.
+      const nativeUrl='https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(modelRequest.model)+':generateContent';
+      const response=await fetch(nativeUrl,{
+        method:'POST',signal:controller.signal,
+        headers:{'x-goog-api-key':process.env.GEMINI_API_KEY,'Content-Type':'application/json'},
+        body:JSON.stringify(buildNativeResearchRequest(modelRequest,input.referenceUrl))
+      });
+      if(!response.ok)return json(res,502,{error:'Optional live research is unavailable. Switch off research to use the existing catalog.'});
+      const researched=readNativeResearchResponse(await response.json());
+      if(researched.error)return json(res,502,{error:researched.error});
+      parsed=researched.parsed;
+      research=researched.research;
+    }else{
+      const response=await fetch(MODEL_URL,{
+        method:'POST',signal:controller.signal,
+        headers:{Authorization:'Bearer '+process.env.GEMINI_API_KEY,'Content-Type':'application/json'},
+        body:JSON.stringify(modelRequest)
+      });
+      if(!response.ok)return json(res,502,{error:'Model provider unavailable'});
+      const envelope=await response.json();
+      try{parsed=JSON.parse(envelope?.choices?.[0]?.message?.content)}
+      catch{return json(res,502,{error:'Model returned invalid JSON'})}
+    }
     const checked=validateAgentResponse(parsed,{scenarioText:input.scenarioText,requireGrounding:true});
     if(!checked.ok)return json(res,502,{error:'Model output failed contract validation',details:checked.errors});
     const continuityReceipt=issueReceipt(checked.data,input.scenarioText);
-    return json(res,200,{...checked.data,continuityReceipt,turnsUsed:input.turns.length,mode:'live-model'});
+    return json(res,200,{...checked.data,research,continuityReceipt,turnsUsed:input.turns.length,mode:'live-model'});
   }catch{
     if(controller.signal.aborted){
       console.warn('Challenge Lab: Gemini response timed out.');
