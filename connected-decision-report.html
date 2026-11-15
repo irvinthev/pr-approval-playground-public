@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a1624">
+<meta name="description" content="Interactive, fictional Challenge Lab assessment report: two layouts, three connected professional perspectives.">
+<title>Challenge Lab · Connected Decision Report Prototype</title>
+<link rel="stylesheet" href="./connected-decision-report.css">
+<script type="module" src="./connected-decision-report.mjs"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to report</a>
+<div class="shell">
+  <aside class="rail" aria-label="Prototype navigation">
+    <div class="brand">
+      <span class="brand-symbol" aria-hidden="true">◇</span>
+      <div><strong>Challenge Lab</strong><small>Product experiment</small></div>
+    </div>
+    <div class="rail-section">
+      <span class="rail-label">Design comparison</span>
+      <span class="rail-current"><span class="rail-dot" aria-hidden="true"></span> Final report</span>
+      <span class="rail-secondary">Architecture · Risks · Evidence</span>
+    </div>
+    <p class="rail-foot">One analysis.<br>Three distinct perspectives.<br>One connected outcome.</p>
+  </aside>
+
+  <main id="main" class="content">
+    <header class="topbar">
+      <div class="crumb">AI-Enabled SDLC <span>/</span> Challenge Lab <span>/</span> Report design</div>
+      <span class="demo-tag"><span aria-hidden="true">●</span> Fictional case · UI prototype</span>
+    </header>
+
+    <div class="intro">
+      <div class="eyebrow">REPORT DESIGN EXPLORATION · A/B</div>
+      <h1>Make the analysis <em>useful.</em></h1>
+      <p>The same technical scenario, presented two ways. Explore which experience helps an engineer act, GRC determine risk disposition, and IA reach an independent position.</p>
+    </div>
+
+    <section class="switcher" aria-label="Compare report layouts">
+      <div>
+        <span class="section-kicker">Choose a layout</span>
+        <h2 id="layout-title">A · Executive-first report</h2>
+        <p id="layout-description">Start with the recommended direction. Explore the professional perspective you need.</p>
+      </div>
+      <div class="switch-buttons" role="group" aria-label="Report layout">
+        <button type="button" class="layout-choice" data-layout="executive" aria-pressed="true"><span class="choice-letter">A</span><span>Executive-first</span></button>
+        <button type="button" class="layout-choice" data-layout="workspace" aria-pressed="false"><span class="choice-letter">B</span><span>Decision workspace</span></button>
+      </div>
+    </section>
+
+    <section class="case-context" aria-labelledby="case-heading">
+      <div class="case-top">
+        <div><span class="section-kicker">THE PROPOSAL</span><h2 id="case-heading">Agent-executed human PR approvals</h2></div>
+        <span class="context-pill">Human decides · Agent submits</span>
+      </div>
+      <p>An engineer reviews three stacked GitHub pull requests and explicitly decides to approve each. An agent submits the reviews through GitHub tools to reduce repetitive work. One PR is rebased after the engineer's decision. The agent's credentials are broader than the intended action, and instruction-to-action traceability has not been demonstrated.</p>
+      <div class="context-footer">
+        <div><small>Engineering objective</small><strong>Reduce review-submission friction</strong></div>
+        <div><small>Central tension</small><strong>Execution speed vs. authorization fidelity</strong></div>
+        <div><small>Assessment basis</small><strong>Fictional scenario + engineering judgment</strong></div>
+      </div>
+    </section>
+
+    <section id="executive-layout" class="layout-panel" aria-label="Executive-first report">
+      <div class="decision-hero">
+        <div class="hero-copy">
+          <span class="eyebrow">RECOMMENDED DIRECTION</span>
+          <div class="hero-title-row"><h2>Conditionally pursue.</h2><span class="hero-status">Narrow the design</span></div>
+          <p>Explore a constrained approval executor rather than giving a general coding agent broadly reusable approval authority. Preserve the human decision while making revision scope and execution boundaries explicit.</p>
+        </div>
+        <div class="hero-delta">
+          <span class="hero-delta-label">What the challenge changed</span>
+          <p>From <strong>“Can an agent click Approve?”</strong> to <strong>“Can it execute only the exact approval the engineer authorized?”</strong></p>
+        </div>
+      </div>
+
+      <div class="section-heading">
+        <div><span class="section-kicker">AUDIENCE LENS</span><h2>What should each function consider?</h2></div>
+        <span class="hint">Select a perspective</span>
+      </div>
+
+      <div class="perspective-tabs" role="tablist" aria-label="Assessment perspective">
+        <button id="tab-engineering" type="button" role="tab" aria-controls="lens-panel" aria-selected="true" tabindex="0" data-lens="engineering"><span class="tab-icon" aria-hidden="true">⌘</span><strong>Engineering advisory</strong><small>Architecture &amp; operations</small></button>
+        <button id="tab-risk" type="button" role="tab" aria-controls="lens-panel" aria-selected="false" tabindex="-1" data-lens="risk"><span class="tab-icon" aria-hidden="true">◇</span><strong>Risk disposition</strong><small>Treatment &amp; acceptance</small></button>
+        <button id="tab-assurance" type="button" role="tab" aria-controls="lens-panel" aria-selected="false" tabindex="-1" data-lens="assurance"><span class="tab-icon" aria-hidden="true">◎</span><strong>Independent assurance</strong><small>Reliance &amp; evidence</small></button>
+      </div>
+
+      <article id="lens-panel" class="lens-detail" role="tabpanel" aria-labelledby="tab-engineering" tabindex="0">
+        <div class="lens-header">
+          <div><span id="lens-kicker" class="section-kicker"></span><h3 id="lens-headline"></h3></div>
+          <span id="lens-outcome" class="lens-badge"></span>
+        </div>
+        <p id="lens-summary" class="lens-summary"></p>
+        <div class="lens-columns">
+          <div class="lens-column">
+            <h4 id="lens-detail-title">What deserves attention</h4>
+            <ul id="lens-considerations" class="thought-list"></ul>
+          </div>
+          <div class="lens-column">
+            <h4>Options and tradeoffs</h4>
+            <div id="lens-options" class="option-stack"></div>
+          </div>
+        </div>
+        <div class="next-move">
+          <span class="next-arrow" aria-hidden="true">↗</span>
+          <div><h4 id="lens-next-label">Next engineering move</h4><p id="lens-next"></p></div>
+        </div>
+        <div class="pivot"><span>What would change this view?</span><p id="lens-pivot"></p></div>
+      </article>
+    </section>
+
+    <section id="workspace-layout" class="layout-panel" aria-label="Decision workspace" hidden>
+      <div class="workspace-heading">
+        <div><span class="section-kicker">SHARED SYNTHESIS</span><h2>One architecture. Three distinct decisions.</h2><p>See the connected implications together, rather than navigating between professional perspectives.</p></div>
+        <span class="workspace-status">Conditional direction</span>
+      </div>
+      <div id="workspace-cards" class="workspace-grid" aria-label="Engineering, risk and assurance perspectives"></div>
+      <div class="workspace-bottom">
+        <div class="workspace-synthesis">
+          <span class="section-kicker">THE CROSS-FUNCTIONAL TAKEAWAY</span>
+          <p><strong>Engineering:</strong> Compare a narrow execution tool with existing agent tooling. <strong>Risk:</strong> Resolve whether broad approval authority creates material residual exposure. <strong>IA:</strong> Determine what the recorded approval actually evidences.</p>
+        </div>
+        <div class="workspace-recommendation">
+          <span class="section-kicker">NEXT SHARED MILESTONE</span>
+          <p>Use one sandbox PR stack to demonstrate revision-bound authorization, permission limits, and reconstructable actions; revisit each perspective from those results.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="technical-basis" class="technical-basis" aria-labelledby="basis-heading">
+      <div class="section-heading">
+        <div><span class="section-kicker">COMMON FOUNDATION</span><h2 id="basis-heading">What do we know about the architecture?</h2></div>
+        <span class="hint">Shared across both layouts</span>
+      </div>
+      <div class="evidence-grid">
+        <div class="evidence-item"><span class="evidence-mark reported">◆</span><div><strong>Human decision is described</strong><small>Scenario statement · not independently demonstrated</small></div></div>
+        <div class="evidence-item"><span class="evidence-mark unknown">?</span><div><strong>Revision binding</strong><small>Not established in the fictional case</small></div></div>
+        <div class="evidence-item"><span class="evidence-mark unknown">?</span><div><strong>Effective agent permission boundary</strong><small>Broad credentials are described; enforced limits unknown</small></div></div>
+        <div class="evidence-item"><span class="evidence-mark unknown">?</span><div><strong>Decision-to-action reconciliation</strong><small>No demonstrated correlation of instruction, action, and GitHub review</small></div></div>
+      </div>
+      <details class="depth">
+        <summary><span><strong>Explore the architectural reasoning</strong><small>Failure sequence · Competing explanation · Stronger alternative</small></span><span class="chevron" aria-hidden="true">⌄</span></summary>
+        <div class="depth-grid">
+          <div><h3>Realistic failure sequence</h3><p>The engineer approves revision A. A later rebase produces revision B. An agent with broad credentials submits approval without confirming fresh authorization for B. GitHub records the action, but that record alone doesn't establish the engineer's judgment on B.</p></div>
+          <div><h3>Strongest counterargument</h3><p>Existing GitHub branch rules may already invalidate stale reviews or block a merge after a push. If those rules are consistently enforced, a simpler execution workflow may be sufficient.</p></div>
+          <div><h3>Alternative worth testing</h3><p>Investigate whether a small batch submitter—or improved native GitHub routing—solves the actual friction with lower operational complexity than a general agent.</p></div>
+        </div>
+      </details>
+      <div class="model-note">Static fictional example. This page compares output design only; it does not call Gemini or change the Challenge Lab's assessment logic.</div>
+    </section>
+    <footer class="footer"><span>CHALLENGE LAB · REPORT PROTOTYPE</span><span>Design review only · No changes to approval workflows</span></footer>
+  </main>
+</div>
+</body>
+</html>
