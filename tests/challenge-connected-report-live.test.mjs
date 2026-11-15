@@ -37,6 +37,7 @@ test('unrelated engineering proposal does not receive GitHub-specific reconcilia
   const p=projectConnectedReport(response,'A worker rotates cloud credentials to reduce manual toil.');
   assert.equal(p.reconciliation,null);
   assert.equal(isHumanDelegatedApprovalScenario('An AI agent autonomously approves code'),false);
+  assert.equal(isHumanDelegatedApprovalScenario('For a subset of low-risk pull requests, an engineer reviews a PR Plan that defines acceptance criteria. An agent evaluates the final change against the plan and decides whether to submit an approval.'),false);
 });
 test('risk and assurance do not invent disposition, acceptance, verification, or evidence',()=>{
   const p=projectConnectedReport(response,scenario);
