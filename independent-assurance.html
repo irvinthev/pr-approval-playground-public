@@ -348,16 +348,30 @@ details.field-deep-dive>section{margin:0 14px 16px}
 
 </div></details>
 
-<section id="risk-assessment-downloads" aria-labelledby="risk-assessment-downloads-title" style="margin:24px 0;padding:22px;border:1px solid #497481;border-radius:14px;background:#102e3d;scroll-margin-top:20px">
-  <span class="simple-eyebrow">END OF GUIDE / APPLY THE METHOD</span>
-  <h2 id="risk-assessment-downloads-title">One worked decision. Two reusable worksheets.</h2>
-  <p>Finish with a conditional engineering recommendation, the failure conditions that matter, the strongest competing explanation and the evidence that could change the decision. Then use the same detailed fields in a fictional completed score worksheet or a blank template.</p>
-  <div class="simple-actions">
-    <a href="./risk-assessment-example.html">Read / print one-page assessment →</a>
-    <a href="./downloads/AI_SDLC_Risk_Scoring_Completed_Fictional.csv" download>Completed fictional risk worksheet (CSV) ↓</a>
-    <a href="./downloads/AI_SDLC_Risk_Scoring_Blank.csv" download>Blank reusable risk template (CSV) ↓</a>
+<section id="risk-assessment-downloads" aria-labelledby="risk-assessment-downloads-title" style="margin:24px 0;padding:clamp(16px,3vw,24px);border:1px solid #497481;border-radius:14px;background:#102e3d;scroll-margin-top:20px">
+  <span class="simple-eyebrow">END OF GUIDE · ONE SHARED ASSESSMENT</span>
+  <h2 id="risk-assessment-downloads-title">One worked decision. Three perspectives. Optional downloads.</h2>
+  <p><strong>Fictional stacked-PR case:</strong> An engineer intends to authorize a specific revision, and an agent submits the GitHub review. The agent's technical authority remains unestablished.</p>
+  <div style="border:1px solid #75a89c;border-radius:11px;background:#153e40;padding:18px;margin:16px 0">
+    <span class="simple-eyebrow">CONDITIONAL RECOMMENDATION · NOT GO-LIVE AUTHORIZATION</span>
+    <h3 style="color:#ecf9f5;margin:8px 0">Experiment with revision and identity enforcement first; do not count agent-submitted approval as qualifying production review yet.</h3>
+    <p><strong>Decision gate:</strong> Can an instruction for commit A authorize a qualifying approval or merge of commit B without a fresh human decision? Test the effective identity, permissions, rules and bypass paths—not just the application log.</p>
+    <p style="color:#f2d39a"><strong>Evidence:</strong> No implementation evidence was provided for the four proposed safeguards. This does not establish that they are absent.</p>
   </div>
-  <p class="simple-note">Fictional scores are illustrative inputs, not evidence-supported risk rankings. Every safeguard remains unverified and no residual risk or authority is inferred from the numbers.</p>
+  <p><strong>Compare alternatives:</strong> Current human approval can be repetitive or superficial; AI-prepared findings with native human approval may remove toil with less execution complexity; agent-submitted approvals may save more steps but introduce additional authorization and reconciliation dependencies.</p>
+  <p><strong>Failure conditions:</strong> A stale revision qualifies; an agent uses excessive effective permissions; or an instruction, review and merge mismatch goes undetected. <strong>Competing explanation:</strong> Effective GitHub rules may already prevent the material paths.</p>
+  <div style="border:1px solid #486a7b;background:#173449;border-radius:10px;padding:13px 17px;margin:14px 0">
+    <p><strong>Engineering:</strong> Compare workflows and demonstrate technical boundaries.</p>
+    <p><strong>Risk &amp; GRC:</strong> Establish eligibility, ownership, exposure and suspension conditions.</p>
+    <p><strong>Independent Assurance:</strong> Determine evidence for reliance; no conclusion is implied by this example.</p>
+  </div>
+  <p><a href="./ai-sdlc-risk.html#risk-score-templates">Read the complete worked assessment directly in Risk &amp; Governance →</a></p>
+  <div class="simple-actions">
+    <a href="./risk-assessment-example.html">Open printable worked assessment →</a>
+    <a href="./downloads/AI_SDLC_Risk_Scoring_Completed_Fictional.csv" download>Completed fictional worksheet (CSV) ↓</a>
+    <a href="./downloads/AI_SDLC_Risk_Scoring_Blank.csv" download>Blank reusable template (CSV) ↓</a>
+  </div>
+  <p class="simple-note">The downloadable numeric ratings are teaching assumptions, not validated rankings or approval thresholds. Implementation status remains Unknown; residual risk and independent effectiveness have not been established.</p>
 </section>
 <footer class="site-footer"><nav aria-label="Chapter navigation"><a href="./continuous-monitoring.html">← Monitoring &amp; Operations</a><a href="./ai-sdlc-risk.html">Review the AI operating model →</a></nav><p class="simple-footer">Fictional reference model. Nothing on this page establishes production control effectiveness, SOX compliance or external-auditor reliance.</p></footer>
 </article></main>
