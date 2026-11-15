@@ -107,7 +107,11 @@ async function checkChallengeAssessment(page, captureDecisionBrief) {
         facts:[],approvalOutcomes:[],unknowns:['Effective repository rules'],
         clarifications:[{question:'Could a changed revision merge on the original approval?',
           why:'This determines whether to keep approvals manual.',options:['The repository blocks merge','The approval can still count']}],
-        engineeringReferences:[]
+        engineeringReferences:[{id:'GH-REVIEWS',title:'GitHub pull request reviews',
+          publisher:'GitHub Docs',url:'https://docs.github.com/en/rest/pulls/reviews',
+          facts:['A review can be retrieved with its state and commit ID.'],
+          limits:'The recorded review does not establish originating human authorization.',
+          modelUsed:true}]
       }});
       return;
     }
@@ -136,6 +140,11 @@ async function checkChallengeAssessment(page, captureDecisionBrief) {
     'Human-delegated PR case must show reconciliation question');
   check((await page.locator('#cdr-preview .cdr-recon').innerText()).includes('Not assessed'),
     'Reconciliation must not be reported as implemented');
+  check(await page.locator('#cdr-preview .cdr-source-link[href*="docs.github.com/en/rest/pulls/reviews"]').isVisible(),
+    'The primary GitHub technical reference should be visible');
+  check((await page.locator('#cdr-preview .cdr-sources').innerText()).includes('does not establish originating human authorization'),
+    'Source limitations should be displayed, not buried');
+
   for(const lens of ['risk','assurance','engineering']){
     await page.locator('#cdr-tab-'+lens).click();
     check(await page.locator('#cdr-tab-'+lens).getAttribute('aria-selected')==='true',
