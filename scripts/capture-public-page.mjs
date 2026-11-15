@@ -144,7 +144,7 @@ async function checkChallengeAssessment(page, captureDecisionBrief) {
         implementation:revised?'reported-partial':'not-assessed',implementationBasis:'Overlap reported for some consumers.',referenceIds:[]}],
       facts:[],approvalOutcomes:[],unknowns:['Coverage of slower consumers'],
       clarifications:revised||noQuestions?[]:questions,engineeringReferences:[],
-      operationalReview:{kind:'monitoring',question:'Can a lagging consumer be detected?',
+      operationalReview:noQuestions?null:{kind:'monitoring',question:'Can a lagging consumer be detected?',
         detection:'Track credential rejection rates.',response:'Pause cutover and recover delayed consumers.',
         implementation:'not-assessed',referenceIds:[]},
       ...(revised?{reassessment:'Overlap changes the safeguard to Partial. The pilot recommendation stands.'}:{})
