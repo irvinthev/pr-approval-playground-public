@@ -1,4 +1,5 @@
 // Pure projection of the current validated Challenge Lab response into a connected-report preview.
+import {riskPathCatalog,riskPathRoles} from './challenge-risk-path-catalog.mjs';
 // No claims about system implementation, management decisions, or independent assurance are synthesized.
 const words=(value,max=800)=>typeof value==='string'?value.trim().slice(0,max):'';
 const array=value=>Array.isArray(value)?value:[];
@@ -22,6 +23,44 @@ export function isHumanDelegatedApprovalScenario(scenario){
     // A scenario where an engineer reviews a plan but the agent decides
     // actual PR approval must NOT be treated as delegated human approval.
     /\b(?:engineer|human|person|reviewer)\b(?:(?!\b(?:agent|bot|autonomous model)\b)[^.!?]){0,180}\b(?:decid(?:e|es|ed|ing)|decision|authoriz(?:e|es|ed|ation)|approv(?:e|es|ed|ing|al))\b/i.test(text);
+}
+// A stage trace is an analytical hypothesis, not evidence that a safeguard
+// operated. The source-side schema is independently validated by the API.
+export function projectRiskPath(value){
+  if(!value||typeof value!=='object'||Array.isArray(value)||
+    !Object.hasOwn(riskPathCatalog,value.pathway)||!Array.isArray(value.steps)||
+    value.steps.length<2||value.steps.length>5)return null;
+  const stages=riskPathCatalog[value.pathway];
+  const order=new Map(stages.map((stage,index)=>[stage.id,index]));
+  let last=-1,hasOrigin=false,hasConsequence=false;
+  const steps=[];
+  for(const entry of value.steps){
+    if(!entry||typeof entry!=='object'||!order.has(entry.stageId)||
+      order.get(entry.stageId)<=last||!Array.isArray(entry.roles)||
+      entry.roles.length<1||entry.roles.length>3||
+      entry.roles.some(role=>!Object.hasOwn(riskPathRoles,role))||
+      new Set(entry.roles).size!==entry.roles.length||
+      !words(entry.event)||!words(entry.evidence)||
+      typeof entry.interruption!=='string')return null;
+    if(entry.roles.includes('prevention')&&!words(entry.interruption))return null;
+    last=order.get(entry.stageId);
+    hasOrigin ||=entry.roles.includes('origin');
+    hasConsequence ||=entry.roles.includes('exposure')||entry.roles.includes('detection');
+    steps.push({
+      id:entry.stageId,label:stages[last].label,
+      roles:entry.roles.map(id=>({id,label:riskPathRoles[id]})),
+      event:words(entry.event,250),interruption:words(entry.interruption,250),
+      evidence:words(entry.evidence,250)
+    });
+  }
+  if(!hasOrigin||!hasConsequence||!words(value.failure))return null;
+  return {
+    pathway:value.pathway,
+    failure:words(value.failure,350),
+    uncertainty:words(value.uncertainty,280),
+    steps,
+    stages:stages.map(stage=>({id:stage.id,label:stage.label,selected:steps.some(x=>x.id===stage.id)}))
+  };
 }
 export function projectConnectedReport(data,scenarioText=''){
   if(!data||typeof data!=='object'||!array(data.conclusions).length) return null;
@@ -87,6 +126,7 @@ export function projectConnectedReport(data,scenarioText=''){
   const operationalState=operational?.implementation?
     (implementationLabels[operational.implementation]||'Unknown'):'Not assessed';
   return {
+    riskPath:projectRiskPath(data.riskPath),
     recommendation:words(primary.application,1200),
     basis:words(primary.scenarioBasis,800),
     counterargument:words(data.counterargument,900),
