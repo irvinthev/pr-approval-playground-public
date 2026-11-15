@@ -5,11 +5,11 @@ import os from 'node:os';
 import path from 'node:path';
 import {spawnSync} from 'node:child_process';
 const cwd=new URL('..',import.meta.url);
-const capture=fs.readFileSync(new URL('../scripts/capture-vercel-ux.mjs',import.meta.url),'utf8');
-const discover=fs.readFileSync(new URL('../scripts/discover-vercel-preview.mjs',import.meta.url),'utf8');
+const capture=fs.readFileSync(new URL('../scripts/capture-preview-ux-screenshots.mjs',import.meta.url),'utf8');
+const discover=fs.readFileSync(new URL('../scripts/find-ready-vercel-ux-preview.mjs',import.meta.url),'utf8');
 const workflow=fs.readFileSync(new URL('../.github/workflows/vercel-ux-screenshots.yml',import.meta.url),'utf8');
 test('Playwright remote UX helpers have valid Node module syntax',()=>{
- for(const name of ['scripts/capture-vercel-ux.mjs','scripts/discover-vercel-preview.mjs']){
+ for(const name of ['scripts/capture-preview-ux-screenshots.mjs','scripts/find-ready-vercel-ux-preview.mjs']){
   const run=spawnSync(process.execPath,['--check',name],{cwd,encoding:'utf8'});
   assert.equal(run.status,0,name+'\n'+run.stderr);
  }
@@ -37,13 +37,13 @@ test('Manual preview override accepts only an allowlisted HTTPS URL',()=>{
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'challenge-ux-'));
  const out=path.join(dir,'result.txt');
  const valid='https://ai-sdlc-challenge-agent-hardyrba1-irvlife23.vercel.app/private-challenge.html';
- let run=spawnSync(process.execPath,['scripts/discover-vercel-preview.mjs'],{
+ let run=spawnSync(process.execPath,['scripts/find-ready-vercel-ux-preview.mjs'],{
   cwd,encoding:'utf8',env:{...process.env,UX_MANUAL_URL:valid,
     VERCEL_AUTOMATION_BYPASS_SECRET:'fixture-bypass',GITHUB_OUTPUT:out}
  });
  assert.equal(run.status,0,run.stderr);
  assert.match(fs.readFileSync(out,'utf8'),/https:\/\/ai-sdlc-challenge-agent-hardyrba1-irvlife23\.vercel\.app/);
- run=spawnSync(process.execPath,['scripts/discover-vercel-preview.mjs'],{
+ run=spawnSync(process.execPath,['scripts/find-ready-vercel-ux-preview.mjs'],{
   cwd,encoding:'utf8',env:{...process.env,UX_MANUAL_URL:'https://evil.example/private-challenge.html',
     VERCEL_AUTOMATION_BYPASS_SECRET:'fixture-bypass',GITHUB_OUTPUT:path.join(dir,'bad.txt')}
  });
