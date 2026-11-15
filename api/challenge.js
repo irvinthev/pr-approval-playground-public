@@ -26,7 +26,8 @@ export function contractFailureCodes(errors){
       :error.startsWith('Unknown contract version')?'VERSION'
       :error.startsWith('At least one challenge')?'CHALLENGES'
       :error.startsWith('At least one explicit fact')?'FACTS'
-      :error.startsWith('External model cannot assert')?'FORBIDDEN_DIGEST':'OTHER';
+      :error.startsWith('External model cannot assert')?'FORBIDDEN_DIGEST'
+      :error.startsWith('Model referenced an unprovided')?'ENGINEERING_REFERENCES':'OTHER';
     if(!codes.includes(label))codes.push(label);
   }
   return codes;
@@ -61,6 +62,7 @@ export function buildContractRepairRequest(original,previous,errors){
         'For conceptual proposals use approvalOutcomes:[] rather than invented submissions. '+
         'Each conclusion requires scenarioBasis, application, openQuestion, basisType (engineering-judgment, scenario-inference, or framework-interpretation), and citationIds:[]. '+
         'Put selected GitHub/Claude technical source IDs only into referenceIds, never citationIds. '+
+        'For the top-level and safeguard referenceIds arrays, use unique exact IDs from the selected engineering cards in the system message. If a source is unavailable, remove its ID and narrow or qualify any claim that depended on it. Use [] when no selected card directly supports the claim. '+
         'The citationIds arrays are reserved exclusively for framework catalog provision IDs. '+
         'For framework-interpretation, cite only actual catalog provision IDs and include them in top-level citationIds. '+
         'Also include expectedSafeguards and clarifications. Include counterargument and any required reassessment text. Safeguards need objective, why, implementation, implementationBasis when reported, and referenceIds. Clarifications need question, why, options. '+
@@ -145,7 +147,7 @@ export function buildModelRequest(input){
     'For each conclusion set basisType accurately: framework-interpretation means a specific cited provision provides relevant guidance (and requires at least one citation); scenario-inference means a conditional inference from the supplied facts or unknowns; engineering-judgment means your architecture, economic, or tradeoff reasoning. Framework references do not validate deployment facts.',
     'Limit each conclusion to at most three directly relevant catalog IDs. Use no new IDs or links invented by the model. Always distinguish product behavior requiring official technical documentation from assumptions: the catalog is not a live technical-doc lookup.',
     'Use the curated technical references below when relevant. They are source-linked, date-limited summaries, NOT live retrieval, not the full documents, not independent verification, and not policy rules.',
-    'Return an additional top-level referenceIds array of zero to five IDs from the selected engineering reference cards ONLY when their specific content contributes to the answer. Do not cite cards merely because they were provided; never invent IDs.',
+    'Return an additional top-level referenceIds array of zero to five unique exact IDs from the selected engineering reference cards ONLY when their specific content contributes to the answer. Do not cite cards merely because they were provided; never invent IDs.',
     'Use empty arrays for absent optional conclusions citations, engineering referenceIds, and review outcomes. For hypothetical approval designs with no actual review submitted, approvalOutcomes MUST be [].',
     'Every conclusion must include all five fields: scenarioBasis, application, openQuestion, basisType and citationIds. Always include top-level counterargument, contractVersion, facts, challenges, conclusions, approvalOutcomes, citationIds, referenceIds, alternatives, unknowns, expectedSafeguards and clarifications.',
     'Use source claims no more broadly than the source says. Separate what a platform documents from the organization-specific behavior that would require inspection. Distinguish operating models (human, delegated human, autonomous AI) from components (GitHub Apps, rulesets, OPA).',
@@ -199,18 +201,29 @@ export default async function handler(req,res){
     let parsed;
     try{parsed=JSON.parse(envelope?.choices?.[0]?.message?.content)}
     catch{return json(res,502,{error:'Model returned invalid JSON'})}
-    const referenceIds=parsed.referenceIds===undefined?[]:parsed.referenceIds;
     // All reference IDs must be included in the selected server-provided cards.
-    const validIds=new Set(selectedReferences.map(r=>r.id));
-    if(!Array.isArray(referenceIds)||referenceIds.length>5||
-      referenceIds.some(id=>typeof id!=='string'||!validIds.has(id))||
-      new Set(referenceIds).size!==referenceIds.length){
+    const allowedReferenceIds=selectedReferences.map(ref=>ref.id);
+    const validIds=new Set(allowedReferenceIds);
+    const referenceError='Model referenced an unprovided or duplicate engineering source';
+    function checkResponse(candidate){
+      const ids=candidate?.referenceIds===undefined?[]:candidate.referenceIds;
+      if(!Array.isArray(ids)||ids.some(id=>typeof id!=='string'||!validIds.has(id))){
+        return {ok:false,errors:[referenceError]};
+      }
+      // Repeated exact IDs carry the same provenance. Collapse them locally.
+      const referenceIds=input.assessmentPhase?[...new Set(ids)]:ids;
+      if(referenceIds.length>5 || new Set(referenceIds).size!==referenceIds.length){
+        return {ok:false,errors:[referenceError]};
+      }
+      return {...validateAgentResponse(candidate,{
+        scenarioText:input.scenarioText,requireGrounding:true,
+        allowedReferenceIds,assessmentPhase:input.assessmentPhase
+      }),referenceIds};
+    }
+    let checked=checkResponse(parsed);
+    if(!input.assessmentPhase && checked.errors?.includes(referenceError)){
       return json(res,502,{error:'Model referenced an unprovided or duplicate engineering source'});
     }
-    let checked=validateAgentResponse(parsed,{
-      scenarioText:input.scenarioText,requireGrounding:true,
-      allowedReferenceIds:selectedReferences.map(ref=>ref.id),assessmentPhase:input.assessmentPhase
-    });
     let repaired=false;
     if(!checked.ok){
       const firstCodes=contractFailureCodes(checked.errors);
@@ -231,21 +244,11 @@ export default async function handler(req,res){
           let candidate;
           try{candidate=JSON.parse(repairEnvelope?.choices?.[0]?.message?.content)}catch{}
           if(candidate){
-            const candidateIds=candidate.referenceIds===undefined?[]:candidate.referenceIds;
-            if(Array.isArray(candidateIds)&&candidateIds.length<=5 &&
-              candidateIds.every(id=>typeof id==='string'&&validIds.has(id)) &&
-              new Set(candidateIds).size===candidateIds.length){
-              const candidateCheck=validateAgentResponse(candidate,{
-                scenarioText:input.scenarioText,requireGrounding:true,
-                allowedReferenceIds:selectedReferences.map(ref=>ref.id),assessmentPhase:input.assessmentPhase
-              });
-              parsed=candidate;
-              referenceIds.splice(0,referenceIds.length,...candidateIds);
-              checked=candidateCheck;
-              repaired=candidateCheck.ok;
-            }else{
+            checked=checkResponse(candidate);
+            if(!input.assessmentPhase && checked.errors?.includes(referenceError)){
               return json(res,502,{error:'Model referenced an unprovided or duplicate engineering source after repair'});
             }
+            repaired=checked.ok;
           }
         }
       }
@@ -254,13 +257,16 @@ export default async function handler(req,res){
       const codes=contractFailureCodes(checked.errors);
       // No scenario text or raw provider output in logs.
       console.warn('Challenge Lab: response contract rejected:',codes.join(','));
+      if(input.assessmentPhase && checked.errors.includes(referenceError)){
+        return json(res,502,{error:'Gemini returned invalid references even after a correction attempt. Try assessing the proposal again.'});
+      }
       return json(res,502,{error:'Model output failed contract validation ('+codes.join(', ')+')',details:checked.errors});
     }
     const continuityReceipt=issueReceipt(checked.data,input.scenarioText,undefined,input.assessmentPhase);
     return json(res,200,{...checked.data,
       engineeringReferences:selectedReferences.map(r=>({
         id:r.id,title:r.title,publisher:r.publisher,kind:r.kind,url:r.url,
-        reviewedAsOf:r.reviewedAsOf,facts:r.facts,limits:r.limits,modelUsed:referenceIds.includes(r.id)||
+        reviewedAsOf:r.reviewedAsOf,facts:r.facts,limits:r.limits,modelUsed:checked.referenceIds.includes(r.id)||
           checked.data.expectedSafeguards.some(s=>s.referenceIds.includes(r.id))
       })),
       continuityReceipt,turnsUsed:input.turns.length,mode:'live-model',responseRepaired:repaired});
