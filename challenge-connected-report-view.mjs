@@ -106,7 +106,9 @@ function renderRiskPath(project,container){
   detail.setAttribute('aria-live','polite');
   detail.id='cdr-path-selected-detail';
 
+  let activeStageId=null;
   function select(stageId){
+    activeStageId=stageId;
     for(const button of buttons){
       const active=button.dataset.pathStage===stageId;
       button.setAttribute('aria-pressed',String(active));
@@ -150,6 +152,10 @@ function renderRiskPath(project,container){
   const grid=el('div','cdr-path-full-grid');
   for(const stage of path.stages)stageButton(stage,grid);
   all.append(grid);
+  all.addEventListener('toggle',()=>{
+    if(!all.open&&!selected.some(x=>x.id===activeStageId))
+      select(selected.find(x=>x.roles.some(role=>role.id==='origin'))?.id||selected[0].id);
+  });
   addText(all,'cdr-mini','Unmapped does not mean risk-free. These are illustrative touchpoints, not a required workflow.');
   section.append(all);
   addText(section,'cdr-path-caveat',path.uncertainty?
