@@ -69,8 +69,9 @@ test('live report is opt-in reversible and retains current API and clarification
   assert.match(html,/showAssessment\(\)/);
   assert.match(css,/#result\.cdr-active > :not\(#cdr-controls\):not\(#cdr-preview\)/);
   assert.match(view,/projectConnectedReport\(response,scenarioText\)/);
-  assert.match(view,/setAttribute\('role','tablist'\)/);
-  assert.match(view,/setAttribute\('role','tabpanel'\)/);
+  assert.match(view,/Next consideration by role/);
+  assert.match(view,/What could change the recommendation/);
+  assert.doesNotMatch(view,/setAttribute\('role','tablist'\)/);
   assert.doesNotMatch(view,/\bfetch\s*\(|XMLHttpRequest|innerHTML|localStorage/);
 });
 test('new view contains neutral audience terminology',()=>{
