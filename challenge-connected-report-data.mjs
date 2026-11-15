@@ -42,9 +42,13 @@ export function projectConnectedReport(data,scenarioText=''){
     statusBasis:words(s.implementationBasis,300),
     referenceIds:uniqueStrings(array(s.referenceIds),3)
   }));
+  const advisory=data.decisionPerspectives||{};
+  const operational=data.operationalReview||null;
   const selectedIds=new Set([
     ...array(data.engineeringReferences).filter(ref=>ref&&ref.modelUsed).map(ref=>ref.id),
-    ...safeguards.flatMap(x=>x.referenceIds)
+    ...safeguards.flatMap(x=>x.referenceIds),
+    ...['engineering','risk','assurance'].flatMap(name=>array(advisory[name]?.referenceIds)),
+    ...array(operational?.referenceIds)
   ]);
   const sources=array(data.engineeringReferences).filter(r=>r&&isHttpUrl(r.url)).map(ref=>({
     id:words(ref.id,100),
@@ -65,6 +69,23 @@ export function projectConnectedReport(data,scenarioText=''){
           limits:words(c.qualification,600),url:c.url});
       return acc;
     },[]);
+  // Prefer validated, audience-specific model reasoning; retain the previous
+  // transparent synthesis for older responses that do not include new fields.
+  const lens=(name,fallback)=>{
+    const authored=advisory[name];
+    if(!authored)return {...fallback,modelGenerated:false,referenceIds:[]};
+    return {
+      ...fallback,summary:words(authored.position,650),
+      items:uniqueStrings(array(authored.considerations),3),
+      action:words(authored.nextStep,500),
+      pivot:words(authored.pivot,400),
+      referenceIds:array(authored.referenceIds),
+      modelGenerated:true
+    };
+  };
+  const delegated=isHumanDelegatedApprovalScenario(scenarioText||data.scenarioText);
+  const operationalState=operational?.implementation?
+    (implementationLabels[operational.implementation]||'Unknown'):'Not assessed';
   return {
     recommendation:words(primary.application,1200),
     basis:words(primary.scenarioBasis,800),
@@ -80,42 +101,60 @@ export function projectConnectedReport(data,scenarioText=''){
     questions:questions.slice(0,3).map(q=>({question:words(q.question,350),why:words(q.why,400)})),
     reassessment:words(data.reassessment,900),
     perspectives:{
-      engineering:{
+      engineering:lens('engineering',{
         title:'Engineering advisory',
         summary:words(primary.application,1200),
         highlight:'Architecture and operational tradeoffs',
         items:options,
         action:tests[0]||'No specific engineering experiment was supplied in this assessment.',
         pivot:pivot||'No decision-changing question was returned.'
-      },
-      risk:{
+      }),
+      risk:lens('risk',{
         title:'Risk disposition',
         summary:words(lead.reason,900)||'No material exposure description was returned.',
         highlight:'Exposure and treatment considerations',
         items:challenges.slice(0,3).map(c=>words(c.question,450)),
         action:'Risk registration, treatment, ownership and acceptance have not been determined by this assessment.',
         pivot:pivot||'No scenario-specific decision-changing question was returned.'
-      },
-      assurance:{
+      }),
+      assurance:lens('assurance',{
         title:'Independent assurance',
         summary:words(primary.scenarioBasis,800)||'No separate assurance conclusion was returned.',
         highlight:'Evidence and remaining unknowns',
         items:unknowns.length?unknowns:array(data.conclusions).slice(0,2).map(c=>words(c.openQuestion)),
         action:'The current response does not contain a separately substantiated independent assurance position.',
         pivot:words(primary.openQuestion)||'No assurance-specific question was returned.'
-      }
+      })
     },
-    reconciliation:isHumanDelegatedApprovalScenario(scenarioText||data.scenarioText)?{
+    reconciliation:delegated?{
       title:'Can human authorization, agent/API execution, and the recorded GitHub review be reconciled?',
-      status:'Not assessed',
+      status:operational?.kind==='reconciliation'?operationalState:'Not assessed',
       stages:[
         {label:'Human decision',detail:'Identity, explicit instruction, repository, PR and authorized revision'},
         {label:'Agent / API action',detail:'Execution identity, tool request, revision, result and correlation ID'},
         {label:'Recorded review',detail:'GitHub actor, review ID, commit SHA, state and submission time'}
       ],
-      question:'Is there a way to match all three records and detect missing, duplicated, unauthorized or stale-revision approvals?',
-      note:'This is an architectural question surfaced for the described workflow, not a claim that reconciliation exists or is absent.'
+      question:operational?.kind==='reconciliation'?
+        words(operational.question,450):
+        'Is there a way to match all three records and detect missing, duplicated, unauthorized or stale-revision approvals?',
+      detection:operational?.kind==='reconciliation'?words(operational.detection,500):'',
+      response:operational?.kind==='reconciliation'?words(operational.response,500):'',
+      statusBasis:operational?.kind==='reconciliation'?words(operational.implementationBasis,300):'',
+      note:operational?.kind==='reconciliation'?
+        'This is model-generated operational reasoning based on the scenario; reported status is not independently verified.':
+        'This is an architectural question surfaced for the described workflow, not a claim that reconciliation exists or is absent.'
     }:null,
+    operational:operational&&!delegated?{
+      title:operational.kind==='monitoring'?'Operational monitoring and detection':
+        operational.kind==='recovery'?'Operational recovery and response':'Operational reconciliation',
+      question:words(operational.question,450),
+      detection:words(operational.detection,500),
+      response:words(operational.response,500),
+      status:operationalState,
+      statusBasis:words(operational.implementationBasis,300)
+    }:null,
+    advisoryGenerated:!!(advisory.engineering&&advisory.risk&&advisory.assurance),
+    advisoryWarnings:array(data.advisoryWarnings).map(x=>words(x,180)),
     sourceWarning:words(data.referenceWarning,500)
   };
 }
