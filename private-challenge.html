@@ -198,6 +198,33 @@ main#main-content .panel{background:#0e273c;border-color:#38586c}
  .report-risk-list{grid-template-columns:1fr}
 }
 
+
+/* V8: guided questions and reference rationale only, no model/API schema changes. */
+.refine-panel{padding:15px;border:1px solid #529a9d;border-radius:13px;background:#123446}
+.refine-heading{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:flex-start}
+.refine-heading h3{margin:0 0 6px}
+.refine-focus-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:13px 0 10px}
+.refine-focus-row label{font-size:13px;margin:0}
+.refine-focus-row select{background:#0a2537;border:1px solid #78a6b8;border-radius:8px;
+  color:#f0faff;font:inherit;font-size:13px;padding:9px;max-width:100%;min-width:200px}
+.refine-question{background:#0a283b;border:1px solid #3e687d;border-radius:10px;padding:13px;margin-top:10px}
+.refine-question strong{display:block;font-size:14px;line-height:1.4}
+.refine-question p{font-size:12px;line-height:1.5;color:#c4dce8;margin:5px 0}
+.refine-question label{font-size:12px;margin:11px 0 5px;color:#dceef8}
+.refine-question input{min-width:0;font-size:13px;padding:10px}
+.refine-question a{font-size:12px}
+.refine-actions{margin-top:12px;display:flex;align-items:center;gap:11px;flex-wrap:wrap}
+.refine-actions button{min-width:200px}
+.refine-next{margin:13px 0 0;border:1px solid #446a7d;border-radius:10px;padding:9px 13px}
+.refine-next summary{color:var(--mint);font-weight:700;cursor:pointer}
+.refine-next li{font-size:13px;margin-top:9px}
+.safeguard-context{padding:0 13px 14px;border-top:1px solid #456a7b}
+.safeguard-context p{font-size:12px;line-height:1.5;margin:9px 0}
+.safeguard-context a{display:inline-block;max-width:100%;font-size:12px;overflow-wrap:anywhere}
+.safeguard-source-note{font-size:12px;color:#c6d9e3;margin:10px 0}
+@media(max-width:650px){.refine-focus-row{display:block}.refine-focus-row select{width:100%;margin-top:5px}
+ .refine-question{padding:11px}.refine-actions button{width:100%}}
+
 </style>
 </head>
 <body><div class="app-frame">
@@ -311,6 +338,7 @@ main#main-content .panel{background:#0e273c;border-color:#38586c}
           <button type="button" data-challenge="assumptions">Challenge assumptions</button>
           <button type="button" data-challenge="simpler">Find a simpler option</button>
           <button type="button" data-challenge="evidence">Check the evidence</button>
+          <button type="button" data-challenge="justify">Justify &amp; challenge source claims</button>
           <button type="button" data-challenge="failure">Explore a failure scenario</button>
         </div>
         <section class="panel" id="followup" hidden aria-labelledby="followtitle">
@@ -333,13 +361,38 @@ main#main-content .panel{background:#0e273c;border-color:#38586c}
           <span class="report-stamp">Not independently verified</span>
         </header>
         <div id="report-metrics" class="report-grid" aria-label="Assessment coverage"></div>
+        <section class="report-section refine-panel" aria-labelledby="refinement-title">
+          <div class="refine-heading">
+            <div><h3 id="refinement-title">Clarify what changes the decision</h3>
+              <p class="small">Three optional, curated scenario questions. Explain your answer, or enter “Unknown”. The lab revisits its earlier conclusion using your signed conversation context.</p></div>
+          </div>
+          <div class="refine-focus-row"><label for="refinement-focus">Question focus</label>
+            <select id="refinement-focus" aria-describedby="refinement-focus-help">
+              <option value="auto">Suggested from scenario</option>
+              <option value="delegated">Human decision · agent submits</option>
+              <option value="access">Claude / GitHub access</option>
+              <option value="plan">Plan-based AI approval</option>
+              <option value="general">General architecture</option>
+            </select></div>
+          <p class="small" id="refinement-focus-help">The suggested focus uses simple keywords, not an AI classification. Change it if the questions miss your actual problem.</p>
+          <div id="refinement-questions"></div>
+          <div class="refine-actions">
+            <button class="primary" id="refinement-submit" type="button">Reassess with answers</button>
+            <span id="refinement-status" class="small" role="status" aria-live="polite"></span>
+          </div>
+          <details class="refine-next" id="refinement-next" hidden>
+            <summary>New questions raised by Gemini after your answers</summary>
+            <ol id="refinement-next-questions"></ol>
+          </details>
+        </section>
         <section class="report-section" aria-labelledby="report-risks-title">
           <h3 id="report-risks-title">Risks and questions to investigate</h3>
           <p class="small">Questions derived from this Gemini response, not verified findings. No severity or residual-risk score has been assigned.</p>
           <div id="report-risks" class="report-risk-list"></div>
         </section>
         <section class="report-section" aria-labelledby="report-unknowns-title">
-          <h3 id="report-unknowns-title">Implementation evidence not yet established</h3>
+          <h3 id="report-unknowns-title">Implementation details not supplied</h3>
+          <p class="small">The lab cannot determine whether these safeguards exist. “Unknown” means not established by the information provided here, not a control deficiency.</p>
           <div id="report-unknowns" class="report-unknown"></div>
         </section>
         <section class="report-section" aria-labelledby="report-controls-title">
@@ -352,6 +405,10 @@ main#main-content .panel{background:#0e273c;border-color:#38586c}
                 <li>Effective branch protections, review requirements and stale-review treatment</li>
                 <li>Traceable GitHub reviewer, PR revision, and merge outcome</li>
               </ul>
+              <div class="safeguard-context"><p><strong>Why:</strong> The merge gate should reflect the intended reviewer and code revision. CODEOWNERS is optional unless applicable rules require it.</p>
+                <a href="https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners" target="_blank" rel="noopener noreferrer">GitHub: CODEOWNERS</a> ·
+                <a href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches" target="_blank" rel="noopener noreferrer">Protected branches</a>
+              </div>
             </div>
             <div class="report-model delegated"><h4>2 · Human decides, agent submits</h4>
               <ul>
@@ -359,6 +416,10 @@ main#main-content .panel{background:#0e273c;border-color:#38586c}
                 <li>Bounded CLI, MCP, App and credential permissions; independently enforced merge rules</li>
                 <li>Correlation of human decision, agent action, GitHub review and revision</li>
               </ul>
+              <div class="safeguard-context"><p><strong>Why:</strong> A tool permission prompt is not identical to GitHub authorization, and submitting a review does not prove the human made that decision.</p>
+                <a href="https://code.claude.com/docs/en/permissions" target="_blank" rel="noopener noreferrer">Claude: permissions</a> ·
+                <a href="https://cli.github.com/manual/gh_pr_review" target="_blank" rel="noopener noreferrer">GitHub CLI review</a>
+              </div>
             </div>
             <div class="report-model autonomous"><h4>3 · AI decides and submits</h4>
               <ul>
@@ -366,9 +427,14 @@ main#main-content .panel{background:#0e273c;border-color:#38586c}
                 <li>Restricted execution identity and revision-bound approval/merge gates</li>
                 <li>Performance monitoring, reconciliation, incident response and automation suspension</li>
               </ul>
+              <div class="safeguard-context"><p><strong>Why:</strong> If AI independently decides, its authority and failure modes differ from merely executing a human decision. Guardrails must be independently effective.</p>
+                <a href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets" target="_blank" rel="noopener noreferrer">GitHub: rulesets</a> ·
+                <a href="https://genai.owasp.org/resource/agentic-ai-threats-and-mitigations/" target="_blank" rel="noopener noreferrer">OWASP: agentic threats</a>
+              </div>
             </div>
           </div>
         </section>
+          <p class="safeguard-source-note">These source links explain potential design mechanisms. They are manually curated context, not evidence Gemini used them or proof they apply to this scenario.</p>
         <section class="report-section" aria-labelledby="report-sources-title">
           <h3 id="report-sources-title">Source basis</h3>
           <p class="small">Documents supplied to the model or cited in its response. A source appearing here does not mean a particular control is implemented or that the model's interpretation has been verified.</p>
@@ -383,6 +449,7 @@ main#main-content .panel{background:#0e273c;border-color:#38586c}
         <button type="button" data-challenge="assumptions">Challenge assumptions</button>
         <button type="button" data-challenge="simpler">Find a simpler option</button>
         <button type="button" data-challenge="evidence">Check the evidence</button>
+        <button type="button" data-challenge="justify">Justify &amp; challenge source claims</button>
         <button type="button" data-challenge="failure">Explore a failure scenario</button>
       </div></section>
     </aside>
