@@ -19,7 +19,8 @@ export function isHumanDelegatedApprovalScenario(scenario){
     /\b(approv(?:e|al|es|ed|ing)|reviews?)\b/i.test(text) &&
     /\b(github|pull requests?|\bPRs?\b|stacked)\b/i.test(text) &&
     /\b(engineer|human|person|reviewer)\b/i.test(text) &&
-    /\b(decid(?:e|es|ed|ing)|decision|authoriz(?:e|es|ed|ation))\b/i.test(text);
+    (/\b(decid(?:e|es|ed|ing)|decision|authoriz(?:e|es|ed|ation))\b/i.test(text) ||
+      /\b(?:engineer|human|reviewer)\s+reviews?\s+and\s+approv(?:e|es|ed)\b/i.test(text));
 }
 export function projectConnectedReport(data,scenarioText=''){
   if(!data||typeof data!=='object'||!array(data.conclusions).length) return null;
