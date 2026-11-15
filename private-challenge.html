@@ -4,6 +4,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <title>Private Gemini Challenge Lab | AI SDLC Field Guide</title>
+<link rel="stylesheet" href="./challenge-connected-report.css">
 <style>
 :root{color-scheme:dark;font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;background:#081824;color:#eff8fc;--line:#365766;--mint:#a8f2d6;--muted:#c6d9e3}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top left,#174453,#081824 65%);min-height:100vh}
@@ -175,6 +176,10 @@ summary:focus-visible{outline:3px solid var(--mint);outline-offset:3px}
 <p id="status" role="status" aria-live="polite"></p>
 </section>
 <section id="result" class="panel" hidden aria-labelledby="resulttitle">
+  <div id="cdr-controls" hidden>
+    <button type="button" id="cdr-toggle" aria-pressed="true">Show detailed assessment and questions</button>
+  </div>
+  <section id="cdr-preview" aria-label="Connected assessment report" hidden></section>
   <header class="report-banner">
     <h2 id="resulttitle" tabindex="-1">Recommendation</h2>
     <p id="report-takeaway"></p>
@@ -273,6 +278,7 @@ summary:focus-visible{outline:3px solid var(--mint);outline-offset:3px}
 </section>
 </main></div>
 <script type="module">
+import {renderConnectedReport} from './challenge-connected-report-view.mjs';
 const el=id=>document.getElementById(id);
 const state={scenario:null,receipt:null,busy:false,remembered:false,
   refinementAnswers:{},reassessmentUsed:false,latestResponse:null,previousTakeaway:null};
@@ -498,8 +504,16 @@ function renderContext(data){
   }
 }
 function showAssessment(){
-  el('resulttitle').focus({preventScroll:true});
+  const title=el('result').classList.contains('cdr-active')?
+    el('cdr-preview').querySelector('h2'):el('resulttitle');
+  if(title){title.setAttribute('tabindex','-1');title.focus({preventScroll:true})}
   el('result').scrollIntoView({block:'start'});
+}
+function setConnectedReportMode(active){
+  const enabled=active&&!el('cdr-preview').hidden;
+  el('result').classList.toggle('cdr-active',enabled);
+  el('cdr-toggle').setAttribute('aria-pressed',String(enabled));
+  el('cdr-toggle').textContent=enabled?'Show detailed assessment and questions':'View connected assessment report';
 }
 function clearAssessment(){
   state.scenario=null;
@@ -508,6 +522,10 @@ function clearAssessment(){
   state.reassessmentUsed=false;
   state.latestResponse=null;
   state.previousTakeaway=null;
+  setConnectedReportMode(false);
+  el('cdr-preview').hidden=true;
+  el('cdr-preview').replaceChildren();
+  el('cdr-controls').hidden=true;
   el('result').hidden=true;
   el('nav-scenario').setAttribute('aria-current','page');
   el('nav-assessment').removeAttribute('aria-current');
@@ -565,6 +583,14 @@ async function ask(answers=''){
     renderAssessmentReport(data);
     renderContext(data);
     renderRefinementQuestions(data);
+    // Projection is read-only and uses the same validated model response.
+    // A rendering issue must never interrupt the existing assessment flow.
+    let previewReady=false;
+    try{previewReady=renderConnectedReport(el('cdr-preview'),data,scenario)}
+    catch{previewReady=false}
+    el('cdr-preview').hidden=!previewReady;
+    el('cdr-controls').hidden=!previewReady;
+    setConnectedReportMode(previewReady);
     el('result').hidden=false;
     el('nav-assessment').disabled=false;
     el('nav-assessment').setAttribute('aria-current','page');
@@ -576,6 +602,10 @@ async function ask(answers=''){
     status((error.message||'The request could not be completed.')+suffix,true,statusId);
   }finally{busy(false)}
 }
+el('cdr-toggle').addEventListener('click',()=>{
+  setConnectedReportMode(!el('result').classList.contains('cdr-active'));
+  showAssessment();
+});
 el('nav-scenario').addEventListener('click',()=>{
   el('nav-scenario').setAttribute('aria-current','page');
   el('nav-assessment').removeAttribute('aria-current');
