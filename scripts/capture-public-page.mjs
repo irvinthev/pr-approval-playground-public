@@ -158,7 +158,7 @@ async function checkChallengeAssessment(page, captureDecisionBrief) {
   await page.locator('#cdr-toggle').click();
   check(!(await page.locator('#result').evaluate(node=>node.classList.contains('cdr-active'))),
     'The detailed assessment should be reachable');
-  check(await page.getByText('After a push or rebase, an approval could apply to code the engineer never saw.',{exact:true}).isVisible(),
+  check(await page.locator('#report-lead-risk').getByText('After a push or rebase, an approval could apply to code the engineer never saw.',{exact:true}).isVisible(),
     'The lead failure condition should be visible without a tap');
   check(await page.locator('#report-expected-safeguards summary').count()===3,'Three safeguards should lead the brief');
   check(await page.locator('#refinement-questions summary').textContent()==='Could a changed revision merge on the original approval?',
