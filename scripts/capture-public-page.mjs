@@ -201,7 +201,7 @@ async function checkChallengeAssessment(page, captureDecisionBrief) {
   await page.locator('#refinement-questions summary').nth(1).click();
   await page.getByText('Some consumers',{exact:true}).click();
   await page.locator('#refinement-submit').click();
-  await page.locator('#cdr-preview .cdr').waitFor();
+  await page.locator('#cdr-preview').getByText('Reassessment:',{exact:false}).waitFor();
   check((await page.locator('#cdr-preview').innerText()).includes('Reassessment:'),
     'Connected report should reflect reassessment');
   await page.locator('#cdr-toggle').click();
