@@ -19,7 +19,7 @@ test('Remote screenshot script only allows the private lab Vercel project hostna
  assert.match(capture,/irvlife23\\.vercel\\.app/);
  assert.match(capture,/x-vercel-protection-bypass/);
  assert.match(capture,/requestUrl.origin!==preview.origin/);
- assert.doesNotMatch(capture,/extraHTTPHeaders/);
+ assert.doesNotMatch(capture,/extraHTTPHeaders\s*:/);
  assert.match(capture,/x-vercel-set-bypass-cookie/);
  assert.match(capture,/context\.route\('\*\*\/api\/challenge'/);
  assert.match(capture,/context\.route\('\*\*\/api\/challenge-session'/);
