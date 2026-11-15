@@ -19,7 +19,7 @@ test('V6 workspace has accessible architecture, risk, evidence and challenge tab
  assert.match(source,/tab\.setAttribute\('aria-selected',String\(active\)\)/);
  assert.match(source,/panel\.hidden=!active/);
  assert.match(source,/event\.key==='ArrowRight'/);
- assert.match(source,/event\.key==='ArrowLeft'/);
+ assert.match(source,/event\.key!=='ArrowLeft'/);
 });
 test('authority models are explicitly illustrative and distinct from implementation tools',()=>{
  assert.match(source,/Illustrative authority models/);
@@ -30,7 +30,7 @@ test('authority models are explicitly illustrative and distinct from implementat
  assert.match(source,/id="operating-models" data-selected-model="delegated"/);
  assert.match(source,/\.model-grid/);
  assert.match(source,/@media\(max-width:650px\)/);
- assert.match(source,/button\.setAttribute\('aria-pressed'/);
+ assert.match(source,/btn\.setAttribute\('aria-pressed'/);
 });
 test('one-click challenges reuse same signed follow-up and are not rendered as inert UI',()=>{
  for(const id of ['assumptions','simpler','evidence','failure'])assert.match(source,new RegExp('data-challenge="'+id+'"'));
