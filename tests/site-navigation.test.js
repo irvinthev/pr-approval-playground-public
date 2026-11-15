@@ -69,6 +69,41 @@ test('risk assessment separates fictional scores from validated risk ratings',()
  assert.match(html,/management/i);
 });
 
+test('Field Guide worked assessment presents conditional engineering rationale and no invented implementation claims',()=>{
+ const risk=read('ai-sdlc-risk.html'),example=read('risk-assessment-example.html'),assurance=read('independent-assurance.html');
+ for(const s of [risk,example]){
+   assert.match(s,/conditional/i);
+   assert.match(s,/competing explanation/i);
+   assert.match(s,/Unknown/);
+   assert.match(s,/commit A/i);
+   assert.match(s,/commit B/i);
+   assert.match(s,/simpler (engineering )?alternative/i);
+ }
+ assert.match(example,/Decision-changing test/);
+ assert.match(assurance,/One worked decision/);
+ assert.match(risk,/href="\.\/risk-assessment-example\.html"/);
+ assert.match(assurance,/href="\.\/risk-assessment-example\.html"/);
+ assert.doesNotMatch(example,/Braze|Appboy|braze\.com/i);
+ assert.doesNotMatch(example,/private-challenge\.html|vercel\.app/i);
+});
+
+test('worked assessment is readable inline and the worksheets remain optional',()=>{
+ const risk=read('ai-sdlc-risk.html');
+ const assurance=read('independent-assurance.html');
+ const worked=read('risk-assessment-example.html');
+ assert.match(risk,/ONE SHARED ASSESSMENT/);
+ assert.match(risk,/Decision-changing question/);
+ assert.match(risk,/Compare what changes—not only the AI mechanism/);
+ assert.match(risk,/Three complementary perspectives/);
+ assert.match(risk,/Evidence status: Implementation evidence was not provided/);
+ assert.match(risk,/Read here\. Download separately/);
+ assert.match(assurance,/Can an instruction for commit A authorize a qualifying approval or merge of commit B/);
+ assert.match(assurance,/Independent Assurance/);
+ assert.match(worked,/One shared assessment · next gate by role/);
+ assert.match(worked,/Decision-changing test/);
+ assert.doesNotMatch(worked,/Braze|Appboy|private-challenge\.html|vercel\.app/i);
+});
+
 test('Field Guide ends with downloadable blank and fictional scored risk worksheets',()=>{
  const home=read('index.html');
  const risk=read('ai-sdlc-risk.html');

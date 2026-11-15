@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Worked Risk Assessment | AI SDLC Field Guide</title>
+<link rel="stylesheet" href="./site.css">
+<style>
+:root{color-scheme:dark}
+.assessment{max-width:980px;margin:auto;padding:22px 22px 52px;color:#e9f4f7;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.assessment a{color:#9de8d4}.assessment header{display:flex;justify-content:space-between;gap:12px;align-items:center;border-bottom:1px solid #426170;padding-bottom:14px;margin-bottom:28px;font-size:13px}
+.assessment header a{text-decoration:none;font-weight:750}.assessment .eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:#a5e7d7;font-weight:800}
+.assessment h1{font-size:clamp(30px,4vw,42px);line-height:1.13;margin:11px 0}.assessment h2{font-size:19px;margin:0 0 10px}.assessment h3{font-size:15px;margin:0 0 7px}
+.assessment p,.assessment li{font-size:14px;line-height:1.57}.assessment .lead{color:#bbd2dd;max-width:860px}
+.assessment .decision{border:1px solid #5b9587;background:#123f40;border-radius:12px;padding:19px 21px;margin:21px 0}
+.assessment .decision h2{color:#f1fcf8}.assessment .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin:15px 0}
+.assessment .panel{border:1px solid #476d7a;border-radius:10px;padding:15px 17px;background:#153044}
+.assessment .panel p{margin:0}.assessment .panel ul{margin:7px 0;padding-left:20px}
+.assessment .conditions{border-left:3px solid #9de8d4;padding:3px 17px;margin:17px 0}
+.assessment .risklist{width:100%;border-collapse:collapse}.assessment th,.assessment td{text-align:left;vertical-align:top;padding:10px;border-bottom:1px solid #466270;font-size:12px;line-height:1.5}.assessment th{color:#a4edda}.assessment .risklist th:nth-child(3),.assessment .risklist td:nth-child(3){white-space:nowrap}
+.assessment .fine{font-size:12px;color:#aec9d3}.assessment .actions{display:flex;flex-wrap:wrap;gap:12px;margin:20px 0}.assessment .actions a{border:1px solid #83c3b2;padding:10px 13px;border-radius:8px;text-decoration:none;font-weight:750;font-size:13px}
+.assessment footer{margin-top:20px;padding-top:15px;border-top:1px solid #466270;color:#aec9d3}
+@media(max-width:680px){.assessment{padding:15px}.assessment .grid{grid-template-columns:1fr}.assessment header{align-items:flex-start;flex-direction:column}.assessment .table-wrap{overflow-x:auto}.assessment .risklist{min-width:640px}}
+@media print{*{color:#111!important;background:#fff!important;box-shadow:none!important}.assessment{padding:0;font-family:Arial,sans-serif}.assessment .grid{grid-template-columns:1fr 1fr;gap:9px}.assessment .panel,.assessment .decision{border:1px solid #888;padding:10px;margin:9px 0}.assessment h1{font-size:23pt;margin:5px 0}.assessment h2{font-size:12pt}.assessment h3{font-size:10pt}.assessment p,.assessment li{font-size:9pt;line-height:1.28}.assessment th,.assessment td{font-size:8pt;padding:6px}.assessment .lead,.assessment .fine{font-size:8pt}.assessment header,.assessment .actions{display:none}.assessment footer{font-size:8pt}.assessment .conditions{margin:8px 0}.assessment .table-wrap{overflow:visible}@page{size:letter;margin:.48in}}
+</style></head>
+<body><main class="assessment" id="main">
+<header><a href="./index.html">◈ AI SDLC / FIELD GUIDE</a><a href="./ai-sdlc-risk.html#risk-score-templates">← Risk assessment &amp; downloads</a></header>
+<span class="eyebrow">Worked assessment · Fictional example, not a live-system result</span>
+<h1>Human decides. Agent submits.</h1>
+<p class="lead"><strong>Should Engineering pursue this approach, redesign it, or retain today's workflow?</strong></p>
+<p class="lead">An engineer intends to decide whether to approve stacked pull requests, then instruct an agent to submit the GitHub review. That is the proposed authority model; actual permissions, interpretation of instructions and enforcement remain unknown.</p>
+<section class="decision" aria-labelledby="recommendation">
+  <span class="eyebrow">Conditional engineering recommendation · Feasibility only</span>
+  <h2 id="recommendation">Explore the architecture and run a controlled experiment. Do not rely on agent-submitted approvals as qualifying production reviews until effective enforcement is demonstrated.</h2>
+  <p>This route could reduce repetitive reapprovals—and may bind revisions more rigorously than superficial manual clicks. Neither gain is demonstrated here. The central issue is whether an agent can convert human intent into a qualifying approval or merge that the human never authorized.</p>
+  <div class="conditions"><h3>Decision-changing test</h3><p><strong>Can commit B qualify using an instruction for commit A?</strong> Try the A→B scenario with the actual GitHub identity, credential permissions, branch and ruleset configuration, and bypass paths. Reconstruct the human instruction, agent action, review, merge and deployed revision. One passing test does not establish safety across all paths.</p></div>
+  <p><strong>Evidence status:</strong> Implementation evidence was not provided for the four proposed safeguards. Their deployment and effectiveness are <strong>Unknown</strong> here—not proved absent or ineffective.</p>
+</section>
+<h2>Compare the operating models</h2>
+<div class="grid">
+  <section class="panel"><h3>Current human approval</h3><p>Native approval attribution, but review quality and reapproval effort are unknown. Stale decisions and inattentive clicks can exist in this model too.</p></section>
+  <section class="panel"><h3>AI prepares; engineer submits</h3><p>AI can summarize changes and organize the review queue while the person approves directly in GitHub. Measure whether this simpler engineering alternative removes enough friction.</p></section>
+  <section class="panel"><h3>Agent submits a human decision</h3><p>Potentially greater automation, but requires independent revision binding, execution scope, identity controls and reconciliation.</p></section>
+  <section class="panel"><h3>Strongest competing explanation</h3><p>Effective GitHub rulesets may already prevent stale or ineligible approvals, including agent attempts. A plausible failure story is not evidence of an exploitable configuration.</p></section>
+</div>
+<h2>What could go wrong—and under which conditions?</h2>
+<div class="grid">
+  <section class="panel"><h3>R1 · Stale authorization</h3><p>If the engineer authorizes commit A, the PR changes to commit B, and effective GitHub rules allow the earlier instruction to qualify, unapproved code could become merge-eligible.</p></section>
+  <section class="panel"><h3>R2 · Excess authority</h3><p>If the agent's effective credentials can approve, override or merge independently, intended human judgment is not an enforced technical boundary.</p></section>
+  <section class="panel"><h3>R3 · Missing reconciliation</h3><p>If human instructions, agent actions, GitHub reviews and actual merges cannot be joined, unauthorized or duplicate activity may be missed.</p></section>
+  <section class="panel"><h3>Additional design questions</h3><p>Consider wrong-PR execution, instruction changes induced by untrusted PR content, standing approvals, merge queues and post-merge release paths.</p></section>
+</div>
+<h2>Proposed safeguards and evidence basis</h2>
+<p class="fine">All four are design expectations. None is a claim of implemented or independently tested control effectiveness.</p>
+<div class="table-wrap"><table class="risklist"><thead><tr><th>Safeguard objective</th><th>Proposed</th><th>Reported status</th><th>Independent evidence</th></tr></thead>
+<tbody>
+<tr><td>Exact-revision human authorization</td><td>Yes</td><td>Unknown</td><td>Not assessed</td></tr>
+<tr><td>Restricted agent identities and bypass privileges</td><td>Yes</td><td>Unknown</td><td>Not assessed</td></tr>
+<tr><td>Independent GitHub merge enforcement</td><td>Yes</td><td>Unknown</td><td>Not assessed</td></tr>
+<tr><td>Instruction-to-review-to-merge reconciliation</td><td>Yes</td><td>Unknown</td><td>Not assessed</td></tr>
+</tbody></table></div>
+<p class="fine">On narrow screens, scroll the table horizontally for the evidence columns. A proposed design is not an implementation claim; reported implementation is not proof of operation.</p>
+<h2>One shared assessment · next gate by role</h2>
+<div class="grid">
+  <section class="panel"><h3>Engineering</h3><p>Compare the existing workflow with both alternatives. Demonstrate boundaries using the real identities and effective GitHub rules before deciding pilot scope.</p></section>
+  <section class="panel"><h3>Risk &amp; GRC</h3><p>Define eligibility, exposure, accountable owner, exceptions and suspension triggers. No acceptance decision has occurred.</p></section>
+  <section class="panel"><h3>Independent Assurance</h3><p>Define the evidence needed for independent evaluation; no assurance conclusion is possible from this fictional description.</p></section>
+</div>
+<details class="panel"><summary>Illustrative scoring worksheet assumptions (not an approval criterion)</summary>
+<p>Fictional impact × likelihood inputs: stale decision 5 × 3 = 15/25; excessive privilege 5 × 2 = 10/25; unreconciled activity 4 × 3 = 12/25. These are not calibrated or validated rankings. Residual ratings require actual evidence and management criteria.</p>
+</details>
+<nav class="actions" aria-label="Optional portable worksheets"><a href="./downloads/AI_SDLC_Risk_Scoring_Completed_Fictional.csv" download>Completed fictional worksheet (CSV) ↓</a><a href="./downloads/AI_SDLC_Risk_Scoring_Blank.csv" download>Blank template (CSV) ↓</a><a href="./ai-sdlc-risk.html#risk-score-templates">Return to Field Guide assessment →</a></nav>
+<footer><p><strong>Decision ownership:</strong> Engineering and management would own an actual design decision and its scope, evidence, criteria and risk acceptance. This artifact is a fictional, conditional teaching example—not permission to merge or deploy.</p></footer>
+</main></body></html>
