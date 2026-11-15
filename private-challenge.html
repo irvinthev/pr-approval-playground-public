@@ -208,7 +208,8 @@ main#main-content .panel{background:#0e273c;border-color:#38586c}
 .refine-focus-row select{background:#0a2537;border:1px solid #78a6b8;border-radius:8px;
   color:#f0faff;font:inherit;font-size:13px;padding:9px;max-width:100%;min-width:200px}
 .refine-question{background:#0a283b;border:1px solid #3e687d;border-radius:10px;padding:13px;margin-top:10px}
-.refine-question strong{display:block;font-size:14px;line-height:1.4}
+.refine-question summary{cursor:pointer;font-weight:700;font-size:14px;line-height:1.4}
+.refine-question summary:focus-visible{outline:3px solid var(--mint);outline-offset:2px}
 .refine-question p{font-size:12px;line-height:1.5;color:#c4dce8;margin:5px 0}
 .refine-question label{font-size:12px;margin:11px 0 5px;color:#dceef8}
 .refine-question input{min-width:0;font-size:13px;padding:10px}
@@ -439,6 +440,7 @@ main#main-content .panel{background:#0e273c;border-color:#38586c}
           <h3 id="report-sources-title">Source basis</h3>
           <p class="small">Documents supplied to the model or cited in its response. A source appearing here does not mean a particular control is implemented or that the model's interpretation has been verified.</p>
           <div id="report-sources" class="report-source-groups"></div>
+          <div class="refine-actions"><button type="button" data-challenge="justify">Justify &amp; challenge these source claims</button></div>
         </section>
         <p class="report-note">Preliminary design discussion only. Observed gaps, final control expectations, applicability and acceptance decisions require direct implementation evidence. The report uses the existing model response; no separate assessment engine or new API request.</p>
       </div>
@@ -614,8 +616,9 @@ function renderRefinementQuestions(data){
   const subtitle=add('p',target,'','small');
   subtitle.textContent='Showing three curated '+({delegated:'delegated approval',access:'access and tool authority',plan:'PR plan',general:'architecture'}[focus])+' questions. These are editorial prompts, not Gemini findings.';
   for(const [index,q] of questions.entries()){
-    const box=add('div',target,'','refine-question');
-    add('strong',box,(index+1)+'. '+q.q);
+    const box=document.createElement('details');
+    box.className='refine-question';box.open=index===0;target.append(box);
+    add('summary',box,(index+1)+'. '+q.q);
     add('p',box,'Why it matters: '+q.why);
     add('p',box,'What could change: '+q.changes);
     const reference=add('a',box,'Design reference: '+q.source);
@@ -853,7 +856,6 @@ async function ask(follow){
     state.continuityReceipts=(follow?state.continuityReceipts:[]).concat(data.continuityReceipt).slice(-3);
     if(follow)el('question').value='';
     if(follow && state.pendingRefinement)state.refinementSent=true;
-    if(!follow && !state.scenario)state.refinementSent=false;
     render(data);
     if(follow && state.pendingRefinement)setView('report');
     status('Gemini response received. Review its reasoning and source relevance.');
