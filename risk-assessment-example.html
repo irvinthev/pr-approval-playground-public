@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Worked Risk Assessment | AI SDLC Field Guide</title>
+<link rel="stylesheet" href="./site.css">
+<style>
+:root{color-scheme:dark}
+.assessment{max-width:980px;margin:auto;padding:22px 22px 52px;color:#e9f4f7;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.assessment a{color:#9de8d4}.assessment header{display:flex;justify-content:space-between;gap:12px;align-items:center;border-bottom:1px solid #426170;padding-bottom:14px;margin-bottom:28px;font-size:13px}
+.assessment header a{text-decoration:none;font-weight:750}.assessment .eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:#a5e7d7;font-weight:800}
+.assessment h1{font-size:clamp(30px,4vw,42px);line-height:1.13;margin:11px 0}.assessment h2{font-size:19px;margin:0 0 10px}.assessment h3{font-size:15px;margin:0 0 7px}
+.assessment p,.assessment li{font-size:14px;line-height:1.57}.assessment .lead{color:#bbd2dd;max-width:860px}
+.assessment .decision{border:1px solid #5b9587;background:#123f40;border-radius:12px;padding:19px 21px;margin:21px 0}
+.assessment .decision h2{color:#f1fcf8}.assessment .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin:15px 0}
+.assessment .panel{border:1px solid #476d7a;border-radius:10px;padding:15px 17px;background:#153044}
+.assessment .panel p{margin:0}.assessment .panel ul{margin:7px 0;padding-left:20px}
+.assessment .conditions{border-left:3px solid #9de8d4;padding:3px 17px;margin:17px 0}
+.assessment .risklist{width:100%;border-collapse:collapse}.assessment th,.assessment td{text-align:left;vertical-align:top;padding:10px;border-bottom:1px solid #466270;font-size:12px;line-height:1.5}.assessment th{color:#a4edda}.assessment .risklist th:nth-child(3),.assessment .risklist td:nth-child(3){white-space:nowrap}
+.assessment .fine{font-size:12px;color:#aec9d3}.assessment .actions{display:flex;flex-wrap:wrap;gap:12px;margin:20px 0}.assessment .actions a{border:1px solid #83c3b2;padding:10px 13px;border-radius:8px;text-decoration:none;font-weight:750;font-size:13px}
+.assessment footer{margin-top:20px;padding-top:15px;border-top:1px solid #466270;color:#aec9d3}
+@media(max-width:680px){.assessment{padding:15px}.assessment .grid{grid-template-columns:1fr}.assessment header{align-items:flex-start;flex-direction:column}.assessment .table-wrap{overflow-x:auto}.assessment .risklist{min-width:640px}}
+@media print{*{color:#111!important;background:#fff!important;box-shadow:none!important}.assessment{padding:0;font-family:Arial,sans-serif}.assessment .grid{grid-template-columns:1fr 1fr;gap:9px}.assessment .panel,.assessment .decision{border:1px solid #888;padding:10px;margin:9px 0}.assessment h1{font-size:23pt;margin:5px 0}.assessment h2{font-size:12pt}.assessment h3{font-size:10pt}.assessment p,.assessment li{font-size:9pt;line-height:1.28}.assessment th,.assessment td{font-size:8pt;padding:6px}.assessment .lead,.assessment .fine{font-size:8pt}.assessment header,.assessment .actions{display:none}.assessment footer{font-size:8pt}.assessment .conditions{margin:8px 0}.assessment .table-wrap{overflow:visible}@page{size:letter;margin:.48in}}
+</style></head>
+<body><main class="assessment" id="main">
+<header><a href="./index.html">◈ AI SDLC / FIELD GUIDE</a><a href="./ai-sdlc-risk.html#risk-score-templates">← Risk assessment &amp; downloads</a></header>
+<span class="eyebrow">Worked example · Fictional / not a system assessment</span>
+<h1>Human decides. Agent submits. What must be true?</h1>
+<p class="lead">A hypothetical engineer makes an explicit approval decision for a stacked pull request and instructs an agent to submit the GitHub review. The agent executes the instruction; it does not independently decide whether to approve.</p>
+<section class="decision" aria-labelledby="recommendation"><span class="eyebrow">Conditional engineering recommendation</span><h2 id="recommendation">Explore a narrow, non-critical pilot. Do not rely on agent-submitted approval until enforcement is established.</h2><p>The proposed separation of human judgment from agent execution could reduce repetitive work. But a recorded human instruction is not enough if the agent can approve a different revision or use credentials that bypass the intended approval route.</p></section>
+<div class="grid">
+<section class="panel"><h3>How could it actually fail?</h3><p>An engineer authorizes commit A; the PR changes to commit B. An agent submits the earlier instruction, <em>and</em> effective GitHub rules allow approval of B to count toward a protected merge. If the merge/release path also allows it, unreviewed code could reach production.</p></section>
+<section class="panel"><h3>Strongest competing explanation</h3><p>Effective GitHub rules may already reject stale reviews, prevent the agent identity from satisfying required approvals, and restrict bypass. If so, the most serious failure path is constrained. Those settings and their behavior have not been established for this fictional case.</p></section>
+<section class="panel"><h3>Most important safeguards</h3><ul><li>Human authorization bound to an exact revision.</li><li>Agent identity and credentials cannot independently authorize or bypass.</li><li>Protected merge rejects stale or unauthorized approvals.</li><li>Reconcile instructions, GitHub events, merges and deployed revisions.</li></ul><p class="fine">Implementation status: Unknown for every safeguard.</p></section>
+<section class="panel"><h3>Simpler alternative</h3><p>Use AI to prepare review findings and a prioritized stacked-PR queue, then have the engineer approve directly in GitHub. This preserves native attribution with less agent authority. The alternative may deliver most of the productivity benefit with lower operating complexity.</p></section>
+</div>
+<section class="conditions"><h2>What could change the recommendation?</h2><p><strong>Decision-changing test:</strong> With the real agent identity, token scopes and effective repository rules, can a reviewer instruction for commit A cause commit B to receive a qualifying approval or merge without fresh human authorization? Test both the normal route and the effective bypass paths. If an unauthorized merge is possible, do not enable the route. If independently prevented and reconstructable, a bounded pilot becomes more credible.</p></section>
+<h2>Illustrative risk-scoring worksheet</h2><div class="table-wrap"><table class="risklist"><thead><tr><th>Failure condition</th><th>Required safeguard / what we know</th><th>Assumed score*</th></tr></thead>
+<tbody><tr><td>Old instruction can qualify a changed revision</td><td>Revision-bound authorization, protected merge; status unknown</td><td>15 / 25</td></tr><tr><td>Agent can use privileged or shared credentials to bypass</td><td>Least privilege, independent GitHub enforcement; status unknown</td><td>10 / 25</td></tr><tr><td>Unmatched instruction/review/merge activity goes undetected</td><td>Independent population reconciliation and exception response; status unknown</td><td>12 / 25</td></tr></tbody></table></div>
+<p class="fine">*Scores are hypothetical impact (1–5) × hypothetical likelihood (1–5) inputs for teaching purposes. No empirical likelihood, approved scoring bands, organization-specific ranking, residual risk or operating control effectiveness is established. A higher sample number is not a validated decision priority; technical gating and plausible consequences come first.</p>
+<nav class="actions" aria-label="Continue with worksheets"><a href="./downloads/AI_SDLC_Risk_Scoring_Completed_Fictional.csv" download>Detailed completed worksheet (CSV) ↓</a><a href="./downloads/AI_SDLC_Risk_Scoring_Blank.csv" download>Reusable blank worksheet (CSV) ↓</a><a href="./ai-sdlc-risk.html#risk-score-templates">Assessment method and assumptions →</a></nav>
+<footer><p><strong>Decision ownership:</strong> Engineering and management would own an actual design decision and its scope, evidence, criteria and risk acceptance. This artifact is a fictional, conditional teaching example—not permission to merge or deploy.</p></footer>
+</main></body></html>
