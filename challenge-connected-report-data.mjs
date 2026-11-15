@@ -18,9 +18,10 @@ export function isHumanDelegatedApprovalScenario(scenario){
   return /\b(agent|automation|assistant|claude)\b/i.test(text) &&
     /\b(approv(?:e|al|es|ed|ing)|reviews?)\b/i.test(text) &&
     /\b(github|pull requests?|\bPRs?\b|stacked)\b/i.test(text) &&
-    /\b(engineer|human|person|reviewer)\b/i.test(text) &&
-    (/\b(decid(?:e|es|ed|ing)|decision|authoriz(?:e|es|ed|ation))\b/i.test(text) ||
-      /\b(?:engineer|human|reviewer)\s+reviews?\s+and\s+approv(?:e|es|ed)\b/i.test(text));
+    // Attribute the decision to the human actor in the same clause.
+    // A scenario where an engineer reviews a plan but the agent decides
+    // actual PR approval must NOT be treated as delegated human approval.
+    /\b(?:engineer|human|person|reviewer)\b(?:(?!\b(?:agent|bot|autonomous model)\b)[^.!?]){0,180}\b(?:decid(?:e|es|ed|ing)|decision|authoriz(?:e|es|ed|ation)|approv(?:e|es|ed|ing|al))\b/i.test(text);
 }
 export function projectConnectedReport(data,scenarioText=''){
   if(!data||typeof data!=='object'||!array(data.conclusions).length) return null;
