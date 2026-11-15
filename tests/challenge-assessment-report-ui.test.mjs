@@ -31,10 +31,10 @@ test('renders dynamically using existing response contract and no new network or
 });
 test('report explicitly distinguishes illustrative safeguards from actual findings',()=>{
  assert.match(source,/Illustrative design patterns—not confirmed controls/);
- assert.match(source,/not verified findings/);
- assert.match(source,/No severity or residual-risk score has been assigned/);
+ assert.match(source,/not verified weaknesses/);
+ assert.match(source,/Model-generated design assessment, not independent source verification/);
  assert.match(source,/Not independently verified/);
- assert.match(source,/No supported recommendation was returned/);
+ assert.match(source,/No defensible preliminary conclusion was returned/);
  assert.doesNotMatch(source,/riskScore\s*=/);
 });
 test('compares example controls for human, delegated and autonomous authority',()=>{
