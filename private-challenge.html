@@ -245,6 +245,7 @@ main#main-content .panel{background:#0e273c;border-color:#38586c}
 .refine-question{padding:11px 12px;margin-top:9px}
 .refine-question strong{font-size:14px}
 .refine-option-group{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}
+.refine-option-group .refine-option{margin:0;font-weight:500}
 .refine-option{border:1px solid #698a9b;border-radius:9px;background:#15394f;padding:9px;display:flex;gap:7px;
   align-items:center;cursor:pointer;font-size:12px;min-height:43px}
 .refine-option:has(input:checked){border-color:#b2f1db;background:#23636a;color:white}
@@ -675,7 +676,7 @@ function renderAssessmentReport(data){
     el('report-revised').textContent=(state.previousTakeaway.trim()===takeaway.trim()?
       'Recommendation unchanged: ':'Now: ')+takeaway;
   }
-  const questions=Array.isArray(data.challenges)?data.challenges.slice(0,4):[];
+  const questions=Array.isArray(data.challenges)?data.challenges.slice(0,3):[];
   for(const item of questions){
     const card=add('div',risks,'','report-risk-card');
     add('strong',card,item.question||'Material question');
@@ -954,6 +955,9 @@ el('report-preview-link').addEventListener('click',()=>setView('report',true));
 el('refinement-submit').addEventListener('click',()=>{
   if(state.busy || state.turns.length>=6)return;
   if(!state.scenario){status('Analyze a scenario first.',true);return}
+  if(Object.values(state.refinementAnswers).some(answer=>answer.choice==='Other'&&!String(answer.other||'').trim())){
+    el('refinement-status').textContent='Add a short explanation for Other.';return;
+  }
   const prompt=refinementFollowupPrompt();
   if(!prompt){el('refinement-status').textContent='Select at least one answer, including Unknown if appropriate.';return}
   if(prompt.length>1000){el('refinement-status').textContent='Please shorten your answers to fit the existing follow-up limit.';return}
