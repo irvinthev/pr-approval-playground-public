@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {AGENT_CONTRACT_VERSION,validateAgentResponse} from '../challenge-agent-contract.js';
-import {riskPathCatalog,riskPathRoles,riskPathPromptStages} from '../challenge-risk-path-catalog.mjs';
+import {riskPathCatalog,riskPathRoles,riskPathPromptStages} from '../challenge-risk-path-catalog.js';
 import {projectConnectedReport,projectRiskPath} from '../challenge-connected-report-data.mjs';
 import {buildModelRequest} from '../api/challenge.js';
 

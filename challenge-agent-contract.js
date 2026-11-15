@@ -1,7 +1,7 @@
 // Pure validation contract between a future private LLM backend and the public educational UI.
 // Does not invoke a model. Framework records remain canonical in framework-source-catalog.js.
 import {sourceCatalog} from './framework-source-catalog.js';
-import {riskPathCatalog,riskPathRoles} from './challenge-risk-path-catalog.mjs';
+import {riskPathCatalog,riskPathRoles} from './challenge-risk-path-catalog.js';
 
 export const AGENT_CONTRACT_VERSION = '0.1.0';
 const knownProvisions=new Map(sourceCatalog.provisions.map(p=>[p.id,p]));

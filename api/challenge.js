@@ -5,7 +5,7 @@ import { issueReceipt, verifiedHistory } from '../lab/challenge-turn-receipts.cj
 import { selectEngineeringReferences, referencePrompt } from '../lab/engineering-references.cjs';
 import { sourceCatalog } from '../framework-source-catalog.js';
 import { AGENT_CONTRACT_VERSION, validateAgentResponse } from '../challenge-agent-contract.js';
-import {riskPathPromptStages} from '../challenge-risk-path-catalog.mjs';
+import {riskPathPromptStages} from '../challenge-risk-path-catalog.js';
 
 const MAX_BODY = 22000;
 const MAX_TURNS = 6;

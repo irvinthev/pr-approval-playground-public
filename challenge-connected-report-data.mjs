@@ -1,5 +1,5 @@
 // Pure projection of the current validated Challenge Lab response into a connected-report preview.
-import {riskPathCatalog,riskPathRoles} from './challenge-risk-path-catalog.mjs';
+import {riskPathCatalog,riskPathRoles} from './challenge-risk-path-catalog.js';
 // No claims about system implementation, management decisions, or independent assurance are synthesized.
 const words=(value,max=800)=>typeof value==='string'?value.trim().slice(0,max):'';
 const array=value=>Array.isArray(value)?value:[];
