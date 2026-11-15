@@ -26,7 +26,8 @@ export function contractFailureCodes(errors){
       :error.startsWith('Unknown contract version')?'VERSION'
       :error.startsWith('At least one challenge')?'CHALLENGES'
       :error.startsWith('At least one explicit fact')?'FACTS'
-      :error.startsWith('External model cannot assert')?'FORBIDDEN_DIGEST':'OTHER';
+      :error.startsWith('External model cannot assert')?'FORBIDDEN_DIGEST'
+      :error.startsWith('Model referenced an unprovided')?'ENGINEERING_REFERENCES':'OTHER';
     if(!codes.includes(label))codes.push(label);
   }
   return codes;
@@ -47,6 +48,30 @@ export function invalidSourceIds(parsed, selectedReferences){
     misplaced:ids.filter(id=>typeof id==='string'&&!catalogIds.has(id)&&selected.has(id))
   };
 }
+export function normalizeEngineeringReferences(parsed, selectedReferences){
+  const allowed=new Set(selectedReferences.map(reference=>reference.id));
+  const removed=[];
+  const normalize=ids=>{
+    if(!Array.isArray(ids))return ids;
+    const seen=new Set();
+    return ids.filter(id=>{
+      if(typeof id!=='string'||!allowed.has(id)||seen.has(id)){
+        removed.push(typeof id==='string'?id:'invalid source ID');
+        return false;
+      }
+      seen.add(id);
+      return true;
+    });
+  };
+  if(parsed.referenceIds!==undefined)parsed.referenceIds=normalize(parsed.referenceIds);
+  if(Array.isArray(parsed.expectedSafeguards)){
+    for(const safeguard of parsed.expectedSafeguards){
+      if(safeguard&&safeguard.referenceIds!==undefined)
+        safeguard.referenceIds=normalize(safeguard.referenceIds);
+    }
+  }
+  return [...new Set(removed)];
+}
 export function buildContractRepairRequest(original,previous,errors){
   const codes=contractFailureCodes(errors);
   return {
@@ -61,6 +86,7 @@ export function buildContractRepairRequest(original,previous,errors){
         'For conceptual proposals use approvalOutcomes:[] rather than invented submissions. '+
         'Each conclusion requires scenarioBasis, application, openQuestion, basisType (engineering-judgment, scenario-inference, or framework-interpretation), and citationIds:[]. '+
         'Put selected GitHub/Claude technical source IDs only into referenceIds, never citationIds. '+
+        'For the top-level and safeguard referenceIds arrays, use unique exact IDs from the selected engineering cards in the system message. If a source is unavailable, remove its ID and narrow or qualify any claim that depended on it. Use [] when no selected card directly supports the claim. '+
         'The citationIds arrays are reserved exclusively for framework catalog provision IDs. '+
         'For framework-interpretation, cite only actual catalog provision IDs and include them in top-level citationIds. '+
         'Also include expectedSafeguards and clarifications. Include counterargument and any required reassessment text. Safeguards need objective, why, implementation, implementationBasis when reported, and referenceIds. Clarifications need question, why, options. '+
@@ -112,7 +138,7 @@ export function buildModelRequest(input){
     'Steelman both the proposed design and the status quo. A GitHub UI click is not inherently more meaningful than an agent executing an explicit human decision; neither proves review quality.',
     'Apply the same burden of proof to existing human review, CODEOWNERS, bot approval and agent-mediated approval. Explain the strongest counterargument to your preferred option.',
     'In alternatives, give one feasible simpler option when relevant, with its engineering upside, tradeoff, and when to prefer it. Consider existing tools, redesign, or eliminating steps. Use [] when no simpler option makes sense.',
-    'challenges are the 1–4 material risks or tradeoffs for this design. Use question as a concise, descriptive headline and reason to explain the realistic failure or tradeoff and its impact. Use tests for useful verification or recovery checks and alternatives for risk-specific design options only. Avoid repeating the main recommendation.',
+    'challenges are the 1–4 material risks or tradeoffs for this design. Put the risk most likely to affect the recommendation first. Use question as a concise, descriptive headline and reason to explain the triggering condition and realistic consequence or tradeoff. Use tests for useful verification or recovery checks and alternatives for risk-specific design options only. Avoid repeating the main recommendation.',
     'counterargument: give the strongest reason to take a different path and the assumption most likely to undermine the recommendation. Examine the status quo with the same rigor.',
     'Test your important claims against the selected sources in the first answer. Narrow unsupported platform claims and distinguish documented capability, scenario inference, and missing implementation evidence.',
     'Make the first conclusion application a direct 1–2 sentence answer to the latest question, not a compliance preamble. On follow-up, explicitly reconsider the previous recommendation and correct it if the new argument is stronger; do not reflexively agree with the user.',
@@ -122,10 +148,10 @@ export function buildModelRequest(input){
     'Required: facts [{statement,support:"explicit-user-statement"|"inference"|"unknown"}],',
     'challenges [{question,reason,tests:[string],alternatives:[string]}],',
     'For unfamiliar scenarios, reason from the architecture and objectives; do not assume the problem concerns GitHub or PR approval. Select sources only when relevant.',
-    'expectedSafeguards: up to 8 concise scenario-specific [{objective,why,implementation,implementationBasis,referenceIds:[technical source ID]}]. Prefer outcomes over named tools. Include functionally equivalent alternatives where relevant. Do not list controls unrelated to the actual scenario.',
+    'expectedSafeguards: up to 8 concise scenario-specific [{objective,why,implementation,implementationBasis,referenceIds:[technical source ID]}]. Put safeguards the recommendation most depends on first. Prefer outcomes over named tools. Include functionally equivalent alternatives where relevant. Do not list controls unrelated to the actual scenario.',
     'Safeguard implementation must be exactly not-assessed, reported-absent, reported-partial, or reported-full, with no other value. Only use reported-* if the user explicitly described its status in the scenario or follow-up; never infer implementation from design aspirations. implementationBasis must briefly identify the specific user statement for a reported status. Use not-assessed if uncertain. These are reported claims, not verified effectiveness.',
     'Each safeguard referenceIds must use 0–2 IDs from the selected technical source cards only, matching a specific documented capability. If no reference supports the claim, use []. No invented documents, source text, or direct inspection claims.',
-    'clarifications: zero to three [{question,why,options:[string]}] that could materially change your best initial assessment. Generate questions from the concrete scenario, avoid repeating information already supplied in the scenario or follow-ups, and return [] if the decision and assessment of material safeguards would remain the same across credible answers. Ask only questions with a concrete decision consequence.',
+    'clarifications: zero to three [{question,why,options:[string]}] that could materially change your best initial assessment. Put the question most likely to change the recommendation first. Generate questions from the concrete scenario, avoid repeating information already supplied in the scenario or follow-ups, and return [] if the decision and assessment of material safeguards would remain the same across credible answers. Ask only questions with a concrete decision consequence.',
     'For each clarification supply 2–4 distinct, short, mutually meaningful click choices tailored to the question. Do not list Unknown or Other: the UI adds those choices. Do not ask whether a named product feature exists unless that feature is actually relevant to the identified failure mode.',
     'On follow-up, use reassessment as a short, explicit account of which answers changed the recommendation or specific safeguards, which uncertainties remain material, and why any unchanged recommendation still stands. Treat Unknown and skipped answers as unresolved. Mark a newly reported status only when the user supplied it. Return clarifications:[] on reassessment.',
     input.assessmentPhase==='reassess'
@@ -145,7 +171,8 @@ export function buildModelRequest(input){
     'For each conclusion set basisType accurately: framework-interpretation means a specific cited provision provides relevant guidance (and requires at least one citation); scenario-inference means a conditional inference from the supplied facts or unknowns; engineering-judgment means your architecture, economic, or tradeoff reasoning. Framework references do not validate deployment facts.',
     'Limit each conclusion to at most three directly relevant catalog IDs. Use no new IDs or links invented by the model. Always distinguish product behavior requiring official technical documentation from assumptions: the catalog is not a live technical-doc lookup.',
     'Use the curated technical references below when relevant. They are source-linked, date-limited summaries, NOT live retrieval, not the full documents, not independent verification, and not policy rules.',
-    'Return an additional top-level referenceIds array of zero to five IDs from the selected engineering reference cards ONLY when their specific content contributes to the answer. Do not cite cards merely because they were provided; never invent IDs.',
+    'Exact allowed technical reference IDs for this response: '+(selectedReferences.map(ref=>ref.id).join(', ')||'(none)')+'. Use only these exact IDs in top-level and safeguard referenceIds; use [] when none applies.',
+    'Return an additional top-level referenceIds array of zero to five unique exact IDs from the selected engineering reference cards ONLY when their specific content contributes to the answer. Do not cite cards merely because they were provided; never invent IDs.',
     'Use empty arrays for absent optional conclusions citations, engineering referenceIds, and review outcomes. For hypothetical approval designs with no actual review submitted, approvalOutcomes MUST be [].',
     'Every conclusion must include all five fields: scenarioBasis, application, openQuestion, basisType and citationIds. Always include top-level counterargument, contractVersion, facts, challenges, conclusions, approvalOutcomes, citationIds, referenceIds, alternatives, unknowns, expectedSafeguards and clarifications.',
     'Use source claims no more broadly than the source says. Separate what a platform documents from the organization-specific behavior that would require inspection. Distinguish operating models (human, delegated human, autonomous AI) from components (GitHub Apps, rulesets, OPA).',
@@ -199,18 +226,30 @@ export default async function handler(req,res){
     let parsed;
     try{parsed=JSON.parse(envelope?.choices?.[0]?.message?.content)}
     catch{return json(res,502,{error:'Model returned invalid JSON'})}
-    const referenceIds=parsed.referenceIds===undefined?[]:parsed.referenceIds;
     // All reference IDs must be included in the selected server-provided cards.
-    const validIds=new Set(selectedReferences.map(r=>r.id));
-    if(!Array.isArray(referenceIds)||referenceIds.length>5||
-      referenceIds.some(id=>typeof id!=='string'||!validIds.has(id))||
-      new Set(referenceIds).size!==referenceIds.length){
+    const allowedReferenceIds=selectedReferences.map(ref=>ref.id);
+    const validIds=new Set(allowedReferenceIds);
+    const referenceError='Model referenced an unprovided or duplicate engineering source';
+    const removedReferences=new Set();
+    function checkResponse(candidate){
+      const ids=candidate?.referenceIds===undefined?[]:candidate.referenceIds;
+      if(!Array.isArray(ids)||ids.some(id=>typeof id!=='string'||!validIds.has(id))){
+        return {ok:false,errors:[referenceError]};
+      }
+      // Repeated exact IDs carry the same provenance. Collapse them locally.
+      const referenceIds=input.assessmentPhase?[...new Set(ids)]:ids;
+      if(referenceIds.length>5 || new Set(referenceIds).size!==referenceIds.length){
+        return {ok:false,errors:[referenceError]};
+      }
+      return {...validateAgentResponse(candidate,{
+        scenarioText:input.scenarioText,requireGrounding:true,
+        allowedReferenceIds,assessmentPhase:input.assessmentPhase
+      }),referenceIds};
+    }
+    let checked=checkResponse(parsed);
+    if(!input.assessmentPhase && checked.errors?.includes(referenceError)){
       return json(res,502,{error:'Model referenced an unprovided or duplicate engineering source'});
     }
-    let checked=validateAgentResponse(parsed,{
-      scenarioText:input.scenarioText,requireGrounding:true,
-      allowedReferenceIds:selectedReferences.map(ref=>ref.id),assessmentPhase:input.assessmentPhase
-    });
     let repaired=false;
     if(!checked.ok){
       const firstCodes=contractFailureCodes(checked.errors);
@@ -231,24 +270,22 @@ export default async function handler(req,res){
           let candidate;
           try{candidate=JSON.parse(repairEnvelope?.choices?.[0]?.message?.content)}catch{}
           if(candidate){
-            const candidateIds=candidate.referenceIds===undefined?[]:candidate.referenceIds;
-            if(Array.isArray(candidateIds)&&candidateIds.length<=5 &&
-              candidateIds.every(id=>typeof id==='string'&&validIds.has(id)) &&
-              new Set(candidateIds).size===candidateIds.length){
-              const candidateCheck=validateAgentResponse(candidate,{
-                scenarioText:input.scenarioText,requireGrounding:true,
-                allowedReferenceIds:selectedReferences.map(ref=>ref.id),assessmentPhase:input.assessmentPhase
-              });
-              parsed=candidate;
-              referenceIds.splice(0,referenceIds.length,...candidateIds);
-              checked=candidateCheck;
-              repaired=candidateCheck.ok;
-            }else{
+            parsed=candidate;
+            checked=checkResponse(candidate);
+            if(!input.assessmentPhase && checked.errors?.includes(referenceError)){
               return json(res,502,{error:'Model referenced an unprovided or duplicate engineering source after repair'});
             }
+            repaired=checked.ok;
           }
         }
       }
+    }
+    // A focused assessment should remain useful if the model still emits a bad
+    // source ID after its one correction attempt. Sanitize only at this final
+    // fallback, so a correctable provenance error cannot bypass that attempt.
+    if(!checked.ok && input.assessmentPhase && parsed){
+      for(const id of normalizeEngineeringReferences(parsed,selectedReferences))removedReferences.add(id);
+      checked=checkResponse(parsed);
     }
     if(!checked.ok){
       const codes=contractFailureCodes(checked.errors);
@@ -260,10 +297,11 @@ export default async function handler(req,res){
     return json(res,200,{...checked.data,
       engineeringReferences:selectedReferences.map(r=>({
         id:r.id,title:r.title,publisher:r.publisher,kind:r.kind,url:r.url,
-        reviewedAsOf:r.reviewedAsOf,facts:r.facts,limits:r.limits,modelUsed:referenceIds.includes(r.id)||
+        reviewedAsOf:r.reviewedAsOf,facts:r.facts,limits:r.limits,modelUsed:checked.referenceIds.includes(r.id)||
           checked.data.expectedSafeguards.some(s=>s.referenceIds.includes(r.id))
       })),
-      continuityReceipt,turnsUsed:input.turns.length,mode:'live-model',responseRepaired:repaired});
+      continuityReceipt,turnsUsed:input.turns.length,mode:'live-model',responseRepaired:repaired,
+      ...(removedReferences.size?{referenceWarning:'Some source links were omitted because those cards were not supplied for this scenario.'}:{})});
   }catch{
     if(controller.signal.aborted){
       console.warn('Challenge Lab: Gemini response timed out.');

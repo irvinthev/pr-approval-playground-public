@@ -3,12 +3,13 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 const source=fs.readFileSync(new URL('../private-challenge.html',import.meta.url),'utf8');
-test('recommendation and alternatives precede expandable technical depth',()=>{
- const order=['report-takeaway','report-counterargument','report-option','report-risks','report-expected-safeguards','refine-panel','report-sources-details'];
+test('the decision brief puts the recommendation, lead risk, safeguards and questions ahead of technical depth',()=>{
+ const order=['report-takeaway','report-lead-risk','report-expected-safeguards','refine-panel','report-other-safeguards','report-risks','report-counterargument','report-option','report-sources-details'];
  for(let i=1;i<order.length;i++)
   assert.ok(source.indexOf('id="'+order[i]+'"')>source.indexOf('id="'+order[i-1]+'"'));
  assert.match(source,/add\('details',risks/);
- assert.match(source,/add\('details',safeguards/);
+ assert.match(source,/add\('details',target,'','expected-item'\)/);
+ assert.match(source,/<details class="report-extra report-reasoning" id="report-reasoning"/);
  assert.match(source,/<details class="report-extra" id="report-sources-details"/);
  const renderer=source.split('function renderAssessmentReport(data){')[1].split('function showAssessment()')[0];
  assert.doesNotMatch(renderer,/fetch\(|XMLHttpRequest|navigator\.sendBeacon/);
