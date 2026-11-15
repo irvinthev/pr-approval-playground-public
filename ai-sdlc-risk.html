@@ -417,33 +417,86 @@ details.field-deep-dive>section{margin:0 14px 16px}
 
 </section>
 
-<section class="field-section" id="risk-score-templates" aria-labelledby="risk-score-templates-title" style="border:1px solid #497481;border-radius:14px;background:#102e3d;padding:clamp(16px,3vw,24px);margin:25px 0;scroll-margin-top:20px">
-  <span class="field-kicker">FINAL STEP / FROM RISK TO ENGINEERING DECISION</span>
-  <h2 id="risk-score-templates-title">Finish with a defensible decision, not just a score.</h2>
-  <p>Apply the Field Guide to a <strong>fictional stacked-PR proposal</strong>: an engineer decides to approve and an agent submits the review. The question is whether the exact authorized change is independently enforced—not whether the agent's action produces a convincing log.</p>
-  <div style="border:1px solid #5b9587;background:#123f40;border-radius:11px;padding:17px 20px;margin:17px 0">
-    <span class="field-kicker">CONDITIONAL RECOMMENDATION · FICTIONAL EXAMPLE</span>
-    <h3 style="margin:7px 0 9px;font-size:21px;color:#f3fbf8">Explore a narrow, non-critical pilot. Do not rely on agent-submitted approval until the enforcement boundary is established.</h3>
-    <p style="margin:0">A human decision followed by agent execution may save time. It is not acceptable if an instruction for commit A can qualify a changed commit B, or if the agent can independently approve or bypass merge protection. <strong>Safeguard implementation: Unknown.</strong></p>
+<style>
+.fg-decision-summary{border:1px solid #598a85;background:#102e3d;border-radius:14px;padding:clamp(16px,3vw,24px);margin:25px 0;scroll-margin-top:20px}
+.fg-decision-summary .fg-hero{border:1px solid #78a99c;background:#153f40;border-radius:12px;padding:clamp(15px,2.6vw,22px);margin:15px 0}
+.fg-decision-summary .fg-hero h3{color:#f1fbf8;font-size:clamp(19px,2.6vw,24px);line-height:1.32;margin:8px 0}
+.fg-decision-summary .fg-gate{border-top:1px solid #517971;padding-top:12px;margin-top:14px}
+.fg-decision-summary .fg-evidence{font-weight:750;color:#f2d39a;margin:12px 0 0}
+.fg-decision-summary .fg-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:14px 0}
+.fg-decision-summary .fg-options article,.fg-decision-summary .fg-exposure,.fg-decision-summary .fg-roles{border:1px solid #456b7d;background:#173449;border-radius:10px;padding:14px}
+.fg-decision-summary .fg-options h4{margin:0 0 7px;font-size:15px;color:#e9f8f5}
+.fg-decision-summary .fg-options p{font-size:13px;margin:0;line-height:1.6}
+.fg-decision-summary .fg-exposure{margin:15px 0}.fg-decision-summary .fg-exposure p{margin:5px 0 0}
+.fg-decision-summary .fg-roles p{margin:8px 0}.fg-decision-summary .fg-table-wrap{overflow-x:auto}
+.fg-decision-summary .fg-ledger{width:100%;border-collapse:collapse;min-width:540px}
+.fg-decision-summary .fg-ledger th,.fg-decision-summary .fg-ledger td{text-align:left;border-bottom:1px solid #496d7b;padding:10px 9px;font-size:13px;vertical-align:top}
+.fg-decision-summary .fg-ledger th{color:#a9edda}.fg-decision-summary .fg-ledger td:last-child{color:#e5cea4}
+.fg-decision-summary details>summary{cursor:pointer;color:#a9edda;font-weight:750;padding:12px 0;min-height:44px}
+.fg-decision-summary .fg-downloads{border-top:1px solid #4e7583;margin-top:18px;padding-top:13px}
+@media(max-width:700px){.fg-decision-summary .fg-options{grid-template-columns:1fr}.fg-decision-summary .fg-ledger{min-width:560px}}
+</style>
+<section class="fg-decision-summary" id="risk-score-templates" aria-labelledby="risk-score-templates-title">
+  <span class="field-kicker">END OF FIELD GUIDE · ONE SHARED ASSESSMENT</span>
+  <h2 id="risk-score-templates-title">A decision first. Three complementary perspectives.</h2>
+  <p><strong>Fictional stacked-PR case:</strong> An engineer intends to decide approval; an agent would submit that decision to GitHub. Intent does not establish what the agent's effective credentials can do. This example is separate from the Field Guide's shared-library scenarios.</p>
+  <section class="fg-hero" aria-label="Worked recommendation">
+    <span class="field-kicker">CONDITIONAL RECOMMENDATION · FEASIBILITY, NOT PRODUCTION AUTHORIZATION</span>
+    <h3>Explore the design and run a controlled feasibility experiment. Do not count agent-submitted reviews as qualifying production approvals until effective enforcement is demonstrated.</h3>
+    <p>The proposed workflow may reduce repetitive reapproval; it could also strengthen revision binding compared with superficial manual clicks. Neither benefit nor safety has been demonstrated in this fictional case.</p>
+    <div class="fg-gate">
+      <strong>Decision-changing question:</strong> Can an instruction authorizing commit A result in commit B receiving a qualifying review or merge without a fresh human decision? Examine the actual agent identity, permissions, rulesets, bypass routes and resulting GitHub records.
+      <p class="fg-evidence">Evidence status: Implementation evidence was not provided for any of the four proposed safeguards. Unknown is not the same as absent or ineffective.</p>
+    </div>
+  </section>
+  <h3>Compare what changes—not only the AI mechanism</h3>
+  <div class="fg-options" aria-label="Illustrative operating model alternatives">
+    <article><h4>Current human approval</h4><p>Preserves native GitHub review attribution, but repeated approval can be superficial. Actual effort, stale-review behavior and error rates are not established.</p></article>
+    <article><h4>AI prepares; human submits</h4><p>AI summarizes changes and organizes the review queue. Human approval stays native; assess whether this removes enough toil before delegating execution.</p></article>
+    <article><h4>Agent submits human decision</h4><p>May remove more repetitive steps. Adds execution identity, instruction interpretation, revision binding and reconciliation dependencies.</p></article>
   </div>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:12px;margin:15px 0">
-    <article style="border:1px solid #476d7a;border-radius:9px;padding:14px;background:#173449"><h3>Failure that matters</h3><p>Human approves A → PR becomes B → agent reuses the earlier decision → effective GitHub rules allow an unauthorized qualifying approval or merge. The technical gate, not the log wording, determines the outcome.</p></article>
-    <article style="border:1px solid #476d7a;border-radius:9px;padding:14px;background:#173449"><h3>Strongest competing explanation</h3><p>Effective GitHub settings may already invalidate stale approvals, require eligible independent reviewers and reject bypass attempts. Verify the actual identity, rules and merge behavior before treating this path as exploitable.</p></article>
-    <article style="border:1px solid #476d7a;border-radius:9px;padding:14px;background:#173449"><h3>Decision-changing evidence</h3><p>Attempt the A-to-B revision change using effective agent credentials and branch protections; reconcile instruction, review, merge and deployment records. If unauthorized B can merge, stop. If independently prevented, consider a bounded pilot.</p></article>
-    <article style="border:1px solid #476d7a;border-radius:9px;padding:14px;background:#173449"><h3>Simpler engineering alternative</h3><p>Have AI prepare context and the review queue, while engineers approve directly in GitHub. Compare its productivity gain and lower privilege needs against an agent-submitted approval route.</p></article>
+  <div class="fg-exposure">
+    <h3>When could it actually fail?</h3>
+    <p><strong>Revision:</strong> If commit A is authorized, the PR changes to B, and effective merge protections count the old instruction, an unauthorized change may qualify.</p>
+    <p><strong>Authority:</strong> If the agent can use privileged or shared credentials to approve, bypass or merge outside its intended scope, the human decision boundary is not enforced.</p>
+    <p><strong>Detection:</strong> If human instructions cannot be joined to agent actions, GitHub reviews and merged revisions, unauthorized or repeated actions may go undetected.</p>
+    <p><strong>Strongest competing explanation:</strong> Existing GitHub rules and identity restrictions may already stop these paths. A plausible failure story does not prove an exploitable configuration.</p>
   </div>
-  <div class="field-actions">
-    <a class="field-button" href="./risk-assessment-example.html">Read / print one-page worked assessment →</a>
-    <a class="field-secondary" href="./downloads/AI_SDLC_Risk_Scoring_Completed_Fictional.csv" download>Download detailed fictional risk worksheet (CSV) ↓</a>
-    <a class="field-secondary" href="./downloads/AI_SDLC_Risk_Scoring_Blank.csv" download>Download blank template (CSV) ↓</a>
+  <h3>Decisive safeguards · proposed design versus evidence</h3>
+  <p>Each safeguard below is proposed for the fictional case. Its implementation has not been reported or independently verified.</p>
+  <div class="fg-table-wrap"><table class="fg-ledger">
+    <thead><tr><th>Safeguard / failure addressed</th><th>Proposed</th><th>Reported implementation</th><th>Verified effectiveness</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Exact-revision authorization</strong><br>Stale human approval</td><td>Yes</td><td>Unknown</td><td>Not assessed</td></tr>
+      <tr><td><strong>Restricted agent credentials and bypass paths</strong><br>Unilateral approval or merge</td><td>Yes</td><td>Unknown</td><td>Not assessed</td></tr>
+      <tr><td><strong>Independent merge enforcement</strong><br>Changed revisions qualifying</td><td>Yes</td><td>Unknown</td><td>Not assessed</td></tr>
+      <tr><td><strong>Authorization-to-merge reconciliation</strong><br>Undetected mismatch</td><td>Yes</td><td>Unknown</td><td>Not assessed</td></tr>
+    </tbody>
+  </table></div>
+  <p class="risk-explorer-limit">On mobile, scroll the safeguard table horizontally to see all evidence columns. Proposed does not mean deployed. Reported does not mean verified.</p>
+  <h3>What each audience contributes</h3>
+  <div class="fg-roles" aria-label="Three role-specific next gates">
+    <p><strong>Engineering:</strong> Compare the current workflow against alternatives; test the A→B revision, identities and bypass routes before deciding pilot scope.</p>
+    <p><strong>Risk &amp; GRC:</strong> Establish eligibility, accountable decision owner, acceptable exposure and conditions for suspension. No risk acceptance is implied.</p>
+    <p><strong>Independent Assurance:</strong> Specify what evidence would support independent reliance; do not assert effectiveness from a proposed configuration or this example.</p>
   </div>
-  <h3>Three illustrative risk events—not a validated ranking</h3>
-  <div class="field-overflow"><table class="field-table"><caption>Fictional inherent exposure scores only. No real controls or test results are asserted.</caption><thead><tr><th>Risk / condition</th><th>Impact × likelihood assumption</th><th>Example score</th><th>Critical safeguard and status</th></tr></thead><tbody>
-  <tr><td>Stale human decision is accepted for a changed PR</td><td>5 × 3</td><td>15/25</td><td>Revision-bound decision and independent merge rejection · Unknown</td></tr>
-  <tr><td>Agent uses privileges to bypass approval boundaries</td><td>5 × 2</td><td>10/25</td><td>Least privilege and effective GitHub rules · Unknown</td></tr>
-  <tr><td>Unauthorized review/merge activity evades detection</td><td>4 × 3</td><td>12/25</td><td>Independent population reconciliation · Unknown</td></tr></tbody></table></div>
-  <details style="margin:17px 0 6px"><summary style="cursor:pointer;font-weight:750;color:#a4edda">Scoring assumptions and limitations</summary><p>Impact and likelihood are assumed 1–5 values chosen solely to demonstrate a multiplication method. They are not calibrated frequencies or approved decision thresholds, and the three different failure types cannot be reliably ranked on these invented inputs. Actual scoring requires management-defined criteria and context. Do not calculate residual risk before verifying safeguards and operating evidence. The numeric scores never authorize approval, merge or release.</p></details>
-  <p class="risk-explorer-limit">This is a fictional teaching case, not a system-specific assessment or confirmation of GitHub configuration. The downloadable worksheets identify implementation status as Unknown and leave residual risk unscored.</p>
+  <details><summary>Supporting analysis: why one passing test is not enough</summary>
+    <p>The A→B test is a critical negative case, not a complete authorization assessment. Also consider an agent choosing the wrong PR, untrusted PR content affecting instruction interpretation, credential bypass, standing approvals, and exceptions introduced by merge queues or deployment paths.</p>
+    <p><strong>Simpler engineering alternative:</strong> Let AI prepare findings and context while the engineer approves directly in GitHub. Measure the actual productivity difference against the additional execution complexity.</p>
+  </details>
+  <details><summary>Illustrative scoring assumptions (not a decision gate)</summary>
+    <p>These fictional impact × likelihood examples are instructional only: stale revision 5 × 3 = 15/25; excessive authority 5 × 2 = 10/25; undetected mismatch 4 × 3 = 12/25. They are not calibrated risk rankings, thresholds or evidence of residual risk. Actual ratings require management-defined criteria and supporting information.</p>
+  </details>
+  <div class="fg-downloads">
+    <h3>Read here. Download separately when useful.</h3>
+    <p>The assessment above is readable without a file. The printable example expands the reasoning; the two CSV worksheets are optional portable artifacts.</p>
+    <div class="field-actions">
+      <a class="field-button" href="./risk-assessment-example.html">Read / print full worked assessment →</a>
+      <a class="field-secondary" href="./downloads/AI_SDLC_Risk_Scoring_Completed_Fictional.csv" download>Completed fictional worksheet (CSV) ↓</a>
+      <a class="field-secondary" href="./downloads/AI_SDLC_Risk_Scoring_Blank.csv" download>Blank reusable template (CSV) ↓</a>
+    </div>
+  </div>
+  <p class="risk-explorer-limit">This is a fictional teaching example, not a system assessment or a confirmation of GitHub settings. No automated production approval, SOX conclusion, or implemented safeguard is established.</p>
 </section>
 <footer class="field-note">Proposed qualitative method and a separate, explicitly fictional scored example. No organization-specific risk rating, validated likelihood, residual score, management acceptance, automated production authorization, or control-effectiveness determination is provided.</footer></main><script src="./risk-governance-worksheet.js"></script><script src="./sdlc-risk-register.js"></script><script src="./risk-governance-ui.js"></script><script src="./risk-dashboard-tabs.js"></script><script src="./sdlc-risk-register-ui.js"></script><script src="./operating-model.js"></script><script src="./shared-pipeline-context.js?v=1"></script><script src="./shared-pipeline-nav.js?v=1"></script>
 <script src="./risk-sdlc-trace.js?v=1"></script>
