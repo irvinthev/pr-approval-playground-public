@@ -120,20 +120,33 @@ export function validateAgentResponse(input,{scenarioText,requireGrounding=false
    input.expectedSafeguards.slice(0,8).map(item=>validateSafeguard(item,allowedReferenceIds,Boolean(assessmentPhase))):[];
  const clarifications=Array.isArray(input.clarifications)?
    input.clarifications.slice(0,3).map(validateClarification):[];
- if(safeguards.some(x=>!x)||clarifications.some(x=>!x))
-   errors.push('Invalid focused assessment fields');
+ // Report exact structural categories instead of a generic OTHER label.
+ // Never include model-authored text or scenario content in these diagnostics.
+ if(safeguards.some(x=>!x))
+   errors.push('Invalid focused assessment fields: safeguards have malformed objective, implementation, basis or reference IDs');
+ if(clarifications.some(x=>!x))
+   errors.push('Invalid focused assessment fields: clarifications have malformed question, reason or choices');
  // Legacy response fixtures are valid. When supplied, new arrays must be bounded,
  // valid, and grounded in the exact technical source cards selected by the server.
  if(Array.isArray(input.expectedSafeguards)&&input.expectedSafeguards.length>8)
-   errors.push('Invalid focused assessment fields');
+   errors.push('Invalid focused assessment fields: safeguards exceed eight');
  if(Array.isArray(input.clarifications)&&input.clarifications.length>3)
-   errors.push('Invalid focused assessment fields');
+   errors.push('Invalid focused assessment fields: clarifications exceed three');
  const counterargument=typeof input.counterargument==='string'?maxLength(input.counterargument,520):'';
  const reassessment=typeof input.reassessment==='string'?maxLength(input.reassessment,850):'';
- if(assessmentPhase && (!counterargument || !safeguards.length ||
-   !Array.isArray(input.clarifications) || input.challenges?.length>4 ||
-   (assessmentPhase==='reassess' && (!reassessment || clarifications.length))))
-   errors.push('Invalid focused assessment fields');
+ if(assessmentPhase){
+   if(!counterargument)errors.push('Invalid focused assessment fields: counterargument is missing');
+   if(!Array.isArray(input.expectedSafeguards)||!safeguards.length)
+     errors.push('Invalid focused assessment fields: at least one safeguard required');
+   if(!Array.isArray(input.clarifications))
+     errors.push('Invalid focused assessment fields: clarifications array is missing');
+   if(!Array.isArray(input.challenges)||input.challenges.length>4)
+     errors.push('Invalid focused assessment fields: too many challenges or missing challenges array');
+   if(assessmentPhase==='reassess'){
+     if(!reassessment)errors.push('Invalid focused assessment fields: reassessment explanation is missing');
+     if(clarifications.length)errors.push('Invalid focused assessment fields: reassessment cannot introduce new clarifications');
+   }
+ }
  const state={
    contractVersion:AGENT_CONTRACT_VERSION,
    scenarioText:scenario,
