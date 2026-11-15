@@ -147,6 +147,57 @@ main#main-content .panel{background:#0e273c;border-color:#38586c}
  .decision-first p{font-size:16px}
 }
 
+
+/* V7 presentation-only assessment summary. All report content derives from
+   existing response fields plus clearly labelled illustrative safeguards. */
+.workspace-tabs{grid-template-columns:repeat(5,minmax(0,1fr))}
+.report-banner{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:17px;
+  background:linear-gradient(120deg,#184452,#162f4c);border:1px solid #78b9bb;border-radius:13px}
+.report-banner h3{font-size:21px;margin:2px 0 8px}
+.report-banner p{margin:5px 0;overflow-wrap:anywhere}
+.report-eyebrow{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--mint);font-weight:800}
+.report-stamp{display:inline-flex;flex-shrink:0;padding:6px 9px;border:1px solid #91b9ce;border-radius:9px;
+  color:#e8effb;font-size:12px;font-weight:750;max-width:160px;line-height:1.35}
+.report-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0 18px}
+.report-metric{padding:13px;background:#102d40;border:1px solid #42677a;border-radius:10px}
+.report-metric strong{display:block;font-size:21px;line-height:1.2;color:var(--mint)}
+.report-metric span{display:block;color:#c9dce6;font-size:12px;margin-top:5px}
+.report-section{margin:18px 0 0}
+.report-section h3{font-size:17px;margin-bottom:5px}
+.report-section > p.small{margin:4px 0 11px}
+.report-risk-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.report-risk-card{border:1px solid #486c7d;background:#103248;border-radius:10px;padding:12px;min-width:0}
+.report-risk-card strong{display:block;font-size:14px;line-height:1.4}
+.report-risk-card p{font-size:13px;color:#ccdeea;line-height:1.45;margin:7px 0 0}
+.report-unknown{border-left:3px solid #e8c789;padding:9px 12px;background:#233649;border-radius:0 9px 9px 0}
+.report-unknown li{font-size:13px;margin-bottom:5px}
+.report-model-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.report-model{background:#133147;border:1px solid #517489;border-radius:11px;min-width:0;overflow:hidden}
+.report-model h4{font-size:14px;margin:0;padding:11px;background:#1b4e66;color:#ecf7ff}
+.report-model.delegated h4{background:#454476}
+.report-model.autonomous h4{background:#196954}
+.report-model ul{padding:0 12px 0 27px;margin:13px 0}
+.report-model li{font-size:12px;line-height:1.55;margin-bottom:8px}
+.report-source-groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.report-source-group{background:#112c42;border:1px solid #42677a;border-radius:10px;padding:12px;min-width:0}
+.report-source-group h4{font-size:14px;margin:0 0 8px}
+.report-source-link{display:block;padding:7px 0;font-size:12px;overflow-wrap:anywhere}
+.report-source-link small{display:block;color:#bed0df;font-size:11px}
+#report-preview-link{margin:12px 0 4px}
+.report-note{font-size:12px;color:#c6d9e3;border-top:1px solid #3d6475;margin-top:18px;padding-top:12px}
+@media(max-width:900px){.report-model-grid{grid-template-columns:1fr}.report-model ul{margin:12px 0}.report-source-groups{grid-template-columns:1fr}}
+@media(max-width:650px){
+ .workspace-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .workspace-tabs button{font-size:12px;padding:10px 4px}
+ .report-banner{display:block;padding:13px}
+ .report-stamp{margin-top:10px}
+ .report-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+ .report-metric{padding:9px}
+ .report-metric strong{font-size:18px}
+ .report-metric span{font-size:11px}
+ .report-risk-list{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body><div class="app-frame">
@@ -159,6 +210,7 @@ main#main-content .panel{background:#0e273c;border-color:#38586c}
     <button type="button" data-target="risk">Risks &amp; tradeoffs</button>
     <button type="button" data-target="evidence">Sources &amp; evidence</button>
     <button type="button" data-target="challenge">Challenge the decision</button>
+    <button type="button" data-target="report">Assessment summary</button>
   </div>
   <p class="sidebar-note">Private educational prototype. Curated public references only. No approval or deployment authority.</p>
 </aside>
@@ -192,6 +244,7 @@ main#main-content .panel{background:#0e273c;border-color:#38586c}
     <button type="button" id="tab-risk" role="tab" aria-controls="workspace-risk" aria-selected="false" tabindex="-1" data-view="risk">Risks &amp; tradeoffs</button>
     <button type="button" id="tab-evidence" role="tab" aria-controls="workspace-evidence" aria-selected="false" tabindex="-1" data-view="evidence">Evidence &amp; sources</button>
     <button type="button" id="tab-challenge" role="tab" aria-controls="workspace-challenge" aria-selected="false" tabindex="-1" data-view="challenge">Challenge</button>
+    <button type="button" id="tab-report" role="tab" aria-controls="workspace-report" aria-selected="false" tabindex="-1" data-view="report">Report</button>
   </div>
   <div class="workspace-grid">
     <div class="workspace-primary">
@@ -231,6 +284,7 @@ main#main-content .panel{background:#0e273c;border-color:#38586c}
         </div>
         <p class="model-footnote">GitHub Apps, rulesets, and CI workflows are implementation mechanisms—not mutually exclusive approval models.</p>
         <div id="approaches"></div>
+        <button id="report-preview-link" type="button">View assessment summary</button>
       </div>
       <div class="workspace-view" id="workspace-risk" role="tabpanel" aria-labelledby="tab-risk" hidden>
         <h2>Risks, tradeoffs &amp; unanswered questions</h2>
@@ -267,6 +321,60 @@ main#main-content .panel{background:#0e273c;border-color:#38586c}
           <div class="row"><button class="primary" id="continue" type="button">Continue the challenge</button><span class="small" id="turncount"></span></div>
         </section>
         <p id="challenge-status" role="status" aria-live="polite"></p>
+      </div>
+      <div class="workspace-view" id="workspace-report" role="tabpanel" aria-labelledby="tab-report" hidden>
+        <header class="report-banner">
+          <div>
+            <div class="report-eyebrow">Scenario-based · preliminary assessment</div>
+            <h3>AI approval · assessment summary</h3>
+            <p id="report-scenario" class="small"></p>
+            <p id="report-takeaway"></p>
+          </div>
+          <span class="report-stamp">Not independently verified</span>
+        </header>
+        <div id="report-metrics" class="report-grid" aria-label="Assessment coverage"></div>
+        <section class="report-section" aria-labelledby="report-risks-title">
+          <h3 id="report-risks-title">Risks and questions to investigate</h3>
+          <p class="small">Questions derived from this Gemini response, not verified findings. No severity or residual-risk score has been assigned.</p>
+          <div id="report-risks" class="report-risk-list"></div>
+        </section>
+        <section class="report-section" aria-labelledby="report-unknowns-title">
+          <h3 id="report-unknowns-title">Implementation evidence not yet established</h3>
+          <div id="report-unknowns" class="report-unknown"></div>
+        </section>
+        <section class="report-section" aria-labelledby="report-controls-title">
+          <h3 id="report-controls-title">Example safeguards by approval model</h3>
+          <p class="small">Illustrative design patterns—not confirmed controls, universal requirements, or an assessment of operating effectiveness. Apply only where relevant.</p>
+          <div class="report-model-grid">
+            <div class="report-model human"><h4>1 · Human decides and submits</h4>
+              <ul>
+                <li>Defined reviewers and applicable ownership routing, including CODEOWNERS where appropriate</li>
+                <li>Effective branch protections, review requirements and stale-review treatment</li>
+                <li>Traceable GitHub reviewer, PR revision, and merge outcome</li>
+              </ul>
+            </div>
+            <div class="report-model delegated"><h4>2 · Human decides, agent submits</h4>
+              <ul>
+                <li>Explicit human instruction and the particular PR/revision authorized</li>
+                <li>Bounded CLI, MCP, App and credential permissions; independently enforced merge rules</li>
+                <li>Correlation of human decision, agent action, GitHub review and revision</li>
+              </ul>
+            </div>
+            <div class="report-model autonomous"><h4>3 · AI decides and submits</h4>
+              <ul>
+                <li>Deterministic scope and exclusions; explicit automated decision policy</li>
+                <li>Restricted execution identity and revision-bound approval/merge gates</li>
+                <li>Performance monitoring, reconciliation, incident response and automation suspension</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="report-section" aria-labelledby="report-sources-title">
+          <h3 id="report-sources-title">Source basis</h3>
+          <p class="small">Documents supplied to the model or cited in its response. A source appearing here does not mean a particular control is implemented or that the model's interpretation has been verified.</p>
+          <div id="report-sources" class="report-source-groups"></div>
+        </section>
+        <p class="report-note">Preliminary design discussion only. Observed gaps, final control expectations, applicability and acceptance decisions require direct implementation evidence. The report uses the existing model response; no separate assessment engine or new API request.</p>
       </div>
     </div>
     <aside class="workspace-rail" aria-label="Context and quick challenges">
@@ -317,7 +425,7 @@ function status(message,error=false){
   }
 }
 function setView(view,scroll=false){
-  const allowed=['architecture','risk','evidence','challenge'];
+  const allowed=['architecture','risk','evidence','challenge','report'];
   if(!allowed.includes(view))return;
   if(el('result').hidden){
     status('Analyze a fictional scenario to explore the workspace.');
@@ -396,6 +504,82 @@ function renderEngineeringReferences(data){
     }catch{}
   }
 }
+
+function renderAssessmentReport(data){
+  const risks=el('report-risks'),unknowns=el('report-unknowns'),metrics=el('report-metrics'),sources=el('report-sources');
+  for(const node of [risks,unknowns,metrics,sources])clear(node);
+  const primary=Array.isArray(data.conclusions)?data.conclusions[0]:null;
+  const scenario=state.scenario||'No scenario was supplied.';
+  el('report-scenario').textContent='Scenario: '+(scenario.length>260?scenario.slice(0,257)+'…':scenario);
+  el('report-takeaway').textContent=primary?.application||'No supported recommendation was returned. Further analysis is required.';
+  const questions=Array.isArray(data.challenges)?data.challenges.slice(0,6):[];
+  const openItems=Array.isArray(data.unknowns)?data.unknowns.slice(0,8):[];
+  const refs=Array.isArray(data.engineeringReferences)?data.engineeringReferences.slice(0,5):[];
+  const cited=(Array.isArray(data.conclusions)?data.conclusions:[]).flatMap(c=>Array.isArray(c.citations)?c.citations:[]);
+  const knownLinks=new Set();
+  const groups={
+    'Platform and engineering documentation':[],
+    'Security and framework guidance':[],
+    'Research and practitioner perspectives':[]
+  };
+  for(const ref of refs){
+    let url;
+    try{url=new URL(ref.url)}catch{continue}
+    if(url.protocol!=='https:'||knownLinks.has(url.href))continue;
+    knownLinks.add(url.href);
+    const kind=String(ref.kind||'');
+    const group=kind==='technical-documentation'?'Platform and engineering documentation':
+      (kind.includes('framework')||kind.includes('security'))?'Security and framework guidance':
+      'Research and practitioner perspectives';
+    groups[group].push({
+      title:ref.title||ref.id,url:url.href,
+      note:(ref.modelUsed?'Model identified as used':'Provided as context')+' · '+(ref.publisher||'Publisher unknown')
+    });
+  }
+  for(const citation of cited){
+    let url;
+    try{url=new URL(citation.url)}catch{continue}
+    if(url.protocol!=='https:'||knownLinks.has(url.href))continue;
+    knownLinks.add(url.href);
+    groups['Security and framework guidance'].push({
+      title:citation.sourceTitle||citation.provisionTitle||'Catalog reference',
+      url:url.href,note:'Framework catalog provision cited; applicability not independently verified'
+    });
+  }
+  const metricValues=[
+    [questions.length,'Model-generated questions'],
+    [openItems.length,'Open implementation unknowns'],
+    [knownLinks.size,'Source links']
+  ];
+  for(const [number,caption] of metricValues){
+    const card=add('div',metrics,'','report-metric');
+    add('strong',card,String(number));
+    add('span',card,caption);
+  }
+  if(questions.length){
+    for(const item of questions){
+      const card=add('div',risks,'','report-risk-card');
+      add('strong',card,item.question||'Question to investigate');
+      if(item.reason)add('p',card,item.reason);
+      else add('p',card,'Potential concern only; materiality and implementation status have not been established.');
+    }
+  }else add('p',risks,'No model-generated risk questions were returned. Risk coverage is not established.','small');
+  if(openItems.length)list(unknowns,openItems);
+  else add('p',unknowns,'No specific unknowns were returned; this does not establish that the implementation is verified.','small');
+  let count=0;
+  for(const [name,items] of Object.entries(groups)){
+    if(!items.length)continue;
+    count++;
+    const group=add('section',sources,'','report-source-group');
+    add('h4',group,name);
+    for(const item of items){
+      const link=add('a',group,item.title,'report-source-link');
+      link.href=item.url;link.target='_blank';link.rel='noopener noreferrer';
+      add('small',link,item.note);
+    }
+  }
+  if(!count)add('p',sources,'No source references were provided in the model response. Do not assume external verification.','small');
+}
 function evidenceLabel(type){
   return ({
     'framework-interpretation':'Framework interpretation · applicability not independently verified',
@@ -407,6 +591,7 @@ function render(data){
   for(const id of ['decision-summary','approaches','approval-outcomes','conclusions','facts','challenges','unknowns'])clear(el(id));
   renderEngineeringReferences(data);
   renderRailSources(data);
+  renderAssessmentReport(data);
   const primary=data.conclusions?.[0];
   if(primary){
     title(el('decision-summary'),'Direct answer');
@@ -573,6 +758,7 @@ document.querySelectorAll('[data-challenge]').forEach(button=>{
     ask(true);
   });
 });
+el('report-preview-link').addEventListener('click',()=>setView('report',true));
 el('ask').addEventListener('click',()=>ask(false));
 el('continue').addEventListener('click',()=>ask(true));
 el('example').addEventListener('click',()=>{el('scenario').value='Two AI agents agree that a pull request is low risk. Is that enough to allow automatic approval?';status('Fictional example loaded.')});
