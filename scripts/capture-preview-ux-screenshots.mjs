@@ -59,11 +59,18 @@ try {
  for(const config of scenarios){
    const context=await browser.newContext({
      viewport:{width:config.width,height:config.height},deviceScaleFactor:config.scale,
-     reducedMotion:'reduce',
-     extraHTTPHeaders:{
+     reducedMotion:'reduce'
+   });
+   // Only attach the sensitive bypass header to this exact Vercel origin.
+   // Global extraHTTPHeaders would also send it to unrelated third-party requests.
+   await context.route('**/*',async route=>{
+     const requestUrl=new URL(route.request().url());
+     if(requestUrl.origin!==preview.origin)return route.continue();
+     return route.continue({headers:{
+       ...route.request().headers(),
        'x-vercel-protection-bypass':bypass,
        'x-vercel-set-bypass-cookie':'true'
-     }
+     }});
    });
    // Intercept private API requests to avoid real provider calls or tokens.
    await context.route('**/api/challenge-session',route=>route.fulfill({
