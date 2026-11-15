@@ -70,7 +70,7 @@ async function capture(page, label, response, checks = []) {
   await writeFile(resolve(output, label + '.json'), JSON.stringify(item, null, 2));
   console.log('CAPTURED ' + label + ' ' + hash.slice(0, 12));
 }
-async function checkChallengeAssessment(page) {
+async function checkChallengeAssessment(page, captureDecisionBrief) {
   let requests = [];
   const questions = [
     {question:'Can credentials overlap?',why:'Overlap changes the cutover design.',options:['Yes, during cutover','No, only one at a time']},
@@ -82,6 +82,35 @@ async function checkChallengeAssessment(page) {
     requests.push(request);
     const revised = request.turns.length === 1;
     const noQuestions = /PR Plan/.test(request.scenarioText);
+    const delegated = /stacked pull requests/i.test(request.scenarioText);
+    if (delegated) {
+      const unknown = objective => ({objective,why:'Address a failure in the delegated workflow.',
+        implementation:'not-assessed',referenceIds:[]});
+      await route.fulfill({json:{
+        mode:'live-model',continuityReceipt:'fictional-delegated',
+        conclusions:[{application:'Keep approvals manual until the submission is revision-bound, repository rules require fresh review and agent access is narrow.',
+          scenarioBasis:'A fictional engineer decides on four stacked PRs and the agent submits.',basisType:'engineering-judgment',
+          openQuestion:'Could a changed revision merge on the original approval?',citations:[]}],
+        counterargument:'Existing merge rules may already cover the key failure.',alternatives:['Use a narrow batch submitter.'],
+        challenges:[
+          {question:'A different revision could merge',reason:'After a push or rebase, an approval could apply to code the engineer never saw.',
+            tests:['Check submission and merge behavior.'],alternatives:[]},
+          {question:'Agent access could be too broad',reason:'The agent may have permissions outside the intended workflow.',tests:[],alternatives:[]}
+        ],
+        expectedSafeguards:[
+          unknown('Bind submission to the reviewed revision'),
+          unknown('Repository requires fresh review after changes'),
+          unknown('Narrow the agent’s credential scope'),
+          {objective:'Record the human decision per revision',why:'Tie the decision to the approved PR revision.',
+            implementation:'reported-partial',implementationBasis:'The scenario reports an engineer decision.',referenceIds:[]}
+        ],
+        facts:[],approvalOutcomes:[],unknowns:['Effective repository rules'],
+        clarifications:[{question:'Could a changed revision merge on the original approval?',
+          why:'This determines whether to keep approvals manual.',options:['The repository blocks merge','The approval can still count']}],
+        engineeringReferences:[]
+      }});
+      return;
+    }
     await route.fulfill({json:{
       mode:'live-model',continuityReceipt:revised?'fixture-reassessed':'fixture-initial',
       conclusions:[{application:'Pilot the change with bounded authority.',scenarioBasis:'A fictional proposal.',
@@ -95,9 +124,30 @@ async function checkChallengeAssessment(page) {
       ...(revised?{reassessment:'Overlap changes the safeguard to Partial. The pilot recommendation stands.'}:{})
     }});
   });
+  await page.locator('#token').fill('local-browser-fixture');
+  await page.locator('#scenario').fill('An engineer reviews and approves four stacked pull requests. An agent submits those approvals.');
+  await page.locator('#ask').click();
+  await page.locator('#report-lead-risk').waitFor();
+  check(await page.getByText('After a push or rebase, an approval could apply to code the engineer never saw.',{exact:true}).isVisible(),
+    'The lead failure condition should be visible without a tap');
+  check(await page.locator('#report-expected-safeguards summary').count()===3,'Three safeguards should lead the brief');
+  check(await page.locator('#refinement-questions summary').textContent()==='Could a changed revision merge on the original approval?',
+    'The decision-changing question should be visible before expanding answers');
+  check(await page.evaluate(() => document.documentElement.scrollWidth<=innerWidth),'Decision brief must fit the viewport');
+  await page.locator('#token').fill('');
+  await captureDecisionBrief();
+  await page.locator('#token').fill('local-browser-fixture');
+  for (const selector of ['#report-expected-safeguards summary','#report-more-safeguards > summary',
+    '#report-other-safeguards summary','#report-more-risks > summary','#report-reasoning > summary','#refinement-questions summary']) {
+    await page.locator(selector).first().click();
+  }
+  check(await page.locator('#report-other-safeguards').getByText('Partial · User-reported',{exact:true}).isVisible(),
+    'The remaining safeguards should retain provenance');
+  check(requests.length===1,'Reading and expanding the decision brief should use only the initial request');
+
+  requests = [];
   await page.locator('#examples summary').click();
   await page.locator('[data-example="plan"]').click();
-  await page.locator('#token').fill('local-browser-fixture');
   await page.locator('#ask').click();
   await page.locator('#result').waitFor();
   check(!(await page.locator('#refine-panel').isVisible()),'Zero questions should hide the reassessment form');
@@ -109,11 +159,13 @@ async function checkChallengeAssessment(page) {
   await page.locator('#ask').click();
   await page.locator('#result').waitFor();
   check(!(await page.locator('#report-model-examples').isVisible()),'PR examples should be hidden for credential rotation');
-  for (const selector of ['#report-risks summary','#report-expected-safeguards summary','#report-sources-details summary']) {
+  for (const selector of ['#report-expected-safeguards summary','#report-sources-details summary']) {
     await page.locator(selector).first().click();
   }
   check(requests.length===1,'Expanding details must not call the model');
+  await page.locator('#refinement-questions summary').first().click();
   await page.getByText('Yes, during cutover',{exact:true}).click();
+  await page.locator('#refinement-questions summary').nth(1).click();
   await page.getByText('Some consumers',{exact:true}).click();
   await page.locator('#refinement-submit').click();
   await page.locator('#report-delta').waitFor();
@@ -140,7 +192,8 @@ async function runCase(label, path, viewportName, viewport, scenario) {
 
     const checks = ['HTTP ' + response.status(), 'h1 present'];
     if(path==='private-challenge.html'){
-      await checkChallengeAssessment(page);
+      await checkChallengeAssessment(page, () => capture(page, label+'-decision-brief', response,
+        ['Fictional stacked-PR fixture','Initial decision brief','No horizontal overflow']));
       checks.push('Mocked assessment and reassessment', 'Expandable details make no requests',
         'Two answers in one signed follow-up', 'Zero-question case omits reassessment', 'No horizontal overflow');
       await page.locator('#token').fill('');

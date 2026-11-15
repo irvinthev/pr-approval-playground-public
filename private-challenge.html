@@ -63,6 +63,10 @@ main#main-content .panel{background:#0e273c;border-color:#38586c}
 .report-section h3{font-size:17px;margin-bottom:5px}
 .report-section > p.small{margin:4px 0 11px}
 .report-risk-list{display:grid;gap:10px}
+.report-lead-risk{padding:12px 14px;border-left:3px solid #eabb7c;border-radius:8px;background:#17374a;overflow-wrap:anywhere}
+.report-lead-risk p{margin:5px 0 0;color:#dcecf3}
+.report-lead-risk details{margin-top:8px}
+.report-lead-risk summary,.refine-question summary{cursor:pointer;color:#e4f9f4;font-weight:700;padding:8px 0;min-height:44px}
 .report-risk-card{border:1px solid #486c7d;background:#103248;border-radius:10px;padding:12px;min-width:0}
 .report-risk-card strong{display:block;font-size:14px;line-height:1.4;margin-top:8px}
 .report-risk-card p{font-size:13px;color:#ccdeea;line-height:1.45;margin:7px 0 0}
@@ -99,6 +103,7 @@ main#main-content .panel{background:#0e273c;border-color:#38586c}
 .report-delta strong{display:block;margin-bottom:5px}.report-delta p{font-size:13px;margin:7px 0}
 .expected-safeguards{display:grid;gap:8px}
 .expected-item{border:1px solid #456b7f;border-radius:10px;padding:12px 13px;background:#103046}
+.expected-item summary{min-height:44px}
 .expected-item strong{font-size:14px}.expected-status{font-size:11px;color:#cbdde7}
 .expected-item p{font-size:13px;line-height:1.45;margin:7px 0}
 .expected-item a{font-size:12px;margin-right:10px;overflow-wrap:anywhere}
@@ -171,7 +176,7 @@ summary:focus-visible{outline:3px solid var(--mint);outline-offset:3px}
 </section>
 <section id="result" class="panel" hidden aria-labelledby="resulttitle">
   <header class="report-banner">
-    <h2 id="resulttitle" tabindex="-1">Engineering assessment</h2>
+    <h2 id="resulttitle" tabindex="-1">Recommendation</h2>
     <p id="report-takeaway"></p>
     <p id="report-basis" class="small"></p>
   </header>
@@ -180,32 +185,38 @@ summary:focus-visible{outline:3px solid var(--mint);outline-offset:3px}
     <p class="small" id="report-previous"></p>
     <p id="report-revised"></p>
   </section>
-  <section class="report-section report-reasoning" aria-label="Reasoning and alternatives">
-    <h3>Strongest counterargument</h3>
-    <p id="report-counterargument"></p>
-    <div id="report-alternative" hidden>
-      <h3>Simpler option</h3>
-      <p id="report-option"></p>
-    </div>
-  </section>
-  <section class="report-section" aria-labelledby="report-risks-title">
-    <h3 id="report-risks-title">Material risks and tradeoffs</h3>
-    <div id="report-risks" class="report-risk-list"></div>
+  <section id="report-lead-risk-section" class="report-section" aria-labelledby="report-risks-title">
+    <h3 id="report-risks-title">What could go wrong</h3>
+    <div id="report-lead-risk" class="report-lead-risk"></div>
   </section>
   <section class="report-section" aria-labelledby="expected-safeguards-title">
     <h3 id="expected-safeguards-title">Expected safeguards</h3>
-    <p class="small">Implementation statuses reflect what you reported or what remains unknown.</p>
+    <p class="small">Statuses are based on your report. Unknown means implementation is unclear.</p>
     <div id="report-expected-safeguards" class="expected-safeguards"></div>
   </section>
   <section class="report-section refine-panel" id="refine-panel" hidden aria-labelledby="refinement-title">
     <h3 id="refinement-title">What could change the answer?</h3>
-    <p class="small">Answer any of these questions to reassess the proposal once.</p>
+    <p class="small">Open a question to see why it matters and choose an answer.</p>
     <div id="refinement-questions"></div>
     <div class="refine-actions">
       <button class="primary" id="refinement-submit" type="button">Reassess with answers</button>
       <span id="refinement-status" class="small" role="status" aria-live="polite"></span>
     </div>
   </section>
+  <details class="report-extra" id="report-more-safeguards"><summary>Other safeguards</summary>
+    <div id="report-other-safeguards" class="expected-safeguards"></div>
+  </details>
+  <details class="report-extra" id="report-more-risks"><summary>Other risks and tradeoffs</summary>
+    <div id="report-risks" class="report-risk-list"></div>
+  </details>
+  <details class="report-extra report-reasoning" id="report-reasoning"><summary>Counterargument and alternatives</summary>
+    <h3>Strongest counterargument</h3>
+    <p id="report-counterargument"></p>
+    <div id="report-alternative" hidden>
+      <h3>Simpler option</h3>
+      <p id="report-option"></p>
+    </div>
+  </details>
   <details class="report-extra" id="report-context"><summary>Assumptions, evidence and remaining unknowns</summary>
     <div id="report-unknowns"></div>
     <div id="approval-outcomes"></div>
@@ -322,8 +333,8 @@ function renderRefinementQuestions(data){
   el('refine-panel').hidden=!questions.length;
   if(!questions.length){el('refinement-status').textContent='';return}
   for(const [i,q] of questions.entries()){
-    const box=add('div',target,'','refine-question');
-    add('strong',box,(i+1)+'. '+q.question);
+    const box=add('details',target,'','refine-question');
+    add('summary',box,q.question);
     add('p',box,'Why it matters: '+q.why);
     const group=add('div',box,'','refine-option-group');
     group.setAttribute('role','group');
@@ -372,9 +383,10 @@ function refinementFollowupPrompt(){
   return 'Answers to the assessment questions (skipped questions remain unresolved):\n'+selected.join('\n');
 }
 function renderAssessmentReport(data){
-  const risks=el('report-risks'),unknowns=el('report-unknowns'),
-    sources=el('report-sources'),safeguards=el('report-expected-safeguards');
-  for(const node of [risks,unknowns,sources,safeguards])clear(node);
+  const leadRisk=el('report-lead-risk'),risks=el('report-risks'),unknowns=el('report-unknowns'),
+    sources=el('report-sources'),safeguards=el('report-expected-safeguards'),
+    otherSafeguards=el('report-other-safeguards');
+  for(const node of [leadRisk,risks,unknowns,sources,safeguards,otherSafeguards])clear(node);
   const primary=data.conclusions[0];
   el('report-takeaway').textContent=primary.application;
   el('report-basis').textContent=primary.scenarioBasis;
@@ -384,12 +396,18 @@ function renderAssessmentReport(data){
   el('report-delta').hidden=!data.reassessment || !state.previousTakeaway;
   el('report-previous').textContent=state.previousTakeaway?'Before: '+state.previousTakeaway:'';
   el('report-revised').textContent=data.reassessment||'';
-  for(const item of data.challenges){
-    const card=add('details',risks,'','report-risk-card');
-    add('summary',card,item.question);
+  const [firstRisk,...remainingRisks]=data.challenges;
+  el('report-lead-risk-section').hidden=!firstRisk;
+  el('report-more-risks').hidden=!remainingRisks.length;
+  for(const [index,item] of data.challenges.entries()){
+    const card=index===0?leadRisk:add('details',risks,'','report-risk-card');
+    add(index===0?'strong':'summary',card,item.question);
     add('p',card,item.reason);
-    if(item.tests.length){add('strong',card,'What to check');list(card,item.tests)}
-    if(item.alternatives.length){add('strong',card,'Design options');list(card,item.alternatives)}
+    if(index===0 && !item.tests.length && !item.alternatives.length)continue;
+    const detail=index===0?add('details',card):card;
+    if(index===0)add('summary',detail,'Checks and design options');
+    if(item.tests.length){add('strong',detail,'What to check');list(detail,item.tests)}
+    if(item.alternatives.length){add('strong',detail,'Design options');list(detail,item.alternatives)}
   }
   const refById=new Map(data.engineeringReferences.map(ref=>[ref.id,ref]));
   const labels={
@@ -398,14 +416,17 @@ function renderAssessmentReport(data){
     'reported-partial':'Partial',
     'reported-full':'Full'
   };
-  for(const item of data.expectedSafeguards){
-    const card=add('details',safeguards,'','expected-item');
+  const visibleSafeguardCount=3;
+  el('report-more-safeguards').hidden=data.expectedSafeguards.length<=visibleSafeguardCount;
+  for(const [index,item] of data.expectedSafeguards.entries()){
+    const target=index<visibleSafeguardCount?safeguards:otherSafeguards;
+    const card=add('details',target,'','expected-item');
     const summary=add('summary',card,item.objective);
     const label=labels[item.implementation]||'Unknown';
     const reported=item.implementation.startsWith('reported-');
     add('span',summary,reported?label+' · User-reported':label,'expected-status');
     add('p',card,item.why);
-    if(reported)add('p',card,item.implementationBasis,'small');
+    add('p',card,reported?item.implementationBasis:'The proposal did not establish implementation.','small');
     const matching=item.referenceIds.map(id=>refById.get(id)).filter(Boolean);
     if(matching.length)add('strong',card,'What the references support');
     for(const ref of matching)renderReference(card,ref,{inSafeguard:true});
@@ -415,7 +436,8 @@ function renderAssessmentReport(data){
   if(data.unknowns.length){add('h3',unknowns,'Remaining uncertainties');list(unknowns,data.unknowns)}
   const prTopic=/\b(?:pull requests?|github|code review|PR approval|stacked PR|merge gate)\b/i.test(state.scenario);
   el('report-model-examples').hidden=!prTopic;
-  for(const id of ['report-context','report-model-examples','report-sources-details'])el(id).open=false;
+  for(const id of ['report-more-safeguards','report-more-risks','report-reasoning',
+    'report-context','report-model-examples','report-sources-details'])el(id).open=false;
   for(const ref of data.engineeringReferences)renderReference(sources,ref);
   const provisions=new Set();
   for(const conclusion of data.conclusions){
