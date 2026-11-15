@@ -18,6 +18,8 @@ test('Remote screenshot script only allows the private lab Vercel project hostna
  assert.match(capture,/ai-sdlc-challenge-agent-/);
  assert.match(capture,/irvlife23\\.vercel\\.app/);
  assert.match(capture,/x-vercel-protection-bypass/);
+ assert.match(capture,/requestUrl.origin!==preview.origin/);
+ assert.doesNotMatch(capture,/extraHTTPHeaders/);
  assert.match(capture,/x-vercel-set-bypass-cookie/);
  assert.match(capture,/context\.route\('\*\*\/api\/challenge'/);
  assert.match(capture,/context\.route\('\*\*\/api\/challenge-session'/);
@@ -51,10 +53,11 @@ test('Manual preview override accepts only an allowlisted HTTPS URL',()=>{
  fs.rmSync(dir,{recursive:true,force:true});
 });
 test('Workflow avoids fork secrets and produces short-lived review artifacts',()=>{
- assert.match(workflow,/head\.repo\.full_name == github\.repository/);
+ assert.match(workflow,/github.ref == 'refs\/heads\/main'/);
+ assert.doesNotMatch(workflow,/pull_request:/);
  assert.match(workflow,/secrets\.VERCEL_AUTOMATION_BYPASS_SECRET/);
  assert.match(workflow,/retention-days: 7/);
  assert.match(workflow,/workflow_dispatch:/);
- assert.match(workflow,/pull_request:/);
+ assert.match(workflow,/github.ref == 'refs\/heads\/main'/);
  assert.match(workflow,/screenshots-vercel\//);
 });
