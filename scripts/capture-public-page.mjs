@@ -100,11 +100,11 @@ async function runCase(label, path, viewportName, viewport, scenario) {
       await page.locator('[data-lens="risk"]').click();
       check((await page.locator('#lens-headline').innerText()).includes('exposure'),
         'Risk disposition should have a distinct conclusion');
-      check((await page.locator('#lens-next').innerText()).includes('Chase'),
+      check((await page.locator('#lens-next').innerText()).includes('permission map'),
         'Risk disposition should contain a specific GRC next move');
 
       await page.locator('[data-lens="assurance"]').click();
-      check((await page.locator('#lens-next').innerText()).includes('test approval'),
+      check((await page.locator('#lens-next').innerText()).includes('Trace one permitted approval'),
         'Assurance should contain an evidence-based next step');
       await page.locator('[data-lens="assurance"]').press('Home');
       check(await page.locator('[data-lens="engineering"]').getAttribute('aria-selected') === 'true',
@@ -118,7 +118,7 @@ async function runCase(label, path, viewportName, viewport, scenario) {
       check(!(await page.locator('#executive-layout').isVisible()),'The layouts must not duplicate visually');
       check(await page.locator('.workspace-card').count()===3,
         'Three professional perspectives should show together');
-      check((await page.locator('.workspace-card[data-role="engineering"]').innerText()).includes('sandbox PR stack'),
+      check((await page.locator('.workspace-card[data-role="engineering"]').innerText()).includes('sandbox stack'),
         'Workspace Engineering view must retain actionable advice');
       check(await noOverflow(),'Decision workspace has horizontal overflow');
       await capture(page,label+'-layout-B',response,
