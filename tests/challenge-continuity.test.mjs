@@ -81,20 +81,16 @@ test('API issues a signed receipt after validating live output, and follow-up re
  assert.ok(second.body.continuityReceipt);
 });
 
-test('focused reassessment carries signed prior safeguards and rejects another reassessment receipt',t=>{
+test('focused assessment rejects re-runs even when valid previous receipts exist',t=>{
  const old=process.env.CHALLENGE_API_TOKEN;
  process.env.CHALLENGE_API_TOKEN='local-focused-continuity-secret';
  t.after(()=>{if(old===undefined)delete process.env.CHALLENGE_API_TOKEN;else process.env.CHALLENGE_API_TOKEN=old});
- const expectedSafeguards=[{objective:'Confirm the reviewed revision',implementation:'not-assessed'}];
- const initial=issueReceipt({...response,expectedSafeguards},scenario,undefined,'initial');
- const reassessed=issueReceipt({...response,expectedSafeguards},scenario,undefined,'reassess');
+ const receipt=issueReceipt(response,scenario,undefined,'initial');
  const batch={scenarioText:scenario,assessment:true,
-  turns:[{role:'user',content:'Reviewed revision: a commit is captured.'}],continuityReceipts:[initial]};
- const accepted=validateRequest(batch);
- assert.equal(accepted.assessmentPhase,'reassess');
- assert.deepEqual(accepted.history[0].safeguards,expectedSafeguards);
- assert.match(buildModelRequest(accepted).messages[1].content,/Confirm the reviewed revision/);
- assert.match(validateRequest({...batch,continuityReceipts:[reassessed]}).error,/signed initial assessment/);
- assert.match(validateRequest({...batch,continuityReceipts:[]}).error,/signed initial assessment/);
- assert.match(validateRequest({...batch,turns:[...batch.turns,...batch.turns]}).error,/one answer batch/);
+  turns:[{role:'user',content:'I have additional technical information.'}],continuityReceipts:[receipt]};
+ assert.match(validateRequest(batch).error,/One assessment per proposal/);
+ assert.match(validateRequest({...batch,continuityReceipts:[]}).error,/One assessment per proposal/);
+ assert.match(validateRequest({...batch,turns:[]}).error,/One assessment per proposal/);
+ assert.equal(validateRequest({scenarioText:scenario,assessment:true,turns:[]}).assessmentPhase,'initial');
 });
+

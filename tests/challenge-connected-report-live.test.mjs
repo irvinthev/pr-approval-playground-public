@@ -41,8 +41,8 @@ test('unrelated engineering proposal does not receive GitHub-specific reconcilia
 });
 test('risk and assurance do not invent disposition, acceptance, verification, or evidence',()=>{
   const p=projectConnectedReport(response,scenario);
-  assert.match(p.perspectives.risk.action,/not been determined/);
-  assert.match(p.perspectives.assurance.action,/does not contain a separately substantiated/);
+  assert.match(p.perspectives.risk.action,/Determine whether the failure/);
+  assert.match(p.perspectives.assurance.action,/Compare the claimed safeguards/);
   assert.equal(p.perspectives.engineering.action,'Try a stale-SHA approval');
   assert.equal(p.perspectives.engineering.items[0],'Improve notifications and native review routing');
   assert.equal(p.safeguards[0].implementation,'Partial · user-reported');
@@ -60,7 +60,7 @@ test('invalid response cannot generate a plausible connected report',()=>{
   assert.equal(projectConnectedReport(null,scenario),null);
   assert.equal(projectConnectedReport({},scenario),null);
 });
-test('live report is opt-in reversible and retains current API and clarification flow',()=>{
+test('live report projects from one API response with local decision conditions',()=>{
   for(const id of ['cdr-toggle','cdr-preview','refine-panel','result'])
     assert.match(html,new RegExp('id="'+id+'"'));
   assert.match(html,/import \{renderConnectedReport\}/);

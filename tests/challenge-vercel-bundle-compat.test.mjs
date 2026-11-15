@@ -24,5 +24,5 @@ test('API module loads and keeps the riskPath contract instructions',async()=>{
   const {buildModelRequest}=await import('../api/challenge.js');
   const req=buildModelRequest({scenarioText:'An engineer approves a PR and an agent submits the review through the API.',turns:[],history:[],assessmentPhase:'initial'});
   assert.equal(req.messages.length,2);
-  assert.ok(req.messages[0].content.includes('riskPath: optionally provide'));
+  assert.ok(req.messages[0].content.includes('one optional riskPath causal trace'));
 });

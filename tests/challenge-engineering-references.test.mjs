@@ -49,7 +49,7 @@ test('prompt provides only curated technical context, not claims of live web ver
  assert.deepEqual(model.messages.map(x=>x.role),['system','user']);
  assert.match(model.messages[0].content,/\[REFERENCE GH-CODEOWNERS\]/);
  assert.match(model.messages[0].content,/not live data|not live retrieval|not live/i);
- assert.match(model.messages[0].content,/referenceIds array/);
+ assert.match(model.messages[0].content,/referenceIds/);
  assert.ok(!model.tools);
 });
 test('the existing model endpoint receives curated context and returns provenance metadata',async t=>{
@@ -99,7 +99,7 @@ test('model may omit references but may not invent or cite unprovided source IDs
  assert.ok(accepted.body.engineeringReferences.every(x=>x.modelUsed===false));
 });
 
-test('focused assessments retry invalid source IDs before dropping unsupported links',async t=>{
+test('focused assessments sanitize unprovided source IDs without a second model call',async t=>{
  const token=process.env.CHALLENGE_API_TOKEN,key=process.env.GEMINI_API_KEY;
  process.env.CHALLENGE_API_TOKEN='private-test-token';process.env.GEMINI_API_KEY='provider-test-key';
  t.after(()=>{if(token===undefined)delete process.env.CHALLENGE_API_TOKEN;else process.env.CHALLENGE_API_TOKEN=token;
@@ -114,7 +114,7 @@ test('focused assessments retry invalid source IDs before dropping unsupported l
  await handler({method:'POST',headers:{authorization:'Bearer private-test-token'},
   body:{scenarioText:scenario,assessment:true}},res);
  assert.equal(res.statusCode,200,JSON.stringify(res.body));
- assert.equal(mock.mock.callCount(),2);
+ assert.equal(mock.mock.callCount(),1);
  assert.deepEqual(res.body.expectedSafeguards[0].referenceIds,['GH-CODEOWNERS']);
  assert.deepEqual(res.body.engineeringReferences.filter(x=>x.modelUsed).map(x=>x.id),['GH-CODEOWNERS']);
  assert.match(res.body.referenceWarning,/omitted/);

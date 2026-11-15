@@ -4,14 +4,14 @@ import fs from 'node:fs';
 
 const source=fs.readFileSync(new URL('../private-challenge.html',import.meta.url),'utf8');
 test('private challenge lab retains accessible inputs, status and sign-out',()=>{
- for(const id of ['token','scenario','ask','refinement-submit','reset','result','status','remember','remembered'])
+ for(const id of ['token','scenario','ask','refine-panel','reset','result','status','remember','remembered'])
   assert.match(source,new RegExp('id="'+id+'"'));
  assert.match(source,/name="viewport"/);
  assert.match(source,/aria-live="polite"/);
  assert.match(source,/Use fictional or publicly shareable scenarios only/);
  assert.match(source,/el\('token'\)\.value=''/);
 });
-test('private lab uses the same-origin authenticated endpoints and keeps continuity in memory',()=>{
+test('private lab uses the same-origin authenticated endpoints for one assessment',()=>{
  assert.match(source,/fetch\('\.\/api\/challenge'/);
  assert.match(source,/fetch\('\.\/api\/challenge-session'/);
  assert.match(source,/headers\.Authorization='Bearer '\+token/);
