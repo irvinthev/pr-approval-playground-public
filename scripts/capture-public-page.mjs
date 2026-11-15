@@ -82,6 +82,48 @@ async function runCase(label, path, viewportName, viewport, scenario) {
     check((await page.locator('h1').count()) > 0, label + ': missing primary heading');
 
     const checks = ['HTTP ' + response.status(), 'h1 present'];
+    if (path === 'connected-decision-report.html') {
+      const noOverflow = async () => page.evaluate(() =>
+        document.documentElement.scrollWidth <= window.innerWidth + 2);
+      check(await page.locator('#executive-layout').isVisible(), 'Executive-first is the default layout');
+      check((await page.locator('#lens-headline').innerText()).includes('constrained executor'),
+        'Engineering advisory must be populated');
+      check(await page.locator('[data-lens="engineering"]').getAttribute('aria-selected') === 'true',
+        'Engineering advisory should be the initial perspective');
+      check(await noOverflow(), 'Executive-first layout has horizontal overflow');
+
+      await page.locator('[data-lens="risk"]').click();
+      check((await page.locator('#lens-headline').innerText()).includes('exposure'),
+        'Risk disposition should have a distinct conclusion');
+      check((await page.locator('#lens-next').innerText()).includes('Chase'),
+        'Risk disposition should contain a specific GRC next move');
+
+      await page.locator('[data-lens="assurance"]').click();
+      check((await page.locator('#lens-next').innerText()).includes('test approval'),
+        'Assurance should contain an evidence-based next step');
+      await page.locator('[data-lens="assurance"]').press('Home');
+      check(await page.locator('[data-lens="engineering"]').getAttribute('aria-selected') === 'true',
+        'Keyboard Home must select Engineering');
+      await page.locator('.depth > summary').click();
+      check(await page.locator('.depth').getAttribute('open') !== null,
+        'The shared technical basis must expand');
+      await page.locator('.depth > summary').click();
+      await page.locator('[data-layout="workspace"]').click();
+      check(await page.locator('#workspace-layout').isVisible(),'Decision workspace must be visible');
+      check(!(await page.locator('#executive-layout').isVisible()),'The layouts must not duplicate visually');
+      check(await page.locator('.workspace-card').count()===3,
+        'Three professional perspectives should show together');
+      check((await page.locator('.workspace-card[data-role="engineering"]').innerText()).includes('sandbox PR stack'),
+        'Workspace Engineering view must retain actionable advice');
+      check(await noOverflow(),'Decision workspace has horizontal overflow');
+      await capture(page,label+'-layout-B',response,
+        ['Three perspectives visible together','No horizontal overflow','Uses the same fictional case']);
+      await page.locator('[data-layout="executive"]').click();
+      check(await page.locator('#executive-layout').isVisible(),'Switching back to layout A must work');
+      check(await noOverflow(),'Executive layout overflows after switching back');
+      checks.push('A/B layout toggle', 'Engineering/Risk/IA perspectives', 'Keyboard tab selection',
+        'Shared technical basis', 'No horizontal overflow in either layout');
+    }
     if (scenario?.startsWith('scenario-journey:')) {
       const [, variant, stepNumber, layer] = scenario.split(':');
       const title = {pass:'Standard low-risk pass',split:'AI split decision',excluded:'Hard gate scope exclusion',canary:'Production canary failure'}[variant];
