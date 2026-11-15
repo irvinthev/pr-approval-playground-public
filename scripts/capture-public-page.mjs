@@ -83,6 +83,11 @@ async function runCase(label, path, viewportName, viewport, scenario) {
 
     const checks = ['HTTP ' + response.status(), 'h1 present'];
     if (path === 'connected-decision-report.html') {
+      check(await page.locator('#reconciliation').isVisible(), 'Operational reconciliation panel missing');
+      check(await page.locator('.recon-stage').count()===3, 'Expected instruction, API and GitHub record stages');
+      check(await page.locator('.tech-ref').count()===5, 'Expected five authoritative source cards');
+      check((await page.locator('#reconciliation').innerText()).includes('stale-SHA'), 'Exception paths missing');
+      check((await page.locator('#technical-references').innerText()).includes('Limit:'), 'Source applicability limits missing');
       const noOverflow = async () => page.evaluate(() =>
         document.documentElement.scrollWidth <= window.innerWidth + 2);
       check(await page.locator('#executive-layout').isVisible(), 'Executive-first is the default layout');
