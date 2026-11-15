@@ -31,10 +31,10 @@ test('renders dynamically using existing response contract and no new network or
 });
 test('report explicitly distinguishes illustrative safeguards from actual findings',()=>{
  assert.match(source,/Illustrative design patterns—not confirmed controls/);
- assert.match(source,/not verified findings/);
- assert.match(source,/No severity or residual-risk score has been assigned/);
+ assert.match(source,/not verified weaknesses/);
+ assert.match(source,/Model-generated design assessment, not independent source verification/);
  assert.match(source,/Not independently verified/);
- assert.match(source,/No supported recommendation was returned/);
+ assert.match(source,/No defensible preliminary conclusion was returned/);
  assert.doesNotMatch(source,/riskScore\s*=/);
 });
 test('compares example controls for human, delegated and autonomous authority',()=>{
@@ -51,7 +51,7 @@ test('references only provided external HTTPS source links, with provenance cont
  assert.match(report,/knownLinks\.has\(url\.href\)/);
  assert.match(report,/ref\.modelUsed\?'Model identified as used':'Provided as context'/);
  assert.match(report,/Framework catalog provision cited; applicability not independently verified/);
- assert.match(report,/No source references were provided/);
+ assert.match(report,/No source references provided/);
 });
 test('keeps original privacy, authentication, conversation continuity and session reset',()=>{
  assert.match(source,/Use fictional or publicly shareable scenarios only/);
