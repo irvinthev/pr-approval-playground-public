@@ -43,6 +43,29 @@ function validateConclusion(conclusion, citations){
    citations:citationIds.map(id=>citations.get(id))
  };
 }
+
+const safeguardStates=['not-assessed','reported-absent','reported-partial','reported-full','not-applicable'];
+function validateSafeguard(item,allowedReferenceIds){
+ if(!isPlainObject(item)||!safeguardStates.includes(item.implementation))return null;
+ if(typeof item.objective!=='string'||!item.objective.trim()||
+    typeof item.why!=='string'||!item.why.trim()||
+    !Array.isArray(item.referenceIds)||item.referenceIds.length>2||
+    item.referenceIds.some(id=>typeof id!=='string'||
+      (allowedReferenceIds!==null&&!allowedReferenceIds.includes(id))) ||
+    new Set(item.referenceIds).size!==item.referenceIds.length)return null;
+ return {objective:maxLength(item.objective,170),why:maxLength(item.why,290),
+   implementation:item.implementation,referenceIds:item.referenceIds};
+}
+function validateClarification(item){
+ if(!isPlainObject(item)||typeof item.question!=='string'||!item.question.trim()||
+    typeof item.why!=='string'||!item.why.trim()||
+    !Array.isArray(item.options)||item.options.length<2||item.options.length>4||
+    item.options.some(option=>typeof option!=='string'||!option.trim()||option.length>85)||
+    new Set(item.options.map(x=>x.toLowerCase().trim())).size!==item.options.length)return null;
+ return {question:maxLength(item.question,240),why:maxLength(item.why,260),
+   options:item.options.map(x=>maxLength(x,85))};
+}
+
 const submissionStates=['submitted','not-submitted','unknown'];
 const gateStates=['accepted','rejected','unknown'];
 const mergeStates=['merged','not-merged','unknown'];
@@ -54,7 +77,7 @@ function validateApprovalOutcome(outcome){
  if(submission==='not-submitted' && gate==='accepted')return null;
  return {review:maxLength(review,240),submission,gate,merge};
 }
-export function validateAgentResponse(input,{scenarioText,requireGrounding=false}={}){
+export function validateAgentResponse(input,{scenarioText,requireGrounding=false,allowedReferenceIds=null}={}){
  const errors=[];
  if(!isPlainObject(input))return {ok:false,errors:['Response must be an object'],data:null};
  if(input.contractVersion!==AGENT_CONTRACT_VERSION)errors.push('Unknown contract version');
@@ -89,6 +112,18 @@ export function validateAgentResponse(input,{scenarioText,requireGrounding=false
      errors.push('Every framework citation must support a specific conclusion');
    }
  }
+ const safeguards=Array.isArray(input.expectedSafeguards)?
+   input.expectedSafeguards.slice(0,8).map(item=>validateSafeguard(item,allowedReferenceIds)):[];
+ const clarifications=Array.isArray(input.clarifications)?
+   input.clarifications.slice(0,3).map(validateClarification):[];
+ if(safeguards.some(x=>!x)||clarifications.some(x=>!x))
+   errors.push('Invalid focused assessment fields');
+ // Legacy response fixtures are valid. When supplied, new arrays must be bounded,
+ // valid, and grounded in the exact technical source cards selected by the server.
+ if(Array.isArray(input.expectedSafeguards)&&input.expectedSafeguards.length>8)
+   errors.push('Invalid focused assessment fields');
+ if(Array.isArray(input.clarifications)&&input.clarifications.length>3)
+   errors.push('Invalid focused assessment fields');
  const state={
    contractVersion:AGENT_CONTRACT_VERSION,
    scenarioText:scenario,
@@ -96,6 +131,8 @@ export function validateAgentResponse(input,{scenarioText,requireGrounding=false
    catalogAsOf:sourceCatalog.asOf,
    facts,
    challenges,
+   expectedSafeguards:safeguards,
+   clarifications,
    citations,
    ...(requireGrounding ? {conclusions,approvalOutcomes} : {}),
    unknowns:strings(input.unknowns,12,400),
