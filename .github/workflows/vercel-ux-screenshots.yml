@@ -3,8 +3,8 @@ on:
   pull_request:
     paths:
       - 'private-challenge.html'
-      - 'scripts/capture-vercel-ux.mjs'
-      - 'scripts/discover-vercel-preview.mjs'
+      - 'scripts/capture-preview-ux-screenshots.mjs'
+      - 'scripts/find-ready-vercel-ux-preview.mjs'
       - '.github/workflows/vercel-ux-screenshots.yml'
   workflow_dispatch:
     inputs:
@@ -38,7 +38,7 @@ jobs:
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
           GH_TOKEN: ${{ github.token }}
           VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
-        run: node scripts/discover-vercel-preview.mjs
+        run: node scripts/find-ready-vercel-ux-preview.mjs
       - name: Install Playwright Chromium
         if: steps.target.outputs.url != ''
         run: |
@@ -50,7 +50,7 @@ jobs:
           UX_PREVIEW_URL: ${{ steps.target.outputs.url }}
           UX_GIT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
           VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
-        run: node scripts/capture-vercel-ux.mjs
+        run: node scripts/capture-preview-ux-screenshots.mjs
       - name: Publish screenshot artifact
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
