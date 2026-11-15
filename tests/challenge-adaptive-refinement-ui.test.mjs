@@ -57,6 +57,10 @@ test('questions are optional, editable, and feed existing signed follow-up',()=>
  assert.match(inline,/state\.turns\.length>=6/);
  assert.match(source,/id="refinement-next-questions"/);
  assert.match(inline,/state\.refinementSent && Array\.isArray\(data\?\.challenges\)/);
+ assert.match(source,/Respond and reassess/);
+ assert.match(inline,/state\.pendingRefinement=true;\s*ask\(true\)/);
+ assert.match(inline,/question\.slice\(0,240\)/);
+ assert.match(inline,/\.refinement-next-action/);
 });
 test('self-challenge leverages signed prior model output without inventing proof',()=>{
  assert.equal((source.match(/data-challenge="justify"/g)||[]).length,3);
