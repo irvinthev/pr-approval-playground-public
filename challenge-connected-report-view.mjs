@@ -93,6 +93,7 @@ function renderShared(project,container){
 }
 function renderSources(project,container){
   const details=el('details','cdr-sources');
+  details.open=true; // Sources and their limits are part of the primary report.
   const summary=el('summary','');
   append(summary,el('strong','','Referenced sources and limits'),
     el('span','cdr-mini',project.references.length+' technical · '+project.frameworkSources.length+' framework'));
