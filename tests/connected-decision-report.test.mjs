@@ -26,7 +26,7 @@ test('One scenario provides engineering, risk, and assurance decision perspectiv
     assert.match(html,new RegExp('data-lens="'+lens+'"'));
     assert.match(script,new RegExp('^  '+lens+':\\{','m'));
   }
-  assert.match(script,/Make PR number, repository, head SHA/);
+  assert.match(script,/Make repository, PR number, head SHA/);
   assert.match(script,/permission map/);
   assert.match(script,/Trace the approval instruction/);
   assert.match(script,/Compare agent-executed approvals with conventional human review/);
