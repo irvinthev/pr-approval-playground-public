@@ -28,7 +28,7 @@ test('One scenario provides engineering, risk, and assurance decision perspectiv
   }
   assert.match(script,/Make repository, PR number, head SHA/);
   assert.match(script,/permission map/);
-  assert.match(script,/Trace the approval instruction/);
+  assert.match(script,/Trace the independent human instruction/);
   assert.match(script,/Compare agent-executed approvals with conventional human review/);
   assert.match(script,/narrow batch submitter/i);
   assert.match(script,/targeted review rules/);
