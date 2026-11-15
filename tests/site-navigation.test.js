@@ -87,6 +87,23 @@ test('Field Guide worked assessment presents conditional engineering rationale a
  assert.doesNotMatch(example,/private-challenge\.html|vercel\.app/i);
 });
 
+test('worked assessment is readable inline and the worksheets remain optional',()=>{
+ const risk=read('ai-sdlc-risk.html');
+ const assurance=read('independent-assurance.html');
+ const worked=read('risk-assessment-example.html');
+ assert.match(risk,/ONE SHARED ASSESSMENT/);
+ assert.match(risk,/Decision-changing question/);
+ assert.match(risk,/Compare what changes—not only the AI mechanism/);
+ assert.match(risk,/Three complementary perspectives/);
+ assert.match(risk,/Evidence status: Implementation evidence was not provided/);
+ assert.match(risk,/Read here\. Download separately/);
+ assert.match(assurance,/Can an instruction for commit A authorize a qualifying approval or merge of commit B/);
+ assert.match(assurance,/Independent Assurance/);
+ assert.match(worked,/One shared assessment · next gate by role/);
+ assert.match(worked,/Decision-changing test/);
+ assert.doesNotMatch(worked,/Braze|Appboy|private-challenge\.html|vercel\.app/i);
+});
+
 test('Field Guide ends with downloadable blank and fictional scored risk worksheets',()=>{
  const home=read('index.html');
  const risk=read('ai-sdlc-risk.html');
