@@ -34,7 +34,7 @@ try {
         ['index.html','ai-sdlc-risk.html','engineering-blueprint.html','continuous-monitoring.html','independent-assurance.html'].forEach(add);
       }
       if (/^(risk-|sdlc-risk-)/.test(file) && /\.(js|css)$/.test(file))add('ai-sdlc-risk.html');
-      if (/^(challenge-connected-report-(data\.mjs|view\.mjs|css)|challenge-agent-contract\.js|api\/challenge\.js|scripts\/capture-public-page\.mjs)$/.test(file))add('private-challenge.html');
+      if (/^(challenge-connected-report-(data\.mjs|view\.mjs|css)|challenge-agent-contract\.js|challenge-risk-path-catalog\.mjs|api\/challenge\.js|scripts\/capture-public-page\.mjs)$/.test(file))add('private-challenge.html');
       if (/^scripts\/capture-public-page\.mjs$/.test(file))add('index.html');
     }
   }
@@ -127,6 +127,18 @@ async function checkChallengeAssessment(page, captureDecisionBrief) {
           detection:'Match human authorization, API request and recorded review by revision.',
           response:'Investigate unmatched reviews and stop additional submissions where needed.',
           implementation:'not-assessed',referenceIds:['GH-REVIEWS']},
+        riskPath:{pathway:'delivery',
+          failure:'The agent submits an approval for a revision the engineer did not authorize.',
+          uncertainty:'Actual GitHub permissions and revision protections have not been checked.',
+          steps:[
+            {stageId:'authorization',roles:['origin'],event:'Agent submission is not rebound to the reviewed SHA.',
+              interruption:'',evidence:'Recorded human decision and exact revision.'},
+            {stageId:'merge',roles:['exposure','prevention'],event:'An outdated review might satisfy a merge gate.',
+              interruption:'Block merges when review and current revision diverge.',
+              evidence:'Repository rules, review commit and merge outcomes.'},
+            {stageId:'monitor',roles:['detection'],event:'A missing human decision may be found after review submission.',
+              interruption:'',evidence:'Independent reconciliation of human intent, API action and GitHub review.'}
+          ]},
         engineeringReferences:[{id:'GH-REVIEWS',title:'GitHub pull request reviews',
           publisher:'GitHub Docs',url:'https://docs.github.com/en/rest/pulls/reviews',
           facts:['A review can be retrieved with its state and commit ID.'],
@@ -148,6 +160,18 @@ async function checkChallengeAssessment(page, captureDecisionBrief) {
       operationalReview:noQuestions?null:{kind:'monitoring',question:'Can a lagging consumer be detected?',
         detection:'Track credential rejection rates.',response:'Pause cutover and recover delayed consumers.',
         implementation:'not-assessed',referenceIds:[]},
+      riskPath:noQuestions?null:{pathway:'operations',
+        failure:'Some consumers could reject the newly rotated credential.',
+        uncertainty:'Consumer inventory and the revocation timing have not been verified.',
+        steps:[
+          {stageId:'execute',roles:['origin'],event:'Old credentials are revoked before all consumers switch.',
+            interruption:'',evidence:'Rotation timeline and consumer inventory.'},
+          {stageId:'verify',roles:['exposure','prevention'],event:'A lagging consumer rejects connections.',
+            interruption:'Verify critical consumer authentication before revocation.',
+            evidence:'Authentication outcomes across consumer groups.'},
+          {stageId:'observe',roles:['detection'],event:'Authentication errors reveal consumers still using old credentials.',
+            interruption:'',evidence:'Failure metrics and alert events.'}
+        ]},
       ...(revised?{reassessment:'Overlap changes the safeguard to Partial. The pilot recommendation stands.'}:{})
     }});
   });
@@ -159,6 +183,27 @@ async function checkChallengeAssessment(page, captureDecisionBrief) {
     'The connected report should be primary after assessment');
   check(await page.locator('#cdr-preview .cdr-recommendation-text').isVisible(),
     'Connected report must use the real assessment conclusion');
+  check(await page.locator('#cdr-preview .cdr-path').isVisible(),
+    'The scenario risk path must appear immediately after the recommendation');
+  check(await page.locator('.cdr-path-strip .cdr-path-button').count()===3,
+    'Only the three relevant delivery touchpoints should show by default');
+  check((await page.locator('.cdr-path-detail').innerText()).includes('Agent submission is not rebound'),
+    'The initial stage should explain where the failure originates');
+  await page.locator('.cdr-path-strip .cdr-path-button[data-path-stage="merge"]').click();
+  check((await page.locator('.cdr-path-detail').innerText()).includes('Block merges when review'),
+    'The downstream stage must explain the possible stopping mechanism');
+  await page.locator('.cdr-path-full summary').click();
+  check(await page.locator('.cdr-path-full-grid .cdr-path-button').count()===8,
+    'The full Field Guide delivery lifecycle should remain available on demand');
+  await page.locator('.cdr-path-full-grid .cdr-path-button[data-path-stage="ai-review"]').click();
+  check((await page.locator('.cdr-path-detail').innerText()).includes('not evidence that the stage has no risk'),
+    'Unmapped stages must not be represented as risk-free');
+  await page.locator('.cdr-path-full summary').click();
+  await page.waitForFunction(() =>
+    document.querySelector('.cdr-path-strip .cdr-path-button[data-path-stage="authorization"]')
+      ?.getAttribute('aria-pressed')==='true',{timeout:3000});
+  check(await page.locator('.cdr-path-full').evaluate(node=>!node.open),
+    'The expanded lifecycle should be closed after restoration');
   check(await page.locator('#cdr-preview .cdr-recon').isVisible(),
     'Human-delegated PR case must show reconciliation question');
   check((await page.locator('#cdr-preview .cdr-recon').innerText()).includes('Unknown'),
@@ -213,6 +258,8 @@ async function checkChallengeAssessment(page, captureDecisionBrief) {
   await page.locator('#cdr-preview .cdr').waitFor();
   check(!(await page.locator('#cdr-preview .cdr-recon').isVisible()),
     'An autonomous PR Plan scenario must not inherit human-delegated reconciliation');
+  check(await page.locator('.cdr-path').count()===0,
+    'A model-null causal path must not be replaced with an invented lifecycle');
   await page.locator('#cdr-toggle').click();
   check(!(await page.locator('#refine-panel').isVisible()),'Zero questions should hide the reassessment form');
   check(await page.locator('#report-model-examples').isVisible(),'PR examples should appear for PR proposals');
@@ -226,6 +273,12 @@ async function checkChallengeAssessment(page, captureDecisionBrief) {
     'Unrelated credential rotation must not show PR-specific reconciliation');
   check((await page.locator('#cdr-preview .cdr-recon').innerText()).includes('Track credential rejection rates'),
     'Unrelated proposal must receive its own operational monitoring analysis');
+  check((await page.locator('.cdr-path-strip').innerText()).includes('Execute'),
+    'Credential rotation must use the operational lifecycle');
+  check(!(await page.locator('.cdr-path').innerText()).includes('AI review'),
+    'Unrelated proposals must not receive a GitHub or AI review causal path');
+  check(await page.locator('.cdr-path-full-grid .cdr-path-button').count()===7,
+    'The operational lifecycle must have its own canonical stage set');
   await page.locator('#cdr-toggle').click();
   check(!(await page.locator('#report-model-examples').isVisible()),'PR examples should be hidden for credential rotation');
   for (const selector of ['#report-expected-safeguards summary','#report-sources-details summary']) {

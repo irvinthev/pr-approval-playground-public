@@ -66,3 +66,35 @@
 .cdr-lens-references>strong{font-size:12px;color:#d4f6e9;display:block;margin-bottom:7px}
 .cdr-lens-reference{border-top:1px solid #335d6a;padding:8px 0}
 .cdr-lens-reference .cdr-source-limit{display:block;margin:5px 0 0;line-height:1.5}
+
+/* Scenario-specific causal path. Compact by default; the full lifecycle is optional. */
+.cdr-path{border:1px solid #416e7a;background:#0f2e40;border-radius:12px;padding:18px;min-width:0}
+.cdr-path>h3{font-size:20px;line-height:1.25;margin:6px 0 9px}
+.cdr-path-failure{font-size:15px;font-weight:700;line-height:1.5;margin:0;color:#e8f7ef}
+.cdr-path-strip{display:flex;gap:8px;overflow-x:auto;overscroll-behavior-inline:contain;padding:5px 2px 12px;scrollbar-width:thin}
+.cdr-path-button{flex:1 0 138px;min-width:0;min-height:69px;text-align:left;border:1px solid #426776;border-radius:9px;background:#163849;color:#e6f3f4;padding:11px;font-size:12px;display:flex;flex-direction:column;gap:8px;justify-content:space-between}
+.cdr-path-button strong{line-height:1.35}
+.cdr-path-button[aria-pressed=true]{border:2px solid #9ce5cf;background:#23524e;box-shadow:0 0 0 1px #77b7a9}
+.cdr-path-button:focus-visible{outline:2px solid #d4ffef;outline-offset:2px}
+.cdr-path-unmapped{opacity:.65}
+.cdr-path-mini-roles{display:flex;gap:5px}
+.cdr-path-dot{width:9px;height:9px;border-radius:50%;display:inline-block;background:#91a9b5}
+.cdr-path-dot-origin{background:#edb469}
+.cdr-path-dot-exposure{background:#ed859b}
+.cdr-path-dot-prevention{background:#90c6ed}
+.cdr-path-dot-detection{background:#9be3bd}
+.cdr-path-detail{border-left:4px solid #81d6bd;background:#163747;border-radius:7px;padding:13px 16px;min-height:136px;overflow-wrap:anywhere}
+.cdr-path-roles{display:flex;flex-wrap:wrap;gap:6px;margin:9px 0 11px}
+.cdr-path-role{font-size:11px;border-radius:5px;padding:4px 8px;border:1px solid #537988;color:#e9f4f6;background:#244354}
+.cdr-path-role-origin{background:#5d4124;border-color:#a77a40;color:#ffdda9}
+.cdr-path-role-exposure{background:#633342;border-color:#ad6378;color:#ffd7df}
+.cdr-path-role-prevention{background:#1b4964;border-color:#5082a0;color:#d5efff}
+.cdr-path-role-detection{background:#215546;border-color:#528e76;color:#d0ffde}
+.cdr-path-event{font-size:13px;line-height:1.55;margin:6px 0;color:#f3f8fa}
+.cdr-path-detail .cdr-mini{margin:7px 0}
+.cdr-path-full{margin-top:11px;border-top:1px solid #3d606b;padding-top:8px}
+.cdr-path-full>summary{font-size:12px;font-weight:700;color:#aae9db}
+.cdr-path-full-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:11px 0}
+.cdr-path-full-grid .cdr-path-button{min-width:0;flex-basis:auto;min-height:61px}
+.cdr-path-caveat{font-size:11px;line-height:1.55;color:#aac6ce;margin:9px 0 0}
+@media(max-width:680px){.cdr-path{padding:14px}.cdr-path-button{flex-basis:122px}.cdr-path-full-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
