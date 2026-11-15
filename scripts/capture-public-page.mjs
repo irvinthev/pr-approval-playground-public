@@ -71,6 +71,17 @@ async function capture(page, label, response, checks = []) {
   console.log('CAPTURED ' + label + ' ' + hash.slice(0, 12));
 }
 async function checkChallengeAssessment(page, captureDecisionBrief) {
+  // Scorecard can be explored without access token or additional model requests.
+  await page.locator('#scorecard-prototype > summary').click();
+  check(await page.locator('#scorecard-proposal').isVisible(),'Scorecard prototype should open without a model call');
+  check((await page.locator('#scorecard-decision').textContent()).includes('Conditionally pilot'),'Completed example should be the default');
+  check(await page.locator('[data-scorecard-mode="current"]').isDisabled(),'Current assessment must stay unavailable before model data');
+  await page.locator('[data-scorecard-mode="template"]').click();
+  check((await page.locator('#scorecard-decision').textContent()).includes('[Proceed'),'Blank template should be explicit');
+  await page.locator('[data-scorecard-mode="example"]').click();
+  check((await page.locator('#scorecard-failure').textContent()).includes('GitHub CLI or MCP'),'Fictional example should be populated');
+  check(await page.evaluate(() => document.documentElement.scrollWidth<=innerWidth),'Scorecard should fit the viewport');
+  await page.locator('#scorecard-prototype > summary').click();
   let requests = [];
   const questions = [
     {question:'Can credentials overlap?',why:'Overlap changes the cutover design.',options:['Yes, during cutover','No, only one at a time']},
@@ -134,6 +145,11 @@ async function checkChallengeAssessment(page, captureDecisionBrief) {
   check(await page.locator('#refinement-questions summary').textContent()==='Could a changed revision merge on the original approval?',
     'The decision-changing question should be visible before expanding answers');
   check(await page.evaluate(() => document.documentElement.scrollWidth<=innerWidth),'Decision brief must fit the viewport');
+  await page.locator('#open-scorecard').click();
+  check(await page.locator('[data-scorecard-mode="current"]').isEnabled(),'Live scorecard should use the existing assessment');
+  check((await page.locator('#scorecard-decision').textContent()).includes('Keep approvals manual'),'Live recommendation should match source conclusion');
+  check((await page.locator('#scorecard-safeguards').innerText()).includes('Unknown · not assessed'),'Safeguards must not become verified by display');
+  check(requests.length===1,'Opening live scorecard must not make another model request');
   await page.locator('#token').fill('');
   await captureDecisionBrief();
   await page.locator('#token').fill('local-browser-fixture');
@@ -176,6 +192,10 @@ async function checkChallengeAssessment(page, captureDecisionBrief) {
   await page.locator('#report-expected-safeguards summary').click();
   check((await page.locator('#report-expected-safeguards').innerText()).includes('Partial · User-reported'),
     'Reassessment should preserve the provenance of a reported safeguard');
+  await page.locator('#open-scorecard').click();
+  check((await page.locator('#scorecard-safeguards').innerText()).includes('Partial · user-reported'),
+    'Reassessed scorecard should retain source-reported status');
+  check(requests.length===2,'Reassessed scorecard must not call the model');
   check(await page.evaluate(() => document.documentElement.scrollWidth<=innerWidth),'Assessment must fit the viewport');
 }
 
