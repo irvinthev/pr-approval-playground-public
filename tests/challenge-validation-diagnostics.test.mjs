@@ -61,5 +61,7 @@ test('diagnostic codes do not echo untrusted model text',()=>{
   const codes=contractFailureCodes(['Unsupported catalog citation: '+arbitrary,
     'Invalid focused assessment fields: clarifications have malformed question, reason or choices']);
   assert.deepEqual(codes,['UNRECOGNIZED_CITATION','CLARIFICATIONS']);
+  assert.deepEqual(contractFailureCodes(['Response must be an object']),['RESPONSE_SHAPE']);
+  assert.match(contractRepairHints(['Response must be an object']),/top-level JSON object/);
   assert.ok(!codes.join(',').includes(arbitrary));
 });
