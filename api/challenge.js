@@ -48,6 +48,30 @@ export function invalidSourceIds(parsed, selectedReferences){
     misplaced:ids.filter(id=>typeof id==='string'&&!catalogIds.has(id)&&selected.has(id))
   };
 }
+export function normalizeEngineeringReferences(parsed, selectedReferences){
+  const allowed=new Set(selectedReferences.map(reference=>reference.id));
+  const removed=[];
+  const normalize=ids=>{
+    if(!Array.isArray(ids))return ids;
+    const seen=new Set();
+    return ids.filter(id=>{
+      if(typeof id!=='string'||!allowed.has(id)||seen.has(id)){
+        removed.push(typeof id==='string'?id:'invalid source ID');
+        return false;
+      }
+      seen.add(id);
+      return true;
+    });
+  };
+  if(parsed.referenceIds!==undefined)parsed.referenceIds=normalize(parsed.referenceIds);
+  if(Array.isArray(parsed.expectedSafeguards)){
+    for(const safeguard of parsed.expectedSafeguards){
+      if(safeguard&&safeguard.referenceIds!==undefined)
+        safeguard.referenceIds=normalize(safeguard.referenceIds);
+    }
+  }
+  return [...new Set(removed)];
+}
 export function buildContractRepairRequest(original,previous,errors){
   const codes=contractFailureCodes(errors);
   return {
@@ -205,7 +229,11 @@ export default async function handler(req,res){
     const allowedReferenceIds=selectedReferences.map(ref=>ref.id);
     const validIds=new Set(allowedReferenceIds);
     const referenceError='Model referenced an unprovided or duplicate engineering source';
+    const removedReferences=new Set();
     function checkResponse(candidate){
+      if(input.assessmentPhase){
+        for(const id of normalizeEngineeringReferences(candidate,selectedReferences))removedReferences.add(id);
+      }
       const ids=candidate?.referenceIds===undefined?[]:candidate.referenceIds;
       if(!Array.isArray(ids)||ids.some(id=>typeof id!=='string'||!validIds.has(id))){
         return {ok:false,errors:[referenceError]};
@@ -257,9 +285,6 @@ export default async function handler(req,res){
       const codes=contractFailureCodes(checked.errors);
       // No scenario text or raw provider output in logs.
       console.warn('Challenge Lab: response contract rejected:',codes.join(','));
-      if(input.assessmentPhase && checked.errors.includes(referenceError)){
-        return json(res,502,{error:'Gemini returned invalid references even after a correction attempt. Try assessing the proposal again.'});
-      }
       return json(res,502,{error:'Model output failed contract validation ('+codes.join(', ')+')',details:checked.errors});
     }
     const continuityReceipt=issueReceipt(checked.data,input.scenarioText,undefined,input.assessmentPhase);
@@ -269,7 +294,8 @@ export default async function handler(req,res){
         reviewedAsOf:r.reviewedAsOf,facts:r.facts,limits:r.limits,modelUsed:checked.referenceIds.includes(r.id)||
           checked.data.expectedSafeguards.some(s=>s.referenceIds.includes(r.id))
       })),
-      continuityReceipt,turnsUsed:input.turns.length,mode:'live-model',responseRepaired:repaired});
+      continuityReceipt,turnsUsed:input.turns.length,mode:'live-model',responseRepaired:repaired,
+      ...(removedReferences.size?{referenceWarning:'Some source links were omitted because those cards were not supplied for this scenario.'}:{})});
   }catch{
     if(controller.signal.aborted){
       console.warn('Challenge Lab: Gemini response timed out.');

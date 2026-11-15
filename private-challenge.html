@@ -185,6 +185,7 @@ summary:focus-visible{outline:3px solid var(--mint);outline-offset:3px}
     <p class="small" id="report-previous"></p>
     <p id="report-revised"></p>
   </section>
+  <p id="report-reference-warning" class="small" role="status" hidden></p>
   <section id="report-lead-risk-section" class="report-section" aria-labelledby="report-risks-title">
     <h3 id="report-risks-title">What could go wrong</h3>
     <div id="report-lead-risk" class="report-lead-risk"></div>
@@ -387,6 +388,8 @@ function renderAssessmentReport(data){
     sources=el('report-sources'),safeguards=el('report-expected-safeguards'),
     otherSafeguards=el('report-other-safeguards');
   for(const node of [leadRisk,risks,unknowns,sources,safeguards,otherSafeguards])clear(node);
+  el('report-reference-warning').hidden=!data.referenceWarning;
+  el('report-reference-warning').textContent=data.referenceWarning||'';
   const primary=data.conclusions[0];
   el('report-takeaway').textContent=primary.application;
   el('report-basis').textContent=primary.scenarioBasis;

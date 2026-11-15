@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
-import handler,{buildModelRequest,validateRequest,buildContractRepairRequest,contractFailureCodes,invalidSourceIds} from '../api/challenge.js';
+import handler,{buildModelRequest,validateRequest,buildContractRepairRequest,contractFailureCodes,invalidSourceIds,normalizeEngineeringReferences} from '../api/challenge.js';
 const require=createRequire(import.meta.url);
 const {references,selectEngineeringReferences,referencePrompt}=require('../lab/engineering-references.cjs');
 const scenario='Can CODEOWNERS automatically approve a pull request using a GitHub App?';
@@ -99,45 +99,26 @@ test('model may omit references but may not invent or cite unprovided source IDs
  assert.ok(accepted.body.engineeringReferences.every(x=>x.modelUsed===false));
 });
 
-test('focused assessment recovers from duplicate or unprovided engineering references',async t=>{
+test('focused assessments drop source IDs that were not supplied and retain valid links',async t=>{
  const token=process.env.CHALLENGE_API_TOKEN,key=process.env.GEMINI_API_KEY;
- process.env.CHALLENGE_API_TOKEN='private-test-token';
- process.env.GEMINI_API_KEY='provider-test-key';
- t.after(()=>{
-  if(token===undefined)delete process.env.CHALLENGE_API_TOKEN;else process.env.CHALLENGE_API_TOKEN=token;
-  if(key===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=key;
- });
- const focused={...response,counterargument:'A designated reviewer could handle this directly.',
+ process.env.CHALLENGE_API_TOKEN='private-test-token';process.env.GEMINI_API_KEY='provider-test-key';
+ t.after(()=>{if(token===undefined)delete process.env.CHALLENGE_API_TOKEN;else process.env.CHALLENGE_API_TOKEN=token;
+  if(key===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=key});
+ const candidate={...response,counterargument:'A designated reviewer could handle this directly.',
+  referenceIds:['GH-NONEXISTENT','GH-CODEOWNERS','GH-CODEOWNERS'],
   expectedSafeguards:[{objective:'Require a designated reviewer',why:'Route changes to the relevant reviewer.',
-   implementation:'not-assessed',referenceIds:['GH-CODEOWNERS']}],clarifications:[]};
- const unprovided={...focused,referenceIds:['GH-NONEXISTENT']};
- const req={method:'POST',headers:{authorization:'Bearer private-test-token'},body:{scenarioText:scenario,assessment:true}};
- for(const {replies,status,calls} of [
-  {replies:[{...focused,referenceIds:['GH-CODEOWNERS','GH-CODEOWNERS']}],status:200,calls:1},
-  {replies:[unprovided,focused],status:200,calls:2},
-  {replies:[unprovided,unprovided],status:502,calls:2}
- ]){
-  let count=0;
-  const mock=t.mock.method(globalThis,'fetch',async (_url,opts)=>{
-   const reply=replies[count++];
-   if(count===2)assert.match(JSON.parse(opts.body).messages[1].content,/ENGINEERING_REFERENCES/);
-   return {ok:true,json:async()=>({choices:[{message:{content:JSON.stringify(reply)}}]})};
-  });
-  const res=mockRes();
-  await handler(req,res);
-  mock.mock.restore();
-  assert.equal(res.statusCode,status,JSON.stringify(res.body));
-  assert.equal(count,calls);
-  if(status===200){
-   assert.equal(res.body.responseRepaired,calls===2);
-   assert.deepEqual(res.body.engineeringReferences.filter(x=>x.modelUsed).map(x=>x.id),['GH-CODEOWNERS']);
-  }else{
-   assert.match(res.body.error,/correction attempt/);
-   assert.equal(res.body.continuityReceipt,undefined);
-  }
- }
+   implementation:'not-assessed',referenceIds:['GH-NONEXISTENT','GH-CODEOWNERS','GH-CODEOWNERS']}],clarifications:[]};
+ const original=JSON.stringify(candidate);
+ const mock=t.mock.method(globalThis,'fetch',async()=>({ok:true,json:async()=>({choices:[{message:{content:original}}]})}));
+ const res=mockRes();
+ await handler({method:'POST',headers:{authorization:'Bearer private-test-token'},
+  body:{scenarioText:scenario,assessment:true}},res);
+ assert.equal(res.statusCode,200,JSON.stringify(res.body));
+ assert.equal(mock.mock.callCount(),1);
+ assert.deepEqual(res.body.expectedSafeguards[0].referenceIds,['GH-CODEOWNERS']);
+ assert.deepEqual(res.body.engineeringReferences.filter(x=>x.modelUsed).map(x=>x.id),['GH-CODEOWNERS']);
+ assert.match(res.body.referenceWarning,/omitted/);
 });
-
 test('one bounded schema retry restores missing conclusion fields while keeping source restrictions',async t=>{
  const token=process.env.CHALLENGE_API_TOKEN,key=process.env.GEMINI_API_KEY;
  process.env.CHALLENGE_API_TOKEN='private-test-token';
