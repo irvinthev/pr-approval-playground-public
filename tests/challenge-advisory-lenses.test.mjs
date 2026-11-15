@@ -97,9 +97,9 @@ test('single model request includes distinct advisory and operational fields, no
 });
 test('new display is a safe HTML-free projection with linked source limits',()=>{
  const view=readFileSync(new URL('../challenge-connected-report-view.mjs',import.meta.url),'utf8');
- assert.match(view,/Technical reference support/);
+ assert.match(view,/Referenced sources and limits/);
  assert.match(view,/Source limit:/);
- assert.match(view,/SCENARIO-SPECIFIC MODEL ANALYSIS/);
+ assert.match(view,/THREE RESPONSIBILITIES · ONE UNDERLYING ASSESSMENT/);
  assert.match(view,/SCENARIO-SPECIFIC OPERATIONS/);
  assert.doesNotMatch(view,/innerHTML|\bfetch\s*\(|eval\(/);
  for(const word of ['Jon','Chase','Andrew','Braze','Fast Track'])
