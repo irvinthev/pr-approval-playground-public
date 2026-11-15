@@ -83,13 +83,96 @@ function appendView(root,view,project){
   }
   root.replaceChildren(panel);
 }
+// Compact causal trace: select only consequential stages first, optionally
+// expand all canonical touchpoints. Selection is local; no API/model calls.
+function renderRiskPath(project,container){
+  const path=project.riskPath;
+  if(!path)return;
+  const section=el('section','cdr-path');
+  section.setAttribute('aria-label','Scenario risk path');
+  append(section,el('span','cdr-kicker','SCENARIO RISK PATH · PROPOSED'),
+    el('h3','','Where does the failure occur?'));
+  addText(section,'cdr-path-failure',path.failure);
+  const intro=el('p','cdr-mini','Select a stage to see the failure condition, possible stopping point and evidence to investigate.');
+  section.append(intro);
+
+  const buttons=[],selected=path.steps;
+  const strip=el('div','cdr-path-strip');
+  strip.setAttribute('role','group');
+  strip.setAttribute('aria-label','Relevant scenario stages');
+  strip.tabIndex=0;
+  const detail=el('div','cdr-path-detail');
+  detail.setAttribute('role','region');
+  detail.setAttribute('aria-live','polite');
+  detail.id='cdr-path-selected-detail';
+
+  function select(stageId){
+    for(const button of buttons){
+      const active=button.dataset.pathStage===stageId;
+      button.setAttribute('aria-pressed',String(active));
+      button.classList.toggle('cdr-path-active',active);
+    }
+    const mapped=selected.find(x=>x.id===stageId);
+    const stage=path.stages.find(x=>x.id===stageId);
+    detail.replaceChildren();
+    append(detail,el('span','cdr-kicker',stage?.label||'Lifecycle stage'));
+    if(!mapped){
+      addText(detail,'cdr-mini','No specific causal point was mapped to this stage. This is not evidence that the stage has no risk.');
+      return;
+    }
+    const labels=el('div','cdr-path-roles');
+    for(const role of mapped.roles)labels.append(el('span','cdr-path-role cdr-path-role-'+role.id,role.label));
+    detail.append(labels);
+    addText(detail,'cdr-path-event',mapped.event);
+    if(mapped.interruption)addText(detail,'cdr-mini','Potential interruption: '+mapped.interruption);
+    addText(detail,'cdr-mini','Evidence to investigate: '+mapped.evidence);
+  }
+  function stageButton(stage,collection){
+    const button=el('button','cdr-path-button');
+    button.type='button';
+    button.dataset.pathStage=stage.id;
+    button.setAttribute('aria-pressed','false');
+    button.setAttribute('aria-controls','cdr-path-selected-detail');
+    append(button,el('strong','',stage.label));
+    const mapped=selected.find(x=>x.id===stage.id);
+    if(mapped){
+      const badges=el('span','cdr-path-mini-roles');
+      for(const role of mapped.roles)badges.append(el('i','cdr-path-dot cdr-path-dot-'+role.id));
+      button.append(badges);
+    }else button.classList.add('cdr-path-unmapped');
+    button.addEventListener('click',()=>select(stage.id));
+    collection.append(button);buttons.push(button);
+  }
+  for(const stage of selected)stageButton(stage,strip);
+  section.append(strip,detail);
+  const all=el('details','cdr-path-full');
+  all.append(el('summary','','Show all '+path.stages.length+' lifecycle touchpoints'));
+  const grid=el('div','cdr-path-full-grid');
+  for(const stage of path.stages)stageButton(stage,grid);
+  all.append(grid);
+  addText(all,'cdr-mini','Unmapped does not mean risk-free. These are illustrative touchpoints, not a required workflow.');
+  section.append(all);
+  addText(section,'cdr-path-caveat',path.uncertainty?
+    'Mapping uncertainty: '+path.uncertainty:
+    'This is a proposed failure path; implementation and safeguards have not been verified.');
+  addText(section,'cdr-path-caveat','This trace is model interpretation, not an observation of actual system behavior or proof that safeguards exist.');
+  container.append(section);
+  select(selected.find(x=>x.roles.some(role=>role.id==='origin'))?.id||selected[0].id);
+}
 function renderShared(project,container){
+  if(project.riskPath&&!project.reconciliation&&!project.operational)return;
   const shared=el('section','cdr-shared');
-  const head=el('div','cdr-section-head');
-  append(head,el('span','cdr-kicker','SHARED TECHNICAL BASIS'),el('h3','','What could realistically go wrong?'));
-  shared.append(head);
-  addText(shared,'cdr-summary',project.leadRisk||'No lead risk was returned.');
-  addText(shared,'cdr-mini',project.leadRiskReason);
+  if(project.riskPath){
+    const head=el('div','cdr-section-head');
+    append(head,el('span','cdr-kicker','OPERATIONAL IMPLICATIONS'),el('h3','','What happens if the boundary fails?'));
+    shared.append(head);
+  }else{
+    const head=el('div','cdr-section-head');
+    append(head,el('span','cdr-kicker','SHARED TECHNICAL BASIS'),el('h3','','What could realistically go wrong?'));
+    shared.append(head);
+    addText(shared,'cdr-summary',project.leadRisk||'No lead risk was returned.');
+    addText(shared,'cdr-mini',project.leadRiskReason);
+  }
   if(project.reconciliation){
     const recon=el('section','cdr-recon');
     append(recon,el('span','cdr-kicker','OPERATIONAL RECONCILIATION'),el('h3','',project.reconciliation.title),
@@ -159,6 +242,7 @@ export function renderConnectedReport(target,response,scenarioText=''){
   addText(recommendation,'cdr-mini',project.basis);
   header.append(recommendation);
   root.append(header);
+  renderRiskPath(project,root);
   const controls=el('div','cdr-tabs');
   controls.setAttribute('role','tablist');controls.setAttribute('aria-label','Assessment perspective');
   const content=el('div','cdr-content');
