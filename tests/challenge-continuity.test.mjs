@@ -85,7 +85,7 @@ test('focused assessment rejects re-runs even when valid previous receipts exist
  const old=process.env.CHALLENGE_API_TOKEN;
  process.env.CHALLENGE_API_TOKEN='local-focused-continuity-secret';
  t.after(()=>{if(old===undefined)delete process.env.CHALLENGE_API_TOKEN;else process.env.CHALLENGE_API_TOKEN=old});
- const receipt=issueReceipt(response,scenario,undefined,'initial');
+ const receipt=issueReceipt({...response,expectedSafeguards:[]},scenario,undefined,'initial');
  const batch={scenarioText:scenario,assessment:true,
   turns:[{role:'user',content:'I have additional technical information.'}],continuityReceipts:[receipt]};
  assert.match(validateRequest(batch).error,/One assessment per proposal/);
