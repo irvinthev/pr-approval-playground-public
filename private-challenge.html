@@ -219,6 +219,8 @@ main#main-content .panel{background:#0e273c;border-color:#38586c}
 .refine-next{margin:13px 0 0;border:1px solid #446a7d;border-radius:10px;padding:9px 13px}
 .refine-next summary{color:var(--mint);font-weight:700;cursor:pointer}
 .refine-next li{font-size:13px;margin-top:9px}
+.refine-next li input{font-size:13px;padding:9px;margin:8px 0 6px}
+.refine-next li button{display:block;font-size:12px;padding:9px 11px}
 .safeguard-context{padding:0 13px 14px;border-top:1px solid #456a7b}
 .safeguard-context p{font-size:12px;line-height:1.5;margin:9px 0}
 .safeguard-context a{display:inline-block;max-width:100%;font-size:12px;overflow-wrap:anywhere}
@@ -534,6 +536,7 @@ function busy(value){
   state.busy=value;
   el('ask').disabled=value;el('continue').disabled=value;el('reset').disabled=value;
   el('refinement-submit').disabled=value || state.turns.length>=6;
+  document.querySelectorAll('.refinement-next-action').forEach(btn=>btn.disabled=value || state.turns.length>=6);
   document.querySelectorAll('[data-challenge]').forEach(btn=>btn.disabled=value || state.turns.length>=6);
   el('ask').textContent=value?'Analyzing…':'Challenge my design';
   el('continue').textContent=value?'Analyzing…':'Continue the challenge';
@@ -635,8 +638,29 @@ function renderRefinementQuestions(data){
   const generated=state.refinementSent && Array.isArray(data?.challenges)?data.challenges.slice(0,3):[];
   follow.hidden=!generated.length;
   for(const item of generated){
-    const li=add('li',next,item.question||'Unresolved question');
+    const li=document.createElement('li');next.append(li);
+    const question=String(item.question||'Unresolved question');
+    add('strong',li,question);
     if(item.reason)add('p',li,item.reason,'small');
+    const answer=document.createElement('input');
+    answer.type='text';answer.maxLength=140;
+    answer.placeholder='Your response, or “Unknown”';
+    answer.setAttribute('aria-label','Response to Gemini question: '+question.slice(0,180));
+    li.append(answer);
+    const submit=add('button',li,'Respond and reassess');
+    submit.type='button';submit.className='refinement-next-action';
+    submit.disabled=state.busy||state.turns.length>=6;
+    submit.addEventListener('click',()=>{
+      if(state.busy||state.turns.length>=6)return;
+      const value=answer.value.trim();
+      if(!value){el('refinement-status').textContent='Enter a response or “Unknown” for this follow-up.';return}
+      const prompt='In response to your follow-up question (“'+question.slice(0,240)+'”), the fictional scenario clarification is: '+value+
+        '. Reassess the previous conclusion. Distinguish changes in authority, enforcement and evidence; correct unsupported technical claims and name what remains unknown.';
+      if(prompt.length>1000){el('refinement-status').textContent='Shorten the answer before submitting.';return}
+      el('question').value=prompt;
+      state.pendingRefinement=true;
+      ask(true);
+    });
   }
   el('refinement-status').textContent=state.refinementSent?
     'Your answers were submitted in a signed Gemini follow-up. Review its revised conclusion and next questions.':
