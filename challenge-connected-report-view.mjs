@@ -61,60 +61,6 @@ function card(parent,title,body,className='cdr-card'){
   if(body)root.append(el('p','',body));
   parent.append(root);return root;
 }
-function appendView(root,view,project){
-  const panel=el('section','cdr-perspective');
-  panel.id='cdr-perspective-content';
-  panel.setAttribute('role','tabpanel');
-  panel.setAttribute('aria-labelledby','cdr-tab-'+view);
-  const data=project.perspectives[view];
-  const head=el('div','cdr-perspective-head');
-  append(head,el('span','cdr-kicker',data.title),el('h3','',data.highlight));
-  panel.append(head);
-  if(data.modelGenerated)panel.append(el('span','cdr-kicker','SCENARIO-SPECIFIC MODEL ANALYSIS'));
-  addText(panel,'cdr-summary',data.summary);
-  if(data.items.length){
-    const container=el('div','cdr-perspective-details');
-    append(container,el('h4','',view==='engineering'?'Design choices':'Considerations'),bulletList(data.items));
-    panel.append(container);
-  }
-  if(view==='engineering'&&project.safeguards.length){
-    const safes=el('div','cdr-safeguards');
-    safes.append(el('h4','','Expected safeguards and implementation knowledge'));
-    for(const safeguard of project.safeguards.slice(0,3)){
-      const sc=el('div','cdr-safeguard');
-      append(sc,el('strong','',safeguard.objective),el('span','cdr-safeguard-status',safeguard.implementation));
-      addText(sc,'cdr-mini',safeguard.why);
-      if(safeguard.statusBasis)addText(sc,'cdr-mini','Reported basis: '+safeguard.statusBasis);
-      safes.append(sc);
-    }
-    panel.append(safes);
-  }
-  const next=el('div','cdr-next');
-  append(next,el('span','cdr-kicker','NEXT CONSIDERATION'),el('p','',data.action));
-  panel.append(next);
-  if(data.pivot){
-    const pivot=el('div','cdr-pivot');
-    append(pivot,el('strong','','What could change this view?'),el('p','',data.pivot));
-    panel.append(pivot);
-  }
-  if(data.modelGenerated){
-    const refs=project.references.filter(ref=>data.referenceIds.includes(ref.id));
-    const section=el('div','cdr-lens-references');
-    section.append(el('strong','','Technical reference support'));
-    if(!refs.length){
-      addText(section,'cdr-mini','No directly supporting technical source was identified for this perspective.');
-    }else{
-      for(const ref of refs){
-        const entry=el('div','cdr-lens-reference');
-        sourceLink(entry,ref.url,ref.title);
-        addText(entry,'cdr-source-limit','Source limit: '+(ref.limits||'No source limit supplied.'));
-        section.append(entry);
-      }
-    }
-    panel.append(section);
-  }
-  root.replaceChildren(panel);
-}
 // Compact causal trace: select only consequential stages first, optionally
 // expand all canonical touchpoints. Selection is local; no API/model calls.
 function renderRiskPath(project,container){
@@ -245,7 +191,7 @@ function renderShared(project,container){
 }
 function renderSources(project,container){
   const details=el('details','cdr-sources');
-  details.open=true; // Sources and their limits are part of the primary report.
+  details.open=false; // Source detail stays available without crowding the decision.
   const summary=el('summary','');
   append(summary,el('strong','','Referenced sources and limits'),
     el('span','cdr-mini',project.references.length+' technical · '+project.frameworkSources.length+' framework'));
@@ -268,66 +214,148 @@ function renderSources(project,container){
   if(!cards.childElementCount)cards.append(el('p','cdr-mini','No applicable publisher references were returned for this assessment.'));
   details.append(cards);container.append(details);
 }
+// Shared decision first. Role-specific prompts are supporting considerations,
+// never separate recommendations or independent assurance conclusions.
 export function renderConnectedReport(target,response,scenarioText=''){
   const project=projectConnectedReport(response,scenarioText);
-  if(!project){target.replaceChildren(el('p','','This response cannot be projected into a connected report.'));return false;}
-  const root=el('div','cdr');
-  const header=el('div','cdr-banner');
-  append(header,el('span','cdr-kicker','CONNECTED ASSESSMENT · LIVE RESPONSE'),
-    el('h2','','Engineering decision and supporting perspectives'));
-  const recommendation=el('div','cdr-recommendation');
-  append(recommendation,el('span','cdr-kicker','RECOMMENDED DIRECTION'),
+  if(!project){
+    target.replaceChildren(el('p','','This response cannot be projected into a shared assessment.'));
+    return false;
+  }
+  const root=el('div','cdr cdr-decision-output');
+  const header=el('header','cdr-banner cdr-decision-banner');
+  append(header,
+    el('span','cdr-kicker','ONE SHARED ASSESSMENT · MODEL-GENERATED · NOT AN AUTHORIZATION'),
+    el('h2','','Engineering decision'),
     el('p','cdr-recommendation-text',project.recommendation));
-  addText(recommendation,'cdr-mini',project.basis);
-  header.append(recommendation);
-  root.append(header);
-  renderRiskPath(project,root);
-  const controls=el('div','cdr-tabs');
-  controls.setAttribute('role','tablist');controls.setAttribute('aria-label','Assessment perspective');
-  const content=el('div','cdr-content');
-  const views=[['engineering','Engineering advisory'],['risk','Risk disposition'],['assurance','Independent assurance']];
-  function activate(view){
-    for(const [name] of views){
-      const tab=controls.querySelector('#cdr-tab-'+name);
-      const active=name===view;
-      tab.setAttribute('aria-selected',String(active));tab.tabIndex=active?0:-1;
-    }
-    appendView(content,view,project);
-  }
-  for(const [index,[name,label]] of views.entries()){
-    const button=el('button','cdr-tab',label);
-    button.type='button';button.id='cdr-tab-'+name;
-    button.setAttribute('role','tab');
-    button.setAttribute('aria-controls','cdr-perspective-content');
-    button.setAttribute('aria-selected',String(index===0));button.tabIndex=index===0?0:-1;
-    button.addEventListener('click',()=>activate(name));
-    button.addEventListener('keydown',event=>{
-      const idx=views.findIndex(([key])=>key===name);
-      const dest=event.key==='ArrowRight'?(idx+1)%views.length:
-        event.key==='ArrowLeft'?(idx+views.length-1)%views.length:
-        event.key==='Home'?0:event.key==='End'?views.length-1:-1;
-      if(dest<0)return;
-      event.preventDefault();activate(views[dest][0]);controls.querySelector('#cdr-tab-'+views[dest][0]).focus();
+  addText(header,'cdr-summary',project.basis);
+
+  const issue=project.questions[0]?.question||project.perspectives.engineering.pivot;
+  const gate=el('div','cdr-decision-gate');
+  gate.append(el('strong','','What could change the recommendation?'));
+  addText(gate,'cdr-gate-question',issue||'No specific decision-changing question was returned.');
+  if(project.questions.length>1)
+    addText(gate,'cdr-mini',(project.questions.length-1)+' other clarification question(s) are available in the detailed assessment.');
+  if(project.questions.length){
+    const answer=el('button','cdr-answer-button','Answer clarification questions and reassess');
+    answer.type='button';
+    answer.addEventListener('click',()=>{
+      const toggle=document.getElementById('cdr-toggle');
+      if(toggle&&document.getElementById('result')?.classList.contains('cdr-active'))
+        toggle.click();
+      const panel=document.getElementById('refine-panel');
+      if(panel&&!panel.hidden){
+        panel.scrollIntoView({block:'start'});
+        const heading=document.getElementById('refinement-title');
+        if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true});}
+      }
     });
-    controls.append(button);
+    gate.append(answer);
   }
-  root.append(controls,content);
-  renderShared(project,root);
+  const total=project.safeguards.length;
+  const unknown=project.safeguards.filter(x=>x.implementation==='Unknown').length;
+  const reported=project.safeguards.filter(x=>x.implementation.includes('user-reported')).length;
+  const evidence=el('p','cdr-evidence-summary');
+  evidence.textContent=total?
+    'Implementation knowledge: '+unknown+' of '+total+' expected safeguards lack a reported implementation status; '+
+    reported+' are user-reported. No independently verified effectiveness was supplied to this assessment.':
+    'No safeguard implementation evidence was returned. Unknown must not be interpreted as absent or ineffective.';
+  gate.append(evidence);
+  header.append(gate);
+  root.append(header);
+
+  const options=el('section','cdr-decision-section');
+  append(options,el('span','cdr-kicker','CHALLENGE THE OPERATING MODEL'),
+    el('h3','','Compare the current path, proposal and simpler alternatives'));
+  const optionGrid=el('div','cdr-option-grid');
+  card(optionGrid,'Current workflow · establish the baseline',
+    'Existing effort, review quality, failure modes and enforcement have not been independently measured here. Compare them before concluding automation is better or worse.','cdr-option-card');
+  card(optionGrid,'Proposed workflow · measure the change',
+    'Evaluate the benefit described in the proposal alongside the new authority, execution and operational dependencies. The recommendation above remains conditional.','cdr-option-card');
+  card(optionGrid,'Simpler architecture · compare before committing',
+    project.alternatives[0]||'No scenario-specific simpler alternative was returned. Consider redesigning or eliminating the friction before automating it.','cdr-option-card');
+  options.append(optionGrid);
+  root.append(options);
+
+  const exposure=el('section','cdr-decision-section');
+  append(exposure,el('span','cdr-kicker','MATERIAL EXPOSURE'),
+    el('h3','','How could the proposal fail?'));
+  const risk=el('div','cdr-lead-exposure');
+  addText(risk,'cdr-risk-label',project.leadRisk);
+  addText(risk,'cdr-summary',project.leadRiskReason||
+    'The submitted assessment did not describe the conditions for this failure.');
+  exposure.append(risk);
   if(project.counterargument){
-    const alternative=el('details','cdr-more');
-    append(alternative,el('summary','','Counterargument and other alternatives'));
-    addText(alternative,'cdr-mini',project.counterargument);
-    root.append(alternative);
+    const counter=el('div','cdr-counter');
+    append(counter,el('strong','','Strongest competing explanation'),
+      el('p','cdr-mini',project.counterargument));
+    exposure.append(counter);
   }
+  root.append(exposure);
+
+  const safeguards=el('section','cdr-decision-section');
+  append(safeguards,el('span','cdr-kicker','SHARED FACTS · NOT THREE SEPARATE REPORTS'),
+    el('h3','','Expected safeguards and what is actually known'));
+  if(!project.safeguards.length){
+    addText(safeguards,'cdr-mini','The assessment did not return expected safeguards; do not infer adequate coverage.');
+  }else{
+    const grid=el('div','cdr-safeguard-ledger');
+    for(const item of project.safeguards){
+      const entry=el('article','cdr-safeguard-entry');
+      append(entry,el('strong','',item.objective),
+        el('span','cdr-safeguard-status',item.implementation));
+      addText(entry,'cdr-mini',item.why);
+      addText(entry,'cdr-source-limit',item.statusBasis?
+        'Implementation claim from proposal: '+item.statusBasis:
+        'No implementation basis supplied. Proposed safeguard; effectiveness not assessed.');
+      grid.append(entry);
+    }
+    safeguards.append(grid);
+  }
+  addText(safeguards,'cdr-mini',
+    'A referenced technical capability is not evidence that a safeguard is configured or effective in the proposed environment.');
+  root.append(safeguards);
+
+  const roles=el('section','cdr-decision-section cdr-role-section');
+  append(roles,el('span','cdr-kicker','THREE RESPONSIBILITIES · ONE UNDERLYING ASSESSMENT'),
+    el('h3','','Next consideration by role'));
+  const rows=el('div','cdr-role-rows');
+  const rolesList=[
+    ['engineering','Engineering'],
+    ['risk','Risk & GRC'],
+    ['assurance','Independent Assurance — evidence questions only']
+  ];
+  for(const [key,name] of rolesList){
+    const item=el('div','cdr-role-row');
+    append(item,el('strong','',name),el('p','',project.perspectives[key].action));
+    rows.append(item);
+  }
+  roles.append(rows);
+  addText(roles,'cdr-mini','Suggested next steps are not management decisions, risk acceptance or independent assurance conclusions.');
+  root.append(roles);
+
+  const more=el('details','cdr-more cdr-supporting');
+  more.append(el('summary','','Supporting analysis: operational path, tests and source limits'));
+  const details=el('div','cdr-supporting-body');
+  if(project.experiments.length){
+    details.append(el('h3','','Potential experiments (not evidence of execution)'),
+      bulletList(project.experiments,5));
+  }
+  if(project.riskPath)renderRiskPath(project,details);
+  renderShared(project,details);
+  more.append(details);
+  root.append(more);
   renderSources(project,root);
-  if(project.reassessment)addText(root,'cdr-mini','Reassessment: '+project.reassessment);
-  if(project.advisoryWarnings.length){
-    for(const message of project.advisoryWarnings)addText(root,'cdr-foot',message);
+  if(project.reassessment){
+    const delta=el('div','cdr-reassess-delta');
+    append(delta,el('strong','','What changed on reassessment?'),
+      el('p','',project.reassessment));
+    root.insertBefore(delta,options);
   }
-  root.append(el('p','cdr-foot',project.advisoryGenerated?
-    'Three complementary model-generated advisory perspectives. Source links document technical capabilities, not evidence of the actual implementation or an accepted management decision.':
-    'This assessment lacks complete validated advisory fields; existing conclusions are shown as a synthesis, not separate risk-treatment or assurance decisions.'));
+  if(project.sourceWarning)addText(root,'cdr-source-limit',project.sourceWarning);
+  for(const message of project.advisoryWarnings)addText(root,'cdr-source-limit',message);
+  root.append(el('p','cdr-foot',
+    'These role-specific next considerations are generated from the same assessment. They do not constitute separate risk acceptance or an independent assurance opinion.'));
   target.replaceChildren(root);
-  activate('engineering');
   return true;
 }
