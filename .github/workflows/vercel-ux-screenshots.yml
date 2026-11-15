@@ -1,0 +1,67 @@
+name: Vercel Preview UX Screenshots
+on:
+  pull_request:
+    paths:
+      - 'private-challenge.html'
+      - 'scripts/capture-vercel-ux.mjs'
+      - 'scripts/discover-vercel-preview.mjs'
+      - '.github/workflows/vercel-ux-screenshots.yml'
+  workflow_dispatch:
+    inputs:
+      preview_url:
+        description: 'Exact Braze Challenge Lab Vercel preview URL (from a ready deployment)'
+        required: true
+        type: string
+permissions:
+  contents: read
+  deployments: read
+concurrency:
+  group: vercel-ux-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  capture:
+    # Never make the automation bypass available to a fork PR.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22'
+      - name: Locate exact, ready protected Preview
+        id: target
+        env:
+          UX_MANUAL_URL: ${{ inputs.preview_url || '' }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          GH_TOKEN: ${{ github.token }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+        run: node scripts/discover-vercel-preview.mjs
+      - name: Install Playwright Chromium
+        if: steps.target.outputs.url != ''
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Capture actual deployed UI with fictional API fixture
+        if: steps.target.outputs.url != ''
+        env:
+          UX_PREVIEW_URL: ${{ steps.target.outputs.url }}
+          UX_GIT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+        run: node scripts/capture-vercel-ux.mjs
+      - name: Publish screenshot artifact
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: vercel-ux-${{ github.run_number }}
+          path: screenshots-vercel/
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Screenshot review instructions
+        if: steps.target.outputs.url != ''
+        run: |
+          echo '### Deployed UX visual review' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Download the **vercel-ux** workflow artifact to inspect the mobile/desktop PNGs or open its index.html gallery.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'The screenshots render Vercel-deployed UI using fictional, intercepted API responses; they do **not** verify live Gemini reasoning.' >> "$GITHUB_STEP_SUMMARY"
