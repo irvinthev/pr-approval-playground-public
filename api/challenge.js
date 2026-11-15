@@ -181,6 +181,11 @@ export function buildModelRequest(input){
     'Required: facts [{statement,support:"explicit-user-statement"|"inference"|"unknown"}],',
     'challenges [{question,reason,tests:[string],alternatives:[string]}],',
     'For unfamiliar scenarios, reason from the architecture and objectives; do not assume the problem concerns GitHub or PR approval. Select sources only when relevant.',
+    'decisionPerspectives: one compact object with engineering, risk and assurance keys. Each has {position,considerations:[1–3 strings],nextStep,pivot,referenceIds:[0–2 selected technical source IDs]}. Keep positions scenario-specific and meaningfully different, not three paraphrases of the main conclusion. Each position should be no longer than two concise sentences.',
+    'Engineering: discuss whether the architecture solves the stated problem; compare a realistic simpler option, implementation/operational tradeoffs and a practical next step. Risk: explain the realistic failure condition, exposure and management treatment options, without claiming formal risk acceptance or assigning named owners. Assurance: identify what available evidence actually substantiates and what evidence or independent enforcement would change reliance; do not certify or invent test results.',
+    'operationalReview: null when no meaningful ongoing operational concern exists; otherwise {kind:"reconciliation"|"monitoring"|"recovery",question,detection,response,implementation,implementationBasis,referenceIds:[0–2 selected technical IDs]}. Prefer reconciliation for a delegated human PR approval: can an explicit human instruction, agent/API action and recorded GitHub review be correlated and unmatched events detected? For other scenarios choose the operational failure path actually relevant, such as rollout monitoring or recovery; never insert PR approval specifics into unrelated architectures.',
+    'operationalReview implementation is exactly not-assessed | reported-absent | reported-partial | reported-full. Only use a reported-* value when the user supplied the implementation claim; then include implementationBasis. Do not infer implementation from platform documentation. References support potential technical mechanisms, not actual deployed configuration. If a source does not support your point use referenceIds:[] and narrow the claim.',
+    'Treat the lenses as complementary perspectives on one assessment. They are advisory analyses, not separately authorized management dispositions or independent attestations. Preserve the original conclusion and its actual source basis.',
     'expectedSafeguards: up to 8 concise scenario-specific [{objective,why,implementation,implementationBasis,referenceIds:[technical source ID]}]. Put safeguards the recommendation most depends on first. Prefer outcomes over named tools. Include functionally equivalent alternatives where relevant. Do not list controls unrelated to the actual scenario.',
     'Safeguard implementation must be exactly not-assessed, reported-absent, reported-partial, or reported-full, with no other value. Only use reported-* if the user explicitly described its status in the scenario or follow-up; never infer implementation from design aspirations. implementationBasis must briefly identify the specific user statement for a reported status. Use not-assessed if uncertain. These are reported claims, not verified effectiveness.',
     'Each safeguard referenceIds must use 0–2 IDs from the selected technical source cards only, matching a specific documented capability. If no reference supports the claim, use []. No invented documents, source text, or direct inspection claims.',
@@ -207,7 +212,7 @@ export function buildModelRequest(input){
     'Exact allowed technical reference IDs for this response: '+(selectedReferences.map(ref=>ref.id).join(', ')||'(none)')+'. Use only these exact IDs in top-level and safeguard referenceIds; use [] when none applies.',
     'Return an additional top-level referenceIds array of zero to five unique exact IDs from the selected engineering reference cards ONLY when their specific content contributes to the answer. Do not cite cards merely because they were provided; never invent IDs.',
     'Use empty arrays for absent optional conclusions citations, engineering referenceIds, and review outcomes. For hypothetical approval designs with no actual review submitted, approvalOutcomes MUST be [].',
-    'Every conclusion must include all five fields: scenarioBasis, application, openQuestion, basisType and citationIds. Always include top-level counterargument, contractVersion, facts, challenges, conclusions, approvalOutcomes, citationIds, referenceIds, alternatives, unknowns, expectedSafeguards and clarifications.',
+    'Every conclusion must include all five fields: scenarioBasis, application, openQuestion, basisType and citationIds. Include top-level counterargument, contractVersion, facts, challenges, conclusions, approvalOutcomes, citationIds, referenceIds, alternatives, unknowns, expectedSafeguards, clarifications, decisionPerspectives, and operationalReview (null when not relevant).',
     'Use source claims no more broadly than the source says. Separate what a platform documents from the organization-specific behavior that would require inspection. Distinguish operating models (human, delegated human, autonomous AI) from components (GitHub Apps, rulesets, OPA).',
     'Do not present a design choice as a framework requirement or infer what an organization has implemented.',
     'At least one fact and one challenge. Zero citations is acceptable. Do not include scenarioDigest.',
@@ -330,9 +335,12 @@ export default async function handler(req,res){
     const continuityReceipt=issueReceipt(checked.data,input.scenarioText,undefined,input.assessmentPhase);
     return json(res,200,{...checked.data,
       engineeringReferences:selectedReferences.map(r=>({
+
         id:r.id,title:r.title,publisher:r.publisher,kind:r.kind,url:r.url,
         reviewedAsOf:r.reviewedAsOf,facts:r.facts,limits:r.limits,modelUsed:checked.referenceIds.includes(r.id)||
-          checked.data.expectedSafeguards.some(s=>s.referenceIds.includes(r.id))
+          checked.data.expectedSafeguards.some(s=>s.referenceIds.includes(r.id))||
+          Object.values(checked.data.decisionPerspectives||{}).some(lens=>lens.referenceIds.includes(r.id))||
+          (checked.data.operationalReview?.referenceIds||[]).includes(r.id)
       })),
       continuityReceipt,turnsUsed:input.turns.length,mode:'live-model',responseRepaired:repaired,
       ...(removedReferences.size?{referenceWarning:'Some source links were omitted because those cards were not supplied for this scenario.'}:{})});

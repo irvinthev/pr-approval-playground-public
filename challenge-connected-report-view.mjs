@@ -38,6 +38,7 @@ function appendView(root,view,project){
   const head=el('div','cdr-perspective-head');
   append(head,el('span','cdr-kicker',data.title),el('h3','',data.highlight));
   panel.append(head);
+  if(data.modelGenerated)panel.append(el('span','cdr-kicker','SCENARIO-SPECIFIC MODEL ANALYSIS'));
   addText(panel,'cdr-summary',data.summary);
   if(data.items.length){
     const container=el('div','cdr-perspective-details');
@@ -64,6 +65,22 @@ function appendView(root,view,project){
     append(pivot,el('strong','','What could change this view?'),el('p','',data.pivot));
     panel.append(pivot);
   }
+  if(data.modelGenerated){
+    const refs=project.references.filter(ref=>data.referenceIds.includes(ref.id));
+    const section=el('div','cdr-lens-references');
+    section.append(el('strong','','Technical reference support'));
+    if(!refs.length){
+      addText(section,'cdr-mini','No directly supporting technical source was identified for this perspective.');
+    }else{
+      for(const ref of refs){
+        const entry=el('div','cdr-lens-reference');
+        sourceLink(entry,ref.url,ref.title);
+        addText(entry,'cdr-source-limit','Source limit: '+(ref.limits||'No source limit supplied.'));
+        section.append(entry);
+      }
+    }
+    panel.append(section);
+  }
   root.replaceChildren(panel);
 }
 function renderShared(project,container){
@@ -86,8 +103,21 @@ function renderShared(project,container){
     const question=el('div','cdr-recon-question');
     append(question,el('strong','','Exception detection & response'),el('p','',project.reconciliation.question));
     recon.append(question);
+    if(project.reconciliation.detection)addText(recon,'cdr-mini','Detection: '+project.reconciliation.detection);
+    if(project.reconciliation.response)addText(recon,'cdr-mini','Response and recovery: '+project.reconciliation.response);
+    if(project.reconciliation.statusBasis)addText(recon,'cdr-mini','User-reported basis: '+project.reconciliation.statusBasis);
     addText(recon,'cdr-mini',project.reconciliation.note);
     shared.append(recon);
+  }
+  if(project.operational){
+    const review=el('section','cdr-recon');
+    append(review,el('span','cdr-kicker','SCENARIO-SPECIFIC OPERATIONS'),
+      el('h3','',project.operational.title),el('span','cdr-state',project.operational.status));
+    addText(review,'cdr-summary',project.operational.question);
+    addText(review,'cdr-mini','Detection: '+project.operational.detection);
+    addText(review,'cdr-mini','Response and recovery: '+project.operational.response);
+    if(project.operational.statusBasis)addText(review,'cdr-mini','User-reported basis: '+project.operational.statusBasis);
+    shared.append(review);
   }
   container.append(shared);
 }
@@ -168,7 +198,12 @@ export function renderConnectedReport(target,response,scenarioText=''){
   }
   renderSources(project,root);
   if(project.reassessment)addText(root,'cdr-mini','Reassessment: '+project.reassessment);
-  root.append(el('p','cdr-foot','This preview reuses the existing validated assessment. Separate risk-treatment and independent-assurance recommendations are not yet model-generated; missing evidence is left unresolved.'));
+  if(project.advisoryWarnings.length){
+    for(const message of project.advisoryWarnings)addText(root,'cdr-foot',message);
+  }
+  root.append(el('p','cdr-foot',project.advisoryGenerated?
+    'Three complementary model-generated advisory perspectives. Source links document technical capabilities, not evidence of the actual implementation or an accepted management decision.':
+    'This assessment lacks complete validated advisory fields; existing conclusions are shown as a synthesis, not separate risk-treatment or assurance decisions.'));
   target.replaceChildren(root);
   activate('engineering');
   return true;

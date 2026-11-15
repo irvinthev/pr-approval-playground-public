@@ -34,6 +34,7 @@ try {
         ['index.html','ai-sdlc-risk.html','engineering-blueprint.html','continuous-monitoring.html','independent-assurance.html'].forEach(add);
       }
       if (/^(risk-|sdlc-risk-)/.test(file) && /\.(js|css)$/.test(file))add('ai-sdlc-risk.html');
+      if (/^(challenge-connected-report-(data\.mjs|view\.mjs|css)|challenge-agent-contract\.js|api\/challenge\.js|scripts\/capture-public-page\.mjs)$/.test(file))add('private-challenge.html');
       if (/^scripts\/capture-public-page\.mjs$/.test(file))add('index.html');
     }
   }
@@ -107,6 +108,25 @@ async function checkChallengeAssessment(page, captureDecisionBrief) {
         facts:[],approvalOutcomes:[],unknowns:['Effective repository rules'],
         clarifications:[{question:'Could a changed revision merge on the original approval?',
           why:'This determines whether to keep approvals manual.',options:['The repository blocks merge','The approval can still count']}],
+        decisionPerspectives:{
+          engineering:{position:'Compare a narrow batch submitter against broad coding-agent permissions.',
+            considerations:['Handle a rebase and partial failure before retry.'],
+            nextStep:'Test revision-bound execution in a sandbox.',
+            pivot:'Would native review changes solve the friction?',referenceIds:['GH-REVIEWS']},
+          risk:{position:'Broad delegated approval credentials create exposure if instructions and execution diverge.',
+            considerations:['Determine scope and treatment of unmatched approvals.'],
+            nextStep:'Clarify management risk ownership and treatment where warranted.',
+            pivot:'Can unauthorized approvals be prevented or reconciled?',referenceIds:[]},
+          assurance:{position:'A GitHub review is evidence of submission, not necessarily of human judgment on that revision.',
+            considerations:['Correlate the original instruction with the API action and recorded review.'],
+            nextStep:'Inspect an authorized and an unmatched approval sequence.',
+            pivot:'What reconciled records establish the decision?',referenceIds:['GH-REVIEWS']}
+        },
+        operationalReview:{kind:'reconciliation',
+          question:'Can the human instruction, agent API action and persisted review be reconciled?',
+          detection:'Match human authorization, API request and recorded review by revision.',
+          response:'Investigate unmatched reviews and stop additional submissions where needed.',
+          implementation:'not-assessed',referenceIds:['GH-REVIEWS']},
         engineeringReferences:[{id:'GH-REVIEWS',title:'GitHub pull request reviews',
           publisher:'GitHub Docs',url:'https://docs.github.com/en/rest/pulls/reviews',
           facts:['A review can be retrieved with its state and commit ID.'],
@@ -125,6 +145,9 @@ async function checkChallengeAssessment(page, captureDecisionBrief) {
         implementation:revised?'reported-partial':'not-assessed',implementationBasis:'Overlap reported for some consumers.',referenceIds:[]}],
       facts:[],approvalOutcomes:[],unknowns:['Coverage of slower consumers'],
       clarifications:revised||noQuestions?[]:questions,engineeringReferences:[],
+      operationalReview:noQuestions?null:{kind:'monitoring',question:'Can a lagging consumer be detected?',
+        detection:'Track credential rejection rates.',response:'Pause cutover and recover delayed consumers.',
+        implementation:'not-assessed',referenceIds:[]},
       ...(revised?{reassessment:'Overlap changes the safeguard to Partial. The pilot recommendation stands.'}:{})
     }});
   });
@@ -138,18 +161,29 @@ async function checkChallengeAssessment(page, captureDecisionBrief) {
     'Connected report must use the real assessment conclusion');
   check(await page.locator('#cdr-preview .cdr-recon').isVisible(),
     'Human-delegated PR case must show reconciliation question');
-  check((await page.locator('#cdr-preview .cdr-recon').innerText()).includes('Not assessed'),
+  check((await page.locator('#cdr-preview .cdr-recon').innerText()).includes('Unknown'),
     'Reconciliation must not be reported as implemented');
-  check(await page.locator('#cdr-preview .cdr-source-link[href*="docs.github.com/en/rest/pulls/reviews"]').isVisible(),
+  check((await page.locator('#cdr-preview .cdr-recon').innerText()).includes('Match human authorization'),
+    'Operational reconciliation should have model-specific detection reasoning');
+  check(await page.locator('#cdr-preview .cdr-source-link[href*="docs.github.com/en/rest/pulls/reviews"]').first().isVisible(),
     'The primary GitHub technical reference should be visible');
   check((await page.locator('#cdr-preview .cdr-sources').innerText()).includes('does not establish originating human authorization'),
     'Source limitations should be displayed, not buried');
 
+  const lensExpectations={
+    risk:'Broad delegated approval credentials create exposure',
+    assurance:'A GitHub review is evidence of submission',
+    engineering:'Compare a narrow batch submitter'
+  };
   for(const lens of ['risk','assurance','engineering']){
     await page.locator('#cdr-tab-'+lens).click();
     check(await page.locator('#cdr-tab-'+lens).getAttribute('aria-selected')==='true',
       'Connected report perspective '+lens+' did not select');
+    check((await page.locator('#cdr-perspective-content').innerText()).includes(lensExpectations[lens]),
+      'Connected report must show independent model-authored position for '+lens);
   }
+  check((await page.locator('#cdr-perspective-content').innerText()).includes('Source limit:'),
+    'Model-linked perspective citations must retain their source limitations');
   check(await page.evaluate(() => document.documentElement.scrollWidth<=innerWidth),
     'Connected report must fit the viewport');
   await page.locator('#token').fill('');
@@ -188,8 +222,10 @@ async function checkChallengeAssessment(page, captureDecisionBrief) {
   await page.locator('[data-example="rotation"]').click();
   await page.locator('#ask').click();
   await page.locator('#cdr-preview .cdr').waitFor();
-  check(!(await page.locator('#cdr-preview .cdr-recon').isVisible()),
-    'Unrelated credential rotation must not show PR reconciliation');
+  check(!(await page.locator('#cdr-preview .cdr-recon').innerText()).includes('GitHub review'),
+    'Unrelated credential rotation must not show PR-specific reconciliation');
+  check((await page.locator('#cdr-preview .cdr-recon').innerText()).includes('Track credential rejection rates'),
+    'Unrelated proposal must receive its own operational monitoring analysis');
   await page.locator('#cdr-toggle').click();
   check(!(await page.locator('#report-model-examples').isVisible()),'PR examples should be hidden for credential rotation');
   for (const selector of ['#report-expected-safeguards summary','#report-sources-details summary']) {
