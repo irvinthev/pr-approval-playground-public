@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#0a1624">
 <meta name="description" content="Interactive, fictional Challenge Lab assessment report: two layouts, three connected professional perspectives.">
 <title>Challenge Lab · Connected Decision Report Prototype</title>
-<link rel="stylesheet" href="./connected-decision-report.css">
-<script type="module" src="./connected-decision-report.mjs"></script>
+<link rel="stylesheet" href="./connected-decision-report.css"><link rel="stylesheet" href="./connected-decision-reconciliation.css">
+<script type="module" src="./connected-decision-report.mjs"></script><script type="module" src="./connected-decision-reconciliation.mjs"></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to report</a>
@@ -72,6 +72,7 @@
         <div class="hero-delta">
           <span class="hero-delta-label">What the challenge changed</span>
           <p>From <strong>“Can an agent click Approve?”</strong> to <strong>“Can it execute only the exact approval the engineer authorized?”</strong></p>
+          <a class="hero-deep-link" href="#reconciliation">Can human intent, API execution, and recorded review be reconciled? ↗</a>
         </div>
       </div>
 
@@ -119,11 +120,11 @@
       <div class="workspace-bottom">
         <div class="workspace-synthesis">
           <span class="section-kicker">THE CROSS-FUNCTIONAL TAKEAWAY</span>
-          <p><strong>Engineering:</strong> Compare a narrow execution tool with existing agent tooling. <strong>Risk:</strong> Resolve whether broad approval authority creates material residual exposure. <strong>IA:</strong> Determine what the recorded approval actually evidences.</p>
+          <p><strong>Engineering:</strong> Compare a narrow execution tool with existing agent tooling. <strong>Risk:</strong> Resolve whether broad approval authority creates material residual exposure. <strong>Assurance:</strong> Determine what the recorded approval actually evidences.</p>
         </div>
         <div class="workspace-recommendation">
           <span class="section-kicker">NEXT SHARED MILESTONE</span>
-          <p>Use one sandbox PR stack to demonstrate revision-bound authorization, permission limits, and reconstructable actions; revisit each perspective from those results.</p>
+          <p>Use one sandbox PR stack to demonstrate revision-bound authorization, permission limits, and three-way reconciliation; revisit each perspective from those results.</p>
         </div>
       </div>
     </section>
@@ -137,7 +138,7 @@
         <div class="evidence-item"><span class="evidence-mark reported">◆</span><div><strong>Human decision is described</strong><small>Scenario statement · not independently demonstrated</small></div></div>
         <div class="evidence-item"><span class="evidence-mark unknown">?</span><div><strong>Revision binding</strong><small>Not established in the fictional case</small></div></div>
         <div class="evidence-item"><span class="evidence-mark unknown">?</span><div><strong>Effective agent permission boundary</strong><small>Broad credentials are described; enforced limits unknown</small></div></div>
-        <div class="evidence-item"><span class="evidence-mark unknown">?</span><div><strong>Decision-to-action reconciliation</strong><small>No demonstrated correlation of instruction, action, and GitHub review</small></div></div>
+        <div class="evidence-item"><span class="evidence-mark unknown">?</span><div><strong>Decision-to-action reconciliation</strong><small>No demonstrated reconciliation of authorization, API execution, and recorded GitHub review</small></div></div>
       </div>
       <details class="depth">
         <summary><span><strong>Explore the architectural reasoning</strong><small>Failure sequence · Competing explanation · Stronger alternative</small></span><span class="chevron" aria-hidden="true">⌄</span></summary>
