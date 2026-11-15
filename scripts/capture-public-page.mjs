@@ -165,7 +165,7 @@ async function checkChallengeAssessment(page, captureDecisionBrief) {
     'Reconciliation must not be reported as implemented');
   check((await page.locator('#cdr-preview .cdr-recon').innerText()).includes('Match human authorization'),
     'Operational reconciliation should have model-specific detection reasoning');
-  check(await page.locator('#cdr-preview .cdr-source-link[href*="docs.github.com/en/rest/pulls/reviews"]').isVisible(),
+  check(await page.locator('#cdr-preview .cdr-source-link[href*="docs.github.com/en/rest/pulls/reviews"]').first().isVisible(),
     'The primary GitHub technical reference should be visible');
   check((await page.locator('#cdr-preview .cdr-sources').innerText()).includes('does not establish originating human authorization'),
     'Source limitations should be displayed, not buried');
