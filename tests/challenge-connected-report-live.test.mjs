@@ -26,6 +26,7 @@ const response={
 };
 test('delegated human approvals use an optional reconciliation question, not asserted implementation',()=>{
   assert.equal(isHumanDelegatedApprovalScenario(scenario),true);
+  assert.equal(isHumanDelegatedApprovalScenario('An engineer reviews and approves four stacked pull requests. An agent submits those approvals.'),true);
   const p=projectConnectedReport(response,scenario);
   assert.match(p.reconciliation.title,/human authorization/i);
   assert.equal(p.reconciliation.status,'Not assessed');
