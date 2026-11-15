@@ -504,6 +504,82 @@ function renderEngineeringReferences(data){
     }catch{}
   }
 }
+
+function renderAssessmentReport(data){
+  const risks=el('report-risks'),unknowns=el('report-unknowns'),metrics=el('report-metrics'),sources=el('report-sources');
+  for(const node of [risks,unknowns,metrics,sources])clear(node);
+  const primary=Array.isArray(data.conclusions)?data.conclusions[0]:null;
+  const scenario=state.scenario||'No scenario was supplied.';
+  el('report-scenario').textContent='Scenario: '+(scenario.length>260?scenario.slice(0,257)+'…':scenario);
+  el('report-takeaway').textContent=primary?.application||'No supported recommendation was returned. Further analysis is required.';
+  const questions=Array.isArray(data.challenges)?data.challenges.slice(0,6):[];
+  const openItems=Array.isArray(data.unknowns)?data.unknowns.slice(0,8):[];
+  const refs=Array.isArray(data.engineeringReferences)?data.engineeringReferences.slice(0,5):[];
+  const cited=(Array.isArray(data.conclusions)?data.conclusions:[]).flatMap(c=>Array.isArray(c.citations)?c.citations:[]);
+  const knownLinks=new Set();
+  const groups={
+    'Platform and engineering documentation':[],
+    'Security and framework guidance':[],
+    'Research and practitioner perspectives':[]
+  };
+  for(const ref of refs){
+    let url;
+    try{url=new URL(ref.url)}catch{continue}
+    if(url.protocol!=='https:'||knownLinks.has(url.href))continue;
+    knownLinks.add(url.href);
+    const kind=String(ref.kind||'');
+    const group=kind==='technical-documentation'?'Platform and engineering documentation':
+      (kind.includes('framework')||kind.includes('security'))?'Security and framework guidance':
+      'Research and practitioner perspectives';
+    groups[group].push({
+      title:ref.title||ref.id,url:url.href,
+      note:(ref.modelUsed?'Model identified as used':'Provided as context')+' · '+(ref.publisher||'Publisher unknown')
+    });
+  }
+  for(const citation of cited){
+    let url;
+    try{url=new URL(citation.url)}catch{continue}
+    if(url.protocol!=='https:'||knownLinks.has(url.href))continue;
+    knownLinks.add(url.href);
+    groups['Security and framework guidance'].push({
+      title:citation.sourceTitle||citation.provisionTitle||'Catalog reference',
+      url:url.href,note:'Framework catalog provision cited; applicability not independently verified'
+    });
+  }
+  const metricValues=[
+    [questions.length,'Model-generated questions'],
+    [openItems.length,'Open implementation unknowns'],
+    [knownLinks.size,'Source links']
+  ];
+  for(const [number,caption] of metricValues){
+    const card=add('div',metrics,'','report-metric');
+    add('strong',card,String(number));
+    add('span',card,caption);
+  }
+  if(questions.length){
+    for(const item of questions){
+      const card=add('div',risks,'','report-risk-card');
+      add('strong',card,item.question||'Question to investigate');
+      if(item.reason)add('p',card,item.reason);
+      else add('p',card,'Potential concern only; materiality and implementation status have not been established.');
+    }
+  }else add('p',risks,'No model-generated risk questions were returned. Risk coverage is not established.','small');
+  if(openItems.length)list(unknowns,openItems);
+  else add('p',unknowns,'No specific unknowns were returned; this does not establish that the implementation is verified.','small');
+  let count=0;
+  for(const [name,items] of Object.entries(groups)){
+    if(!items.length)continue;
+    count++;
+    const group=add('section',sources,'','report-source-group');
+    add('h4',group,name);
+    for(const item of items){
+      const link=add('a',group,item.title,'report-source-link');
+      link.href=item.url;link.target='_blank';link.rel='noopener noreferrer';
+      add('small',link,item.note);
+    }
+  }
+  if(!count)add('p',sources,'No source references were provided in the model response. Do not assume external verification.','small');
+}
 function evidenceLabel(type){
   return ({
     'framework-interpretation':'Framework interpretation · applicability not independently verified',
@@ -515,6 +591,7 @@ function render(data){
   for(const id of ['decision-summary','approaches','approval-outcomes','conclusions','facts','challenges','unknowns'])clear(el(id));
   renderEngineeringReferences(data);
   renderRailSources(data);
+  renderAssessmentReport(data);
   const primary=data.conclusions?.[0];
   if(primary){
     title(el('decision-summary'),'Direct answer');
@@ -681,6 +758,7 @@ document.querySelectorAll('[data-challenge]').forEach(button=>{
     ask(true);
   });
 });
+el('report-preview-link').addEventListener('click',()=>setView('report',true));
 el('ask').addEventListener('click',()=>ask(false));
 el('continue').addEventListener('click',()=>ask(true));
 el('example').addEventListener('click',()=>{el('scenario').value='Two AI agents agree that a pull request is low risk. Is that enough to allow automatic approval?';status('Fictional example loaded.')});
