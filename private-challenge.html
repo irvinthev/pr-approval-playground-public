@@ -310,10 +310,53 @@ function list(parent,items){
   for(const item of items)add('li',ul,item);
 }
 function title(parent,value){add('h3',parent,value)}
-function status(message,error=false){el('status').textContent=message;el('status').classList.toggle('error',error)}
+function status(message,error=false){
+  for(const id of ['status','challenge-status']){
+    const node=el(id);
+    if(node){node.textContent=message;node.classList.toggle('error',error)}
+  }
+}
+function setView(view,scroll=false){
+  const allowed=['architecture','risk','evidence','challenge'];
+  if(!allowed.includes(view))return;
+  if(el('result').hidden){
+    status('Analyze a fictional scenario to explore the workspace.');
+    el('scenario').focus();
+    return;
+  }
+  for(const name of allowed){
+    const active=name===view;
+    const tab=el('tab-'+name),panel=el('workspace-'+name);
+    tab.setAttribute('aria-selected',String(active));
+    tab.tabIndex=active?0:-1;
+    panel.hidden=!active;
+  }
+  document.querySelectorAll('.sidebar-group [data-target]').forEach(button=>{
+    button.setAttribute('aria-current',button.dataset.target===view?'page':'false');
+  });
+  el('nav-scenario').setAttribute('aria-current','false');
+  if(scroll)el('result').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function renderRailSources(data){
+  const parent=el('rail-sources');
+  clear(parent);
+  const refs=Array.isArray(data.engineeringReferences)?data.engineeringReferences:[];
+  if(!refs.length){add('p',parent,'No curated technical references were selected.','rail-empty');return}
+  for(const ref of refs.slice(0,5)){
+    try{
+      const url=new URL(ref.url);
+      if(url.protocol!=='https:')continue;
+      const link=add('a',parent,'','rail-link');
+      link.href=url.href;link.target='_blank';link.rel='noopener noreferrer';
+      add('span',link,ref.title||ref.id);
+      add('small',link,ref.modelUsed?'Model identified as used':'Provided as context');
+    }catch{}
+  }
+}
 function busy(value){
   state.busy=value;
   el('ask').disabled=value;el('continue').disabled=value;el('reset').disabled=value;
+  document.querySelectorAll('[data-challenge]').forEach(btn=>btn.disabled=value || state.turns.length>=6);
   el('ask').textContent=value?'Analyzing…':'Challenge my design';
   el('continue').textContent=value?'Analyzing…':'Continue the challenge';
 }
@@ -363,6 +406,7 @@ function evidenceLabel(type){
 function render(data){
   for(const id of ['decision-summary','approaches','approval-outcomes','conclusions','facts','challenges','unknowns'])clear(el(id));
   renderEngineeringReferences(data);
+  renderRailSources(data);
   const primary=data.conclusions?.[0];
   if(primary){
     title(el('decision-summary'),'Direct answer');
@@ -392,18 +436,24 @@ function render(data){
     }
   }
   if(data.conclusions?.length){
-    title(el('conclusions'),'Supporting reasoning and framework basis');
-    for(const conclusion of data.conclusions){
+    title(el('conclusions'),'Source basis and additional reasoning');
+    for(const [i,conclusion] of data.conclusions.entries()){
       const box=add('div',el('conclusions'),'','card');
       add('div',box,evidenceLabel(conclusion.basisType),'tag');
-      add('strong',box,'Scenario basis');
-      add('p',box,conclusion.scenarioBasis);
+      if(i===0){
+        add('strong',box,'Primary answer · source basis');
+      }else{
+        add('strong',box,'Scenario basis');
+        add('p',box,conclusion.scenarioBasis);
+      }
       if(conclusion.citations.length){
         add('strong',box,'Relevant catalog references');
         for(const citation of conclusion.citations)renderCitation(box,citation);
       }else add('p',box,'No directly applicable catalog provision cited. This is not verification of product behavior.','small');
-      add('strong',box,'Application to this design');
-      add('p',box,conclusion.application);
+      if(i>0){
+        add('strong',box,'Application to this design');
+        add('p',box,conclusion.application);
+      }
       add('strong',box,'Still to establish');
       add('p',box,conclusion.openQuestion);
     }
@@ -415,19 +465,24 @@ function render(data){
     add('div',box,f.support||'unknown','tag');
     add('p',box,f.statement||'');
   }
-  title(el('challenges'),'Questions worth testing');
+  title(el('challenges'),'Questions worth exploring');
   for(const ch of data.challenges||[]){
-    const box=add('div',el('challenges'),'', 'card');
-    add('h3',box,ch.question||'');
+    const box=document.createElement('details');
+    box.className='card';
+    el('challenges').append(box);
+    const summary=add('summary',box,ch.question||'Explore this question');
+    summary.setAttribute('aria-label','Expand challenge: '+(ch.question||''));
     if(ch.reason)add('p',box,ch.reason);
-    if(ch.tests?.length){add('strong',box,'What to test');list(box,ch.tests)}
-    if(ch.alternatives?.length){add('strong',box,'Alternatives');list(box,ch.alternatives)}
+    if(ch.tests?.length){add('strong',box,'Potential checks — validate their usefulness');list(box,ch.tests)}
+    if(ch.alternatives?.length){add('strong',box,'Additional approaches');list(box,ch.alternatives)}
   }
   if(data.unknowns?.length){title(el('unknowns'),'Still unknown');list(el('unknowns'),data.unknowns)}
   el('evidence-details').open=false;
   el('result').hidden=false;el('followup').hidden=false;
   el('turncount').textContent=state.turns.length+' of 6 follow-up turns used · '+state.continuityReceipts.length+' prior response snapshot(s) retained in this tab';
   el('continue').disabled=state.turns.length>=6;
+  document.querySelectorAll('[data-challenge]').forEach(btn=>btn.disabled=state.turns.length>=6);
+  setView('architecture');
 }
 async function ask(follow){
   if(state.busy)return;
@@ -472,6 +527,52 @@ async function ask(follow){
   }catch(err){status(err.message||'The request could not be completed.',true)}
   finally{busy(false);if(state.turns.length>=6)el('continue').disabled=true}
 }
+const challengePrompts={
+  assumptions:'Challenge your previous recommendation. What are its strongest unsupported assumptions, and what alternative explanation could undermine it? Distinguish documented product facts from engineering judgment. Correct errors, but do not agree with me automatically.',
+  simpler:'Find a genuinely simpler solution to the original engineering problem, including redesigning or removing unnecessary review steps. Compare the simpler design with your recommendation on authority, enforcement, developer friction, cost and reliability.',
+  evidence:'Identify the material technical claims in your previous answer and distinguish claims directly supported by the curated references from scenario inferences and undocumented assumptions. Correct unsupported technical statements and name the most relevant missing configuration evidence.',
+  failure:'Create one realistic failure scenario that could defeat your recommended architecture. Address the actual decision authority, agent/tool permissions, review revision, merge gate or deployment consequences as relevant. Compare likely detection and recovery with the existing workflow.'
+};
+document.querySelectorAll('#result [role="tab"]').forEach(tab=>{
+  tab.addEventListener('click',()=>setView(tab.dataset.view));
+  tab.addEventListener('keydown',event=>{
+    if(event.key!=='ArrowRight' && event.key!=='ArrowLeft')return;
+    event.preventDefault();
+    const tabs=[...document.querySelectorAll('#result [role="tab"]')];
+    const next=tabs[(tabs.indexOf(tab)+(event.key==='ArrowRight'?1:tabs.length-1))%tabs.length];
+    setView(next.dataset.view);
+    next.focus();
+  });
+});
+document.querySelectorAll('.sidebar-group [data-target]').forEach(button=>{
+  button.addEventListener('click',()=>setView(button.dataset.target,true));
+});
+el('nav-scenario').addEventListener('click',()=>{
+  el('nav-scenario').setAttribute('aria-current','page');
+  document.querySelectorAll('.sidebar-group [data-target]').forEach(btn=>btn.setAttribute('aria-current','false'));
+  el('formtitle').scrollIntoView({behavior:'smooth',block:'start'});
+  el('scenario').focus();
+});
+document.querySelectorAll('#operating-models .model-selector [data-model]').forEach(button=>{
+  button.addEventListener('click',()=>{
+    const selected=button.dataset.model;
+    el('operating-models').dataset.selectedModel=selected;
+    document.querySelectorAll('#operating-models .model-selector button').forEach(btn=>{
+      btn.setAttribute('aria-pressed',String(btn.dataset.model===selected));
+    });
+  });
+});
+document.querySelectorAll('[data-challenge]').forEach(button=>{
+  button.addEventListener('click',()=>{
+    if(state.busy || state.turns.length>=6)return;
+    if(!state.scenario){setView('challenge',true);return}
+    const prompt=challengePrompts[button.dataset.challenge];
+    if(!prompt)return;
+    el('question').value=prompt;
+    setView('challenge',true);
+    ask(true);
+  });
+});
 el('ask').addEventListener('click',()=>ask(false));
 el('continue').addEventListener('click',()=>ask(true));
 el('example').addEventListener('click',()=>{el('scenario').value='Two AI agents agree that a pull request is low risk. Is that enough to allow automatic approval?';status('Fictional example loaded.')});
