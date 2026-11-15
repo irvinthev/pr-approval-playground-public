@@ -119,7 +119,7 @@ function validateOperationalReview(item,allowedReferenceIds){
 // Optional scenario-specific causal trace. Reject invented stage IDs, mixed
 // lifecycle taxonomies, unsorted events and non-text role content before UI.
 function validateRiskPath(value){
- if(!isPlainObject(value)||!riskPathCatalog[value.pathway]||
+ if(!isPlainObject(value)||!Object.hasOwn(riskPathCatalog,value.pathway)||
     typeof value.failure!=='string'||!value.failure.trim()||
     typeof value.uncertainty!=='string'||!value.uncertainty.trim()||
     !Array.isArray(value.steps)||value.steps.length<2||value.steps.length>5)return null;
