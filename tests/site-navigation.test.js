@@ -61,11 +61,39 @@ test('homepage reconciles the interactive approval illustration with the broader
  const archived=read('previous-overview.html');
  assert.doesNotMatch(archived,/QualityBot|RiskBot|Braze|Appboy/i);
 });
-test('risk assessment explains capability-specific authority without claiming a validated risk score',()=>{
+test('risk assessment separates fictional scores from validated risk ratings',()=>{
  const html=read('ai-sdlc-risk.html');
  for(const capability of ['Execution','Decision','Production','Governance'])assert.ok(html.includes(capability),capability);
- assert.match(html,/No computed AI risk score/);
+ assert.match(html,/No organization-specific risk rating/);
+ assert.match(html,/fictional scored example/i);
  assert.match(html,/management/i);
+});
+
+test('Field Guide ends with downloadable blank and fictional scored risk worksheets',()=>{
+ const home=read('index.html');
+ const risk=read('ai-sdlc-risk.html');
+ const assurance=read('independent-assurance.html');
+ assert.match(home,/ai-sdlc-risk\.html#risk-score-templates/);
+ assert.match(risk,/id="risk-score-templates"/);
+ assert.match(assurance,/id="risk-assessment-downloads"/);
+ assert.ok(assurance.indexOf('id="risk-assessment-downloads"')<assurance.indexOf('<footer class="site-footer">'));
+ for(const name of ['AI_SDLC_Risk_Scoring_Blank.csv','AI_SDLC_Risk_Scoring_Completed_Fictional.csv']){
+   assert.ok(risk.includes(name));assert.ok(assurance.includes(name));
+ }
+ const parseCsv=filename=>read('downloads/'+filename).trimEnd().split(/\r?\n/)
+   .map(line=>(line.match(/"(?:[^"]|"")*"/g)||[]).map(cell=>cell.slice(1,-1).replace(/""/g,'"')));
+ const blank=parseCsv('AI_SDLC_Risk_Scoring_Blank.csv');
+ const completed=parseCsv('AI_SDLC_Risk_Scoring_Completed_Fictional.csv');
+ assert.equal(blank[0].join('|'),completed[0].join('|'));
+ assert.equal(blank[0].length,14);
+ assert.equal(completed.length,4);
+ for(const row of completed.slice(1)){
+   assert.equal(row.length,14);
+   assert.match(row[0],/^FIC-/);
+   assert.equal(Number(row[4])*Number(row[5]),Number(row[6]));
+   assert.equal(row[11],'','residual rating requires evidence, never a default');
+   assert.equal(row[9],'Unknown','do not assert implemented safeguards');
+ }
 });
 
 
