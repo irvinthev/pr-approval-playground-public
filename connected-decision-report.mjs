@@ -8,17 +8,17 @@ const VIEWS={
     summary:'The workflow may reduce approval friction, but its benefit depends on preserving the exact human decision when revisions change. A general coding agent is one implementation option—not the objective.',
     detailTitle:'What Engineering should consider',
     considerations:[
-      'Make PR number, repository, head SHA, and explicit human instruction the input to each approval action.',
-      'Define what happens after a push or rebase, partial batch failure, token expiry, retries, or a merge-queue update.',
-      'Measure whether clicking Approve is the bottleneck. Compare developer time saved against maintenance, exception handling, and review quality.'
+      'Make repository, PR number, head SHA, and explicit human instruction the input to each approval action. Capture a decision ID for later reconciliation.',
+      'Design reconciliation across the instruction, agent/API request, and read-back GitHub review. Define behavior after a rebase, partial failure, lost webhook, or retry.',
+      'Measure whether approval submission is the bottleneck. Compare developer time saved against the ongoing cost of exception detection, reconciliation, and recovery.'
     ],
     options:[
       {title:'A · Narrow batch submitter',body:'Small permission surface and deterministic revision checks; requires purpose-built workflow maintenance.'},
       {title:'B · Claude Code + existing GitHub tools',body:'Familiar developer workflow; more attention required for tool reach, available credentials, and unplanned actions.'},
-      {title:'C · Improve native GitHub review',body:'Try routing, notifications, or Fast Track first if those address most of the delay without an agent.'}
+      {title:'C · Improve native GitHub review',body:'Try better reviewer routing, notifications, or targeted review rules if those address most of the delay without delegated execution.'}
     ],
     nextLabel:'Next engineering move',
-    next:'Run one sandbox PR stack through the narrow tool and current agent workflow. Trigger a rebase, an out-of-scope approval, and a partial batch failure. Compare permitted actions, recovery, and developer effort.',
+    next:'Run a sandbox stack through both execution options. Inject a rebase, an unauthorized API review, and a dropped event; show whether three-way reconciliation detects each exception and measure recovery effort.',
     pivot:'Evidence that native GitHub workflows solve the delay more simply—or that current agent tooling already enforces exact-revision scope at substantially lower cost.'
   },
   risk:{
@@ -29,7 +29,7 @@ const VIEWS={
     detailTitle:'What Risk Management should determine',
     considerations:[
       'Identify the affected repositories, change classes, and impact of unauthorized approvals—not merely the existence of an AI agent.',
-      'Distinguish an unresolved design question from demonstrated residual risk. Establish the actual permission and merge-rule configuration.',
+      'Distinguish a proposed reconciliation capability from a working one. Ask whether unexpected GitHub reviews are actually detected and resolved.',
       'If material exposure remains, identify a management risk owner, treatment, timeframe, and any applicable acceptance authority.'
     ],
     options:[
@@ -38,7 +38,7 @@ const VIEWS={
       {title:'Formal acceptance, where applicable',body:'Management may consider time-bound acceptance of identified residual exposure through the established GRC process.'}
     ],
     nextLabel:'Next risk-management move',
-    next:'Ask Engineering for a concrete permission map, stale-revision behavior, affected change scope, and remaining safeguards. Chase can then determine whether a tracked risk and management treatment decision are warranted.',
+    next:'Obtain the permission map, revision behavior, reconciliation coverage, and unresolved exception examples. Determine whether any material residual exposure needs tracking and management treatment.',
     pivot:'A tested enforcement boundary showing the agent cannot submit unauthorized approvals; alternatively, evidence of a material bypass and a decision to operate with it.'
   },
   assurance:{
@@ -48,17 +48,17 @@ const VIEWS={
     summary:'Human decision authority is described, but approval attribution alone does not demonstrate that the engineer authorized the specific revision. The relevance to change-management assurance depends on the system and its actual enforcement.',
     detailTitle:'What Internal Audit should examine',
     considerations:[
-      'Trace the approval instruction, actor identity, exact PR revision, agent tool action, and recorded GitHub result.',
+      'Trace the independent human instruction, agent tool/API request, and GitHub review read-back. Check for unmatched and stale-SHA approvals, not only successful examples.',
       'Determine whether independently enforced GitHub rules or other mechanisms invalidate stale decisions and prevent bypass.',
       'Compare agent-executed approvals with conventional human review. Avoid assuming existing CODEOWNERS clicks establish meaningful judgment.'
     ],
     options:[
       {title:'Existing evidence may be enough',body:'If effective revision rules and review evidence already establish the intended authorization, new controls may add little.'},
-      {title:'Supplement the evidence chain',body:'Correlate human instruction, agent execution, and GitHub result where existing records do not substantiate the decision.'},
+      {title:'Supplement the evidence chain',body:'Reconcile human instruction, agent execution, and recorded GitHub review, with exception detection and recovery where evidence is insufficient.'},
       {title:'Reconsider the review objective',body:'If human review is weak or duplicative, examine a stronger design rather than preserving a ceremony solely for appearance.'}
     ],
     nextLabel:'Next independent-assurance move',
-    next:'Observe a test approval across a revision change, inspect the relevant GitHub enforcement path, and compare that evidence against the authorization objective. Determine if any assurance gap remains.',
+    next:'Trace one permitted approval and one unauthorized/stale revision through human intent, API invocation, GitHub review read-back, and exception handling. Evaluate what the records substantiate.',
     pivot:'Direct evidence that the engineer\'s decision is bound to the action and revision, with effective independent enforcement—or evidence of a bypass that undermines that linkage.'
   }
 };
