@@ -135,6 +135,7 @@ summary:focus-visible{outline:3px solid var(--mint);outline-offset:3px}
 @media(max-width:900px){.report-model-grid{grid-template-columns:1fr}}
 @media(max-width:650px){.refine-actions button{width:100%}.refine-panel{padding:12px}}
 </style>
+<link rel="stylesheet" href="./decision-scorecard.css">
 </head>
 <body><div class="app-frame">
 <aside class="app-sidebar" aria-label="Workspace navigation">
@@ -174,11 +175,44 @@ summary:focus-visible{outline:3px solid var(--mint);outline-offset:3px}
 </details>
 <p id="status" role="status" aria-live="polite"></p>
 </section>
+<details id="scorecard-prototype" class="panel scorecard-prototype" aria-label="Engineering Decision Scorecard prototype">
+  <summary>Try a Decision Scorecard — blank template, completed example, or your assessment</summary>
+  <p class="scorecard-intro">A compact decision artifact for the “so what?” question. This is a presentation experiment, not a numeric risk score or a second assessment. Preview both examples without an API call; a completed assessment can populate the same card.</p>
+  <div class="scorecard-modes" role="group" aria-label="Choose scorecard content">
+    <button type="button" data-scorecard-mode="example" aria-pressed="true">Completed example</button>
+    <button type="button" data-scorecard-mode="template" aria-pressed="false">Blank template</button>
+    <button type="button" data-scorecard-mode="current" aria-pressed="false" disabled>This assessment</button>
+  </div>
+  <article class="scorecard-sheet" aria-label="Decision scorecard">
+    <div class="scorecard-head"><strong>ENGINEERING DECISION SCORECARD</strong><span id="scorecard-tag"></span></div>
+    <h3 id="scorecard-proposal"></h3>
+    <div class="scorecard-main"><h4>01 · Recommendation</h4><p id="scorecard-decision"></p></div>
+    <div class="scorecard-cells">
+      <div class="scorecard-cell"><h4>02 · Why this approach?</h4><p id="scorecard-why"></p></div>
+      <div class="scorecard-cell"><h4>03 · Failure condition</h4><p id="scorecard-failure"></p></div>
+    </div>
+    <div class="scorecard-cell scorecard-cell-wide">
+      <h4>04 · Safeguards that matter / implementation knowledge</h4>
+      <div id="scorecard-safeguards" class="scorecard-safeguards"></div>
+    </div>
+    <div class="scorecard-cell scorecard-cell-wide">
+      <h4>05 · What could change the recommendation?</h4>
+      <p id="scorecard-pivot"></p>
+    </div>
+    <div class="scorecard-next"><h4>06 · So what? Suggested next move</h4><p id="scorecard-next"></p></div>
+    <p class="scorecard-foot" id="scorecard-basis"></p>
+  </article>
+  <div class="scorecard-footer">
+    <button id="scorecard-copy" type="button">Copy scorecard as text</button>
+    <span id="scorecard-copy-status" class="small" role="status" aria-live="polite"></span>
+  </div>
+</details>
 <section id="result" class="panel" hidden aria-labelledby="resulttitle">
   <header class="report-banner">
     <h2 id="resulttitle" tabindex="-1">Recommendation</h2>
     <p id="report-takeaway"></p>
     <p id="report-basis" class="small"></p>
+    <button id="open-scorecard" type="button">View decision scorecard</button>
   </header>
   <section id="report-delta" class="report-delta" hidden aria-label="Reassessment">
     <strong>Reassessment</strong>
@@ -273,9 +307,11 @@ summary:focus-visible{outline:3px solid var(--mint);outline-offset:3px}
 </section>
 </main></div>
 <script type="module">
+import {createDecisionScorecard} from './decision-scorecard.mjs';
 const el=id=>document.getElementById(id);
 const state={scenario:null,receipt:null,busy:false,remembered:false,
   refinementAnswers:{},reassessmentUsed:false,latestResponse:null,previousTakeaway:null};
+const decisionScorecard=createDecisionScorecard(el('scorecard-prototype'));
 function setRemembered(active){
   state.remembered=active;
   el('token-field').hidden=active;
@@ -508,6 +544,7 @@ function clearAssessment(){
   state.reassessmentUsed=false;
   state.latestResponse=null;
   state.previousTakeaway=null;
+  decisionScorecard.reset();
   el('result').hidden=true;
   el('nav-scenario').setAttribute('aria-current','page');
   el('nav-assessment').removeAttribute('aria-current');
@@ -561,6 +598,7 @@ async function ask(answers=''){
     state.scenario=scenario;
     state.receipt=data.continuityReceipt;
     state.latestResponse=data;
+    decisionScorecard.setAssessment(data);
     state.refinementAnswers={};
     renderAssessmentReport(data);
     renderContext(data);
@@ -576,6 +614,7 @@ async function ask(answers=''){
     status((error.message||'The request could not be completed.')+suffix,true,statusId);
   }finally{busy(false)}
 }
+el('open-scorecard').addEventListener('click',()=>decisionScorecard.openCurrent());
 el('nav-scenario').addEventListener('click',()=>{
   el('nav-scenario').setAttribute('aria-current','page');
   el('nav-assessment').removeAttribute('aria-current');
