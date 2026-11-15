@@ -77,7 +77,7 @@ test('Technical source claims are bounded and link to official documentation',()
     'https://code.claude.com/docs/en/permissions'
   ];
   for(const url of links)assert.ok(recon.includes(url),'Missing documentation link '+url);
-  assert.match(recon,/What each source supports/);
+  assert.match(recon,/Sources behind the recommendations/);
   assert.match(recon,/Does not establish/);
   assert.match(recon,/three records do not match/);
   assert.doesNotMatch(recon,/\bfetch\s*\(|XMLHttpRequest|localStorage|sessionStorage/);
