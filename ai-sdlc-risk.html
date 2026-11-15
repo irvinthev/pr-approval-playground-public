@@ -276,7 +276,7 @@ details.field-deep-dive>section{margin:0 14px 16px}
 
 </div>
 <div class="risk-explorer-links"><a id="risk-engineering-next" href="./engineering-blueprint.html#technical-requirements">Continue to Engineering: eligibility safeguards →</a><a href="#risk-register">Open the nine-scenario library ↓</a><a href="./engineering-blueprint.html">Explore safeguard implementation →</a><a href="./independent-assurance.html">Examine assurance approach →</a></div>
-<p class="risk-explorer-limit"><a href="./open-scenario.html">Apply these questions to a fictional proposal in the public rule-based explorer →</a> This separate educational tool does not generate an AI recommendation or carry this scenario's state.</p>
+
 <details class="risk-context-details"><summary>Assessment context and NIST AI RMF alignment</summary><div class="risk-context">
 <div><span class="risk-meta">BUSINESS OBJECTIVE</span><strong>Accelerate software delivery while preserving authorized, reliable production changes.</strong></div>
 <div><span class="risk-meta">AI AUTHORITY</span><strong>AI reviews, classifies or conditionally authorizes changes.</strong></div>
@@ -416,7 +416,28 @@ details.field-deep-dive>section{margin:0 14px 16px}
 <section class="field-section"><h2>Independent engineering challenge</h2><p>For a deeper assessment of delegated AI approval authority, review thirteen engineering risks mapped to published OpenAI, Anthropic, Cursor, NIST and OWASP practices. These references support engineering challenge, not a new control requirement.</p><div class="field-actions"><a class="field-button" href="./engineering-challenge-reference.html#industry-challenge">Explore 13 risk-first engineering challenges →</a></div></section><section class="field-section"><h2>Supporting materials</h2><p><a href="./risk-controls.html">Risk & Safeguards reference →</a> · <a href="./independent-assurance.html">Assurance and evidence →</a> · <a href="https://airc.nist.gov/airmf-resources/airmf/" target="_blank" rel="noopener noreferrer">NIST AI RMF ↗</a> · <a href="https://csrc.nist.gov/pubs/sp/800/218/final" target="_blank" rel="noopener noreferrer">NIST SSDF ↗</a></p><p>Published frameworks inform the questions; they do not endorse this field guide or prescribe its assessment outcomes.</p></section>
 
 </section>
-<footer class="field-note">Proposed qualitative risk method and fictional examples. No computed AI risk score, externally persisted inventory, management acceptance, automated production authorization, or control-effectiveness determination is provided.</footer></main><script src="./risk-governance-worksheet.js"></script><script src="./sdlc-risk-register.js"></script><script src="./risk-governance-ui.js"></script><script src="./risk-dashboard-tabs.js"></script><script src="./sdlc-risk-register-ui.js"></script><script src="./operating-model.js"></script><script src="./shared-pipeline-context.js?v=1"></script><script src="./shared-pipeline-nav.js?v=1"></script>
+
+<section class="field-section" id="risk-score-templates" aria-labelledby="risk-score-templates-title" style="border:1px solid #497481;border-radius:14px;background:#102e3d;padding:clamp(16px,3vw,24px);margin:25px 0;scroll-margin-top:20px">
+  <span class="field-kicker">FINAL STEP / TAKE THE ASSESSMENT WITH YOU</span>
+  <h2 id="risk-score-templates-title">Risk-scoring worksheet: blank and completed example</h2>
+  <p>Turn the failure path into a risk discussion. Download the same fields in a blank template and a scored fictional example. The completed ratings are <strong>assumptions for illustration</strong>, not measured probabilities, approved thresholds, a finding about any company, or an AI authorization decision.</p>
+  <div class="field-actions">
+    <a class="field-button" href="./downloads/AI_SDLC_Risk_Scoring_Blank.csv" download>Download blank risk-scoring template (CSV) ↓</a>
+    <a class="field-secondary" href="./downloads/AI_SDLC_Risk_Scoring_Completed_Fictional.csv" download>Download completed fictional example (CSV) ↓</a>
+  </div>
+  <h3>How the example is scored</h3>
+  <p>For this <em>illustrative worksheet only</em>, assume a 1–5 impact rating and a 1–5 likelihood rating. Multiply the two for an <strong>inherent exposure indicator</strong> from 1–25. The scales and decision thresholds are not from NIST or prescribed by this Field Guide; an organization must define and approve its own. A score does not override an authorization or technical gate.</p>
+  <div class="field-overflow"><table class="field-table"><caption>Fictional human-decision / agent-submission scenario; no actual events or implementation were tested</caption>
+    <thead><tr><th>Risk event</th><th>Impact assumption</th><th>Likelihood assumption</th><th>Illustrative score</th><th>Safeguard / unresolved evidence</th></tr></thead>
+    <tbody>
+      <tr><td>Agent submits a prior human approval after the PR changes</td><td>5 / 5</td><td>3 / 5</td><td><strong>15 / 25</strong></td><td>Bind the human decision to the exact revision and require reauthorization on changes; implementation unknown</td></tr>
+      <tr><td>Agent uses an overprivileged identity to bypass approval boundaries</td><td>5 / 5</td><td>2 / 5</td><td><strong>10 / 25</strong></td><td>Restrict credentials and review bypass routes; effective permissions unverified</td></tr>
+      <tr><td>Missing reconciliation allows unauthorized approvals to go unnoticed</td><td>4 / 5</td><td>3 / 5</td><td><strong>12 / 25</strong></td><td>Reconcile human instruction, agent actions, GitHub decisions and merged/deployed revisions; population coverage unknown</td></tr>
+    </tbody>
+  </table></div>
+  <p class="risk-explorer-limit"><strong>What is intentionally missing:</strong> residual risk scores and accepted risk ratings. Those would require evidence of implemented safeguards, operating results, management-owned criteria and a documented decision. The completed CSV explains each illustrative rating and records those gaps.</p>
+</section>
+<footer class="field-note">Proposed qualitative method and a separate, explicitly fictional scored example. No organization-specific risk rating, validated likelihood, residual score, management acceptance, automated production authorization, or control-effectiveness determination is provided.</footer></main><script src="./risk-governance-worksheet.js"></script><script src="./sdlc-risk-register.js"></script><script src="./risk-governance-ui.js"></script><script src="./risk-dashboard-tabs.js"></script><script src="./sdlc-risk-register-ui.js"></script><script src="./operating-model.js"></script><script src="./shared-pipeline-context.js?v=1"></script><script src="./shared-pipeline-nav.js?v=1"></script>
 <script src="./risk-sdlc-trace.js?v=1"></script>
 <script>
 (function(){'use strict';
