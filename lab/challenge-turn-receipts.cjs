@@ -2,8 +2,8 @@
 // Server-signed, bounded snapshots of model responses for private follow-up context.
 // Signing proves the text came from an earlier validated API response, not that it is true.
 const {createHmac,createHash,timingSafeEqual}=require('node:crypto');
-const MAX_RECEIPTS=3, MAX_RECEIPT_CHARS=2200, MAX_AGE_SECONDS=8*60*60;
-const short=(s,n)=>typeof s==='string'?s.slice(0,n):'';
+const MAX_RECEIPTS=3, MAX_RECEIPT_CHARS=10500, MAX_AGE_SECONDS=8*60*60;
+const short=(s,n)=>typeof s==='string'?s.replace(/[\u0000-\u001f]/g,' ').slice(0,n):'';
 const secret=()=>process.env.CHALLENGE_API_TOKEN;
 const digest=s=>createHash('sha256').update(s).digest('hex');
 function sign(payload){
@@ -18,9 +18,14 @@ function snapshot(data){
     options:Array.isArray(data.alternatives)?data.alternatives.slice(0,2).map(x=>short(x,180)).filter(Boolean):[]
   };
 }
-function issueReceipt(data,scenarioText,now=Math.floor(Date.now()/1000)){
+function issueReceipt(data,scenarioText,now=Math.floor(Date.now()/1000),assessmentPhase=null){
   const payload=Buffer.from(JSON.stringify({
-    v:1,at:now,scenario:digest(scenarioText),prior:snapshot(data)
+    v:1,at:now,scenario:digest(scenarioText),prior:{
+      ...snapshot(data),
+      ...(assessmentPhase ? {assessmentPhase,safeguards:data.expectedSafeguards.map(item=>({
+        objective:short(item.objective,150),implementation:item.implementation
+      }))} : {})
+    }
   })).toString('base64url');
   const receipt=payload+'.'+sign(payload);
   if(receipt.length>MAX_RECEIPT_CHARS)throw new Error('Continuity receipt exceeds limit');
@@ -40,6 +45,11 @@ function decodeReceipt(receipt,scenarioText,now=Math.floor(Date.now()/1000)){
     typeof data.prior.question!=='string'||data.prior.question.length>250||
     !Array.isArray(data.prior.options)||data.prior.options.length>2||
     data.prior.options.some(x=>typeof x!=='string'||x.length>180))return null;
+  if(data.prior.assessmentPhase!==undefined &&
+    (!['initial','reassess'].includes(data.prior.assessmentPhase) ||
+      !Array.isArray(data.prior.safeguards) || data.prior.safeguards.length>8 ||
+      data.prior.safeguards.some(item=>!item || typeof item.objective!=='string' ||
+        item.objective.length>170 || typeof item.implementation!=='string' || item.implementation.length>20)))return null;
   return data.prior;
 }
 function verifiedHistory(receipts,scenarioText){

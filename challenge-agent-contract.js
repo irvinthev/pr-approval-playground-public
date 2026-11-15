@@ -45,7 +45,7 @@ function validateConclusion(conclusion, citations){
 }
 
 const safeguardStates=['not-assessed','reported-absent','reported-partial','reported-full','not-applicable'];
-function validateSafeguard(item,allowedReferenceIds){
+function validateSafeguard(item,allowedReferenceIds,focused){
  if(!isPlainObject(item)||!safeguardStates.includes(item.implementation))return null;
  if(typeof item.objective!=='string'||!item.objective.trim()||
     typeof item.why!=='string'||!item.why.trim()||
@@ -53,14 +53,18 @@ function validateSafeguard(item,allowedReferenceIds){
     item.referenceIds.some(id=>typeof id!=='string'||
       (allowedReferenceIds!==null&&!allowedReferenceIds.includes(id))) ||
     new Set(item.referenceIds).size!==item.referenceIds.length)return null;
+ const reported=item.implementation.startsWith('reported-');
+ const implementationBasis=typeof item.implementationBasis==='string'?maxLength(item.implementationBasis,300):'';
+ if(focused && (item.implementation==='not-applicable' || (reported&&!implementationBasis)))return null;
  return {objective:maxLength(item.objective,170),why:maxLength(item.why,290),
-   implementation:item.implementation,referenceIds:item.referenceIds};
+   implementation:item.implementation,referenceIds:item.referenceIds,
+   ...(reported && implementationBasis ? {implementationBasis} : {})};
 }
 function validateClarification(item){
  if(!isPlainObject(item)||typeof item.question!=='string'||!item.question.trim()||
     typeof item.why!=='string'||!item.why.trim()||
     !Array.isArray(item.options)||item.options.length<2||item.options.length>4||
-    item.options.some(option=>typeof option!=='string'||!option.trim()||option.length>85)||
+    item.options.some(option=>typeof option!=='string'||!option.trim()||option.length>85||/^(unknown|other)$/i.test(option.trim()))||
     new Set(item.options.map(x=>x.toLowerCase().trim())).size!==item.options.length)return null;
  return {question:maxLength(item.question,240),why:maxLength(item.why,260),
    options:item.options.map(x=>maxLength(x,85))};
@@ -77,7 +81,7 @@ function validateApprovalOutcome(outcome){
  if(submission==='not-submitted' && gate==='accepted')return null;
  return {review:maxLength(review,240),submission,gate,merge};
 }
-export function validateAgentResponse(input,{scenarioText,requireGrounding=false,allowedReferenceIds=null}={}){
+export function validateAgentResponse(input,{scenarioText,requireGrounding=false,allowedReferenceIds=null,assessmentPhase=null}={}){
  const errors=[];
  if(!isPlainObject(input))return {ok:false,errors:['Response must be an object'],data:null};
  if(input.contractVersion!==AGENT_CONTRACT_VERSION)errors.push('Unknown contract version');
@@ -113,7 +117,7 @@ export function validateAgentResponse(input,{scenarioText,requireGrounding=false
    }
  }
  const safeguards=Array.isArray(input.expectedSafeguards)?
-   input.expectedSafeguards.slice(0,8).map(item=>validateSafeguard(item,allowedReferenceIds)):[];
+   input.expectedSafeguards.slice(0,8).map(item=>validateSafeguard(item,allowedReferenceIds,Boolean(assessmentPhase))):[];
  const clarifications=Array.isArray(input.clarifications)?
    input.clarifications.slice(0,3).map(validateClarification):[];
  if(safeguards.some(x=>!x)||clarifications.some(x=>!x))
@@ -124,6 +128,12 @@ export function validateAgentResponse(input,{scenarioText,requireGrounding=false
    errors.push('Invalid focused assessment fields');
  if(Array.isArray(input.clarifications)&&input.clarifications.length>3)
    errors.push('Invalid focused assessment fields');
+ const counterargument=typeof input.counterargument==='string'?maxLength(input.counterargument,520):'';
+ const reassessment=typeof input.reassessment==='string'?maxLength(input.reassessment,850):'';
+ if(assessmentPhase && (!counterargument || !safeguards.length ||
+   !Array.isArray(input.clarifications) || input.challenges?.length>4 ||
+   (assessmentPhase==='reassess' && (!reassessment || clarifications.length))))
+   errors.push('Invalid focused assessment fields');
  const state={
    contractVersion:AGENT_CONTRACT_VERSION,
    scenarioText:scenario,
@@ -131,6 +141,8 @@ export function validateAgentResponse(input,{scenarioText,requireGrounding=false
    catalogAsOf:sourceCatalog.asOf,
    facts,
    challenges,
+   ...(counterargument ? {counterargument} : {}),
+   ...(reassessment ? {reassessment} : {}),
    expectedSafeguards:safeguards,
    clarifications,
    citations,

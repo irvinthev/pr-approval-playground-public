@@ -70,6 +70,63 @@ async function capture(page, label, response, checks = []) {
   await writeFile(resolve(output, label + '.json'), JSON.stringify(item, null, 2));
   console.log('CAPTURED ' + label + ' ' + hash.slice(0, 12));
 }
+async function checkChallengeAssessment(page) {
+  let requests = [];
+  const questions = [
+    {question:'Can credentials overlap?',why:'Overlap changes the cutover design.',options:['Yes, during cutover','No, only one at a time']},
+    {question:'Is cutover observed?',why:'Observation changes revocation timing.',options:['All consumers','Some consumers']}
+  ];
+  await page.route('**/api/challenge-session', route => route.fulfill({json:{active:false}}));
+  await page.route('**/api/challenge', async route => {
+    const request = route.request().postDataJSON();
+    requests.push(request);
+    const revised = request.turns.length === 1;
+    const noQuestions = /PR Plan/.test(request.scenarioText);
+    await route.fulfill({json:{
+      mode:'live-model',continuityReceipt:revised?'fixture-reassessed':'fixture-initial',
+      conclusions:[{application:'Pilot the change with bounded authority.',scenarioBasis:'A fictional proposal.',
+        basisType:'engineering-judgment',openQuestion:'How is recovery handled?',citations:[]}],
+      counterargument:'An existing service could reduce operating cost.',alternatives:['Use an existing service.'],
+      challenges:[{question:'A partial rollout may fail',reason:'A downstream consumer could be late.',tests:[],alternatives:[]}],
+      expectedSafeguards:[{objective:'Stage the transition',why:'Preserve service availability.',
+        implementation:revised?'reported-partial':'not-assessed',implementationBasis:'Overlap reported for some consumers.',referenceIds:[]}],
+      facts:[],approvalOutcomes:[],unknowns:['Coverage of slower consumers'],
+      clarifications:revised||noQuestions?[]:questions,engineeringReferences:[],
+      ...(revised?{reassessment:'Overlap changes the safeguard to Partial. The pilot recommendation stands.'}:{})
+    }});
+  });
+  await page.locator('#examples summary').click();
+  await page.locator('[data-example="plan"]').click();
+  await page.locator('#token').fill('local-browser-fixture');
+  await page.locator('#ask').click();
+  await page.locator('#result').waitFor();
+  check(!(await page.locator('#refine-panel').isVisible()),'Zero questions should hide the reassessment form');
+  check(await page.locator('#report-model-examples').isVisible(),'PR examples should appear for PR proposals');
+
+  requests = [];
+  await page.locator('#examples summary').click();
+  await page.locator('[data-example="rotation"]').click();
+  await page.locator('#ask').click();
+  await page.locator('#result').waitFor();
+  check(!(await page.locator('#report-model-examples').isVisible()),'PR examples should be hidden for credential rotation');
+  for (const selector of ['#report-risks summary','#report-expected-safeguards summary','#report-sources-details summary']) {
+    await page.locator(selector).first().click();
+  }
+  check(requests.length===1,'Expanding details must not call the model');
+  await page.getByText('Yes, during cutover',{exact:true}).click();
+  await page.getByText('Some consumers',{exact:true}).click();
+  await page.locator('#refinement-submit').click();
+  await page.locator('#report-delta').waitFor();
+  check(requests.length===2,'Assessment plus clarification should use two application requests');
+  check(requests[1].continuityReceipts[0]==='fixture-initial','Reassessment must use initial signed continuity');
+  check(/Yes, during cutover[\s\S]*Some consumers/.test(requests[1].turns[0].content),'Both answers must travel in one batch');
+  check(!(await page.locator('#refine-panel').isVisible()),'Closing the clarification loop should prevent further submissions');
+  await page.locator('#report-expected-safeguards summary').click();
+  check((await page.locator('#report-expected-safeguards').innerText()).includes('Partial · User-reported'),
+    'Reassessment should preserve the provenance of a reported safeguard');
+  check(await page.evaluate(() => document.documentElement.scrollWidth<=innerWidth),'Assessment must fit the viewport');
+}
+
 async function runCase(label, path, viewportName, viewport, scenario) {
   const page = await browser.newPage({ viewport, deviceScaleFactor: 1, reducedMotion: 'reduce' });
   const errors = [];
@@ -82,6 +139,12 @@ async function runCase(label, path, viewportName, viewport, scenario) {
     check((await page.locator('h1').count()) > 0, label + ': missing primary heading');
 
     const checks = ['HTTP ' + response.status(), 'h1 present'];
+    if(path==='private-challenge.html'){
+      await checkChallengeAssessment(page);
+      checks.push('Mocked assessment and reassessment', 'Expandable details make no requests',
+        'Two answers in one signed follow-up', 'Zero-question case omits reassessment', 'No horizontal overflow');
+      await page.locator('#token').fill('');
+    }
     if (scenario?.startsWith('scenario-journey:')) {
       const [, variant, stepNumber, layer] = scenario.split(':');
       const title = {pass:'Standard low-risk pass',split:'AI split decision',excluded:'Hard gate scope exclusion',canary:'Production canary failure'}[variant];

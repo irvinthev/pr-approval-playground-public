@@ -21,26 +21,15 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{
 .card{padding:17px;border:1px solid #3d6475;border-radius:11px;margin:14px 0;background:#123646}
 .card h3{color:#defaed}.tag{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:#a8f2d6}
 ul{padding-left:23px;margin:8px 0}.citation{padding:10px 0;border-top:1px solid #3d6475}.citation:first-child{border:0}
-#result[hidden],#followup[hidden]{display:none}.section{margin-top:21px}.mono{font-family:ui-monospace,monospace;word-break:break-all}
+#status:empty{display:none}
 #remember-option{display:flex;align-items:center;gap:9px;margin-top:12px;font-size:14px}
 #remember-option input{width:auto;accent-color:var(--mint)}
-#engineering-details[hidden]{display:none}
 .reference-link{display:block;margin:8px 0;overflow-wrap:anywhere}
-.decision-first{border-left:4px solid var(--mint);background:#173b45}
-.decision-first p{font-size:17px;line-height:1.6;margin:10px 0 0}
-.option-card{padding:14px;border:1px solid #3d6475;border-radius:11px;margin:10px 0;background:#123646}
-details.deep-dive{border:1px solid var(--line);border-radius:12px;padding:12px 15px;margin-top:16px}
-details.deep-dive summary{cursor:pointer;font-weight:750;color:var(--mint);padding:7px 0}
-details.deep-dive summary:focus-visible{outline:3px solid var(--mint);outline-offset:3px}
-#result[hidden],#followup[hidden]{display:none}
 
-/* V6 decision-workspace layout: visual presentation only; the API contract is unchanged. */
-:root{--workspace-bg:#0b2034;--workspace-card:#102b42;--workspace-border:#466477;--lavender:#c8b4ff}
 .app-frame{max-width:1600px;margin:0 auto;display:grid;grid-template-columns:224px minmax(0,1fr);min-height:100dvh}
 .app-sidebar{position:sticky;top:0;align-self:start;height:100dvh;padding:24px 16px;background:#071a2d;border-right:1px solid #35546a;display:flex;flex-direction:column;gap:18px}
 .sidebar-brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:18px;line-height:1.22;letter-spacing:-.02em}
 .brand-mark{display:grid;place-items:center;width:38px;height:38px;border:1px solid #6dcbcd;border-radius:12px;color:var(--mint);background:#143748;flex-shrink:0}
-.sidebar-kicker{font-size:11px;letter-spacing:.12em;color:#91b6c9;font-weight:750;text-transform:uppercase}
 .sidebar-group{display:flex;flex-direction:column;gap:5px}
 .sidebar-group button{display:block;text-align:left;width:100%;font-weight:600;background:transparent;border:1px solid transparent;padding:11px 12px;font-size:13px}
 .sidebar-group button:hover,.sidebar-group button[aria-current="page"]{background:#16425a;border-color:#397b91;color:var(--mint)}
@@ -53,69 +42,8 @@ main#main-content .lead{font-size:15px;max-width:920px;margin:0 0 18px}
 main#main-content .notice{margin-top:14px}
 main#main-content .panel{background:#0e273c;border-color:#38586c}
 #formtitle{margin-bottom:10px}
-.scenario-intro{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
-.scenario-intro .small{max-width:280px}
 #scenario{min-height:112px}
 #result{padding:18px}
-.workspace-heading{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
-.workspace-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:16px 0 18px;position:sticky;top:0;z-index:3;padding:8px 0;background:#0e273c}
-.workspace-tabs button{background:#102e46;border-color:#48697a;color:#e7f2f8;padding:12px 8px;text-align:center;min-width:0}
-.workspace-tabs button[aria-selected="true"]{background:linear-gradient(115deg,#bef9e8,#75e6d3);border-color:#bef9e8;color:#062d37}
-.workspace-tabs button:focus-visible{outline-offset:1px}
-.workspace-grid{display:grid;grid-template-columns:minmax(0,1fr) 262px;gap:16px}
-.workspace-primary{min-width:0}
-.workspace-view[hidden]{display:none!important}
-.workspace-view h3{font-size:18px}
-.workspace-view > .small{margin-top:0}
-.workspace-rail{display:flex;flex-direction:column;gap:14px;align-self:start;position:sticky;top:92px}
-.rail-card{background:#0d2338;border:1px solid #496b7c;border-radius:13px;padding:14px}
-.rail-card h3{font-size:15px}
-.rail-link{display:block;padding:11px 0;border-top:1px solid #305064;text-decoration:none;font-size:13px;line-height:1.45}
-.rail-link:first-of-type{border-top:0}
-.rail-link span{display:block;color:#d7e5ed}
-.rail-link small{display:block;color:var(--mint)}
-.rail-empty{color:var(--muted);font-size:13px}
-.decision-first{background:#153c49;padding:16px;margin:0 0 16px}
-.decision-first p{font-size:17px;line-height:1.52}
-.model-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
-.model-card{min-width:0;border-radius:13px;border:1px solid #5f8299;background:#dceef9;color:#102738;overflow:hidden}
-.model-card header{padding:13px 12px;background:#123c60;color:white;min-height:113px}
-.model-card header h4{font-size:15px;line-height:1.25;margin:0 0 7px}
-.model-card header p{font-size:12px;line-height:1.35;margin:0}
-.model-card.delegated header{background:#363467}
-.model-card.autonomous header{background:#135b4a}
-.model-card.delegated{background:#e8e4fb}
-.model-card.autonomous{background:#d7f3e8}
-.model-card dl{margin:0;padding:4px 13px 12px}
-.model-card dt{font-size:12px;font-weight:850;margin:12px 0 3px}
-.model-card dd{font-size:12px;line-height:1.42;margin:0}
-.model-card dd+dt{border-top:1px solid #b0c4cf;padding-top:8px}
-.model-footnote{font-size:12px;color:var(--muted);margin:10px 0 16px}
-.model-selector{display:none}
-#approaches{margin-top:20px}
-#approaches h3{font-size:17px}
-#approaches .option-card{margin:9px 0;padding:11px 13px}
-.challenge-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-.challenge-actions button{background:#123c54;text-align:left;min-height:64px;font-size:13px}
-.challenge-actions button:hover{border-color:var(--mint);color:var(--mint)}
-.workspace-view .card{margin:10px 0}
-#workspace-risk .card{padding:12px 14px}
-#workspace-risk .card p{margin:8px 0}
-#workspace-risk #challenges h3{font-size:15px}
-#workspace-risk #unknowns li{margin-bottom:7px}
-#workspace-evidence details.deep-dive{margin-top:10px}
-#followup.panel{margin:14px 0 0;padding:16px}
-#followup h2{font-size:18px}
-#challenge-status{min-height:24px;color:var(--mint);font-size:13px;margin-top:10px}
-#challenge-status.error{color:#ffb0a5}
-#result .workspace-view h2{font-size:20px}
-#result .workspace-view > h2{margin-top:3px}
-#view-status{font-size:12px;color:var(--muted)}
-#engineering-details .citation{padding:12px 0}
-@media(max-width:1190px){
- .workspace-grid{grid-template-columns:minmax(0,1fr)}
- .workspace-rail{display:none}
-}
 @media(max-width:980px){
  .app-frame{grid-template-columns:1fr}
  .app-sidebar{display:none}
@@ -125,52 +53,19 @@ main#main-content .panel{background:#0e273c;border-color:#38586c}
 @media(max-width:650px){
  main#main-content h1{font-size:29px}
  #result{padding:13px}
- .workspace-tabs{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;top:0}
- .workspace-tabs button{padding:11px 6px;font-size:13px}
- .workspace-heading h2{margin:0}
- .model-grid{grid-template-columns:1fr}
- .model-grid .model-card{display:none}
- #operating-models[data-selected-model="human"] .model-card.human,
- #operating-models[data-selected-model="delegated"] .model-card.delegated,
- #operating-models[data-selected-model="autonomous"] .model-card.autonomous{display:block}
- .model-selector{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:12px 0}
- .model-selector button{font-size:12px;padding:9px 4px}
- .model-selector button[aria-pressed="true"]{background:var(--mint);color:#123e42}
- .model-card header{min-height:0}
- .model-card dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 10px}
- .model-card dt{margin:6px 0 0}
- .model-card dd+dt{border:0;padding:0}
- .challenge-actions{grid-template-columns:1fr}
- .challenge-actions button{min-height:49px}
- .scenario-intro{display:block}
- .scenario-intro .small{max-width:none}
- .decision-first p{font-size:16px}
 }
 
 
-/* V7 presentation-only assessment summary. All report content derives from
-   existing response fields plus clearly labelled illustrative safeguards. */
-.workspace-tabs{grid-template-columns:repeat(5,minmax(0,1fr))}
-.report-banner{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:17px;
+.report-banner{padding:17px;
   background:linear-gradient(120deg,#184452,#162f4c);border:1px solid #78b9bb;border-radius:13px}
-.report-banner h3{font-size:21px;margin:2px 0 8px}
 .report-banner p{margin:5px 0;overflow-wrap:anywhere}
-.report-eyebrow{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--mint);font-weight:800}
-.report-stamp{display:inline-flex;flex-shrink:0;padding:6px 9px;border:1px solid #91b9ce;border-radius:9px;
-  color:#e8effb;font-size:12px;font-weight:750;max-width:160px;line-height:1.35}
-.report-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0 18px}
-.report-metric{padding:13px;background:#102d40;border:1px solid #42677a;border-radius:10px}
-.report-metric strong{display:block;font-size:21px;line-height:1.2;color:var(--mint)}
-.report-metric span{display:block;color:#c9dce6;font-size:12px;margin-top:5px}
 .report-section{margin:18px 0 0}
 .report-section h3{font-size:17px;margin-bottom:5px}
 .report-section > p.small{margin:4px 0 11px}
-.report-risk-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.report-risk-list{display:grid;gap:10px}
 .report-risk-card{border:1px solid #486c7d;background:#103248;border-radius:10px;padding:12px;min-width:0}
-.report-risk-card strong{display:block;font-size:14px;line-height:1.4}
+.report-risk-card strong{display:block;font-size:14px;line-height:1.4;margin-top:8px}
 .report-risk-card p{font-size:13px;color:#ccdeea;line-height:1.45;margin:7px 0 0}
-.report-unknown{border-left:3px solid #e8c789;padding:9px 12px;background:#233649;border-radius:0 9px 9px 0}
-.report-unknown li{font-size:13px;margin-bottom:5px}
 .report-model-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .report-model{background:#133147;border:1px solid #517489;border-radius:11px;min-width:0;overflow:hidden}
 .report-model h4{font-size:14px;margin:0;padding:11px;background:#1b4e66;color:#ecf7ff}
@@ -178,58 +73,24 @@ main#main-content .panel{background:#0e273c;border-color:#38586c}
 .report-model.autonomous h4{background:#196954}
 .report-model ul{padding:0 12px 0 27px;margin:13px 0}
 .report-model li{font-size:12px;line-height:1.55;margin-bottom:8px}
-.report-source-groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.report-source-group{background:#112c42;border:1px solid #42677a;border-radius:10px;padding:12px;min-width:0}
-.report-source-group h4{font-size:14px;margin:0 0 8px}
-.report-source-link{display:block;padding:7px 0;font-size:12px;overflow-wrap:anywhere}
-.report-source-link small{display:block;color:#bed0df;font-size:11px}
-#report-preview-link{margin:12px 0 4px}
 .report-note{font-size:12px;color:#c6d9e3;border-top:1px solid #3d6475;margin-top:18px;padding-top:12px}
-@media(max-width:900px){.report-model-grid{grid-template-columns:1fr}.report-model ul{margin:12px 0}.report-source-groups{grid-template-columns:1fr}}
 @media(max-width:650px){
- .workspace-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}
- .workspace-tabs button{font-size:12px;padding:10px 4px}
  .report-banner{display:block;padding:13px}
- .report-stamp{margin-top:10px}
- .report-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
- .report-metric{padding:9px}
- .report-metric strong{font-size:18px}
- .report-metric span{font-size:11px}
- .report-risk-list{grid-template-columns:1fr}
 }
 
 
-/* V8: guided questions and reference rationale only, no model/API schema changes. */
 .refine-panel{padding:15px;border:1px solid #529a9d;border-radius:13px;background:#123446}
-.refine-heading{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:flex-start}
-.refine-heading h3{margin:0 0 6px}
-.refine-focus-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:13px 0 10px}
-.refine-focus-row label{font-size:13px;margin:0}
-.refine-focus-row select{background:#0a2537;border:1px solid #78a6b8;border-radius:8px;
-  color:#f0faff;font:inherit;font-size:13px;padding:9px;max-width:100%;min-width:200px}
 .refine-question{background:#0a283b;border:1px solid #3e687d;border-radius:10px;padding:13px;margin-top:10px}
-.refine-question summary{cursor:pointer;font-weight:700;font-size:14px;line-height:1.4}
-.refine-question summary:focus-visible{outline:3px solid var(--mint);outline-offset:2px}
 .refine-question p{font-size:12px;line-height:1.5;color:#c4dce8;margin:5px 0}
 .refine-question label{font-size:12px;margin:11px 0 5px;color:#dceef8}
 .refine-question input{min-width:0;font-size:13px;padding:10px}
-.refine-question a{font-size:12px}
 .refine-actions{margin-top:12px;display:flex;align-items:center;gap:11px;flex-wrap:wrap}
 .refine-actions button{min-width:200px}
-.refine-next{margin:13px 0 0;border:1px solid #446a7d;border-radius:10px;padding:9px 13px}
-.refine-next summary{color:var(--mint);font-weight:700;cursor:pointer}
-.refine-next li{font-size:13px;margin-top:9px}
-.refine-next li input{font-size:13px;padding:9px;margin:8px 0 6px}
-.refine-next li button{display:block;font-size:12px;padding:9px 11px}
 .safeguard-context{padding:0 13px 14px;border-top:1px solid #456a7b}
 .safeguard-context p{font-size:12px;line-height:1.5;margin:9px 0}
 .safeguard-context a{display:inline-block;max-width:100%;font-size:12px;overflow-wrap:anywhere}
 .safeguard-source-note{font-size:12px;color:#c6d9e3;margin:10px 0}
-@media(max-width:650px){.refine-focus-row{display:block}.refine-focus-row select{width:100%;margin-top:5px}
- .refine-question{padding:11px}.refine-actions button{width:100%}}
 
-/* V9 compact assessment-first experience; optional technical depth preserved. */
-#report-metrics{display:none}
 .report-extra{margin-top:16px;border:1px solid #3f6476;border-radius:12px;padding:10px 13px}
 .report-extra>summary{cursor:pointer;color:var(--mint);font-weight:700;font-size:14px;padding:6px 0}
 .report-extra .report-section{margin-top:12px}
@@ -238,7 +99,6 @@ main#main-content .panel{background:#0e273c;border-color:#38586c}
 .report-delta strong{display:block;margin-bottom:5px}.report-delta p{font-size:13px;margin:7px 0}
 .expected-safeguards{display:grid;gap:8px}
 .expected-item{border:1px solid #456b7f;border-radius:10px;padding:12px 13px;background:#103046}
-.expected-item-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center}
 .expected-item strong{font-size:14px}.expected-status{font-size:11px;color:#cbdde7}
 .expected-item p{font-size:13px;line-height:1.45;margin:7px 0}
 .expected-item a{font-size:12px;margin-right:10px;overflow-wrap:anywhere}
@@ -247,29 +107,36 @@ main#main-content .panel{background:#0e273c;border-color:#38586c}
 .refine-option-group{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}
 .refine-option-group .refine-option{margin:0;font-weight:500}
 .refine-option{border:1px solid #698a9b;border-radius:9px;background:#15394f;padding:9px;display:flex;gap:7px;
-  align-items:center;cursor:pointer;font-size:12px;min-height:43px}
+  align-items:center;cursor:pointer;font-size:12px;min-height:44px}
 .refine-option:has(input:checked){border-color:#b2f1db;background:#23636a;color:white}
 .refine-option input{width:auto;flex-shrink:0;accent-color:#b2f1db}
 .refine-other[hidden]{display:none}
-.refine-next-action{margin-top:8px}
-.report-risk-list{grid-template-columns:1fr}
 #report-takeaway{font-size:16px;line-height:1.5}
 @media(min-width:1050px){.report-risk-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){.refine-option-group{grid-template-columns:1fr}}
 
+#result{max-width:1050px}
+#result[hidden],#refine-panel[hidden]{display:none}
+#result h2:focus{outline:none}
+.report-banner h2{margin:0 0 8px}
+.report-risk-card,.expected-item{overflow-wrap:anywhere}
+.report-risk-card summary,.expected-item summary{cursor:pointer;color:#e4f9f4;font-weight:700;font-size:14px;padding:5px 0}
+summary:focus-visible{outline:3px solid var(--mint);outline-offset:3px}
+.expected-item summary span{display:inline-block;margin-left:8px;font-weight:500}
+.expected-item p strong{font-size:inherit}
+.example-options button{font-size:13px}
+.report-reasoning p,.report-delta p{overflow-wrap:anywhere}
+#refinement-status.error{color:#ffb0a5}
+@media(max-width:900px){.report-model-grid{grid-template-columns:1fr}}
+@media(max-width:650px){.refine-actions button{width:100%}.refine-panel{padding:12px}}
 </style>
 </head>
 <body><div class="app-frame">
 <aside class="app-sidebar" aria-label="Workspace navigation">
   <div class="sidebar-brand"><span class="brand-mark" aria-hidden="true">◇</span><span>AI-Enabled Engineering<br>Challenge Lab</span></div>
-  <div class="sidebar-kicker">Explore · Compare · Challenge</div>
   <div class="sidebar-group">
     <button type="button" id="nav-scenario" aria-current="page">Start a scenario</button>
-    <button type="button" data-target="architecture">Architecture</button>
-    <button type="button" data-target="risk">Risks &amp; tradeoffs</button>
-    <button type="button" data-target="evidence">Sources &amp; evidence</button>
-    <button type="button" data-target="challenge">Challenge the decision</button>
-    <button type="button" data-target="report">Assessment summary</button>
+    <button type="button" id="nav-assessment">Review assessment</button>
   </div>
   <p class="sidebar-note">Private educational prototype. Curated public references only. No approval or deployment authority.</p>
 </aside>
@@ -280,151 +147,78 @@ main#main-content .panel{background:#0e273c;border-color:#38586c}
 <p class="lead">Describe an engineering proposal, review a conditional recommendation and expected safeguards, then answer only the questions that could change the decision.</p>
 <div class="notice"><strong>Privacy and scope:</strong> Use fictional or publicly shareable scenarios only. Do not enter confidential company information, live PRs, credentials, internal diagrams, or personal data. Gemini free-tier requests may be used by Google to improve its services. This experience does not authorize changes or verify implemented controls.</div>
 <section class="panel" aria-labelledby="formtitle">
-<div class="scenario-intro"><h2 id="formtitle">01 · Define the problem</h2><p class="small">What engineering outcome are we trying to improve?</p></div>
+<h2 id="formtitle">Describe the proposal</h2>
 <div class="field" id="token-field"><label for="token">Private test access token</label>
 <input id="token" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Paste your CHALLENGE_API_TOKEN" aria-describedby="tokenhelp">
 <p class="small" id="tokenhelp">This is the separate private test token you saved in Vercel, <strong>not</strong> your Gemini API key. The token stays in this tab unless you clear the session. If you opt in below, the lab remembers a separate session for this browser.</p>
 <label id="remember-option"><input id="remember" type="checkbox"> Remember this browser for 8 hours</label></div>
 <p class="small" id="remembered" hidden>Browser remembered for up to 8 hours. Clear session signs this browser out of the lab.</p>
-<div class="field"><label for="scenario">What should the AI challenge?</label>
-<textarea id="scenario" maxlength="4000" placeholder="Two AI agents agree that a pull request is low risk. Is that enough to allow automatic approval?"></textarea>
+<div class="field"><label for="scenario">What are you proposing, and what should it improve?</label>
+<textarea id="scenario" maxlength="4000" placeholder="Describe how the proposal would work and what you already know about its safeguards."></textarea>
 </div>
 <p class="small">Free source library: the lab automatically selects a few relevant, source-linked technical reference summaries. No live web research is performed. Sources are not proof of a deployed configuration.</p>
-<div class="row"><button class="primary" id="ask" type="button">Assess this proposal</button><button id="example" type="button">Load example</button><button id="reset" type="button">Clear session</button></div>
+<div class="row"><button class="primary" id="ask" type="button">Assess this proposal</button><button id="reset" type="button">Clear session</button></div>
+<details class="report-extra" id="examples">
+  <summary>Load a fictional example</summary>
+  <div class="row example-options">
+    <button type="button" data-example="delegated">Human decides, agent submits</button>
+    <button type="button" data-example="tools">Agent access through GitHub tools</button>
+    <button type="button" data-example="plan">AI decides under a PR Plan</button>
+    <button type="button" data-example="rotation">Cloud credential rotation</button>
+  </div>
+</details>
 <p id="status" role="status" aria-live="polite"></p>
 </section>
 <section id="result" class="panel" hidden aria-labelledby="resulttitle">
-  <div class="workspace-heading">
-    <h2 id="resulttitle">02 · Explore the decision</h2>
-    <span id="view-status">Model-generated analysis · Not an approval</span>
-  </div>
-  <div class="workspace-tabs" role="tablist" aria-label="Explore analysis">
-    <button type="button" id="tab-report" role="tab" aria-controls="workspace-report" aria-selected="true" tabindex="0" data-view="report">Assessment</button>
-    <button type="button" id="tab-architecture" role="tab" aria-controls="workspace-architecture" aria-selected="false" tabindex="-1" data-view="architecture">Architecture</button>
-    <button type="button" id="tab-risk" role="tab" aria-controls="workspace-risk" aria-selected="false" tabindex="-1" data-view="risk">Risks &amp; tradeoffs</button>
-    <button type="button" id="tab-evidence" role="tab" aria-controls="workspace-evidence" aria-selected="false" tabindex="-1" data-view="evidence">Evidence &amp; sources</button>
-    <button type="button" id="tab-challenge" role="tab" aria-controls="workspace-challenge" aria-selected="false" tabindex="-1" data-view="challenge">Challenge</button>
-  </div>
-  <div class="workspace-grid">
-    <div class="workspace-primary">
-      <div class="workspace-view" id="workspace-architecture" role="tabpanel" aria-labelledby="tab-architecture">
-        <div class="card decision-first" id="decision-summary" aria-live="polite"></div>
-        <h3>Compare approval operating models</h3>
-        <p class="small">Illustrative authority models—not Gemini's conclusions about your scenario. Technical components can be shared across models.</p>
-        <div id="operating-models" data-selected-model="delegated">
-          <div class="model-selector" role="group" aria-label="Select operating model on mobile">
-            <button type="button" data-model="human" aria-pressed="false">Human</button>
-            <button type="button" data-model="delegated" aria-pressed="true">Delegated</button>
-            <button type="button" data-model="autonomous" aria-pressed="false">Autonomous</button>
-          </div>
-          <div class="model-grid">
-            <article class="model-card human" data-model="human">
-              <header><h4>1 · Human review</h4><p>Human decides and submits the approval.</p></header>
-              <dl><dt>Decision authority</dt><dd>Human reviewer</dd>
-              <dt>Execution</dt><dd>GitHub UI, API or CLI as authorized</dd>
-              <dt>Enforcement</dt><dd>Configured branch rules, reviewer eligibility, and permissions</dd>
-              <dt>Tradeoff to explore</dt><dd>Review effort and latency versus actual review quality</dd></dl>
-            </article>
-            <article class="model-card delegated" data-model="delegated">
-              <header><h4>2 · Delegated approval</h4><p>Human decides; an agent submits as instructed.</p></header>
-              <dl><dt>Decision authority</dt><dd>Human with explicit delegation</dd>
-              <dt>Execution</dt><dd>Claude Code, CLI, MCP or authorized app</dd>
-              <dt>Enforcement</dt><dd>Credential and tool scope; branch rules; revision checks</dd>
-              <dt>Tradeoff to explore</dt><dd>Less interaction friction; attribution and action scope require scrutiny</dd></dl>
-            </article>
-            <article class="model-card autonomous" data-model="autonomous">
-              <header><h4>3 · Autonomous approval</h4><p>AI evaluates and submits within authorized limits.</p></header>
-              <dl><dt>Decision authority</dt><dd>Defined automated decision policy</dd>
-              <dt>Execution</dt><dd>GitHub App or another approved execution identity</dd>
-              <dt>Enforcement</dt><dd>Eligibility gates, credentials, effective rules and revision binding</dd>
-              <dt>Tradeoff to explore</dt><dd>Potential throughput; decision quality, exceptions and failure detection</dd></dl>
-            </article>
-          </div>
-        </div>
-        <p class="model-footnote">GitHub Apps, rulesets, and CI workflows are implementation mechanisms—not mutually exclusive approval models.</p>
-        <div id="approaches"></div>
-        <button id="report-preview-link" type="button">View assessment summary</button>
-      </div>
-      <div class="workspace-view" id="workspace-risk" role="tabpanel" aria-labelledby="tab-risk" hidden>
-        <h2>Risks, tradeoffs &amp; unanswered questions</h2>
-        <p class="small">Challenge the proposed architecture and the existing workflow equally. These are model-generated questions, not verified deficiencies or mandatory controls.</p>
-        <div id="challenges"></div>
-        <div id="unknowns"></div>
-      </div>
-      <div class="workspace-view" id="workspace-evidence" role="tabpanel" aria-labelledby="tab-evidence" hidden>
-        <h2>Evidence &amp; source provenance</h2>
-        <p class="small">Distinguish documented product behavior, scenario facts and engineering judgment. Source availability does not establish the truth of an implementation claim.</p>
-        <details class="deep-dive" id="engineering-details" hidden><summary>Technical sources provided to Gemini</summary>
-          <div id="engineering-references"></div>
-        </details>
-        <details class="deep-dive" id="evidence-details"><summary>Evidence, framework references and technical questions</summary>
-          <div id="approval-outcomes"></div>
-          <div id="conclusions"></div>
-          <div id="facts"></div>
-        </details>
-      </div>
-      <div class="workspace-view" id="workspace-challenge" role="tabpanel" aria-labelledby="tab-challenge" hidden>
-        <h2>Challenge the recommendation</h2>
-        <p class="small">Each action runs a follow-up against Gemini's signed prior response and uses the same scenario. It can consume a model request.</p>
-        <div class="challenge-actions" aria-label="One-click follow-up challenges">
-          <button type="button" data-challenge="assumptions">Challenge assumptions</button>
-          <button type="button" data-challenge="simpler">Find a simpler option</button>
-          <button type="button" data-challenge="evidence">Check the evidence</button>
-          <button type="button" data-challenge="justify">Justify &amp; challenge source claims</button>
-          <button type="button" data-challenge="failure">Explore a failure scenario</button>
-        </div>
-        <section class="panel" id="followup" hidden aria-labelledby="followtitle">
-          <h2 id="followtitle">03 · Your follow-up</h2>
-          <p class="small">Follow-ups include bounded, server-signed snapshots of Gemini's prior answers. History stays in this tab and is cleared when you reset.</p>
-          <label for="question">What would you challenge next?</label>
-          <textarea id="question" maxlength="1000" style="min-height:94px" placeholder="Is there a simpler architecture that solves the same engineering problem?"></textarea>
-          <div class="row"><button class="primary" id="continue" type="button">Continue the challenge</button><span class="small" id="turncount"></span></div>
-        </section>
-        <p id="challenge-status" role="status" aria-live="polite"></p>
-      </div>
-      <div class="workspace-view" id="workspace-report" role="tabpanel" aria-labelledby="tab-report" hidden>
-        <header class="report-banner">
-          <div>
-            <div class="report-eyebrow">Scenario-based · preliminary assessment</div>
-            <h3>Engineering assessment</h3>
-            <p id="report-scenario" class="small"></p>
-            <p id="report-takeaway"></p>
-          </div>
-          <span class="report-stamp">Not independently verified</span>
-        </header>
-        <section id="report-delta" class="report-delta" hidden aria-label="What changed after clarification">
-          <strong>Reassessment · what changed?</strong>
-          <p class="small" id="report-previous"></p>
-          <p id="report-revised"></p>
-        </section>
-        <section class="report-section" aria-labelledby="report-risks-title">
-          <h3 id="report-risks-title">What could go wrong · tradeoffs</h3>
-          <p class="small">Material questions to investigate, not verified weaknesses.</p>
-          <div id="report-risks" class="report-risk-list"></div>
-        </section>
-        <section class="report-section" aria-labelledby="expected-safeguards-title">
-          <h3 id="expected-safeguards-title">Expected safeguards</h3>
-          <p class="small">Scenario-specific outcomes suggested by Gemini; reported status is not independent verification.</p>
-          <div id="report-expected-safeguards" class="expected-safeguards"></div>
-        </section>
-        <section class="report-section refine-panel" id="refine-panel" aria-labelledby="refinement-title">
-          <div class="refine-heading">
-            <div><h3 id="refinement-title">What could change the answer?</h3>
-              <p class="small">Up to three scenario-specific questions from Gemini. Tap an answer; skip anything you don't know.</p></div>
-          </div>
-          <div id="refinement-questions"></div>
-          <div class="refine-actions">
-            <button class="primary" id="refinement-submit" type="button">Reassess with answers</button>
-            <span id="refinement-status" class="small" role="status" aria-live="polite"></span>
-          </div>
-        </section>
-        <details class="report-extra"><summary>Additional unknowns and assessment context</summary>
-          <div id="report-unknowns" class="report-unknown"></div>
-        </details>
+  <header class="report-banner">
+    <h2 id="resulttitle" tabindex="-1">Engineering assessment</h2>
+    <p id="report-takeaway"></p>
+    <p id="report-basis" class="small"></p>
+  </header>
+  <section id="report-delta" class="report-delta" hidden aria-label="Reassessment">
+    <strong>Reassessment</strong>
+    <p class="small" id="report-previous"></p>
+    <p id="report-revised"></p>
+  </section>
+  <section class="report-section report-reasoning" aria-label="Reasoning and alternatives">
+    <h3>Strongest counterargument</h3>
+    <p id="report-counterargument"></p>
+    <div id="report-alternative" hidden>
+      <h3>Simpler option</h3>
+      <p id="report-option"></p>
+    </div>
+  </section>
+  <section class="report-section" aria-labelledby="report-risks-title">
+    <h3 id="report-risks-title">Material risks and tradeoffs</h3>
+    <div id="report-risks" class="report-risk-list"></div>
+  </section>
+  <section class="report-section" aria-labelledby="expected-safeguards-title">
+    <h3 id="expected-safeguards-title">Expected safeguards</h3>
+    <p class="small">Implementation statuses reflect what you reported or what remains unknown.</p>
+    <div id="report-expected-safeguards" class="expected-safeguards"></div>
+  </section>
+  <section class="report-section refine-panel" id="refine-panel" hidden aria-labelledby="refinement-title">
+    <h3 id="refinement-title">What could change the answer?</h3>
+    <p class="small">Answer any of these questions to reassess the proposal once.</p>
+    <div id="refinement-questions"></div>
+    <div class="refine-actions">
+      <button class="primary" id="refinement-submit" type="button">Reassess with answers</button>
+      <span id="refinement-status" class="small" role="status" aria-live="polite"></span>
+    </div>
+  </section>
+  <details class="report-extra" id="report-context"><summary>Assumptions, evidence and remaining unknowns</summary>
+    <div id="report-unknowns"></div>
+    <div id="approval-outcomes"></div>
+    <div id="conclusions"></div>
+    <div id="facts"></div>
+  </details>
+  <details class="report-extra" id="report-sources-details"><summary>References and source limits</summary>
+    <div id="report-sources"></div>
+  </details>
         <details class="report-extra" id="report-model-examples"><summary>Compare the three PR approval models (optional)</summary>
         <section class="report-section" aria-labelledby="report-controls-title">
           <h3 id="report-controls-title">Example safeguards by approval model</h3>
-          <p class="small">Illustrative design patterns—not confirmed controls, universal requirements, or an assessment of operating effectiveness. Apply only where relevant.</p>
+          <p class="small">Illustrative design patterns, universal requirements, or an assessment of operating effectiveness. Apply only where relevant.</p>
           <div class="report-model-grid">
             <div class="report-model human"><h4>1 · Human decides and submits</h4>
               <ul>
@@ -463,33 +257,13 @@ main#main-content .panel{background:#0e273c;border-color:#38586c}
         </section>
           <p class="safeguard-source-note">These source links explain potential design mechanisms. They are manually curated context, not evidence Gemini used them or proof they apply to this scenario.</p>
         </details>
-        <details class="report-extra" id="report-sources-details"><summary>Source library and provenance</summary>
-        <section class="report-section" aria-labelledby="report-sources-title">
-          <h3 id="report-sources-title">Source basis</h3>
-          <p class="small">Documents supplied to the model or cited in its response. A source appearing here does not mean a particular control is implemented or that the model's interpretation has been verified.</p>
-          <div id="report-sources" class="report-source-groups"></div>
-          <div class="refine-actions"><button type="button" data-challenge="justify">Justify &amp; challenge these source claims</button></div>
-        </section></details>
-        <p class="report-note">Model-generated design assessment, not independent source verification or implementation testing. Use the expanded source library to check material claims.</p>
-      </div>
-    </div>
-    <aside class="workspace-rail" aria-label="Context and quick challenges">
-      <section class="rail-card"><h3>Selected technical references</h3><div id="rail-sources"><p class="rail-empty">Sources appear after analysis.</p></div></section>
-      <section class="rail-card"><h3>Challenge this result</h3><div class="challenge-actions">
-        <button type="button" data-challenge="assumptions">Challenge assumptions</button>
-        <button type="button" data-challenge="simpler">Find a simpler option</button>
-        <button type="button" data-challenge="evidence">Check the evidence</button>
-        <button type="button" data-challenge="justify">Justify &amp; challenge source claims</button>
-        <button type="button" data-challenge="failure">Explore a failure scenario</button>
-      </div></section>
-    </aside>
-  </div>
+  <p class="report-note">Gemini generates this design assessment using your scenario and curated public references. Implementation and source interpretation require independent verification.</p>
 </section>
-<p class="small section">Private test only. Vercel Authentication and an independent test token restrict access. No unlimited public chat, saved history, or automatic approval. The model provider and service limits may change.</p>
 </main></div>
 <script type="module">
 const el=id=>document.getElementById(id);
-const state={scenario:null,turns:[],continuityReceipts:[],busy:false,remembered:false,refinementAnswers:{},pendingRefinement:false,latestResponse:null,previousTakeaway:null};
+const state={scenario:null,receipt:null,busy:false,remembered:false,
+  refinementAnswers:{},reassessmentUsed:false,latestResponse:null,previousTakeaway:null};
 function setRemembered(active){
   state.remembered=active;
   el('token-field').hidden=active;
@@ -514,101 +288,37 @@ function list(parent,items){
   const ul=document.createElement('ul');parent.append(ul);
   for(const item of items)add('li',ul,item);
 }
-function title(parent,value){add('h3',parent,value)}
-function status(message,error=false){
-  for(const id of ['status','challenge-status']){
-    const node=el(id);
-    if(node){node.textContent=message;node.classList.toggle('error',error)}
-  }
+function status(message,error=false,id='status'){
+  const node=el(id);
+  node.textContent=message;
+  node.classList.toggle('error',error);
 }
-function setView(view,scroll=false){
-  const allowed=['architecture','risk','evidence','challenge','report'];
-  if(!allowed.includes(view))return;
-  if(el('result').hidden){
-    status('Analyze a fictional scenario to explore the workspace.');
-    el('scenario').focus();
-    return;
-  }
-  for(const name of allowed){
-    const active=name===view;
-    const tab=el('tab-'+name),panel=el('workspace-'+name);
-    tab.setAttribute('aria-selected',String(active));
-    tab.tabIndex=active?0:-1;
-    panel.hidden=!active;
-  }
-  document.querySelectorAll('.sidebar-group [data-target]').forEach(button=>{
-    button.setAttribute('aria-current',button.dataset.target===view?'page':'false');
-  });
-  el('nav-scenario').setAttribute('aria-current','false');
-  if(scroll)el('result').scrollIntoView({behavior:'smooth',block:'start'});
+function busy(active){
+  state.busy=active;
+  for(const id of ['ask','reset','scenario'])el(id).disabled=active;
+  el('refinement-submit').disabled=active || state.reassessmentUsed;
+  document.querySelectorAll('[data-example],#refinement-questions input').forEach(input=>input.disabled=active);
 }
-function renderRailSources(data){
-  const parent=el('rail-sources');
-  clear(parent);
-  const refs=Array.isArray(data.engineeringReferences)?data.engineeringReferences:[];
-  if(!refs.length){add('p',parent,'No curated technical references were selected.','rail-empty');return}
-  for(const ref of refs.slice(0,5)){
-    try{
-      const url=new URL(ref.url);
-      if(url.protocol!=='https:')continue;
-      const link=add('a',parent,'','rail-link');
-      link.href=url.href;link.target='_blank';link.rel='noopener noreferrer';
-      add('span',link,ref.title||ref.id);
-      add('small',link,ref.modelUsed?'Model identified as used':'Provided as context');
-    }catch{}
-  }
-}
-function busy(value){
-  state.busy=value;
-  el('ask').disabled=value;el('continue').disabled=value;el('reset').disabled=value;
-  el('refinement-submit').disabled=value || state.turns.length>=6;
-  document.querySelectorAll('.refinement-next-action').forEach(btn=>btn.disabled=value || state.turns.length>=6);
-  document.querySelectorAll('[data-challenge]').forEach(btn=>btn.disabled=value || state.turns.length>=6);
-  el('ask').textContent=value?'Analyzing…':'Assess this proposal';
-  el('continue').textContent=value?'Analyzing…':'Continue the challenge';
-}
-function renderCitation(parent,citation){
-  const box=add('div',parent,'','citation');
-  add('strong',box,[citation.sourceTitle,citation.sourceLocator,citation.provisionTitle].filter(Boolean).join(' · '));
-  if(citation.sourceSummary)add('p',box,citation.sourceSummary);
-  add('p',box,[citation.sourceVersion,citation.qualification].filter(Boolean).join(' · '),'small');
+function publisherLink(parent,urlText,label){
   try{
-    const url=new URL(citation.url);
-    if(url.protocol==='https:'){
-      const link=add('a',box,'Publisher reference');
-      link.href=url.href;link.target='_blank';link.rel='noopener noreferrer';
-    }
+    const url=new URL(urlText);
+    if(url.protocol!=='https:')return;
+    const link=add('a',parent,label,'reference-link');
+    link.href=url.href;link.target='_blank';link.rel='noopener noreferrer';
   }catch{}
 }
-function renderEngineeringReferences(data){
-  const section=el('engineering-references'),details=el('engineering-details');
-  clear(section);
-  const refs=Array.isArray(data.engineeringReferences)?data.engineeringReferences:[];
-  details.hidden=!refs.length;
-  details.open=false;
-  if(!refs.length)return;
-  add('p',section,'Curated summaries reviewed as of the displayed date. This is not live retrieval; source links and model-identified usage do not independently establish factual accuracy.','small');
-  for(const ref of refs.slice(0,5)){
-    const card=add('div',section,'','citation');
-    add('strong',card,ref.title||ref.id);
-    add('div',card,ref.modelUsed?'Model identified as supporting context':'Made available; not cited by model','tag');
-    add('p',card,[ref.publisher,ref.kind,'Reviewed '+ref.reviewedAsOf].filter(Boolean).join(' · '),'small');
-    if(ref.limits)add('p',card,'Limit: '+ref.limits,'small');
-    try{
-      const url=new URL(ref.url);
-      if(url.protocol==='https:'){
-        const link=add('a',card,'Publisher documentation','reference-link');
-        link.href=url.href;link.target='_blank';link.rel='noopener noreferrer';
-      }
-    }catch{}
-  }
+function renderReference(parent,ref,{inSafeguard=false}={}){
+  const box=add('div',parent,'','citation');
+  add('strong',box,ref.title||ref.id);
+  if(!inSafeguard)add('p',box,ref.modelUsed?'Selected by Gemini':'Provided as context','small');
+  list(box,ref.facts);
+  if(ref.limits)add('p',box,ref.limits,'small');
+  if(!inSafeguard && ref.reviewedAsOf)add('p',box,'Summary reviewed '+ref.reviewedAsOf,'small');
+  publisherLink(box,ref.url,ref.publisher||'Publisher reference');
 }
-
-
-
 function renderRefinementQuestions(data){
   const target=el('refinement-questions');clear(target);
-  const questions=Array.isArray(data.clarifications)?data.clarifications.slice(0,3):[];
+  const questions=state.reassessmentUsed?[]:data.clarifications;
   el('refine-panel').hidden=!questions.length;
   if(!questions.length){el('refinement-status').textContent='';return}
   for(const [i,q] of questions.entries()){
@@ -621,7 +331,7 @@ function renderRefinementQuestions(data){
     const options=[...q.options,'Unknown','Other'];
     const additional=document.createElement('input');
     additional.type='text';additional.maxLength=140;additional.className='refine-other';
-    additional.placeholder='A brief clarification (optional)';
+    additional.placeholder='Briefly describe your answer';
     additional.setAttribute('aria-label','Additional details for question '+(i+1));
     additional.hidden=true;
     for(const [n,option] of options.entries()){
@@ -634,6 +344,7 @@ function renderRefinementQuestions(data){
       const text=document.createElement('span');text.textContent=option;label.append(text);
       input.checked=state.refinementAnswers[i]?.choice===option;
       input.addEventListener('change',()=>{
+        status('',false,'refinement-status');
         state.refinementAnswers[i]={choice:option,other:state.refinementAnswers[i]?.other||''};
         additional.hidden=option!=='Other';
       });
@@ -655,151 +366,78 @@ function refinementFollowupPrompt(){
       const answer=entry.choice==='Other'?
         'Other: '+String(entry.other||'').trim().slice(0,140):
         entry.choice;
-      return '- '+q.question.slice(0,200)+' Answer: '+answer;
+      return '- '+q.question+' Answer: '+answer;
     });
   if(!selected.length)return '';
-  return 'Reassess your earlier engineering recommendation using these new scenario details. Compare the previous and current decision, explain what did or did not change, update relevant safeguards, and do not treat reported facts as verified implementation. Unanswered questions remain unknown.\n'+selected.join('\n');
+  return 'Answers to the assessment questions (skipped questions remain unresolved):\n'+selected.join('\n');
 }
 function renderAssessmentReport(data){
   const risks=el('report-risks'),unknowns=el('report-unknowns'),
     sources=el('report-sources'),safeguards=el('report-expected-safeguards');
   for(const node of [risks,unknowns,sources,safeguards])clear(node);
-  const primary=Array.isArray(data.conclusions)?data.conclusions[0]:null;
-  const scenario=state.scenario||'No scenario supplied.';
-  el('report-scenario').textContent='Scenario: '+(scenario.length>240?scenario.slice(0,237)+'…':scenario);
-  const takeaway=primary?.application||'No defensible preliminary conclusion was returned.';
-  el('report-takeaway').textContent=takeaway;
-  const delta=el('report-delta');
-  delta.hidden=!state.previousTakeaway;
-  if(state.previousTakeaway){
-    el('report-previous').textContent='Before: '+state.previousTakeaway;
-    el('report-revised').textContent=(state.previousTakeaway.trim()===takeaway.trim()?
-      'Recommendation unchanged: ':'Now: ')+takeaway;
+  const primary=data.conclusions[0];
+  el('report-takeaway').textContent=primary.application;
+  el('report-basis').textContent=primary.scenarioBasis;
+  el('report-counterargument').textContent=data.counterargument;
+  el('report-alternative').hidden=!data.alternatives.length;
+  el('report-option').textContent=data.alternatives[0]||'';
+  el('report-delta').hidden=!data.reassessment || !state.previousTakeaway;
+  el('report-previous').textContent=state.previousTakeaway?'Before: '+state.previousTakeaway:'';
+  el('report-revised').textContent=data.reassessment||'';
+  for(const item of data.challenges){
+    const card=add('details',risks,'','report-risk-card');
+    add('summary',card,item.question);
+    add('p',card,item.reason);
+    if(item.tests.length){add('strong',card,'What to check');list(card,item.tests)}
+    if(item.alternatives.length){add('strong',card,'Design options');list(card,item.alternatives)}
   }
-  const questions=Array.isArray(data.challenges)?data.challenges.slice(0,3):[];
-  for(const item of questions){
-    const card=add('div',risks,'','report-risk-card');
-    add('strong',card,item.question||'Material question');
-    if(item.reason)add('p',card,item.reason);
-  }
-  if(!questions.length)add('p',risks,'No specific risk or tradeoff was returned.','small');
-  const refById=new Map((data.engineeringReferences||[]).map(ref=>[ref.id,ref]));
+  const refById=new Map(data.engineeringReferences.map(ref=>[ref.id,ref]));
   const labels={
-    'not-assessed':'Not assessed',
-    'reported-absent':'Reported absent · unverified',
-    'reported-partial':'Reported partial · unverified',
-    'reported-full':'Reported full · unverified',
-    'not-applicable':'Possibly not applicable'
+    'not-assessed':'Unknown',
+    'reported-absent':'Not implemented',
+    'reported-partial':'Partial',
+    'reported-full':'Full'
   };
-  const items=Array.isArray(data.expectedSafeguards)?data.expectedSafeguards.slice(0,8):[];
-  for(const [i,item] of items.entries()){
-    const card=add('article',safeguards,'','expected-item');
-    const header=add('div',card,'','expected-item-head');
-    add('strong',header,(i+1)+'. '+item.objective);
-    add('span',header,labels[item.implementation]||'Not assessed','expected-status');
+  for(const item of data.expectedSafeguards){
+    const card=add('details',safeguards,'','expected-item');
+    const summary=add('summary',card,item.objective);
+    const label=labels[item.implementation]||'Unknown';
+    const reported=item.implementation.startsWith('reported-');
+    add('span',summary,reported?label+' · User-reported':label,'expected-status');
     add('p',card,item.why);
-    const matching=Array.isArray(item.referenceIds)?item.referenceIds.map(id=>refById.get(id)).filter(Boolean):[];
-    for(const ref of matching){
-      try{
-        const url=new URL(ref.url);
-        if(url.protocol!=='https:')continue;
-        const link=add('a',card,ref.publisher+': '+ref.title);
-        link.href=url.href;link.target='_blank';link.rel='noopener noreferrer';
-      }catch{}
-    }
-    if(!matching.length)add('p',card,'No directly relevant source card supplied for this expectation.','small');
+    if(reported)add('p',card,item.implementationBasis,'small');
+    const matching=item.referenceIds.map(id=>refById.get(id)).filter(Boolean);
+    if(matching.length)add('strong',card,'What the references support');
+    for(const ref of matching)renderReference(card,ref,{inSafeguard:true});
+    if(!matching.length)add('p',card,'No directly relevant source card supplied for this safeguard.','small');
   }
-  if(!items.length)add('p',safeguards,'No scenario-specific safeguards returned. Do not assume the general examples below are applicable.','small');
-  const remaining=Array.isArray(data.unknowns)?data.unknowns.slice(0,8):[];
-  if(remaining.length)list(unknowns,remaining);
-  else add('p',unknowns,'No additional unknowns listed; this is not evidence of implementation.','small');
-  // Hide GitHub-specific comparison for unrelated proposals; it remains
-  // available as an optional educational explanation for PR workflows.
-  const prTopic=/\b(?:pull request|pull requests|github|code review|PR approval|stacked PR|merge gate)\b/i.test(scenario);
+  if(!safeguards.childElementCount)add('p',safeguards,'No expected safeguards were returned.','small');
+  if(data.unknowns.length){add('h3',unknowns,'Remaining uncertainties');list(unknowns,data.unknowns)}
+  const prTopic=/\b(?:pull requests?|github|code review|PR approval|stacked PR|merge gate)\b/i.test(state.scenario);
   el('report-model-examples').hidden=!prTopic;
-  el('report-model-examples').open=false;
-  el('report-sources-details').open=false;
-  const refs=Array.isArray(data.engineeringReferences)?data.engineeringReferences.slice(0,5):[];
-  const cited=(Array.isArray(data.conclusions)?data.conclusions:[])
-    .flatMap(c=>Array.isArray(c.citations)?c.citations:[]);
-  const knownLinks=new Set();
-  const groups={
-    'Platform and engineering documentation':[],
-    'Security and framework guidance':[],
-    'Research and practitioner perspectives':[]
-  };
-  for(const ref of refs){
-    let url;
-    try{url=new URL(ref.url)}catch{continue}
-    if(url.protocol!=='https:'||knownLinks.has(url.href))continue;
-    knownLinks.add(url.href);
-    const kind=String(ref.kind||'');
-    const group=kind==='technical-documentation'?'Platform and engineering documentation':
-      (kind.includes('framework')||kind.includes('security'))?'Security and framework guidance':
-      'Research and practitioner perspectives';
-    groups[group].push({
-      title:ref.title||ref.id,url:url.href,
-      note:(ref.modelUsed?'Model identified as used':'Provided as context')+' · '+(ref.publisher||'Publisher unknown')
-    });
-  }
-  for(const citation of cited){
-    let url;
-    try{url=new URL(citation.url)}catch{continue}
-    if(url.protocol!=='https:'||knownLinks.has(url.href))continue;
-    knownLinks.add(url.href);
-    groups['Security and framework guidance'].push({
-      title:citation.sourceTitle||citation.provisionTitle||'Catalog reference',
-      url:url.href,note:'Framework catalog provision cited; applicability not independently verified'
-    });
-  }
-  let count=0;
-  for(const [name,entries] of Object.entries(groups)){
-    if(!entries.length)continue;
-    count++;
-    const group=add('section',sources,'','report-source-group');add('h4',group,name);
-    for(const entry of entries){
-      const link=add('a',group,entry.title,'report-source-link');
-      link.href=entry.url;link.target='_blank';link.rel='noopener noreferrer';
-      add('small',link,entry.note);
+  for(const id of ['report-context','report-model-examples','report-sources-details'])el(id).open=false;
+  for(const ref of data.engineeringReferences)renderReference(sources,ref);
+  const provisions=new Set();
+  for(const conclusion of data.conclusions){
+    for(const citation of conclusion.citations){
+      if(provisions.has(citation.provisionId))continue;
+      provisions.add(citation.provisionId);
+      const card=add('div',sources,'','citation');
+      add('strong',card,[citation.sourceTitle,citation.sourceLocator,citation.provisionTitle].filter(Boolean).join(' · '));
+      add('p',card,citation.sourceSummary);
+      add('p',card,citation.qualification,'small');
+      publisherLink(card,citation.url,'Publisher reference');
     }
   }
-  if(!count)add('p',sources,'No source references provided; this is not independent verification.','small');
+  if(!sources.childElementCount)add('p',sources,'No directly relevant source references were returned.','small');
 }
-
-function evidenceLabel(type){
-  return ({
-    'framework-interpretation':'Framework interpretation · applicability not independently verified',
-    'scenario-inference':'Scenario inference · conditional on stated facts',
-    'engineering-judgment':'Engineering judgment · comparison, not a documented requirement'
-  })[type]||'Evidence basis not established';
-}
-function render(data){
-  for(const id of ['decision-summary','approaches','approval-outcomes','conclusions','facts','challenges','unknowns'])clear(el(id));
-  renderEngineeringReferences(data);
-  renderRailSources(data);
-  state.latestResponse=data;
-  renderAssessmentReport(data);
-  renderRefinementQuestions(data);
-  const primary=data.conclusions?.[0];
-  if(primary){
-    title(el('decision-summary'),'Direct answer');
-    add('div',el('decision-summary'),evidenceLabel(primary.basisType),'tag');
-    add('p',el('decision-summary'),primary.application);
-    if(primary.openQuestion)add('p',el('decision-summary'),'What could change this: '+primary.openQuestion,'small');
-  }
-  if(data.alternatives?.length){
-    title(el('approaches'),'Competing architectural options');
-    for(const [i,option] of data.alternatives.slice(0,3).entries()){
-      const card=add('div',el('approaches'),'','option-card');
-      add('strong',card,'Option '+(i+1));
-      add('p',card,option.replace(/^Option\s+\d+\s*[:.)-]?\s*/i,''));
-    }
-  }
-  if(data.approvalOutcomes?.length){
-    const section=el('approval-outcomes');
-    title(section,'What happened to each review');
+function renderContext(data){
+  const outcomes=el('approval-outcomes'),conclusions=el('conclusions'),facts=el('facts');
+  for(const node of [outcomes,conclusions,facts])clear(node);
+  if(data.approvalOutcomes.length){
+    add('h3',outcomes,'Review outcomes');
     for(const outcome of data.approvalOutcomes){
-      const box=add('div',section,'','card');
+      const box=add('div',outcomes,'','card');
       add('strong',box,outcome.review);
       list(box,[
         'Review submission · '+outcome.submission.replaceAll('-',' '),
@@ -808,65 +446,65 @@ function render(data){
       ]);
     }
   }
-  if(data.conclusions?.length){
-    title(el('conclusions'),'Source basis and additional reasoning');
-    for(const [i,conclusion] of data.conclusions.entries()){
-      const box=add('div',el('conclusions'),'','card');
-      add('div',box,evidenceLabel(conclusion.basisType),'tag');
-      if(i===0){
-        add('strong',box,'Primary answer · source basis');
-      }else{
-        add('strong',box,'Scenario basis');
-        add('p',box,conclusion.scenarioBasis);
-      }
-      if(conclusion.citations.length){
-        add('strong',box,'Relevant catalog references');
-        for(const citation of conclusion.citations)renderCitation(box,citation);
-      }else add('p',box,'No directly applicable catalog provision cited. This is not verification of product behavior.','small');
-      if(i>0){
-        add('strong',box,'Application to this design');
-        add('p',box,conclusion.application);
-      }
-      add('strong',box,'Still to establish');
-      add('p',box,conclusion.openQuestion);
+  const bases={
+    'framework-interpretation':'Framework interpretation',
+    'scenario-inference':'Scenario inference',
+    'engineering-judgment':'Engineering judgment'
+  };
+  for(const [index,conclusion] of data.conclusions.entries()){
+    const box=add('div',conclusions,'','card');
+    add('span',box,bases[conclusion.basisType],'tag');
+    if(index>0){
+      add('p',box,conclusion.scenarioBasis);
+      add('p',box,conclusion.application);
     }
+    add('p',box,conclusion.openQuestion);
+    if(conclusion.citations.length)list(box,conclusion.citations.map(c=>c.provisionTitle));
   }
-
-  title(el('facts'),'Facts, inferences and unknowns');
-  for(const f of data.facts||[]){
-    const box=add('div',el('facts'),'', 'card');
-    add('div',box,f.support||'unknown','tag');
-    add('p',box,f.statement||'');
+  const factLabels={
+    'explicit-user-statement':'User-reported',
+    inference:'Inference',
+    unknown:'Unknown'
+  };
+  for(const fact of data.facts){
+    const box=add('div',facts,'','card');
+    add('div',box,factLabels[fact.support],'tag');
+    add('p',box,fact.statement);
   }
-  title(el('challenges'),'Questions worth exploring');
-  for(const ch of data.challenges||[]){
-    const box=document.createElement('details');
-    box.className='card';
-    el('challenges').append(box);
-    const summary=add('summary',box,ch.question||'Explore this question');
-    summary.setAttribute('aria-label','Expand challenge: '+(ch.question||''));
-    if(ch.reason)add('p',box,ch.reason);
-    if(ch.tests?.length){add('strong',box,'Potential checks — validate their usefulness');list(box,ch.tests)}
-    if(ch.alternatives?.length){add('strong',box,'Additional approaches');list(box,ch.alternatives)}
-  }
-  if(data.unknowns?.length){title(el('unknowns'),'Still unknown');list(el('unknowns'),data.unknowns)}
-  el('evidence-details').open=false;
-  el('result').hidden=false;el('followup').hidden=false;
-  el('turncount').textContent=state.turns.length+' of 6 follow-up turns used · '+state.continuityReceipts.length+' prior response snapshot(s) retained in this tab';
-  el('continue').disabled=state.turns.length>=6;
-  document.querySelectorAll('[data-challenge]').forEach(btn=>btn.disabled=state.turns.length>=6);
-  setView('report');
 }
-async function ask(follow){
-  if(state.busy)return;
-  const token=el('token').value.trim(),scenario=el('scenario').value.trim(),question=el('question').value.trim();
-  if(!token && !state.remembered){status('Enter your private test access token. Do not use the Gemini API key.',true);el('token').focus();return}
-  if(!scenario || scenario.length>4000){status('Describe a fictional scenario (up to 4,000 characters).',true);return}
-  if(follow && !state.scenario){status('Analyze a scenario first.',true);return}
-  if(follow && state.scenario!==scenario){status('Scenario changed. Start a new challenge to avoid mixing analyses.',true);return}
-  if(follow && (!question||state.turns.length>=6)){status('Enter a follow-up, or clear to start a new session.',true);return}
-  const turns=follow?[...state.turns,{role:'user',content:question}]:[];
-  busy(true);status('Asking Gemini…');
+function showAssessment(){
+  el('resulttitle').focus({preventScroll:true});
+  el('result').scrollIntoView({block:'start'});
+}
+function clearAssessment(){
+  state.scenario=null;
+  state.receipt=null;
+  state.refinementAnswers={};
+  state.reassessmentUsed=false;
+  state.latestResponse=null;
+  state.previousTakeaway=null;
+  el('result').hidden=true;
+  el('nav-scenario').setAttribute('aria-current','page');
+  el('nav-assessment').removeAttribute('aria-current');
+  el('nav-assessment').disabled=true;
+}
+async function ask(answers=''){
+  const follow=Boolean(answers);
+  if(state.busy || (follow && (state.reassessmentUsed || !state.receipt)))return;
+  const statusId=follow?'refinement-status':'status';
+  const token=el('token').value.trim(),scenario=el('scenario').value.trim();
+  if(!token && !state.remembered){
+    status('Enter your private test access token.',true,statusId);el('token').focus();return;
+  }
+  if(!scenario || scenario.length>4000){
+    status('Describe a fictional scenario in up to 4,000 characters.',true,statusId);return;
+  }
+  if(follow && state.scenario!==scenario){
+    status('Assess the edited proposal before submitting answers.',true,statusId);return;
+  }
+  const turns=follow?[{role:'user',content:answers}]:[];
+  if(!follow)clearAssessment();
+  busy(true);status(follow?'Reassessing with Gemini…':'Assessing with Gemini…',false,statusId);
   try{
     const headers={'Content-Type':'application/json','X-Challenge-Lab':'1'};
     if(token && el('remember').checked){
@@ -876,104 +514,82 @@ async function ask(follow){
     }else if(token){
       headers.Authorization='Bearer '+token;
     }
+    if(follow)state.reassessmentUsed=true;
     const resp=await fetch('./api/challenge',{method:'POST',cache:'no-store',credentials:'same-origin',
       headers,
-      body:JSON.stringify({scenarioText:scenario,turns,continuityReceipts:follow?state.continuityReceipts:[]})});
+      body:JSON.stringify({scenarioText:scenario,assessment:true,turns,continuityReceipts:follow?[state.receipt]:[]})});
     if(resp.status===401 && state.remembered){
+      state.reassessmentUsed=false;
       setRemembered(false);
       el('token').focus();
       throw new Error('Your lab session expired. Enter your private test access token again.');
     }
     const data=await resp.json().catch(()=>null);
     if(!resp.ok || !data || data.mode!=='live-model'){
+      if(resp.status===401)state.reassessmentUsed=false;
       throw new Error(data?.error||('Request failed ('+resp.status+'). Check the preview environment and access token.'));
     }
-    state.scenario=scenario;
     if(typeof data.continuityReceipt!=='string' || !data.continuityReceipt){
-      throw new Error('Model response arrived without conversation continuity; no turn was saved.');
+      throw new Error('The model response arrived without signed continuity.');
     }
-    state.turns=turns.slice(-6);
-    state.continuityReceipts=(follow?state.continuityReceipts:[]).concat(data.continuityReceipt).slice(-3);
-    if(follow)el('question').value='';
-    state.previousTakeaway=follow?(state.latestResponse?.conclusions?.[0]?.application||null):null;
-    if(follow && state.pendingRefinement)state.refinementAnswers={};
-    render(data);
-    if(follow && state.pendingRefinement)setView('report');
-    status('Gemini response received. Review its reasoning and source relevance.');
-    el('result').scrollIntoView({behavior:'smooth',block:'start'});
-  }catch(err){status(err.message||'The request could not be completed.',true)}
-  finally{state.pendingRefinement=false;busy(false);if(state.turns.length>=6){el('continue').disabled=true;el('refinement-submit').disabled=true}}
+    state.previousTakeaway=follow?state.latestResponse.conclusions[0].application:null;
+    state.scenario=scenario;
+    state.receipt=data.continuityReceipt;
+    state.latestResponse=data;
+    state.refinementAnswers={};
+    renderAssessmentReport(data);
+    renderContext(data);
+    renderRefinementQuestions(data);
+    el('result').hidden=false;
+    el('nav-assessment').disabled=false;
+    el('nav-assessment').setAttribute('aria-current','page');
+    el('nav-scenario').removeAttribute('aria-current');
+    status('');
+    showAssessment();
+  }catch(error){
+    const suffix=follow && state.reassessmentUsed?' Start a new assessment to try again.':'';
+    status((error.message||'The request could not be completed.')+suffix,true,statusId);
+  }finally{busy(false)}
 }
-const challengePrompts={
-  assumptions:'Challenge your previous recommendation. What are its strongest unsupported assumptions, and what alternative explanation could undermine it? Distinguish documented product facts from engineering judgment. Correct errors, but do not agree with me automatically.',
-  simpler:'Find a genuinely simpler solution to the original engineering problem, including redesigning or removing unnecessary review steps. Compare the simpler design with your recommendation on authority, enforcement, developer friction, cost and reliability.',
-  evidence:'Identify the material technical claims in your previous answer and distinguish claims directly supported by the curated references from scenario inferences and undocumented assumptions. Correct unsupported technical statements and name the most relevant missing configuration evidence.',
-  justify:'Challenge your own three most consequential claims from the previous assessment. For each claim state what a specific provided technical reference card actually supports, what it does NOT support, the strongest counterargument, and what additional evidence or missing primary source could change the conclusion. Treat all summaries as fallible, not independently verified documents. Identify possible reference gaps or contradictions. Cite only provided source IDs; if there is no supporting source, explicitly mark the claim unsupported and narrow or retract it. Do not invent source passages, configuration evidence or mandatory controls.',
-  failure:'Create one realistic failure scenario that could defeat your recommended architecture. Address the actual decision authority, agent/tool permissions, review revision, merge gate or deployment consequences as relevant. Compare likely detection and recovery with the existing workflow.'
-};
-document.querySelectorAll('#result [role="tab"]').forEach(tab=>{
-  tab.addEventListener('click',()=>setView(tab.dataset.view));
-  tab.addEventListener('keydown',event=>{
-    if(event.key!=='ArrowRight' && event.key!=='ArrowLeft')return;
-    event.preventDefault();
-    const tabs=[...document.querySelectorAll('#result [role="tab"]')];
-    const next=tabs[(tabs.indexOf(tab)+(event.key==='ArrowRight'?1:tabs.length-1))%tabs.length];
-    setView(next.dataset.view);
-    next.focus();
-  });
-});
-document.querySelectorAll('.sidebar-group [data-target]').forEach(button=>{
-  button.addEventListener('click',()=>setView(button.dataset.target,true));
-});
 el('nav-scenario').addEventListener('click',()=>{
   el('nav-scenario').setAttribute('aria-current','page');
-  document.querySelectorAll('.sidebar-group [data-target]').forEach(btn=>btn.setAttribute('aria-current','false'));
-  el('formtitle').scrollIntoView({behavior:'smooth',block:'start'});
+  el('nav-assessment').removeAttribute('aria-current');
   el('scenario').focus();
 });
-document.querySelectorAll('#operating-models .model-selector [data-model]').forEach(button=>{
-  button.addEventListener('click',()=>{
-    const selected=button.dataset.model;
-    el('operating-models').dataset.selectedModel=selected;
-    document.querySelectorAll('#operating-models .model-selector button').forEach(btn=>{
-      btn.setAttribute('aria-pressed',String(btn.dataset.model===selected));
-    });
-  });
+el('nav-assessment').addEventListener('click',()=>{
+  el('nav-assessment').setAttribute('aria-current','page');
+  el('nav-scenario').removeAttribute('aria-current');
+  showAssessment();
 });
-document.querySelectorAll('[data-challenge]').forEach(button=>{
-  button.addEventListener('click',()=>{
-    if(state.busy || state.turns.length>=6)return;
-    if(!state.scenario){setView('challenge',true);return}
-    const prompt=challengePrompts[button.dataset.challenge];
-    if(!prompt)return;
-    el('question').value=prompt;
-    setView('challenge',true);
-    ask(true);
-  });
-});
-el('report-preview-link').addEventListener('click',()=>setView('report',true));
 el('refinement-submit').addEventListener('click',()=>{
-  if(state.busy || state.turns.length>=6)return;
-  if(!state.scenario){status('Analyze a scenario first.',true);return}
-  if(Object.values(state.refinementAnswers).some(answer=>answer.choice==='Other'&&!String(answer.other||'').trim())){
-    el('refinement-status').textContent='Add a short explanation for Other.';return;
+  if(Object.values(state.refinementAnswers).some(answer=>answer.choice==='Other' && !answer.other.trim())){
+    status('Add a short explanation for Other.',true,'refinement-status');return;
   }
-  const prompt=refinementFollowupPrompt();
-  if(!prompt){el('refinement-status').textContent='Select at least one answer, including Unknown if appropriate.';return}
-  if(prompt.length>1000){el('refinement-status').textContent='Please shorten your answers to fit the existing follow-up limit.';return}
-  el('question').value=prompt;
-  state.pendingRefinement=true;
-  ask(true);
+  const answers=refinementFollowupPrompt();
+  if(!answers){
+    status('Select at least one answer.',true,'refinement-status');return;
+  }
+  ask(answers);
 });
-el('ask').addEventListener('click',()=>ask(false));
-el('continue').addEventListener('click',()=>ask(true));
-el('example').addEventListener('click',()=>{el('scenario').value='Two AI agents agree that a pull request is low risk. Is that enough to allow automatic approval?';status('Fictional example loaded.')});
+el('ask').addEventListener('click',()=>ask());
+const examples={
+  delegated:'An engineer reviews three stacked GitHub pull requests and explicitly decides to approve each one. An agent would submit those decisions in one batch to avoid repetitive clicks. Should we pursue this, and under what conditions?',
+  tools:'An engineering team wants a coding agent to read and summarize GitHub pull requests. The same local environment also has GitHub CLI credentials and a GitHub MCP integration. What access design would give the team useful review assistance?',
+  plan:'For a subset of low-risk pull requests, an engineer reviews a PR Plan that defines acceptance criteria. An agent would evaluate the final change against the plan and decide whether to submit an approval. Should the team pilot this workflow?',
+  rotation:'A platform team wants an automated worker to rotate cloud service credentials monthly. Several production consumers cache credentials independently. The team wants to reduce manual work and avoid outages when a consumer switches late. Is this worth pursuing?'
+};
+document.querySelectorAll('[data-example]').forEach(button=>button.addEventListener('click',()=>{
+  el('scenario').value=examples[button.dataset.example];
+  clearAssessment();
+  el('examples').open=false;
+  el('scenario').focus();
+  status('Fictional example loaded.');
+}));
 el('reset').addEventListener('click',async()=>{
   if(state.busy)return;
   const remembered=state.remembered;
-  state.scenario=null;state.turns=[];state.continuityReceipts=[];state.refinementAnswers={};state.pendingRefinement=false;state.latestResponse=null;state.previousTakeaway=null;el('token').value='';el('scenario').value='';el('question').value='';
-  el('remember').checked=false;
-  el('result').hidden=true;el('followup').hidden=true;
+  clearAssessment();
+  el('token').value='';el('scenario').value='';el('remember').checked=false;
   if(!remembered){status('Session cleared.');return}
   busy(true);
   try{
@@ -985,17 +601,15 @@ el('reset').addEventListener('click',async()=>{
   finally{busy(false)}
 });
 el('scenario').addEventListener('input',()=>{
- if(state.scenario && el('scenario').value.trim()!==state.scenario){
-   el('result').hidden=true;el('followup').hidden=true;state.scenario=null;state.turns=[];state.continuityReceipts=[];state.refinementAnswers={};state.latestResponse=null;state.previousTakeaway=null;
-   status('Scenario changed. Challenge it again to start a new analysis.');
- }
+  if(state.scenario && el('scenario').value.trim()!==state.scenario)clearAssessment();
 });
+clearAssessment();
 busy(true);
 try{
   const response=await browserSession('GET');
   if(response.ok)setRemembered((await response.json()).active===true);
 }catch{
-  // The existing token path remains available if the session endpoint cannot be reached.
+  // Token access stays available if the browser-session endpoint is unavailable.
 }finally{busy(false)}
 </script>
 </body></html>

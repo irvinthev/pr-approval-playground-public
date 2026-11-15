@@ -75,3 +75,15 @@ test('Gemini request requests generalizable safeguards and buttons, not risk sco
  }
  assert.ok(!system.includes('Braze'));
 });
+test('focused assessments require upfront challenge reasoning and a basis for reported safeguards',()=>{
+ const focused={...options,assessmentPhase:'initial'};
+ const candidate={...good,counterargument:'A simpler native service can avoid operating a custom worker.',
+  expectedSafeguards:[good.expectedSafeguards[0],{...good.expectedSafeguards[1],implementationBasis:'The team reported testing recovery in staging.'}]};
+ assert.equal(validateAgentResponse(candidate,focused).ok,true);
+ assert.equal(validateAgentResponse({...candidate,counterargument:''},focused).ok,false);
+ assert.equal(validateAgentResponse({...candidate,expectedSafeguards:good.expectedSafeguards},focused).ok,false);
+ assert.equal(validateAgentResponse({...candidate,clarifications:[]},focused).ok,true);
+ assert.equal(validateAgentResponse(candidate,{...focused,assessmentPhase:'reassess'}).ok,false);
+ const revised={...candidate,clarifications:[],reassessment:'Staging testing changes recovery to Partial; the same recommendation stands.'};
+ assert.equal(validateAgentResponse(revised,{...focused,assessmentPhase:'reassess'}).data.reassessment,revised.reassessment);
+});
