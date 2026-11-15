@@ -34,6 +34,7 @@ try {
         ['index.html','ai-sdlc-risk.html','engineering-blueprint.html','continuous-monitoring.html','independent-assurance.html'].forEach(add);
       }
       if (/^(risk-|sdlc-risk-)/.test(file) && /\.(js|css)$/.test(file))add('ai-sdlc-risk.html');
+      if (/^(challenge-connected-report-(data\.mjs|view\.mjs|css)|challenge-agent-contract\.js|api\/challenge\.js|scripts\/capture-public-page\.mjs)$/.test(file))add('private-challenge.html');
       if (/^scripts\/capture-public-page\.mjs$/.test(file))add('index.html');
     }
   }
