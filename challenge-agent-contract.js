@@ -60,6 +60,61 @@ function validateSafeguard(item,allowedReferenceIds,focused){
    implementation:item.implementation,referenceIds:item.referenceIds,
    ...(reported && implementationBasis ? {implementationBasis} : {})};
 }
+// Optional, additional advisory lenses are validated separately so an imperfect
+// analytical add-on cannot discard an otherwise valid assessment. Invalid lens
+// content is never rendered or treated as evidence.
+const advisoryLensNames=['engineering','risk','assurance'];
+function advisoryRefs(ids, allowedReferenceIds){
+ if(!Array.isArray(ids)||ids.length>2||new Set(ids).size!==ids.length ||
+   ids.some(id=>typeof id!=='string'||
+     (allowedReferenceIds!==null&&!allowedReferenceIds.includes(id))))return null;
+ return ids;
+}
+function validateDecisionPerspectives(value,allowedReferenceIds){
+ if(!isPlainObject(value))return null;
+ const result={};
+ for(const name of advisoryLensNames){
+   const item=value[name];
+   if(!isPlainObject(item)||typeof item.position!=='string'||!item.position.trim()||
+      typeof item.nextStep!=='string'||!item.nextStep.trim()||
+      typeof item.pivot!=='string'||!item.pivot.trim()||
+      !Array.isArray(item.considerations)||item.considerations.length<1||
+      item.considerations.length>3||
+      item.considerations.some(x=>typeof x!=='string'||!x.trim()))return null;
+   const refs=advisoryRefs(item.referenceIds,allowedReferenceIds);
+   if(!refs)return null;
+   result[name]={
+     position:maxLength(item.position,450),
+     considerations:strings(item.considerations,3,350),
+     nextStep:maxLength(item.nextStep,420),
+     pivot:maxLength(item.pivot,300),
+     referenceIds:refs
+   };
+ }
+ return result;
+}
+function validateOperationalReview(item,allowedReferenceIds){
+ if(!isPlainObject(item)||
+    !['reconciliation','monitoring','recovery'].includes(item.kind)||
+    typeof item.question!=='string'||!item.question.trim()||
+    typeof item.detection!=='string'||!item.detection.trim()||
+    typeof item.response!=='string'||!item.response.trim()||
+    !['not-assessed','reported-absent','reported-partial','reported-full'].includes(item.implementation))
+    return null;
+ const refs=advisoryRefs(item.referenceIds,allowedReferenceIds);
+ if(!refs)return null;
+ const basis=typeof item.implementationBasis==='string'?maxLength(item.implementationBasis,240):'';
+ if(item.implementation.startsWith('reported-')&&!basis)return null;
+ return {
+   kind:item.kind,
+   question:maxLength(item.question,320),
+   detection:maxLength(item.detection,420),
+   response:maxLength(item.response,420),
+   implementation:item.implementation,
+   ...(basis&&item.implementation.startsWith('reported-')?{implementationBasis:basis}:{}),
+   referenceIds:refs
+ };
+}
 function validateClarification(item){
  if(!isPlainObject(item)||typeof item.question!=='string'||!item.question.trim()||
     typeof item.why!=='string'||!item.why.trim()||
@@ -147,6 +202,17 @@ export function validateAgentResponse(input,{scenarioText,requireGrounding=false
      if(clarifications.length)errors.push('Invalid focused assessment fields: reassessment cannot introduce new clarifications');
    }
  }
+ const decisionPerspectives=input.decisionPerspectives===undefined?null:
+   validateDecisionPerspectives(input.decisionPerspectives,allowedReferenceIds);
+ const operationalReview=input.operationalReview==null?null:
+   validateOperationalReview(input.operationalReview,allowedReferenceIds);
+ // Record structural omission without echoing untrusted content into logs.
+ // A malformed optional analytical lens is suppressed instead of accepted.
+ const advisoryWarnings=[];
+ if(input.decisionPerspectives!==undefined && !decisionPerspectives)
+   advisoryWarnings.push('Some generated perspectives were invalid and were not used.');
+ if(input.operationalReview!==undefined && input.operationalReview!==null && !operationalReview)
+   advisoryWarnings.push('An operational analysis field was invalid and was not used.');
  const state={
    contractVersion:AGENT_CONTRACT_VERSION,
    scenarioText:scenario,
@@ -158,6 +224,9 @@ export function validateAgentResponse(input,{scenarioText,requireGrounding=false
    ...(reassessment ? {reassessment} : {}),
    expectedSafeguards:safeguards,
    clarifications,
+   ...(decisionPerspectives?{decisionPerspectives}:{}),
+   ...(operationalReview?{operationalReview}:{}),
+   ...(advisoryWarnings.length?{advisoryWarnings}:{}),
    citations,
    ...(requireGrounding ? {conclusions,approvalOutcomes} : {}),
    unknowns:strings(input.unknowns,12,400),
