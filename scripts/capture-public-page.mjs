@@ -183,8 +183,23 @@ async function checkChallengeAssessment(page, captureDecisionBrief) {
     'The connected report should be primary after assessment');
   check(await page.locator('#cdr-preview .cdr-recommendation-text').isVisible(),
     'Connected report must use the real assessment conclusion');
+  check(await page.locator('#cdr-preview .cdr-decision-gate').isVisible(),
+    'Decision-changing question should appear with the recommendation');
+  check((await page.locator('#cdr-preview .cdr-evidence-summary').innerText()).includes('No independently verified effectiveness'),
+    'Evidence limitation must be visible in the decision summary');
+  check(await page.locator('#cdr-preview .cdr-option-card').count()===3,
+    'Compare the baseline, proposed approach and simpler alternative');
+  check(await page.locator('#cdr-preview .cdr-safeguard-entry').count()>=3,
+    'Safeguards should display shared status and basis');
+  check(await page.locator('#cdr-preview .cdr-role-row').count()===3,
+    'Engineering, Risk and Assurance should be concise next considerations');
+  check(await page.locator('#cdr-preview .cdr-tab').count()===0,
+    'No duplicate audience tab layer should be rendered');
+  check(await page.locator('#cdr-preview .cdr-answer-button').isVisible(),
+    'Clarification questions should remain reachable directly from the summary');
+  await page.locator('.cdr-supporting > summary').click();
   check(await page.locator('#cdr-preview .cdr-path').isVisible(),
-    'The scenario risk path must appear immediately after the recommendation');
+    'Scenario risk path remains available in supporting detail');
   check(await page.locator('.cdr-path-strip .cdr-path-button').count()===3,
     'Only the three relevant delivery touchpoints should show by default');
   check((await page.locator('.cdr-path-detail').innerText()).includes('Agent submission is not rebound'),
@@ -205,30 +220,18 @@ async function checkChallengeAssessment(page, captureDecisionBrief) {
   check(await page.locator('.cdr-path-full').evaluate(node=>!node.open),
     'The expanded lifecycle should be closed after restoration');
   check(await page.locator('#cdr-preview .cdr-recon').isVisible(),
-    'Human-delegated PR case must show reconciliation question');
+    'Human-delegated PR case must retain the reconciliation question');
   check((await page.locator('#cdr-preview .cdr-recon').innerText()).includes('Unknown'),
     'Reconciliation must not be reported as implemented');
   check((await page.locator('#cdr-preview .cdr-recon').innerText()).includes('Match human authorization'),
     'Operational reconciliation should have model-specific detection reasoning');
+  await page.locator('.cdr-sources summary').click();
   check(await page.locator('#cdr-preview .cdr-source-link[href*="docs.github.com/en/rest/pulls/reviews"]').first().isVisible(),
-    'The primary GitHub technical reference should be visible');
+    'The primary GitHub technical reference should remain available');
   check((await page.locator('#cdr-preview .cdr-sources').innerText()).includes('does not establish originating human authorization'),
-    'Source limitations should be displayed, not buried');
-
-  const lensExpectations={
-    risk:'Broad delegated approval credentials create exposure',
-    assurance:'A GitHub review is evidence of submission',
-    engineering:'Compare a narrow batch submitter'
-  };
-  for(const lens of ['risk','assurance','engineering']){
-    await page.locator('#cdr-tab-'+lens).click();
-    check(await page.locator('#cdr-tab-'+lens).getAttribute('aria-selected')==='true',
-      'Connected report perspective '+lens+' did not select');
-    check((await page.locator('#cdr-perspective-content').innerText()).includes(lensExpectations[lens]),
-      'Connected report must show independent model-authored position for '+lens);
-  }
-  check((await page.locator('#cdr-perspective-content').innerText()).includes('Source limit:'),
-    'Model-linked perspective citations must retain their source limitations');
+    'Source limitations should remain available');
+  await page.locator('.cdr-sources summary').click();
+  await page.locator('.cdr-supporting > summary').click();
   check(await page.evaluate(() => document.documentElement.scrollWidth<=innerWidth),
     'Connected report must fit the viewport');
   await page.locator('#token').fill('');
@@ -269,6 +272,7 @@ async function checkChallengeAssessment(page, captureDecisionBrief) {
   await page.locator('[data-example="rotation"]').click();
   await page.locator('#ask').click();
   await page.locator('#cdr-preview .cdr').waitFor();
+  await page.locator('.cdr-supporting > summary').click();
   check(!(await page.locator('#cdr-preview .cdr-recon').innerText()).includes('GitHub review'),
     'Unrelated credential rotation must not show PR-specific reconciliation');
   check((await page.locator('#cdr-preview .cdr-recon').innerText()).includes('Track credential rejection rates'),
@@ -290,8 +294,8 @@ async function checkChallengeAssessment(page, captureDecisionBrief) {
   await page.locator('#refinement-questions summary').nth(1).click();
   await page.getByText('Some consumers',{exact:true}).click();
   await page.locator('#refinement-submit').click();
-  await page.locator('#cdr-preview').getByText('Reassessment:',{exact:false}).waitFor();
-  check((await page.locator('#cdr-preview').innerText()).includes('Reassessment:'),
+  await page.locator('#cdr-preview').getByText('What changed on reassessment?',{exact:false}).waitFor();
+  check((await page.locator('#cdr-preview').innerText()).includes('What changed on reassessment?'),
     'Connected report should reflect reassessment');
   await page.locator('#cdr-toggle').click();
   await page.locator('#report-delta').waitFor();
