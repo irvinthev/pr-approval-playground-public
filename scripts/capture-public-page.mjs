@@ -222,8 +222,8 @@ async function checkChallengeAssessment(page, captureDecisionBrief) {
   await page.locator('[data-example="rotation"]').click();
   await page.locator('#ask').click();
   await page.locator('#cdr-preview .cdr').waitFor();
-  check(!(await page.locator('#cdr-preview .cdr-recon').isVisible()),
-    'Unrelated credential rotation must not show PR reconciliation');
+  check(!(await page.locator('#cdr-preview .cdr-recon').innerText()).includes('GitHub review'),
+    'Unrelated credential rotation must not show PR-specific reconciliation');
   check((await page.locator('#cdr-preview .cdr-recon').innerText()).includes('Track credential rejection rates'),
     'Unrelated proposal must receive its own operational monitoring analysis');
   await page.locator('#cdr-toggle').click();
