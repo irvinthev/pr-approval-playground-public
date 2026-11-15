@@ -418,24 +418,32 @@ details.field-deep-dive>section{margin:0 14px 16px}
 </section>
 
 <section class="field-section" id="risk-score-templates" aria-labelledby="risk-score-templates-title" style="border:1px solid #497481;border-radius:14px;background:#102e3d;padding:clamp(16px,3vw,24px);margin:25px 0;scroll-margin-top:20px">
-  <span class="field-kicker">FINAL STEP / TAKE THE ASSESSMENT WITH YOU</span>
-  <h2 id="risk-score-templates-title">Risk-scoring worksheet: blank and completed example</h2>
-  <p>Turn the failure path into a risk discussion. Download the same fields in a blank template and a scored fictional example. The completed ratings are <strong>assumptions for illustration</strong>, not measured probabilities, approved thresholds, a finding about any company, or an AI authorization decision.</p>
-  <div class="field-actions">
-    <a class="field-button" href="./downloads/AI_SDLC_Risk_Scoring_Blank.csv" download>Download blank risk-scoring template (CSV) ↓</a>
-    <a class="field-secondary" href="./downloads/AI_SDLC_Risk_Scoring_Completed_Fictional.csv" download>Download completed fictional example (CSV) ↓</a>
+  <span class="field-kicker">FINAL STEP / FROM RISK TO ENGINEERING DECISION</span>
+  <h2 id="risk-score-templates-title">Finish with a defensible decision, not just a score.</h2>
+  <p>Apply the Field Guide to a <strong>fictional stacked-PR proposal</strong>: an engineer decides to approve and an agent submits the review. The question is whether the exact authorized change is independently enforced—not whether the agent's action produces a convincing log.</p>
+  <div style="border:1px solid #5b9587;background:#123f40;border-radius:11px;padding:17px 20px;margin:17px 0">
+    <span class="field-kicker">CONDITIONAL RECOMMENDATION · FICTIONAL EXAMPLE</span>
+    <h3 style="margin:7px 0 9px;font-size:21px;color:#f3fbf8">Explore a narrow, non-critical pilot. Do not rely on agent-submitted approval until the enforcement boundary is established.</h3>
+    <p style="margin:0">A human decision followed by agent execution may save time. It is not acceptable if an instruction for commit A can qualify a changed commit B, or if the agent can independently approve or bypass merge protection. <strong>Safeguard implementation: Unknown.</strong></p>
   </div>
-  <h3>How the example is scored</h3>
-  <p>For this <em>illustrative worksheet only</em>, assume a 1–5 impact rating and a 1–5 likelihood rating. Multiply the two for an <strong>inherent exposure indicator</strong> from 1–25. The scales and decision thresholds are not from NIST or prescribed by this Field Guide; an organization must define and approve its own. A score does not override an authorization or technical gate.</p>
-  <div class="field-overflow"><table class="field-table"><caption>Fictional human-decision / agent-submission scenario; no actual events or implementation were tested</caption>
-    <thead><tr><th>Risk event</th><th>Impact assumption</th><th>Likelihood assumption</th><th>Illustrative score</th><th>Safeguard / unresolved evidence</th></tr></thead>
-    <tbody>
-      <tr><td>Agent submits a prior human approval after the PR changes</td><td>5 / 5</td><td>3 / 5</td><td><strong>15 / 25</strong></td><td>Bind the human decision to the exact revision and require reauthorization on changes; implementation unknown</td></tr>
-      <tr><td>Agent uses an overprivileged identity to bypass approval boundaries</td><td>5 / 5</td><td>2 / 5</td><td><strong>10 / 25</strong></td><td>Restrict credentials and review bypass routes; effective permissions unverified</td></tr>
-      <tr><td>Missing reconciliation allows unauthorized approvals to go unnoticed</td><td>4 / 5</td><td>3 / 5</td><td><strong>12 / 25</strong></td><td>Reconcile human instruction, agent actions, GitHub decisions and merged/deployed revisions; population coverage unknown</td></tr>
-    </tbody>
-  </table></div>
-  <p class="risk-explorer-limit"><strong>What is intentionally missing:</strong> residual risk scores and accepted risk ratings. Those would require evidence of implemented safeguards, operating results, management-owned criteria and a documented decision. The completed CSV explains each illustrative rating and records those gaps.</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:12px;margin:15px 0">
+    <article style="border:1px solid #476d7a;border-radius:9px;padding:14px;background:#173449"><h3>Failure that matters</h3><p>Human approves A → PR becomes B → agent reuses the earlier decision → effective GitHub rules allow an unauthorized qualifying approval or merge. The technical gate, not the log wording, determines the outcome.</p></article>
+    <article style="border:1px solid #476d7a;border-radius:9px;padding:14px;background:#173449"><h3>Strongest competing explanation</h3><p>Effective GitHub settings may already invalidate stale approvals, require eligible independent reviewers and reject bypass attempts. Verify the actual identity, rules and merge behavior before treating this path as exploitable.</p></article>
+    <article style="border:1px solid #476d7a;border-radius:9px;padding:14px;background:#173449"><h3>Decision-changing evidence</h3><p>Attempt the A-to-B revision change using effective agent credentials and branch protections; reconcile instruction, review, merge and deployment records. If unauthorized B can merge, stop. If independently prevented, consider a bounded pilot.</p></article>
+    <article style="border:1px solid #476d7a;border-radius:9px;padding:14px;background:#173449"><h3>Simpler engineering alternative</h3><p>Have AI prepare context and the review queue, while engineers approve directly in GitHub. Compare its productivity gain and lower privilege needs against an agent-submitted approval route.</p></article>
+  </div>
+  <div class="field-actions">
+    <a class="field-button" href="./risk-assessment-example.html">Read / print one-page worked assessment →</a>
+    <a class="field-secondary" href="./downloads/AI_SDLC_Risk_Scoring_Completed_Fictional.csv" download>Download detailed fictional risk worksheet (CSV) ↓</a>
+    <a class="field-secondary" href="./downloads/AI_SDLC_Risk_Scoring_Blank.csv" download>Download blank template (CSV) ↓</a>
+  </div>
+  <h3>Three illustrative risk events—not a validated ranking</h3>
+  <div class="field-overflow"><table class="field-table"><caption>Fictional inherent exposure scores only. No real controls or test results are asserted.</caption><thead><tr><th>Risk / condition</th><th>Impact × likelihood assumption</th><th>Example score</th><th>Critical safeguard and status</th></tr></thead><tbody>
+  <tr><td>Stale human decision is accepted for a changed PR</td><td>5 × 3</td><td>15/25</td><td>Revision-bound decision and independent merge rejection · Unknown</td></tr>
+  <tr><td>Agent uses privileges to bypass approval boundaries</td><td>5 × 2</td><td>10/25</td><td>Least privilege and effective GitHub rules · Unknown</td></tr>
+  <tr><td>Unauthorized review/merge activity evades detection</td><td>4 × 3</td><td>12/25</td><td>Independent population reconciliation · Unknown</td></tr></tbody></table></div>
+  <details style="margin:17px 0 6px"><summary style="cursor:pointer;font-weight:750;color:#a4edda">Scoring assumptions and limitations</summary><p>Impact and likelihood are assumed 1–5 values chosen solely to demonstrate a multiplication method. They are not calibrated frequencies or approved decision thresholds, and the three different failure types cannot be reliably ranked on these invented inputs. Actual scoring requires management-defined criteria and context. Do not calculate residual risk before verifying safeguards and operating evidence. The numeric scores never authorize approval, merge or release.</p></details>
+  <p class="risk-explorer-limit">This is a fictional teaching case, not a system-specific assessment or confirmation of GitHub configuration. The downloadable worksheets identify implementation status as Unknown and leave residual risk unscored.</p>
 </section>
 <footer class="field-note">Proposed qualitative method and a separate, explicitly fictional scored example. No organization-specific risk rating, validated likelihood, residual score, management acceptance, automated production authorization, or control-effectiveness determination is provided.</footer></main><script src="./risk-governance-worksheet.js"></script><script src="./sdlc-risk-register.js"></script><script src="./risk-governance-ui.js"></script><script src="./risk-dashboard-tabs.js"></script><script src="./sdlc-risk-register-ui.js"></script><script src="./operating-model.js"></script><script src="./shared-pipeline-context.js?v=1"></script><script src="./shared-pipeline-nav.js?v=1"></script>
 <script src="./risk-sdlc-trace.js?v=1"></script>
