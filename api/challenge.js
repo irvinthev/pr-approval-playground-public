@@ -26,6 +26,8 @@ export function contractFailureCodes(errors){
       :error.startsWith('Invalid focused assessment fields: reassessment explanation')?'REASSESSMENT'
       :error.startsWith('Invalid focused assessment fields: too many challenges')?'CHALLENGE_LIMIT'
       :error.startsWith('Invalid focused assessment fields')?'FOCUSED_FIELDS'
+      :error.startsWith('Response must be an object')?'RESPONSE_SHAPE'
+      :error.startsWith('Original scenario is required')?'SCENARIO_BINDING'
       :error.startsWith('Invalid approval outcomes')?'APPROVAL_OUTCOMES'
       :error.startsWith('Expected 1–3 conclusions')?'CONCLUSIONS'
       :error.startsWith('Every framework citation')?'CITATION_BINDING'
@@ -84,6 +86,8 @@ export function normalizeEngineeringReferences(parsed, selectedReferences){
 export function contractRepairHints(errors){
   const codes=new Set(contractFailureCodes(errors));
   const hints=[];
+  if(codes.has('RESPONSE_SHAPE'))
+    hints.push('Return one top-level JSON object rather than an array, string or null; keep every required field and the exact contractVersion.');
   if(codes.has('SAFEGUARDS')){
     hints.push('Safeguards must be an array of 1–8 complete objects: objective and why (nonempty strings), implementation exactly not-assessed | reported-absent | reported-partial | reported-full, and referenceIds as an array of zero to two allowed technical reference IDs. For reported-* include implementationBasis identifying only what the user described. Use not-assessed when unknown; do not invent implementation.');
   }
