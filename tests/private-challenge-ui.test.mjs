@@ -1,67 +1,28 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+
 const source=fs.readFileSync(new URL('../private-challenge.html',import.meta.url),'utf8');
-test('Private challenge lab has mobile accessible scenario input and follow-up',()=>{
- for(const id of ['token','scenario','ask','question','continue','reset','result','status','remember','remembered']){
-   assert.match(source,new RegExp('id="'+id+'"'));
- }
+test('private challenge lab retains accessible inputs, status and sign-out',()=>{
+ for(const id of ['token','scenario','ask','refinement-submit','reset','result','status','remember','remembered'])
+  assert.match(source,new RegExp('id="'+id+'"'));
  assert.match(source,/name="viewport"/);
  assert.match(source,/aria-live="polite"/);
-});
-test('Private lab uses same-origin API, no embedded tokens or model credential',()=>{
- assert.match(source,/fetch\('\.\/api\/challenge'/);
- assert.match(source,/headers\.Authorization='Bearer '\+token/);
- assert.doesNotMatch(source,/AIza[A-Za-z0-9_-]{25,}/);
- assert.doesNotMatch(source,/localStorage|sessionStorage|document\.cookie/);
- assert.match(source,/type="password"/);
-});
-test('Model response rendered as text, citations require https and new session clears token',()=>{
- assert.match(source,/node\.textContent=String/);
- assert.match(source,/url\.protocol==='https:'/);
+ assert.match(source,/Use fictional or publicly shareable scenarios only/);
  assert.match(source,/el\('token'\)\.value=''/);
- assert.match(source,/state\.scenario!==scenario/);
 });
-
-test('Private lab surfaces the direct answer and alternatives before expandable framework evidence',()=>{
- const summary=source.indexOf('id="decision-summary"');
- const options=source.indexOf('id="approaches"');
- const details=source.indexOf('id="evidence-details"');
- assert.ok(summary>=0 && options>summary && details>options);
- assert.match(source,/<details class="deep-dive"/);
- assert.match(source,/primary\.application/);
- assert.match(source,/data\.alternatives\.slice\(0,3\)/);
- assert.match(source,/el\('evidence-details'\)\.open=false/);
-});
-
-test('Follow-ups send signed prior model answers without browser storage',()=>{
- assert.match(source,/continuityReceipts:\[\]/);
- assert.match(source,/continuityReceipts:follow\?state\.continuityReceipts:\[\]/);
+test('private lab uses the same-origin authenticated endpoints and keeps continuity in memory',()=>{
+ assert.match(source,/fetch\('\.\/api\/challenge'/);
+ assert.match(source,/fetch\('\.\/api\/challenge-session'/);
+ assert.match(source,/headers\.Authorization='Bearer '\+token/);
  assert.match(source,/typeof data\.continuityReceipt!=='string'/);
- assert.match(source,/state\.continuityReceipts=\(follow\?state\.continuityReceipts:\[\]\)\.concat\(data\.continuityReceipt\)\.slice\(-3\)/);
- assert.match(source,/state\.continuityReceipts=\[\]/);
- assert.match(source,/server-signed snapshots of Gemini's prior answers/);
+ assert.match(source,/state\.receipt=null/);
+ assert.doesNotMatch(source,/AIza[A-Za-z0-9_-]{25,}|localStorage|sessionStorage|document\.cookie/);
 });
-
-
-test('Private lab explicitly labels reasoning basis and does not imply every claim has a framework source',()=>{
- assert.match(source,/function evidenceLabel\(type\)/);
- assert.match(source,/framework-interpretation/);
- assert.match(source,/scenario-inference/);
- assert.match(source,/engineering-judgment/);
- assert.match(source,/evidenceLabel\(primary\.basisType\)/);
- assert.match(source,/No directly applicable catalog provision cited/);
- assert.match(source,/option\.replace\(\/\^Option/);
-});
-
-
-test('Technical reference cards are displayed with separate evidence-use labels',()=>{
- assert.match(source,/id="engineering-details"/);
- assert.match(source,/id="engineering-references"/);
- assert.match(source,/renderEngineeringReferences\(data\)/);
- assert.match(source,/modelUsed\?'Model identified as supporting context'/);
- assert.match(source,/Made available; not cited by model/);
- assert.match(source,/ref\.url/);
- assert.match(source,/no live web research is performed|No live web research is performed/);
- assert.doesNotMatch(source,/googleSearch|frame\.srcdoc|id="research"/);
+test('model text is rendered as text and source links are HTTPS only',()=>{
+ assert.match(source,/node\.textContent=String/);
+ assert.match(source,/url\.protocol!=='https:'/);
+ assert.match(source,/ref\.modelUsed\?'Selected by Gemini':'Provided as context'/);
+ assert.match(source,/No live web research is performed/);
+ assert.doesNotMatch(source,/\.innerHTML|frame\.srcdoc/);
 });

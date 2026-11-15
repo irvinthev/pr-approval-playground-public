@@ -412,9 +412,20 @@ const references=[
 
 function selectEngineeringReferences(scenario,turns=[],limit=5){
  const text=[scenario,...(Array.isArray(turns)?turns.filter(t=>t && t.role==='user').slice(-2).map(t=>t.content):[])].join(' ').slice(0,6000).toLowerCase();
- const scored=references.map(r=>({r,score:r.terms.reduce((n,term)=>n+(text.includes(term)?(term.includes(' ')?3:2):0),0)})).filter(x=>x.score>0);
- scored.sort((a,b)=>b.score-a.score || a.r.id.localeCompare(b.r.id));
- return scored.slice(0,Math.max(0,Math.min(5,limit))).map(x=>x.r);
+ const scored=references.map(r=>({r,score:r.terms.reduce((n,term)=>n+(text.includes(term)?(term.includes(' ')?3:2):0),0)}));
+ // PR approval scenarios depend on both how a review is submitted and whether
+ // a later code change invalidates that review. Those are separate GitHub
+ // capabilities, so include both source cards even when the scenario uses
+ // ordinary language such as "stacked PRs" rather than "stale approval".
+ const githubPullRequest=/\bgithub\b/.test(text)&&/\b(?:pull requests?|prs?)\b/.test(text);
+ const approvalWorkflow=githubPullRequest&&/\b(?:review|reviews|approve|approves|approval|approvals|approver|approvers)\b/.test(text);
+ const contextualBoosts=approvalWorkflow?{'GH-REVIEWS-API':6,'GH-PROTECTED-BRANCHES':5}:{};
+ if(approvalWorkflow&&/\b(?:agent|batch|stacked|delegate|submi(?:t|ts|tted|tting))\b/.test(text))
+  contextualBoosts['GH-RULESETS']=4;
+ for(const item of scored)item.score+=contextualBoosts[item.r.id]||0;
+ const matched=scored.filter(x=>x.score>0);
+ matched.sort((a,b)=>b.score-a.score || a.r.id.localeCompare(b.r.id));
+ return matched.slice(0,Math.max(0,Math.min(5,limit))).map(x=>x.r);
 }
 function referencePrompt(records){
  if(!records.length)return 'No curated engineering reference matched this scenario. Do not invent documentation or technical guarantees.';

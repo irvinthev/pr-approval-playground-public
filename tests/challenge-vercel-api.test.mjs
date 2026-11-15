@@ -187,7 +187,7 @@ test('model reasoning compares existing and proposed approval architectures fair
   assert.match(prompt,/engineering problem, including developer friction/);
   assert.match(prompt,/Steelman both the proposed design and the status quo/);
   assert.match(prompt,/A GitHub UI click is not inherently more meaningful/);
-  assert.match(prompt,/Compare 2–3 concrete, feasible architectures/);
+  assert.match(prompt,/give one feasible simpler option when relevant/);
   assert.match(prompt,/explicitly reconsider the previous recommendation/);
   assert.match(prompt,/frameworks provide relevant principles/);
 });

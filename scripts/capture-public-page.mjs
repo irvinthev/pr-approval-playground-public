@@ -34,6 +34,7 @@ try {
         ['index.html','ai-sdlc-risk.html','engineering-blueprint.html','continuous-monitoring.html','independent-assurance.html'].forEach(add);
       }
       if (/^(risk-|sdlc-risk-)/.test(file) && /\.(js|css)$/.test(file))add('ai-sdlc-risk.html');
+      if (/^(challenge-connected-report-(data\.mjs|view\.mjs|css)|challenge-agent-contract\.js|api\/challenge\.js|scripts\/capture-public-page\.mjs)$/.test(file))add('private-challenge.html');
       if (/^scripts\/capture-public-page\.mjs$/.test(file))add('index.html');
     }
   }
@@ -70,6 +71,187 @@ async function capture(page, label, response, checks = []) {
   await writeFile(resolve(output, label + '.json'), JSON.stringify(item, null, 2));
   console.log('CAPTURED ' + label + ' ' + hash.slice(0, 12));
 }
+async function checkChallengeAssessment(page, captureDecisionBrief) {
+  let requests = [];
+  const questions = [
+    {question:'Can credentials overlap?',why:'Overlap changes the cutover design.',options:['Yes, during cutover','No, only one at a time']},
+    {question:'Is cutover observed?',why:'Observation changes revocation timing.',options:['All consumers','Some consumers']}
+  ];
+  await page.route('**/api/challenge-session', route => route.fulfill({json:{active:false}}));
+  await page.route('**/api/challenge', async route => {
+    const request = route.request().postDataJSON();
+    requests.push(request);
+    const revised = request.turns.length === 1;
+    const noQuestions = /PR Plan/.test(request.scenarioText);
+    const delegated = /stacked pull requests/i.test(request.scenarioText);
+    if (delegated) {
+      const unknown = objective => ({objective,why:'Address a failure in the delegated workflow.',
+        implementation:'not-assessed',referenceIds:[]});
+      await route.fulfill({json:{
+        mode:'live-model',continuityReceipt:'fictional-delegated',
+        conclusions:[{application:'Keep approvals manual until the submission is revision-bound, repository rules require fresh review and agent access is narrow.',
+          scenarioBasis:'A fictional engineer decides on four stacked PRs and the agent submits.',basisType:'engineering-judgment',
+          openQuestion:'Could a changed revision merge on the original approval?',citations:[]}],
+        counterargument:'Existing merge rules may already cover the key failure.',alternatives:['Use a narrow batch submitter.'],
+        challenges:[
+          {question:'A different revision could merge',reason:'After a push or rebase, an approval could apply to code the engineer never saw.',
+            tests:['Check submission and merge behavior.'],alternatives:[]},
+          {question:'Agent access could be too broad',reason:'The agent may have permissions outside the intended workflow.',tests:[],alternatives:[]}
+        ],
+        expectedSafeguards:[
+          unknown('Bind submission to the reviewed revision'),
+          unknown('Repository requires fresh review after changes'),
+          unknown('Narrow the agent’s credential scope'),
+          {objective:'Record the human decision per revision',why:'Tie the decision to the approved PR revision.',
+            implementation:'reported-partial',implementationBasis:'The scenario reports an engineer decision.',referenceIds:[]}
+        ],
+        facts:[],approvalOutcomes:[],unknowns:['Effective repository rules'],
+        clarifications:[{question:'Could a changed revision merge on the original approval?',
+          why:'This determines whether to keep approvals manual.',options:['The repository blocks merge','The approval can still count']}],
+        decisionPerspectives:{
+          engineering:{position:'Compare a narrow batch submitter against broad coding-agent permissions.',
+            considerations:['Handle a rebase and partial failure before retry.'],
+            nextStep:'Test revision-bound execution in a sandbox.',
+            pivot:'Would native review changes solve the friction?',referenceIds:['GH-REVIEWS']},
+          risk:{position:'Broad delegated approval credentials create exposure if instructions and execution diverge.',
+            considerations:['Determine scope and treatment of unmatched approvals.'],
+            nextStep:'Clarify management risk ownership and treatment where warranted.',
+            pivot:'Can unauthorized approvals be prevented or reconciled?',referenceIds:[]},
+          assurance:{position:'A GitHub review is evidence of submission, not necessarily of human judgment on that revision.',
+            considerations:['Correlate the original instruction with the API action and recorded review.'],
+            nextStep:'Inspect an authorized and an unmatched approval sequence.',
+            pivot:'What reconciled records establish the decision?',referenceIds:['GH-REVIEWS']}
+        },
+        operationalReview:{kind:'reconciliation',
+          question:'Can the human instruction, agent API action and persisted review be reconciled?',
+          detection:'Match human authorization, API request and recorded review by revision.',
+          response:'Investigate unmatched reviews and stop additional submissions where needed.',
+          implementation:'not-assessed',referenceIds:['GH-REVIEWS']},
+        engineeringReferences:[{id:'GH-REVIEWS',title:'GitHub pull request reviews',
+          publisher:'GitHub Docs',url:'https://docs.github.com/en/rest/pulls/reviews',
+          facts:['A review can be retrieved with its state and commit ID.'],
+          limits:'The recorded review does not establish originating human authorization.',
+          modelUsed:true}]
+      }});
+      return;
+    }
+    await route.fulfill({json:{
+      mode:'live-model',continuityReceipt:revised?'fixture-reassessed':'fixture-initial',
+      conclusions:[{application:'Pilot the change with bounded authority.',scenarioBasis:'A fictional proposal.',
+        basisType:'engineering-judgment',openQuestion:'How is recovery handled?',citations:[]}],
+      counterargument:'An existing service could reduce operating cost.',alternatives:['Use an existing service.'],
+      challenges:[{question:'A partial rollout may fail',reason:'A downstream consumer could be late.',tests:[],alternatives:[]}],
+      expectedSafeguards:[{objective:'Stage the transition',why:'Preserve service availability.',
+        implementation:revised?'reported-partial':'not-assessed',implementationBasis:'Overlap reported for some consumers.',referenceIds:[]}],
+      facts:[],approvalOutcomes:[],unknowns:['Coverage of slower consumers'],
+      clarifications:revised||noQuestions?[]:questions,engineeringReferences:[],
+      operationalReview:noQuestions?null:{kind:'monitoring',question:'Can a lagging consumer be detected?',
+        detection:'Track credential rejection rates.',response:'Pause cutover and recover delayed consumers.',
+        implementation:'not-assessed',referenceIds:[]},
+      ...(revised?{reassessment:'Overlap changes the safeguard to Partial. The pilot recommendation stands.'}:{})
+    }});
+  });
+  await page.locator('#token').fill('local-browser-fixture');
+  await page.locator('#scenario').fill('An engineer reviews and approves four stacked pull requests. An agent submits those approvals.');
+  await page.locator('#ask').click();
+  await page.locator('#cdr-preview .cdr').waitFor();
+  check(await page.locator('#result').evaluate(node=>node.classList.contains('cdr-active')),
+    'The connected report should be primary after assessment');
+  check(await page.locator('#cdr-preview .cdr-recommendation-text').isVisible(),
+    'Connected report must use the real assessment conclusion');
+  check(await page.locator('#cdr-preview .cdr-recon').isVisible(),
+    'Human-delegated PR case must show reconciliation question');
+  check((await page.locator('#cdr-preview .cdr-recon').innerText()).includes('Unknown'),
+    'Reconciliation must not be reported as implemented');
+  check((await page.locator('#cdr-preview .cdr-recon').innerText()).includes('Match human authorization'),
+    'Operational reconciliation should have model-specific detection reasoning');
+  check(await page.locator('#cdr-preview .cdr-source-link[href*="docs.github.com/en/rest/pulls/reviews"]').first().isVisible(),
+    'The primary GitHub technical reference should be visible');
+  check((await page.locator('#cdr-preview .cdr-sources').innerText()).includes('does not establish originating human authorization'),
+    'Source limitations should be displayed, not buried');
+
+  const lensExpectations={
+    risk:'Broad delegated approval credentials create exposure',
+    assurance:'A GitHub review is evidence of submission',
+    engineering:'Compare a narrow batch submitter'
+  };
+  for(const lens of ['risk','assurance','engineering']){
+    await page.locator('#cdr-tab-'+lens).click();
+    check(await page.locator('#cdr-tab-'+lens).getAttribute('aria-selected')==='true',
+      'Connected report perspective '+lens+' did not select');
+    check((await page.locator('#cdr-perspective-content').innerText()).includes(lensExpectations[lens]),
+      'Connected report must show independent model-authored position for '+lens);
+  }
+  check((await page.locator('#cdr-perspective-content').innerText()).includes('Source limit:'),
+    'Model-linked perspective citations must retain their source limitations');
+  check(await page.evaluate(() => document.documentElement.scrollWidth<=innerWidth),
+    'Connected report must fit the viewport');
+  await page.locator('#token').fill('');
+  await captureDecisionBrief();
+  await page.locator('#token').fill('local-browser-fixture');
+  await page.locator('#cdr-toggle').click();
+  check(!(await page.locator('#result').evaluate(node=>node.classList.contains('cdr-active'))),
+    'The detailed assessment should be reachable');
+  check(await page.locator('#report-lead-risk').getByText('After a push or rebase, an approval could apply to code the engineer never saw.',{exact:true}).isVisible(),
+    'The lead failure condition should be visible without a tap');
+  check(await page.locator('#report-expected-safeguards summary').count()===3,'Three safeguards should lead the brief');
+  check(await page.locator('#refinement-questions summary').textContent()==='Could a changed revision merge on the original approval?',
+    'The decision-changing question should be visible before expanding answers');
+  check(await page.evaluate(() => document.documentElement.scrollWidth<=innerWidth),'Decision brief must fit the viewport');
+  for (const selector of ['#report-expected-safeguards summary','#report-more-safeguards > summary',
+    '#report-other-safeguards summary','#report-more-risks > summary','#report-reasoning > summary','#refinement-questions summary']) {
+    await page.locator(selector).first().click();
+  }
+  check(await page.locator('#report-other-safeguards').getByText('Partial · User-reported',{exact:true}).isVisible(),
+    'The remaining safeguards should retain provenance');
+  check(requests.length===1,'Reading and expanding the decision brief should use only the initial request');
+
+  requests = [];
+  await page.locator('#examples summary').click();
+  await page.locator('[data-example="plan"]').click();
+  await page.locator('#ask').click();
+  await page.locator('#cdr-preview .cdr').waitFor();
+  check(!(await page.locator('#cdr-preview .cdr-recon').isVisible()),
+    'An autonomous PR Plan scenario must not inherit human-delegated reconciliation');
+  await page.locator('#cdr-toggle').click();
+  check(!(await page.locator('#refine-panel').isVisible()),'Zero questions should hide the reassessment form');
+  check(await page.locator('#report-model-examples').isVisible(),'PR examples should appear for PR proposals');
+
+  requests = [];
+  await page.locator('#examples summary').click();
+  await page.locator('[data-example="rotation"]').click();
+  await page.locator('#ask').click();
+  await page.locator('#cdr-preview .cdr').waitFor();
+  check(!(await page.locator('#cdr-preview .cdr-recon').innerText()).includes('GitHub review'),
+    'Unrelated credential rotation must not show PR-specific reconciliation');
+  check((await page.locator('#cdr-preview .cdr-recon').innerText()).includes('Track credential rejection rates'),
+    'Unrelated proposal must receive its own operational monitoring analysis');
+  await page.locator('#cdr-toggle').click();
+  check(!(await page.locator('#report-model-examples').isVisible()),'PR examples should be hidden for credential rotation');
+  for (const selector of ['#report-expected-safeguards summary','#report-sources-details summary']) {
+    await page.locator(selector).first().click();
+  }
+  check(requests.length===1,'Expanding details must not call the model');
+  await page.locator('#refinement-questions summary').first().click();
+  await page.getByText('Yes, during cutover',{exact:true}).click();
+  await page.locator('#refinement-questions summary').nth(1).click();
+  await page.getByText('Some consumers',{exact:true}).click();
+  await page.locator('#refinement-submit').click();
+  await page.locator('#cdr-preview').getByText('Reassessment:',{exact:false}).waitFor();
+  check((await page.locator('#cdr-preview').innerText()).includes('Reassessment:'),
+    'Connected report should reflect reassessment');
+  await page.locator('#cdr-toggle').click();
+  await page.locator('#report-delta').waitFor();
+  check(requests.length===2,'Assessment plus clarification should use two application requests');
+  check(requests[1].continuityReceipts[0]==='fixture-initial','Reassessment must use initial signed continuity');
+  check(/Yes, during cutover[\s\S]*Some consumers/.test(requests[1].turns[0].content),'Both answers must travel in one batch');
+  check(!(await page.locator('#refine-panel').isVisible()),'Closing the clarification loop should prevent further submissions');
+  await page.locator('#report-expected-safeguards summary').click();
+  check((await page.locator('#report-expected-safeguards').innerText()).includes('Partial · User-reported'),
+    'Reassessment should preserve the provenance of a reported safeguard');
+  check(await page.evaluate(() => document.documentElement.scrollWidth<=innerWidth),'Assessment must fit the viewport');
+}
+
 async function runCase(label, path, viewportName, viewport, scenario) {
   const page = await browser.newPage({ viewport, deviceScaleFactor: 1, reducedMotion: 'reduce' });
   const errors = [];
@@ -82,6 +264,13 @@ async function runCase(label, path, viewportName, viewport, scenario) {
     check((await page.locator('h1').count()) > 0, label + ': missing primary heading');
 
     const checks = ['HTTP ' + response.status(), 'h1 present'];
+    if(path==='private-challenge.html'){
+      await checkChallengeAssessment(page, () => capture(page, label+'-decision-brief', response,
+        ['Fictional stacked-PR fixture','Initial decision brief','No horizontal overflow']));
+      checks.push('Mocked assessment and reassessment', 'Expandable details make no requests',
+        'Two answers in one signed follow-up', 'Zero-question case omits reassessment', 'No horizontal overflow');
+      await page.locator('#token').fill('');
+    }
     if (scenario?.startsWith('scenario-journey:')) {
       const [, variant, stepNumber, layer] = scenario.split(':');
       const title = {pass:'Standard low-risk pass',split:'AI split decision',excluded:'Hard gate scope exclusion',canary:'Production canary failure'}[variant];
