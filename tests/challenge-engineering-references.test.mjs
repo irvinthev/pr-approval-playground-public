@@ -99,7 +99,7 @@ test('model may omit references but may not invent or cite unprovided source IDs
  assert.ok(accepted.body.engineeringReferences.every(x=>x.modelUsed===false));
 });
 
-test('focused assessments drop source IDs that were not supplied and retain valid links',async t=>{
+test('focused assessments retry invalid source IDs before dropping unsupported links',async t=>{
  const token=process.env.CHALLENGE_API_TOKEN,key=process.env.GEMINI_API_KEY;
  process.env.CHALLENGE_API_TOKEN='private-test-token';process.env.GEMINI_API_KEY='provider-test-key';
  t.after(()=>{if(token===undefined)delete process.env.CHALLENGE_API_TOKEN;else process.env.CHALLENGE_API_TOKEN=token;
@@ -114,10 +114,18 @@ test('focused assessments drop source IDs that were not supplied and retain vali
  await handler({method:'POST',headers:{authorization:'Bearer private-test-token'},
   body:{scenarioText:scenario,assessment:true}},res);
  assert.equal(res.statusCode,200,JSON.stringify(res.body));
- assert.equal(mock.mock.callCount(),1);
+ assert.equal(mock.mock.callCount(),2);
  assert.deepEqual(res.body.expectedSafeguards[0].referenceIds,['GH-CODEOWNERS']);
  assert.deepEqual(res.body.engineeringReferences.filter(x=>x.modelUsed).map(x=>x.id),['GH-CODEOWNERS']);
  assert.match(res.body.referenceWarning,/omitted/);
+});
+
+test('stacked GitHub approval scenarios include review, stale approval and ruleset references',()=>{
+ const stacked='An engineer reviews three stacked GitHub pull requests and explicitly decides to approve each one. An agent would submit those decisions in one batch to avoid repetitive clicks.';
+ const ids=selectEngineeringReferences(stacked).map(reference=>reference.id);
+ assert.ok(ids.includes('GH-REVIEWS-API'));
+ assert.ok(ids.includes('GH-PROTECTED-BRANCHES'));
+ assert.ok(ids.includes('GH-RULESETS'));
 });
 test('one bounded schema retry restores missing conclusion fields while keeping source restrictions',async t=>{
  const token=process.env.CHALLENGE_API_TOKEN,key=process.env.GEMINI_API_KEY;
