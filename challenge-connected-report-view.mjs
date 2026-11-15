@@ -1,4 +1,36 @@
 import {projectConnectedReport} from './challenge-connected-report-data.mjs';
+// Contextual reading links only. These do not alter assessments or share scenario data.
+const fieldGuideBase='https://irvinthev.github.io/pr-approval-playground-public/';
+const fieldGuideStageLinks=Object.freeze({
+  delivery:Object.freeze({
+    pr:'index.html#overview-authority-preview',
+    eligibility:'ai-sdlc-risk.html#risk-explorer',
+    'ai-review':'engineering-blueprint.html#engineering-build-plan',
+    authorization:'engineering-blueprint.html#engineering-build-plan',
+    merge:'engineering-blueprint.html#technical-requirements',
+    release:'continuous-monitoring.html#monitoring-guide',
+    monitor:'continuous-monitoring.html#monitoring-guide',
+    evidence:'independent-assurance.html#assurance-control-explorer'
+  }),
+  operations:Object.freeze({
+    design:'engineering-blueprint.html#engineering-build-plan',
+    scope:'ai-sdlc-risk.html#risk-explorer',
+    authorize:'engineering-blueprint.html#engineering-build-plan',
+    execute:'engineering-blueprint.html#technical-requirements',
+    verify:'independent-assurance.html#assurance-control-explorer',
+    observe:'continuous-monitoring.html#monitoring-guide',
+    recover:'continuous-monitoring.html#monitoring-guide'
+  })
+});
+function addFieldGuideContext(parent,pathway,stageId){
+  const chapter=fieldGuideStageLinks[pathway]?.[stageId];
+  if(!chapter)return;
+  const link=el('a','cdr-source-link','Explore this stage in the public Field Guide ↗');
+  link.href=fieldGuideBase+chapter;
+  link.target='_blank';
+  link.rel='noopener noreferrer';
+  parent.append(link);
+}
 
 const el=(tag,cls,text)=>{
   const node=document.createElement(tag);
@@ -128,6 +160,7 @@ function renderRiskPath(project,container){
     addText(detail,'cdr-path-event',mapped.event);
     if(mapped.interruption)addText(detail,'cdr-mini','Potential interruption: '+mapped.interruption);
     addText(detail,'cdr-mini','Evidence to investigate: '+mapped.evidence);
+    addFieldGuideContext(detail,path.pathway,stageId);
   }
   function stageButton(stage,collection){
     const button=el('button','cdr-path-button');
