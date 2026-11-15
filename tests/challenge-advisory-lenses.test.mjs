@@ -86,13 +86,13 @@ test('legacy responses remain valid and clearly identified as synthesized',()=>{
  assert.equal(p.perspectives.assurance.modelGenerated,false);
  assert.equal(p.reconciliation.status,'Not assessed');
 });
-test('single model request includes distinct advisory and operational fields, not a separate call',()=>{
+test('single model request projects advisory views locally and retains optional operations',()=>{
  const req=buildModelRequest({scenarioText:scenario,turns:[],history:[],assessmentPhase:'initial'});
  const instruction=req.messages[0].content;
- assert.match(instruction,/decisionPerspectives: one compact object/);
+ assert.match(instruction,/Do not produce decisionPerspectives or reassessment/);
  assert.match(instruction,/operationalReview: null/);
- assert.match(instruction,/three paraphrases/);
- assert.match(instruction,/human instruction, agent\/API action and recorded GitHub review/);
+ assert.match(instruction,/the three audience views are local projections/);
+ assert.match(instruction,/A submitted review alone does not establish an enforcement bypass/);
  assert.equal(req.messages.length,2);
 });
 test('new display is a safe HTML-free projection with linked source limits',()=>{

@@ -15,8 +15,8 @@ test('private lab uses the same-origin authenticated endpoints and keeps continu
  assert.match(source,/fetch\('\.\/api\/challenge'/);
  assert.match(source,/fetch\('\.\/api\/challenge-session'/);
  assert.match(source,/headers\.Authorization='Bearer '\+token/);
- assert.match(source,/typeof data\.continuityReceipt!=='string'/);
- assert.match(source,/state\.receipt=null/);
+ assert.match(source,/assessment:true,turns:\[\],continuityReceipts:\[\]/);
+ assert.doesNotMatch(source,/state\.receipt|reassessmentUsed|refinement-submit/);
  assert.doesNotMatch(source,/AIza[A-Za-z0-9_-]{25,}|localStorage|sessionStorage|document\.cookie/);
 });
 test('model text is rendered as text and source links are HTTPS only',()=>{

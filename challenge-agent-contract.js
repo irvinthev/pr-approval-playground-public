@@ -158,8 +158,16 @@ function validateClarification(item){
     !Array.isArray(item.options)||item.options.length<2||item.options.length>4||
     item.options.some(option=>typeof option!=='string'||!option.trim()||option.length>85||/^(unknown|other)$/i.test(option.trim()))||
     new Set(item.options.map(x=>x.toLowerCase().trim())).size!==item.options.length)return null;
+ // Optional precomputed, per-answer implications. A tap never creates a new
+ // model assessment or updates the original recommendation.
+ const implications=item.implications;
+ if(implications!==undefined && (
+   !Array.isArray(implications)||implications.length!==item.options.length||
+   implications.some(impact=>typeof impact!=='string'||!impact.trim()||impact.length>320)
+ ))return null;
  return {question:maxLength(item.question,240),why:maxLength(item.why,260),
-   options:item.options.map(x=>maxLength(x,85))};
+   options:item.options.map(x=>maxLength(x,85)),
+   ...(implications?{implications:implications.map(x=>maxLength(x,320))}:{})};
 }
 
 const submissionStates=['submitted','not-submitted','unknown'];

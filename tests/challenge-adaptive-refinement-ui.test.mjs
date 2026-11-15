@@ -3,18 +3,19 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 const source=fs.readFileSync(new URL('../private-challenge.html',import.meta.url),'utf8');
-test('reassessment batches model-selected options into one signed follow-up',()=>{
- assert.match(source,/state\.reassessmentUsed\?\[\]:data\.clarifications/);
- assert.match(source,/el\('refine-panel'\)\.hidden=!questions\.length/);
- assert.match(source,/q\.options,'Unknown','Other'/);
- assert.match(source,/input\.type='radio'/);
- assert.match(source,/if\(state\.busy \|\| \(follow && \(state\.reassessmentUsed \|\| !state\.receipt\)\)\)return/);
- assert.match(source,/if\(follow\)state\.reassessmentUsed=true;\s+const resp=await fetch/);
- assert.match(source,/assessment:true,turns,continuityReceipts:follow\?\[state\.receipt\]:\[\]/);
- assert.match(source,/state\.refinementAnswers=\{\}/);
+
+test('one scenario triggers exactly one assessment request and no follow-up submit path',()=>{
+ assert.equal((source.match(/fetch\('\.\/api\/challenge'/g)||[]).length,1);
+ assert.match(source,/assessment:true,turns:\[\],continuityReceipts:\[\]/);
+ assert.doesNotMatch(source,/refinement-submit|reassessmentUsed|Reassess with answers|async function ask\(answers/);
+ assert.match(source,/state\.scenario=scenario/);
 });
-test('reassessment displays original recommendation and model explanation',()=>{
- assert.match(source,/state\.previousTakeaway=follow\?state\.latestResponse\.conclusions\[0\]\.application:null/);
- assert.match(source,/el\('report-revised'\)\.textContent=data\.reassessment/);
- assert.match(source,/Remaining uncertainties/);
+test('decision conditions reveal only precomputed implications without another Gemini call',()=>{
+ assert.match(source,/const implications=Array\.isArray\(q\.implications\)/);
+ assert.match(source,/if\(!implications\)/);
+ assert.match(source,/\.textContent=n===q\.options\.length/);
+ assert.match(source,/This is not a revised assessment/);
+ assert.match(source,/recommendation remains conditional/);
+ assert.match(source,/el\('refine-panel'\)\.hidden=!questions\.length/);
+ assert.match(source,/input\.type='radio'/);
 });

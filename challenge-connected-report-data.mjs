@@ -138,7 +138,11 @@ export function projectConnectedReport(data,scenarioText=''){
     scenarioText:words(scenarioText||data.scenarioText,4000),
     references:sources,
     frameworkSources,
-    questions:questions.slice(0,3).map(q=>({question:words(q.question,350),why:words(q.why,400)})),
+    questions:questions.slice(0,3).map(q=>({
+      question:words(q.question,350),why:words(q.why,400),
+      options:array(q.options).slice(0,4).map(x=>words(x,85)),
+      implications:array(q.implications).slice(0,4).map(x=>words(x,320))
+    })),
     reassessment:words(data.reassessment,900),
     perspectives:{
       engineering:lens('engineering',{
@@ -150,19 +154,19 @@ export function projectConnectedReport(data,scenarioText=''){
         pivot:pivot||'No decision-changing question was returned.'
       }),
       risk:lens('risk',{
-        title:'Risk disposition',
+        title:'Risk and tradeoffs',
         summary:words(lead.reason,900)||'No material exposure description was returned.',
         highlight:'Exposure and treatment considerations',
         items:challenges.slice(0,3).map(c=>words(c.question,450)),
-        action:'Risk registration, treatment, ownership and acceptance have not been determined by this assessment.',
+        action:'Determine whether the failure is tolerable, preventable or recoverable, and who owns the operational response.',
         pivot:pivot||'No scenario-specific decision-changing question was returned.'
       }),
       assurance:lens('assurance',{
-        title:'Independent assurance',
-        summary:words(primary.scenarioBasis,800)||'No separate assurance conclusion was returned.',
+        title:'Evidence and reliance',
+        summary:'Evidence does not independently establish implementation or effectiveness. '+(words(primary.scenarioBasis,500)||'The proposed design still requires substantiation.'),
         highlight:'Evidence and remaining unknowns',
         items:unknowns.length?unknowns:array(data.conclusions).slice(0,2).map(c=>words(c.openQuestion)),
-        action:'The current response does not contain a separately substantiated independent assurance position.',
+        action:'Compare the claimed safeguards with actual configuration, logs or tests before relying on them.',
         pivot:words(primary.openQuestion)||'No assurance-specific question was returned.'
       })
     },

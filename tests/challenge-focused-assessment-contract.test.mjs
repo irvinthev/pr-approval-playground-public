@@ -70,7 +70,7 @@ test('legacy response remains valid for existing user flows',()=>{
 test('Gemini request requests generalizable safeguards and buttons, not risk scores',()=>{
  const req=buildModelRequest({scenarioText:'A fictional agent rotates cloud credentials.',turns:[],history:[]});
  const system=req.messages[0].content;
- for(const phrase of ['For unfamiliar scenarios','expectedSafeguards:','clarifications: zero to three','No risk scores']){
+ for(const phrase of ['For unfamiliar scenarios','expectedSafeguards','clarifications: zero to three','No risk scores']){
   assert.ok(system.includes(phrase),phrase);
  }
  assert.ok(!system.includes('Braze'));

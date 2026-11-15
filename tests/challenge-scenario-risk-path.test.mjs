@@ -102,11 +102,11 @@ test('uncertain incident origin can yield no risk path rather than invent a root
 test('model prompt requests conditional origin, exposure, prevention and detection once',()=>{
  const req=buildModelRequest({scenarioText:scenario,turns:[],history:[],assessmentPhase:'initial'});
  const instruction=req.messages[0].content;
- assert.match(instruction,/riskPath: optionally provide/);
- assert.match(instruction,/25 merges with 24 decision records/);
- assert.match(instruction,/A batch of API calls does not itself erase/);
+ assert.match(instruction,/one optional riskPath causal trace/);
+ assert.match(instruction,/Unknown failure origin must not be invented/);
+ assert.match(instruction,/A submitted review alone does not establish an enforcement bypass/);
  assert.match(instruction,/delivery: pr, eligibility, ai-review/);
- assert.match(instruction,/If neither sequence reliably describes the proposal, return riskPath:null/);
+ assert.match(instruction,/or null when mapping is unjustified/);
  assert.equal(req.messages.length,2);
 });
 test('interactive view is a read-only local stage selector, with no HTML injection',()=>{

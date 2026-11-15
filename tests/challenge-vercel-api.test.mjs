@@ -184,10 +184,10 @@ test('Gemini timeout is distinct from a provider connection failure',async t=>{
 
 test('model reasoning compares existing and proposed approval architectures fairly',()=>{
   const prompt=buildModelRequest({scenarioText:'A fictional engineer explicitly authorizes an agent to submit PR approvals.',turns:[]}).messages[0].content;
-  assert.match(prompt,/engineering problem, including developer friction/);
+  assert.match(prompt,/engineering problem and developer friction/);
   assert.match(prompt,/Steelman both the proposed design and the status quo/);
   assert.match(prompt,/A GitHub UI click is not inherently more meaningful/);
-  assert.match(prompt,/give one feasible simpler option when relevant/);
-  assert.match(prompt,/explicitly reconsider the previous recommendation/);
-  assert.match(prompt,/frameworks provide relevant principles/);
+  assert.match(prompt,/Compare a feasible simpler option when relevant/);
+  assert.match(prompt,/Do not produce decisionPerspectives or reassessment/);
+  assert.match(prompt,/Framework provision references describe guidance/);
 });
