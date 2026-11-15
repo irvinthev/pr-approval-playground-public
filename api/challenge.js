@@ -231,9 +231,6 @@ export default async function handler(req,res){
     const referenceError='Model referenced an unprovided or duplicate engineering source';
     const removedReferences=new Set();
     function checkResponse(candidate){
-      if(input.assessmentPhase){
-        for(const id of normalizeEngineeringReferences(candidate,selectedReferences))removedReferences.add(id);
-      }
       const ids=candidate?.referenceIds===undefined?[]:candidate.referenceIds;
       if(!Array.isArray(ids)||ids.some(id=>typeof id!=='string'||!validIds.has(id))){
         return {ok:false,errors:[referenceError]};
@@ -272,6 +269,7 @@ export default async function handler(req,res){
           let candidate;
           try{candidate=JSON.parse(repairEnvelope?.choices?.[0]?.message?.content)}catch{}
           if(candidate){
+            parsed=candidate;
             checked=checkResponse(candidate);
             if(!input.assessmentPhase && checked.errors?.includes(referenceError)){
               return json(res,502,{error:'Model referenced an unprovided or duplicate engineering source after repair'});
@@ -280,6 +278,13 @@ export default async function handler(req,res){
           }
         }
       }
+    }
+    // A focused assessment should remain useful if the model still emits a bad
+    // source ID after its one correction attempt. Sanitize only at this final
+    // fallback, so a correctable provenance error cannot bypass that attempt.
+    if(!checked.ok && input.assessmentPhase && parsed){
+      for(const id of normalizeEngineeringReferences(parsed,selectedReferences))removedReferences.add(id);
+      checked=checkResponse(parsed);
     }
     if(!checked.ok){
       const codes=contractFailureCodes(checked.errors);
