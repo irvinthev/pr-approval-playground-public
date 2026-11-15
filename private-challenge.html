@@ -459,7 +459,7 @@ main#main-content .panel{background:#0e273c;border-color:#38586c}
 </main></div>
 <script type="module">
 const el=id=>document.getElementById(id);
-const state={scenario:null,turns:[],continuityReceipts:[],busy:false,remembered:false};
+const state={scenario:null,turns:[],continuityReceipts:[],busy:false,remembered:false,refinementFocus:'auto',refinementAnswers:{},refinementSent:false,pendingRefinement:false,latestResponse:null};
 function setRemembered(active){
   state.remembered=active;
   el('token-field').hidden=active;
@@ -531,6 +531,7 @@ function renderRailSources(data){
 function busy(value){
   state.busy=value;
   el('ask').disabled=value;el('continue').disabled=value;el('reset').disabled=value;
+  el('refinement-submit').disabled=value || state.turns.length>=6;
   document.querySelectorAll('[data-challenge]').forEach(btn=>btn.disabled=value || state.turns.length>=6);
   el('ask').textContent=value?'Analyzing…':'Challenge my design';
   el('continue').textContent=value?'Analyzing…':'Continue the challenge';
@@ -570,6 +571,81 @@ function renderEngineeringReferences(data){
       }
     }catch{}
   }
+}
+
+
+// Curated high-leverage question sets. This is a front-end heuristic, not Gemini output.
+// Each asks about a decision boundary; technical references describe capabilities, not requirements.
+const refinementSets={
+ delegated:[
+  {id:'bottleneck',short:'Problem solved',q:'Where is the actual bottleneck: reviewing the diff, coordinating stacked PRs, or submitting approvals after the human decision?',why:'Submission friction and review-quality bottlenecks need different solutions.',changes:'If submission is the only bottleneck, agent execution may suffice; if review quality is weak, changing who clicks Approve may solve little.',source:'GitHub: pull request reviews',url:'https://docs.github.com/en/rest/pulls/reviews'},
+  {id:'authorization',short:'Human authorization scope',q:'Does the engineer authorize specific reviewed revisions, or can Claude approve whichever revisions exist when it executes?',why:'This distinguishes execution of a bounded human decision from additional discretion over changed code.',changes:'Authorization for newer revisions may shift the architecture from delegation toward autonomous judgment.',source:'GitHub: protected branches',url:'https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches'},
+  {id:'execution',short:'Credentials and attribution',q:'Whose GitHub credentials does Claude use, and what connects the human instruction to its GitHub action?',why:'GitHub records a submitting identity; that alone may not establish who made the decision.',changes:'Restricted credentials and correlated evidence support bounded execution; broad credentials with no attribution weaken it.',source:'GitHub CLI: submit review',url:'https://cli.github.com/manual/gh_pr_review'}
+ ],
+ access:[
+  {id:'identity',short:'Effective execution identity',q:'Which GitHub identities and credentials can Claude use, and which write operations can it perform without another human decision?',why:'Actual permission scope—not the agent label—sets the potential action boundary.',changes:'Read-only access removes approval-write exposure; standing write access creates a different threat model.',source:'Claude Code: permissions',url:'https://code.claude.com/docs/en/permissions'},
+  {id:'routes',short:'Alternate tool routes',q:'If MCP restricts an operation, can Claude still perform it using GitHub CLI, another tool, or an API credential?',why:'An MCP rule may not constrain the same operation through a separate credential path.',changes:'An independently enforced platform boundary supports restriction; a bypass route undermines it.',source:'GitHub MCP Server',url:'https://github.com/github/github-mcp-server'},
+  {id:'untrusted',short:'Untrusted context and reconstruction',q:'Could PR text or another untrusted input influence Claude to make a privileged call, and could you distinguish that call from an authorized request?',why:'Prompt injection matters when untrusted text can steer tools with meaningful privileges.',changes:'A bounded, observable tool path reduces exposure; unreviewed authority and untraceable execution increase it.',source:'OWASP: agentic threats',url:'https://genai.owasp.org/resource/agentic-ai-threats-and-mitigations/'}
+ ],
+ plan:[
+  {id:'decision',short:'Approval decision authority',q:'When an engineer approves a PR plan, have they decided the fate of specific PR revisions, or delegated the decision about which PRs qualify?',why:'Plan approval and PR approval are different decisions.',changes:'A plan delegating risk judgment is autonomous approval within a policy, not agent-executed human approval.',source:'GitHub: PR review API',url:'https://docs.github.com/en/rest/pulls/reviews'},
+  {id:'criteria',short:'Deterministic versus judgmental criteria',q:'Which plan conditions can code check deterministically, and which require the model to interpret whether a change is safe?',why:'Objective eligibility and model judgment have different error and enforcement characteristics.',changes:'If eligibility is independently deterministic, the model has less discretion; ambiguous criteria increase decision risk.',source:'GitHub: rulesets',url:'https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets'},
+  {id:'change',short:'Plan ownership and invalidation',q:'Who can change the plan, and what stops approval if the PR revision changes or the plan cannot be confidently applied?',why:'Policy drift and revision changes can invalidate a previously reasonable decision.',changes:'Independent plan governance and fail-closed revision checks may support bounded autonomy; relying on prompt obedience alone does not.',source:'GitHub: protected branches',url:'https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches'}
+ ],
+ general:[
+  {id:'problem',short:'Underlying engineering problem',q:'Which measurable engineering problem is this change intended to solve, and what happens if the existing workflow is simplified instead?',why:'Automation can preserve unnecessary steps rather than fix the bottleneck.',changes:'A simpler workflow that solves the problem with less authority may be preferable.',source:'DORA: delivery metrics',url:'https://dora.dev/guides/dora-metrics/'},
+  {id:'authority',short:'Decision versus execution',q:'What decisions may an agent make without fresh human input, and what actions does it only carry out after instruction?',why:'The same tool can implement fundamentally different authority models.',changes:'Identifying the real decision-maker determines the appropriate constraints and assurance.',source:'Claude Code: permissions',url:'https://code.claude.com/docs/en/permissions'},
+  {id:'boundary',short:'Enforcement and evidence',q:'What independently prevents a disallowed action, and what record would tell you whether that protection worked?',why:'A policy statement alone cannot show technical enforcement or reconstruct outcomes.',changes:'Independent boundaries and sufficient observations may justify wider automation; unverified gaps remain open questions.',source:'GitHub: rulesets',url:'https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets'}
+ ]
+};
+function suggestRefinementFocus(scenario){
+  const value=String(scenario||'').toLowerCase();
+  if(/\bpr[\s-]*plan\b|\breview[\s-]*plan\b|plan-based|plan based|plan (?:decides|authorizes)/i.test(value))return 'plan';
+  if(/\bstacked?\b|human (?:explicitly|already|decides)|engineer (?:explicitly|reviews? (?:four|multiple))|delegat(?:ed|ion)|claude (?:just|merely) submits/i.test(value))return 'delegated';
+  if(/\baccess\b|\bpermission|\bcredential|\bmcp\b|\btoken\b|\btool\b|\bprompt injection\b/i.test(value))return 'access';
+  return 'general';
+}
+function activeRefinementFocus(){
+  return state.refinementFocus==='auto'?suggestRefinementFocus(state.scenario):state.refinementFocus;
+}
+function renderRefinementQuestions(data){
+  const target=el('refinement-questions');clear(target);
+  const focus=activeRefinementFocus(),questions=refinementSets[focus]||refinementSets.general;
+  const subtitle=add('p',target,'','small');
+  subtitle.textContent='Showing three curated '+({delegated:'delegated approval',access:'access and tool authority',plan:'PR plan',general:'architecture'}[focus])+' questions. These are editorial prompts, not Gemini findings.';
+  for(const [index,q] of questions.entries()){
+    const box=add('div',target,'','refine-question');
+    add('strong',box,(index+1)+'. '+q.q);
+    add('p',box,'Why it matters: '+q.why);
+    add('p',box,'What could change: '+q.changes);
+    const reference=add('a',box,'Design reference: '+q.source);
+    reference.href=q.url;reference.rel='noopener noreferrer';reference.target='_blank';
+    const label=add('label',box,'Your clarification (optional):');
+    const input=document.createElement('input');
+    input.type='text';input.maxLength=140;input.id='refine-answer-'+index;
+    input.placeholder='Brief answer or “Unknown”';
+    input.value=state.refinementAnswers[q.id]||'';
+    label.htmlFor=input.id;box.append(input);
+    input.addEventListener('input',()=>{state.refinementAnswers[q.id]=input.value});
+  }
+  const follow=el('refinement-next'),next=el('refinement-next-questions');clear(next);
+  const generated=state.refinementSent && Array.isArray(data?.challenges)?data.challenges.slice(0,3):[];
+  follow.hidden=!generated.length;
+  for(const item of generated){
+    const li=add('li',next,item.question||'Unresolved question');
+    if(item.reason)add('p',li,item.reason,'small');
+  }
+  el('refinement-status').textContent=state.refinementSent?
+    'Your answers were submitted in a signed Gemini follow-up. Review its revised conclusion and next questions.':
+    'Questions are curated; Gemini will reconsider once you submit your answers.';
+}
+function refinementFollowupPrompt(){
+  const questions=refinementSets[activeRefinementFocus()]||refinementSets.general;
+  const responses=questions.map(q=>({q,answer:String(state.refinementAnswers[q.id]||'').trim()}))
+    .filter(x=>x.answer);
+  if(!responses.length)return '';
+  const lines=responses.map(({q,answer})=>'- '+q.short+': '+answer);
+  return 'Reassess your preceding recommendation using these clarifications from the fictional scenario. Identify what changed in decision authority or design choice, what remains unknown, and which source-card facts support any technical claims. Challenge the earlier answer; explicitly correct weak claims and do not infer implemented safeguards. Unanswered questions remain unknown.\n'+lines.join('\n');
 }
 
 function renderAssessmentReport(data){
@@ -658,7 +734,9 @@ function render(data){
   for(const id of ['decision-summary','approaches','approval-outcomes','conclusions','facts','challenges','unknowns'])clear(el(id));
   renderEngineeringReferences(data);
   renderRailSources(data);
+  state.latestResponse=data;
   renderAssessmentReport(data);
+  renderRefinementQuestions(data);
   const primary=data.conclusions?.[0];
   if(primary){
     title(el('decision-summary'),'Direct answer');
@@ -774,15 +852,20 @@ async function ask(follow){
     state.turns=turns.slice(-6);
     state.continuityReceipts=(follow?state.continuityReceipts:[]).concat(data.continuityReceipt).slice(-3);
     if(follow)el('question').value='';
-    render(data);status('Gemini response received. Review its reasoning and source relevance.');
+    if(follow && state.pendingRefinement)state.refinementSent=true;
+    if(!follow && !state.scenario)state.refinementSent=false;
+    render(data);
+    if(follow && state.pendingRefinement)setView('report');
+    status('Gemini response received. Review its reasoning and source relevance.');
     el('result').scrollIntoView({behavior:'smooth',block:'start'});
   }catch(err){status(err.message||'The request could not be completed.',true)}
-  finally{busy(false);if(state.turns.length>=6)el('continue').disabled=true}
+  finally{state.pendingRefinement=false;busy(false);if(state.turns.length>=6){el('continue').disabled=true;el('refinement-submit').disabled=true}}
 }
 const challengePrompts={
   assumptions:'Challenge your previous recommendation. What are its strongest unsupported assumptions, and what alternative explanation could undermine it? Distinguish documented product facts from engineering judgment. Correct errors, but do not agree with me automatically.',
   simpler:'Find a genuinely simpler solution to the original engineering problem, including redesigning or removing unnecessary review steps. Compare the simpler design with your recommendation on authority, enforcement, developer friction, cost and reliability.',
   evidence:'Identify the material technical claims in your previous answer and distinguish claims directly supported by the curated references from scenario inferences and undocumented assumptions. Correct unsupported technical statements and name the most relevant missing configuration evidence.',
+  justify:'Challenge your own three most consequential claims from the previous assessment. For each claim state what a specific provided technical reference card actually supports, what it does NOT support, the strongest counterargument, and what additional evidence or missing primary source could change the conclusion. Treat all summaries as fallible, not independently verified documents. Identify possible reference gaps or contradictions. Cite only provided source IDs; if there is no supporting source, explicitly mark the claim unsupported and narrow or retract it. Do not invent source passages, configuration evidence or mandatory controls.',
   failure:'Create one realistic failure scenario that could defeat your recommended architecture. Address the actual decision authority, agent/tool permissions, review revision, merge gate or deployment consequences as relevant. Compare likely detection and recovery with the existing workflow.'
 };
 document.querySelectorAll('#result [role="tab"]').forEach(tab=>{
@@ -826,13 +909,28 @@ document.querySelectorAll('[data-challenge]').forEach(button=>{
   });
 });
 el('report-preview-link').addEventListener('click',()=>setView('report',true));
+el('refinement-focus').addEventListener('change',event=>{
+  state.refinementFocus=event.target.value;
+  state.refinementAnswers={};
+  if(state.latestResponse)renderRefinementQuestions(state.latestResponse);
+});
+el('refinement-submit').addEventListener('click',()=>{
+  if(state.busy || state.turns.length>=6)return;
+  if(!state.scenario){status('Analyze a scenario first.',true);return}
+  const prompt=refinementFollowupPrompt();
+  if(!prompt){el('refinement-status').textContent='Answer one or more questions (you can enter “Unknown”).';return}
+  if(prompt.length>1000){el('refinement-status').textContent='Please shorten your answers to fit the existing follow-up limit.';return}
+  el('question').value=prompt;
+  state.pendingRefinement=true;
+  ask(true);
+});
 el('ask').addEventListener('click',()=>ask(false));
 el('continue').addEventListener('click',()=>ask(true));
 el('example').addEventListener('click',()=>{el('scenario').value='Two AI agents agree that a pull request is low risk. Is that enough to allow automatic approval?';status('Fictional example loaded.')});
 el('reset').addEventListener('click',async()=>{
   if(state.busy)return;
   const remembered=state.remembered;
-  state.scenario=null;state.turns=[];state.continuityReceipts=[];el('token').value='';el('scenario').value='';el('question').value='';
+  state.scenario=null;state.turns=[];state.continuityReceipts=[];state.refinementFocus='auto';state.refinementAnswers={};state.refinementSent=false;state.pendingRefinement=false;state.latestResponse=null;el('refinement-focus').value='auto';el('token').value='';el('scenario').value='';el('question').value='';
   el('remember').checked=false;
   el('result').hidden=true;el('followup').hidden=true;
   if(!remembered){status('Session cleared.');return}
@@ -847,7 +945,7 @@ el('reset').addEventListener('click',async()=>{
 });
 el('scenario').addEventListener('input',()=>{
  if(state.scenario && el('scenario').value.trim()!==state.scenario){
-   el('result').hidden=true;el('followup').hidden=true;state.scenario=null;state.turns=[];state.continuityReceipts=[];
+   el('result').hidden=true;el('followup').hidden=true;state.scenario=null;state.turns=[];state.continuityReceipts=[];state.refinementFocus='auto';state.refinementAnswers={};state.refinementSent=false;state.latestResponse=null;el('refinement-focus').value='auto';
    status('Scenario changed. Challenge it again to start a new analysis.');
  }
 });
