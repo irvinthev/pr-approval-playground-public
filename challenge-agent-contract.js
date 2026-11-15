@@ -1,6 +1,7 @@
 // Pure validation contract between a future private LLM backend and the public educational UI.
 // Does not invoke a model. Framework records remain canonical in framework-source-catalog.js.
 import {sourceCatalog} from './framework-source-catalog.js';
+import {riskPathCatalog,riskPathRoles} from './challenge-risk-path-catalog.mjs';
 
 export const AGENT_CONTRACT_VERSION = '0.1.0';
 const knownProvisions=new Map(sourceCatalog.provisions.map(p=>[p.id,p]));
@@ -115,6 +116,42 @@ function validateOperationalReview(item,allowedReferenceIds){
    referenceIds:refs
  };
 }
+// Optional scenario-specific causal trace. Reject invented stage IDs, mixed
+// lifecycle taxonomies, unsorted events and non-text role content before UI.
+function validateRiskPath(value){
+ if(!isPlainObject(value)||!riskPathCatalog[value.pathway]||
+    typeof value.failure!=='string'||!value.failure.trim()||
+    typeof value.uncertainty!=='string'||!value.uncertainty.trim()||
+    !Array.isArray(value.steps)||value.steps.length<2||value.steps.length>5)return null;
+ const catalogue=riskPathCatalog[value.pathway];
+ const order=new Map(catalogue.map((s,i)=>[s.id,i]));
+ let previous=-1;
+ const steps=[];
+ let hasOrigin=false,hasConsequence=false;
+ for(const step of value.steps){
+   if(!isPlainObject(step)||typeof step.stageId!=='string'||
+      !order.has(step.stageId)||order.get(step.stageId)<=previous||
+      !Array.isArray(step.roles)||step.roles.length<1||step.roles.length>3||
+      step.roles.some(role=>typeof role!=='string'||!Object.hasOwn(riskPathRoles,role))||
+      new Set(step.roles).size!==step.roles.length||
+      typeof step.event!=='string'||!step.event.trim()||
+      typeof step.evidence!=='string'||!step.evidence.trim()||
+      typeof step.interruption!=='string')return null;
+   if(step.roles.includes('prevention')&&!step.interruption.trim())return null;
+   previous=order.get(step.stageId);
+   hasOrigin ||=step.roles.includes('origin');
+   hasConsequence ||=step.roles.includes('exposure')||step.roles.includes('detection');
+   steps.push({
+     stageId:step.stageId,roles:step.roles,
+     event:maxLength(step.event,250),
+     interruption:maxLength(step.interruption,250),
+     evidence:maxLength(step.evidence,250)
+   });
+ }
+ if(!hasOrigin||!hasConsequence)return null;
+ return {pathway:value.pathway,failure:maxLength(value.failure,350),
+   uncertainty:maxLength(value.uncertainty,280),steps};
+}
 function validateClarification(item){
  if(!isPlainObject(item)||typeof item.question!=='string'||!item.question.trim()||
     typeof item.why!=='string'||!item.why.trim()||
@@ -206,6 +243,7 @@ export function validateAgentResponse(input,{scenarioText,requireGrounding=false
    validateDecisionPerspectives(input.decisionPerspectives,allowedReferenceIds);
  const operationalReview=input.operationalReview==null?null:
    validateOperationalReview(input.operationalReview,allowedReferenceIds);
+ const riskPath=input.riskPath==null?null:validateRiskPath(input.riskPath);
  // Record structural omission without echoing untrusted content into logs.
  // A malformed optional analytical lens is suppressed instead of accepted.
  const advisoryWarnings=[];
@@ -213,6 +251,8 @@ export function validateAgentResponse(input,{scenarioText,requireGrounding=false
    advisoryWarnings.push('Some generated perspectives were invalid and were not used.');
  if(input.operationalReview!==undefined && input.operationalReview!==null && !operationalReview)
    advisoryWarnings.push('An operational analysis field was invalid and was not used.');
+ if(input.riskPath!==undefined && input.riskPath!==null && !riskPath)
+   advisoryWarnings.push('The proposed lifecycle trace could not be validated and was not shown.');
  const state={
    contractVersion:AGENT_CONTRACT_VERSION,
    scenarioText:scenario,
@@ -226,6 +266,7 @@ export function validateAgentResponse(input,{scenarioText,requireGrounding=false
    clarifications,
    ...(decisionPerspectives?{decisionPerspectives}:{}),
    ...(operationalReview?{operationalReview}:{}),
+   ...(riskPath?{riskPath}:{}),
    ...(advisoryWarnings.length?{advisoryWarnings}:{}),
    citations,
    ...(requireGrounding ? {conclusions,approvalOutcomes} : {}),
