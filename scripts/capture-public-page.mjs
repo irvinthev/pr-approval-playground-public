@@ -199,7 +199,8 @@ async function checkChallengeAssessment(page, captureDecisionBrief) {
   check((await page.locator('.cdr-path-detail').innerText()).includes('not evidence that the stage has no risk'),
     'Unmapped stages must not be represented as risk-free');
   await page.locator('.cdr-path-full summary').click();
-  await page.locator('.cdr-path-strip .cdr-path-button[data-path-stage="authorization"]').click();
+  check(await page.locator('.cdr-path-strip .cdr-path-button[data-path-stage="authorization"]').getAttribute('aria-pressed')==='true',
+    'Closing expanded lifecycle should restore an accessible selected stage');
   check(await page.locator('#cdr-preview .cdr-recon').isVisible(),
     'Human-delegated PR case must show reconciliation question');
   check((await page.locator('#cdr-preview .cdr-recon').innerText()).includes('Unknown'),
