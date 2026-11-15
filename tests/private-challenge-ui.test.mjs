@@ -55,14 +55,13 @@ test('Private lab explicitly labels reasoning basis and does not imply every cla
 });
 
 
-test('V5 research is explicit opt-in with optional URL and source provenance',()=>{
- assert.match(source,/id="research" type="checkbox"/);
- assert.match(source,/id="reference" type="url"/);
- assert.match(source,/researchMode=el\('research'\)\.checked\?'discover':'catalog'/);
- assert.match(source,/body:JSON\.stringify\(\{scenarioText:scenario,turns,researchMode,referenceUrl,/);
- assert.match(source,/data\?\.research/);
- assert.match(source,/source\.url/);
- assert.match(source,/frame\.srcdoc=research\.suggestionHtml/);
- assert.match(source,/allow-popups allow-popups-to-escape-sandbox/);
- assert.match(source,/el\('research'\)\.checked=false/);
+test('Technical reference cards are displayed with separate evidence-use labels',()=>{
+ assert.match(source,/id="engineering-details"/);
+ assert.match(source,/id="engineering-references"/);
+ assert.match(source,/renderEngineeringReferences\(data\)/);
+ assert.match(source,/modelUsed\?'Model identified as supporting context'/);
+ assert.match(source,/Made available; not cited by model/);
+ assert.match(source,/ref\.url/);
+ assert.match(source,/no live web research is performed|No live web research is performed/);
+ assert.doesNotMatch(source,/googleSearch|frame\.srcdoc|id="research"/);
 });

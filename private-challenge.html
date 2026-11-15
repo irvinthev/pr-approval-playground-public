@@ -24,11 +24,8 @@ ul{padding-left:23px;margin:8px 0}.citation{padding:10px 0;border-top:1px solid 
 #result[hidden],#followup[hidden]{display:none}.section{margin-top:21px}.mono{font-family:ui-monospace,monospace;word-break:break-all}
 #remember-option{display:flex;align-items:center;gap:9px;margin-top:12px;font-size:14px}
 #remember-option input{width:auto;accent-color:var(--mint)}
-#research-option{display:flex;align-items:center;gap:9px;font-size:14px}
-#research-option input{width:auto;accent-color:var(--mint)}
-#research-evidence[hidden]{display:none}
-.search-suggestions{width:100%;min-height:110px;border:0;background:transparent;display:block}
-.research-link{display:block;margin:8px 0;overflow-wrap:anywhere}
+#engineering-details[hidden]{display:none}
+.reference-link{display:block;margin:8px 0;overflow-wrap:anywhere}
 .decision-first{border-left:4px solid var(--mint);background:#173b45}
 .decision-first p{font-size:17px;line-height:1.6;margin:10px 0 0}
 .option-card{padding:14px;border:1px solid #3d6475;border-radius:11px;margin:10px 0;background:#123646}
@@ -36,16 +33,195 @@ details.deep-dive{border:1px solid var(--line);border-radius:12px;padding:12px 1
 details.deep-dive summary{cursor:pointer;font-weight:750;color:var(--mint);padding:7px 0}
 details.deep-dive summary:focus-visible{outline:3px solid var(--mint);outline-offset:3px}
 #result[hidden],#followup[hidden]{display:none}
+
+/* V6 decision-workspace layout: visual presentation only; the API contract is unchanged. */
+:root{--workspace-bg:#0b2034;--workspace-card:#102b42;--workspace-border:#466477;--lavender:#c8b4ff}
+.app-frame{max-width:1600px;margin:0 auto;display:grid;grid-template-columns:224px minmax(0,1fr);min-height:100dvh}
+.app-sidebar{position:sticky;top:0;align-self:start;height:100dvh;padding:24px 16px;background:#071a2d;border-right:1px solid #35546a;display:flex;flex-direction:column;gap:18px}
+.sidebar-brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:18px;line-height:1.22;letter-spacing:-.02em}
+.brand-mark{display:grid;place-items:center;width:38px;height:38px;border:1px solid #6dcbcd;border-radius:12px;color:var(--mint);background:#143748;flex-shrink:0}
+.sidebar-kicker{font-size:11px;letter-spacing:.12em;color:#91b6c9;font-weight:750;text-transform:uppercase}
+.sidebar-group{display:flex;flex-direction:column;gap:5px}
+.sidebar-group button{display:block;text-align:left;width:100%;font-weight:600;background:transparent;border:1px solid transparent;padding:11px 12px;font-size:13px}
+.sidebar-group button:hover,.sidebar-group button[aria-current="page"]{background:#16425a;border-color:#397b91;color:var(--mint)}
+.sidebar-note{margin-top:auto;padding-top:15px;border-top:1px solid #35546a;font-size:12px;color:#abc4d3}
+main#main-content{max-width:none;width:100%;min-width:0;margin:0;padding:24px clamp(16px,3vw,40px) 80px}
+main#main-content nav{margin-bottom:12px}
+main#main-content .eyebrow{margin-top:23px;color:#7bdfe8}
+main#main-content h1{max-width:1100px;font-size:clamp(28px,3.7vw,44px);margin:10px 0 8px}
+main#main-content .lead{font-size:15px;max-width:920px;margin:0 0 18px}
+main#main-content .notice{margin-top:14px}
+main#main-content .panel{background:#0e273c;border-color:#38586c}
+#formtitle{margin-bottom:10px}
+.scenario-intro{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.scenario-intro .small{max-width:280px}
+#scenario{min-height:112px}
+#result{padding:18px}
+.workspace-heading{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.workspace-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:16px 0 18px;position:sticky;top:0;z-index:3;padding:8px 0;background:#0e273c}
+.workspace-tabs button{background:#102e46;border-color:#48697a;color:#e7f2f8;padding:12px 8px;text-align:center;min-width:0}
+.workspace-tabs button[aria-selected="true"]{background:linear-gradient(115deg,#bef9e8,#75e6d3);border-color:#bef9e8;color:#062d37}
+.workspace-tabs button:focus-visible{outline-offset:1px}
+.workspace-grid{display:grid;grid-template-columns:minmax(0,1fr) 262px;gap:16px}
+.workspace-primary{min-width:0}
+.workspace-view[hidden]{display:none!important}
+.workspace-view h3{font-size:18px}
+.workspace-view > .small{margin-top:0}
+.workspace-rail{display:flex;flex-direction:column;gap:14px;align-self:start;position:sticky;top:92px}
+.rail-card{background:#0d2338;border:1px solid #496b7c;border-radius:13px;padding:14px}
+.rail-card h3{font-size:15px}
+.rail-link{display:block;padding:11px 0;border-top:1px solid #305064;text-decoration:none;font-size:13px;line-height:1.45}
+.rail-link:first-of-type{border-top:0}
+.rail-link span{display:block;color:#d7e5ed}
+.rail-link small{display:block;color:var(--mint)}
+.rail-empty{color:var(--muted);font-size:13px}
+.decision-first{background:#153c49;padding:16px;margin:0 0 16px}
+.decision-first p{font-size:17px;line-height:1.52}
+.model-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.model-card{min-width:0;border-radius:13px;border:1px solid #5f8299;background:#dceef9;color:#102738;overflow:hidden}
+.model-card header{padding:13px 12px;background:#123c60;color:white;min-height:113px}
+.model-card header h4{font-size:15px;line-height:1.25;margin:0 0 7px}
+.model-card header p{font-size:12px;line-height:1.35;margin:0}
+.model-card.delegated header{background:#363467}
+.model-card.autonomous header{background:#135b4a}
+.model-card.delegated{background:#e8e4fb}
+.model-card.autonomous{background:#d7f3e8}
+.model-card dl{margin:0;padding:4px 13px 12px}
+.model-card dt{font-size:12px;font-weight:850;margin:12px 0 3px}
+.model-card dd{font-size:12px;line-height:1.42;margin:0}
+.model-card dd+dt{border-top:1px solid #b0c4cf;padding-top:8px}
+.model-footnote{font-size:12px;color:var(--muted);margin:10px 0 16px}
+.model-selector{display:none}
+#approaches{margin-top:20px}
+#approaches h3{font-size:17px}
+#approaches .option-card{margin:9px 0;padding:11px 13px}
+.challenge-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.challenge-actions button{background:#123c54;text-align:left;min-height:64px;font-size:13px}
+.challenge-actions button:hover{border-color:var(--mint);color:var(--mint)}
+.workspace-view .card{margin:10px 0}
+#workspace-risk .card{padding:12px 14px}
+#workspace-risk .card p{margin:8px 0}
+#workspace-risk #challenges h3{font-size:15px}
+#workspace-risk #unknowns li{margin-bottom:7px}
+#workspace-evidence details.deep-dive{margin-top:10px}
+#followup.panel{margin:14px 0 0;padding:16px}
+#followup h2{font-size:18px}
+#challenge-status{min-height:24px;color:var(--mint);font-size:13px;margin-top:10px}
+#challenge-status.error{color:#ffb0a5}
+#result .workspace-view h2{font-size:20px}
+#result .workspace-view > h2{margin-top:3px}
+#view-status{font-size:12px;color:var(--muted)}
+#engineering-details .citation{padding:12px 0}
+@media(max-width:1190px){
+ .workspace-grid{grid-template-columns:minmax(0,1fr)}
+ .workspace-rail{display:none}
+}
+@media(max-width:980px){
+ .app-frame{grid-template-columns:1fr}
+ .app-sidebar{display:none}
+ main#main-content{padding:16px 15px 70px}
+ main#main-content nav{font-size:12px}
+}
+@media(max-width:650px){
+ main#main-content h1{font-size:29px}
+ #result{padding:13px}
+ .workspace-tabs{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;top:0}
+ .workspace-tabs button{padding:11px 6px;font-size:13px}
+ .workspace-heading h2{margin:0}
+ .model-grid{grid-template-columns:1fr}
+ .model-grid .model-card{display:none}
+ #operating-models[data-selected-model="human"] .model-card.human,
+ #operating-models[data-selected-model="delegated"] .model-card.delegated,
+ #operating-models[data-selected-model="autonomous"] .model-card.autonomous{display:block}
+ .model-selector{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:12px 0}
+ .model-selector button{font-size:12px;padding:9px 4px}
+ .model-selector button[aria-pressed="true"]{background:var(--mint);color:#123e42}
+ .model-card header{min-height:0}
+ .model-card dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 10px}
+ .model-card dt{margin:6px 0 0}
+ .model-card dd+dt{border:0;padding:0}
+ .challenge-actions{grid-template-columns:1fr}
+ .challenge-actions button{min-height:49px}
+ .scenario-intro{display:block}
+ .scenario-intro .small{max-width:none}
+ .decision-first p{font-size:16px}
+}
+
+
+/* V7 presentation-only assessment summary. All report content derives from
+   existing response fields plus clearly labelled illustrative safeguards. */
+.workspace-tabs{grid-template-columns:repeat(5,minmax(0,1fr))}
+.report-banner{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:17px;
+  background:linear-gradient(120deg,#184452,#162f4c);border:1px solid #78b9bb;border-radius:13px}
+.report-banner h3{font-size:21px;margin:2px 0 8px}
+.report-banner p{margin:5px 0;overflow-wrap:anywhere}
+.report-eyebrow{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--mint);font-weight:800}
+.report-stamp{display:inline-flex;flex-shrink:0;padding:6px 9px;border:1px solid #91b9ce;border-radius:9px;
+  color:#e8effb;font-size:12px;font-weight:750;max-width:160px;line-height:1.35}
+.report-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0 18px}
+.report-metric{padding:13px;background:#102d40;border:1px solid #42677a;border-radius:10px}
+.report-metric strong{display:block;font-size:21px;line-height:1.2;color:var(--mint)}
+.report-metric span{display:block;color:#c9dce6;font-size:12px;margin-top:5px}
+.report-section{margin:18px 0 0}
+.report-section h3{font-size:17px;margin-bottom:5px}
+.report-section > p.small{margin:4px 0 11px}
+.report-risk-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.report-risk-card{border:1px solid #486c7d;background:#103248;border-radius:10px;padding:12px;min-width:0}
+.report-risk-card strong{display:block;font-size:14px;line-height:1.4}
+.report-risk-card p{font-size:13px;color:#ccdeea;line-height:1.45;margin:7px 0 0}
+.report-unknown{border-left:3px solid #e8c789;padding:9px 12px;background:#233649;border-radius:0 9px 9px 0}
+.report-unknown li{font-size:13px;margin-bottom:5px}
+.report-model-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.report-model{background:#133147;border:1px solid #517489;border-radius:11px;min-width:0;overflow:hidden}
+.report-model h4{font-size:14px;margin:0;padding:11px;background:#1b4e66;color:#ecf7ff}
+.report-model.delegated h4{background:#454476}
+.report-model.autonomous h4{background:#196954}
+.report-model ul{padding:0 12px 0 27px;margin:13px 0}
+.report-model li{font-size:12px;line-height:1.55;margin-bottom:8px}
+.report-source-groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.report-source-group{background:#112c42;border:1px solid #42677a;border-radius:10px;padding:12px;min-width:0}
+.report-source-group h4{font-size:14px;margin:0 0 8px}
+.report-source-link{display:block;padding:7px 0;font-size:12px;overflow-wrap:anywhere}
+.report-source-link small{display:block;color:#bed0df;font-size:11px}
+#report-preview-link{margin:12px 0 4px}
+.report-note{font-size:12px;color:#c6d9e3;border-top:1px solid #3d6475;margin-top:18px;padding-top:12px}
+@media(max-width:900px){.report-model-grid{grid-template-columns:1fr}.report-model ul{margin:12px 0}.report-source-groups{grid-template-columns:1fr}}
+@media(max-width:650px){
+ .workspace-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .workspace-tabs button{font-size:12px;padding:10px 4px}
+ .report-banner{display:block;padding:13px}
+ .report-stamp{margin-top:10px}
+ .report-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+ .report-metric{padding:9px}
+ .report-metric strong{font-size:18px}
+ .report-metric span{font-size:11px}
+ .report-risk-list{grid-template-columns:1fr}
+}
+
 </style>
 </head>
-<body><main>
+<body><div class="app-frame">
+<aside class="app-sidebar" aria-label="Workspace navigation">
+  <div class="sidebar-brand"><span class="brand-mark" aria-hidden="true">◇</span><span>AI-Enabled Engineering<br>Challenge Lab</span></div>
+  <div class="sidebar-kicker">Explore · Compare · Challenge</div>
+  <div class="sidebar-group">
+    <button type="button" id="nav-scenario" aria-current="page">Start a scenario</button>
+    <button type="button" data-target="architecture">Architecture</button>
+    <button type="button" data-target="risk">Risks &amp; tradeoffs</button>
+    <button type="button" data-target="evidence">Sources &amp; evidence</button>
+    <button type="button" data-target="challenge">Challenge the decision</button>
+    <button type="button" data-target="report">Assessment summary</button>
+  </div>
+  <p class="sidebar-note">Private educational prototype. Curated public references only. No approval or deployment authority.</p>
+</aside>
+<main id="main-content">
 <nav><strong>AI-Enabled SDLC Risk &amp; Assurance Field Guide</strong><a href="./open-scenario.html">← Rule-based public lab</a></nav>
-<div class="eyebrow">Private prototype · Vercel Preview only</div>
-<h1>Challenge your software-delivery design.</h1>
-<p class="lead">Describe a fictional AI review, approval, or deployment workflow. Gemini will compare the design with competing engineering approaches, challenge assumptions, and link relevant evidence and frameworks.</p>
+<div class="eyebrow">Private decision workspace · Vercel Preview only</div>
+<h1>Build. Compare. Challenge. Decide.</h1>
+<p class="lead">Explore whether AI should review, submit or decide a software change. Compare authority models, technical implementation, risks, and source-backed reasoning—not just a control checklist.</p>
 <div class="notice"><strong>Privacy and scope:</strong> Use fictional or publicly shareable scenarios only. Do not enter confidential company information, live PRs, credentials, internal diagrams, or personal data. Gemini free-tier requests may be used by Google to improve its services. This experience does not authorize changes or verify implemented controls.</div>
 <section class="panel" aria-labelledby="formtitle">
-<h2 id="formtitle">01 · Your scenario</h2>
+<div class="scenario-intro"><h2 id="formtitle">01 · Define the problem</h2><p class="small">What engineering outcome are we trying to improve?</p></div>
 <div class="field" id="token-field"><label for="token">Private test access token</label>
 <input id="token" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Paste your CHALLENGE_API_TOKEN" aria-describedby="tokenhelp">
 <p class="small" id="tokenhelp">This is the separate private test token you saved in Vercel, <strong>not</strong> your Gemini API key. The token stays in this tab unless you clear the session. If you opt in below, the lab remembers a separate session for this browser.</p>
@@ -54,37 +230,166 @@ details.deep-dive summary:focus-visible{outline:3px solid var(--mint);outline-of
 <div class="field"><label for="scenario">What should the AI challenge?</label>
 <textarea id="scenario" maxlength="4000" placeholder="Two AI agents agree that a pull request is low risk. Is that enough to allow automatic approval?"></textarea>
 </div>
-<div class="field"><label id="research-option"><input id="research" type="checkbox"> Research public technical sources with Google Search</label>
-<p class="small">Optional. Uses native Gemini web grounding, may be slower and incur per-query charges. Prefer publisher documentation; retrieved sources do not verify an implementation.</p>
-<label for="reference">Optional public reference URL</label>
-<input id="reference" type="url" inputmode="url" maxlength="1600" placeholder="https://docs.github.com/..." />
-<p class="small">Enable research to investigate this URL. Do not supply private or authenticated links.</p></div>
+<p class="small">Free source library: the lab automatically selects a few relevant, source-linked technical reference summaries. No live web research is performed. Sources are not proof of a deployed configuration.</p>
 <div class="row"><button class="primary" id="ask" type="button">Challenge my design</button><button id="example" type="button">Load example</button><button id="reset" type="button">Clear session</button></div>
 <p id="status" role="status" aria-live="polite"></p>
 </section>
 <section id="result" class="panel" hidden aria-labelledby="resulttitle">
-<h2 id="resulttitle">02 · Gemini's design challenge</h2>
-<p class="small">Model-generated reasoning. Evidence-basis labels are classifications, not independent verification. References appear only when relevant.</p>
-<div class="card decision-first" id="decision-summary" aria-live="polite"></div>
-<div id="approaches"></div>
-<div id="research-evidence" class="card" hidden aria-label="Live retrieved research references"></div>
-<details class="deep-dive" id="evidence-details"><summary>Evidence, framework references and technical questions</summary>
-<div id="approval-outcomes"></div>
-<div id="conclusions"></div>
-<div id="facts"></div>
-<div id="challenges"></div>
-<div id="unknowns"></div>
-</details>
-</section>
-<section class="panel" id="followup" hidden aria-labelledby="followtitle">
-<h2 id="followtitle">03 · Ask a follow-up</h2>
-<p class="small">Follow-ups include bounded, server-signed snapshots of Gemini's prior answers, so it can revisit its own reasoning. History stays in this tab and is cleared when you reset.</p>
-<label for="question">What would you challenge next?</label>
-<textarea id="question" maxlength="1000" style="min-height:94px" placeholder="What independent safeguard would make this safer?"></textarea>
-<div class="row"><button class="primary" id="continue" type="button">Continue the challenge</button><span class="small" id="turncount"></span></div>
+  <div class="workspace-heading">
+    <h2 id="resulttitle">02 · Explore the decision</h2>
+    <span id="view-status">Model-generated analysis · Not an approval</span>
+  </div>
+  <div class="workspace-tabs" role="tablist" aria-label="Explore analysis">
+    <button type="button" id="tab-architecture" role="tab" aria-controls="workspace-architecture" aria-selected="true" tabindex="0" data-view="architecture">Architecture</button>
+    <button type="button" id="tab-risk" role="tab" aria-controls="workspace-risk" aria-selected="false" tabindex="-1" data-view="risk">Risks &amp; tradeoffs</button>
+    <button type="button" id="tab-evidence" role="tab" aria-controls="workspace-evidence" aria-selected="false" tabindex="-1" data-view="evidence">Evidence &amp; sources</button>
+    <button type="button" id="tab-challenge" role="tab" aria-controls="workspace-challenge" aria-selected="false" tabindex="-1" data-view="challenge">Challenge</button>
+    <button type="button" id="tab-report" role="tab" aria-controls="workspace-report" aria-selected="false" tabindex="-1" data-view="report">Report</button>
+  </div>
+  <div class="workspace-grid">
+    <div class="workspace-primary">
+      <div class="workspace-view" id="workspace-architecture" role="tabpanel" aria-labelledby="tab-architecture">
+        <div class="card decision-first" id="decision-summary" aria-live="polite"></div>
+        <h3>Compare approval operating models</h3>
+        <p class="small">Illustrative authority models—not Gemini's conclusions about your scenario. Technical components can be shared across models.</p>
+        <div id="operating-models" data-selected-model="delegated">
+          <div class="model-selector" role="group" aria-label="Select operating model on mobile">
+            <button type="button" data-model="human" aria-pressed="false">Human</button>
+            <button type="button" data-model="delegated" aria-pressed="true">Delegated</button>
+            <button type="button" data-model="autonomous" aria-pressed="false">Autonomous</button>
+          </div>
+          <div class="model-grid">
+            <article class="model-card human" data-model="human">
+              <header><h4>1 · Human review</h4><p>Human decides and submits the approval.</p></header>
+              <dl><dt>Decision authority</dt><dd>Human reviewer</dd>
+              <dt>Execution</dt><dd>GitHub UI, API or CLI as authorized</dd>
+              <dt>Enforcement</dt><dd>Configured branch rules, reviewer eligibility, and permissions</dd>
+              <dt>Tradeoff to explore</dt><dd>Review effort and latency versus actual review quality</dd></dl>
+            </article>
+            <article class="model-card delegated" data-model="delegated">
+              <header><h4>2 · Delegated approval</h4><p>Human decides; an agent submits as instructed.</p></header>
+              <dl><dt>Decision authority</dt><dd>Human with explicit delegation</dd>
+              <dt>Execution</dt><dd>Claude Code, CLI, MCP or authorized app</dd>
+              <dt>Enforcement</dt><dd>Credential and tool scope; branch rules; revision checks</dd>
+              <dt>Tradeoff to explore</dt><dd>Less interaction friction; attribution and action scope require scrutiny</dd></dl>
+            </article>
+            <article class="model-card autonomous" data-model="autonomous">
+              <header><h4>3 · Autonomous approval</h4><p>AI evaluates and submits within authorized limits.</p></header>
+              <dl><dt>Decision authority</dt><dd>Defined automated decision policy</dd>
+              <dt>Execution</dt><dd>GitHub App or another approved execution identity</dd>
+              <dt>Enforcement</dt><dd>Eligibility gates, credentials, effective rules and revision binding</dd>
+              <dt>Tradeoff to explore</dt><dd>Potential throughput; decision quality, exceptions and failure detection</dd></dl>
+            </article>
+          </div>
+        </div>
+        <p class="model-footnote">GitHub Apps, rulesets, and CI workflows are implementation mechanisms—not mutually exclusive approval models.</p>
+        <div id="approaches"></div>
+        <button id="report-preview-link" type="button">View assessment summary</button>
+      </div>
+      <div class="workspace-view" id="workspace-risk" role="tabpanel" aria-labelledby="tab-risk" hidden>
+        <h2>Risks, tradeoffs &amp; unanswered questions</h2>
+        <p class="small">Challenge the proposed architecture and the existing workflow equally. These are model-generated questions, not verified deficiencies or mandatory controls.</p>
+        <div id="challenges"></div>
+        <div id="unknowns"></div>
+      </div>
+      <div class="workspace-view" id="workspace-evidence" role="tabpanel" aria-labelledby="tab-evidence" hidden>
+        <h2>Evidence &amp; source provenance</h2>
+        <p class="small">Distinguish documented product behavior, scenario facts and engineering judgment. Source availability does not establish the truth of an implementation claim.</p>
+        <details class="deep-dive" id="engineering-details" hidden><summary>Technical sources provided to Gemini</summary>
+          <div id="engineering-references"></div>
+        </details>
+        <details class="deep-dive" id="evidence-details"><summary>Evidence, framework references and technical questions</summary>
+          <div id="approval-outcomes"></div>
+          <div id="conclusions"></div>
+          <div id="facts"></div>
+        </details>
+      </div>
+      <div class="workspace-view" id="workspace-challenge" role="tabpanel" aria-labelledby="tab-challenge" hidden>
+        <h2>Challenge the recommendation</h2>
+        <p class="small">Each action runs a follow-up against Gemini's signed prior response and uses the same scenario. It can consume a model request.</p>
+        <div class="challenge-actions" aria-label="One-click follow-up challenges">
+          <button type="button" data-challenge="assumptions">Challenge assumptions</button>
+          <button type="button" data-challenge="simpler">Find a simpler option</button>
+          <button type="button" data-challenge="evidence">Check the evidence</button>
+          <button type="button" data-challenge="failure">Explore a failure scenario</button>
+        </div>
+        <section class="panel" id="followup" hidden aria-labelledby="followtitle">
+          <h2 id="followtitle">03 · Your follow-up</h2>
+          <p class="small">Follow-ups include bounded, server-signed snapshots of Gemini's prior answers. History stays in this tab and is cleared when you reset.</p>
+          <label for="question">What would you challenge next?</label>
+          <textarea id="question" maxlength="1000" style="min-height:94px" placeholder="Is there a simpler architecture that solves the same engineering problem?"></textarea>
+          <div class="row"><button class="primary" id="continue" type="button">Continue the challenge</button><span class="small" id="turncount"></span></div>
+        </section>
+        <p id="challenge-status" role="status" aria-live="polite"></p>
+      </div>
+      <div class="workspace-view" id="workspace-report" role="tabpanel" aria-labelledby="tab-report" hidden>
+        <header class="report-banner">
+          <div>
+            <div class="report-eyebrow">Scenario-based · preliminary assessment</div>
+            <h3>AI approval · assessment summary</h3>
+            <p id="report-scenario" class="small"></p>
+            <p id="report-takeaway"></p>
+          </div>
+          <span class="report-stamp">Not independently verified</span>
+        </header>
+        <div id="report-metrics" class="report-grid" aria-label="Assessment coverage"></div>
+        <section class="report-section" aria-labelledby="report-risks-title">
+          <h3 id="report-risks-title">Risks and questions to investigate</h3>
+          <p class="small">Questions derived from this Gemini response, not verified findings. No severity or residual-risk score has been assigned.</p>
+          <div id="report-risks" class="report-risk-list"></div>
+        </section>
+        <section class="report-section" aria-labelledby="report-unknowns-title">
+          <h3 id="report-unknowns-title">Implementation evidence not yet established</h3>
+          <div id="report-unknowns" class="report-unknown"></div>
+        </section>
+        <section class="report-section" aria-labelledby="report-controls-title">
+          <h3 id="report-controls-title">Example safeguards by approval model</h3>
+          <p class="small">Illustrative design patterns—not confirmed controls, universal requirements, or an assessment of operating effectiveness. Apply only where relevant.</p>
+          <div class="report-model-grid">
+            <div class="report-model human"><h4>1 · Human decides and submits</h4>
+              <ul>
+                <li>Defined reviewers and applicable ownership routing, including CODEOWNERS where appropriate</li>
+                <li>Effective branch protections, review requirements and stale-review treatment</li>
+                <li>Traceable GitHub reviewer, PR revision, and merge outcome</li>
+              </ul>
+            </div>
+            <div class="report-model delegated"><h4>2 · Human decides, agent submits</h4>
+              <ul>
+                <li>Explicit human instruction and the particular PR/revision authorized</li>
+                <li>Bounded CLI, MCP, App and credential permissions; independently enforced merge rules</li>
+                <li>Correlation of human decision, agent action, GitHub review and revision</li>
+              </ul>
+            </div>
+            <div class="report-model autonomous"><h4>3 · AI decides and submits</h4>
+              <ul>
+                <li>Deterministic scope and exclusions; explicit automated decision policy</li>
+                <li>Restricted execution identity and revision-bound approval/merge gates</li>
+                <li>Performance monitoring, reconciliation, incident response and automation suspension</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="report-section" aria-labelledby="report-sources-title">
+          <h3 id="report-sources-title">Source basis</h3>
+          <p class="small">Documents supplied to the model or cited in its response. A source appearing here does not mean a particular control is implemented or that the model's interpretation has been verified.</p>
+          <div id="report-sources" class="report-source-groups"></div>
+        </section>
+        <p class="report-note">Preliminary design discussion only. Observed gaps, final control expectations, applicability and acceptance decisions require direct implementation evidence. The report uses the existing model response; no separate assessment engine or new API request.</p>
+      </div>
+    </div>
+    <aside class="workspace-rail" aria-label="Context and quick challenges">
+      <section class="rail-card"><h3>Selected technical references</h3><div id="rail-sources"><p class="rail-empty">Sources appear after analysis.</p></div></section>
+      <section class="rail-card"><h3>Challenge this result</h3><div class="challenge-actions">
+        <button type="button" data-challenge="assumptions">Challenge assumptions</button>
+        <button type="button" data-challenge="simpler">Find a simpler option</button>
+        <button type="button" data-challenge="evidence">Check the evidence</button>
+        <button type="button" data-challenge="failure">Explore a failure scenario</button>
+      </div></section>
+    </aside>
+  </div>
 </section>
 <p class="small section">Private test only. Vercel Authentication and an independent test token restrict access. No unlimited public chat, saved history, or automatic approval. The model provider and service limits may change.</p>
-</main>
+</main></div>
 <script type="module">
 const el=id=>document.getElementById(id);
 const state={scenario:null,turns:[],continuityReceipts:[],busy:false,remembered:false};
@@ -113,10 +418,53 @@ function list(parent,items){
   for(const item of items)add('li',ul,item);
 }
 function title(parent,value){add('h3',parent,value)}
-function status(message,error=false){el('status').textContent=message;el('status').classList.toggle('error',error)}
+function status(message,error=false){
+  for(const id of ['status','challenge-status']){
+    const node=el(id);
+    if(node){node.textContent=message;node.classList.toggle('error',error)}
+  }
+}
+function setView(view,scroll=false){
+  const allowed=['architecture','risk','evidence','challenge','report'];
+  if(!allowed.includes(view))return;
+  if(el('result').hidden){
+    status('Analyze a fictional scenario to explore the workspace.');
+    el('scenario').focus();
+    return;
+  }
+  for(const name of allowed){
+    const active=name===view;
+    const tab=el('tab-'+name),panel=el('workspace-'+name);
+    tab.setAttribute('aria-selected',String(active));
+    tab.tabIndex=active?0:-1;
+    panel.hidden=!active;
+  }
+  document.querySelectorAll('.sidebar-group [data-target]').forEach(button=>{
+    button.setAttribute('aria-current',button.dataset.target===view?'page':'false');
+  });
+  el('nav-scenario').setAttribute('aria-current','false');
+  if(scroll)el('result').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function renderRailSources(data){
+  const parent=el('rail-sources');
+  clear(parent);
+  const refs=Array.isArray(data.engineeringReferences)?data.engineeringReferences:[];
+  if(!refs.length){add('p',parent,'No curated technical references were selected.','rail-empty');return}
+  for(const ref of refs.slice(0,5)){
+    try{
+      const url=new URL(ref.url);
+      if(url.protocol!=='https:')continue;
+      const link=add('a',parent,'','rail-link');
+      link.href=url.href;link.target='_blank';link.rel='noopener noreferrer';
+      add('span',link,ref.title||ref.id);
+      add('small',link,ref.modelUsed?'Model identified as used':'Provided as context');
+    }catch{}
+  }
+}
 function busy(value){
   state.busy=value;
   el('ask').disabled=value;el('continue').disabled=value;el('reset').disabled=value;
+  document.querySelectorAll('[data-challenge]').forEach(btn=>btn.disabled=value || state.turns.length>=6);
   el('ask').textContent=value?'Analyzing…':'Challenge my design';
   el('continue').textContent=value?'Analyzing…':'Continue the challenge';
 }
@@ -133,51 +481,104 @@ function renderCitation(parent,citation){
     }
   }catch{}
 }
-function renderResearch(data){
-  const section=el('research-evidence');
+function renderEngineeringReferences(data){
+  const section=el('engineering-references'),details=el('engineering-details');
   clear(section);
-  const research=data?.research;
-  section.hidden=!research;
-  if(!research)return;
-  title(section,'Live public research');
-  add('p',section,research.note||'Research provider did not report source metadata.','small');
-  for(const source of (research.sources||[]).slice(0,8)){
+  const refs=Array.isArray(data.engineeringReferences)?data.engineeringReferences:[];
+  details.hidden=!refs.length;
+  details.open=false;
+  if(!refs.length)return;
+  add('p',section,'Curated summaries reviewed as of the displayed date. This is not live retrieval; source links and model-identified usage do not independently establish factual accuracy.','small');
+  for(const ref of refs.slice(0,5)){
+    const card=add('div',section,'','citation');
+    add('strong',card,ref.title||ref.id);
+    add('div',card,ref.modelUsed?'Model identified as supporting context':'Made available; not cited by model','tag');
+    add('p',card,[ref.publisher,ref.kind,'Reviewed '+ref.reviewedAsOf].filter(Boolean).join(' · '),'small');
+    if(ref.limits)add('p',card,'Limit: '+ref.limits,'small');
     try{
-      const url=new URL(source.url);
-      if(url.protocol!=='https:')continue;
-      const link=add('a',section,source.title||url.hostname,'research-link');
-      link.href=url.href;link.target='_blank';link.rel='noopener noreferrer';
+      const url=new URL(ref.url);
+      if(url.protocol==='https:'){
+        const link=add('a',card,'Publisher documentation','reference-link');
+        link.href=url.href;link.target='_blank';link.rel='noopener noreferrer';
+      }
     }catch{}
   }
-  if(research.evidence?.length){
-    const detail=document.createElement('details');
-    const summary=document.createElement('summary');
-    summary.textContent='View source-linked research passages';
-    detail.append(summary);section.append(detail);
-    for(const item of research.evidence.slice(0,8)){
-      const card=add('div',detail,'','citation');
-      add('p',card,item.statement||'','small');
-      for(const href of (item.sourceUrls||[]).slice(0,2)){
-        try{
-          const u=new URL(href);
-          if(u.protocol!=='https:')continue;
-          const link=add('a',card,u.hostname,'research-link');
-          link.href=u.href;link.target='_blank';link.rel='noopener noreferrer';
-        }catch{}
-      }
+}
+
+function renderAssessmentReport(data){
+  const risks=el('report-risks'),unknowns=el('report-unknowns'),metrics=el('report-metrics'),sources=el('report-sources');
+  for(const node of [risks,unknowns,metrics,sources])clear(node);
+  const primary=Array.isArray(data.conclusions)?data.conclusions[0]:null;
+  const scenario=state.scenario||'No scenario was supplied.';
+  el('report-scenario').textContent='Scenario: '+(scenario.length>260?scenario.slice(0,257)+'…':scenario);
+  el('report-takeaway').textContent=primary?.application||'No supported recommendation was returned. Further analysis is required.';
+  const questions=Array.isArray(data.challenges)?data.challenges.slice(0,6):[];
+  const openItems=Array.isArray(data.unknowns)?data.unknowns.slice(0,8):[];
+  const refs=Array.isArray(data.engineeringReferences)?data.engineeringReferences.slice(0,5):[];
+  const cited=(Array.isArray(data.conclusions)?data.conclusions:[]).flatMap(c=>Array.isArray(c.citations)?c.citations:[]);
+  const knownLinks=new Set();
+  const groups={
+    'Platform and engineering documentation':[],
+    'Security and framework guidance':[],
+    'Research and practitioner perspectives':[]
+  };
+  for(const ref of refs){
+    let url;
+    try{url=new URL(ref.url)}catch{continue}
+    if(url.protocol!=='https:'||knownLinks.has(url.href))continue;
+    knownLinks.add(url.href);
+    const kind=String(ref.kind||'');
+    const group=kind==='technical-documentation'?'Platform and engineering documentation':
+      (kind.includes('framework')||kind.includes('security'))?'Security and framework guidance':
+      'Research and practitioner perspectives';
+    groups[group].push({
+      title:ref.title||ref.id,url:url.href,
+      note:(ref.modelUsed?'Model identified as used':'Provided as context')+' · '+(ref.publisher||'Publisher unknown')
+    });
+  }
+  for(const citation of cited){
+    let url;
+    try{url=new URL(citation.url)}catch{continue}
+    if(url.protocol!=='https:'||knownLinks.has(url.href))continue;
+    knownLinks.add(url.href);
+    groups['Security and framework guidance'].push({
+      title:citation.sourceTitle||citation.provisionTitle||'Catalog reference',
+      url:url.href,note:'Framework catalog provision cited; applicability not independently verified'
+    });
+  }
+  const metricValues=[
+    [questions.length,'Model-generated questions'],
+    [openItems.length,'Open implementation unknowns'],
+    [knownLinks.size,'Source links']
+  ];
+  for(const [number,caption] of metricValues){
+    const card=add('div',metrics,'','report-metric');
+    add('strong',card,String(number));
+    add('span',card,caption);
+  }
+  if(questions.length){
+    for(const item of questions){
+      const card=add('div',risks,'','report-risk-card');
+      add('strong',card,item.question||'Question to investigate');
+      if(item.reason)add('p',card,item.reason);
+      else add('p',card,'Potential concern only; materiality and implementation status have not been established.');
+    }
+  }else add('p',risks,'No model-generated risk questions were returned. Risk coverage is not established.','small');
+  if(openItems.length)list(unknowns,openItems);
+  else add('p',unknowns,'No specific unknowns were returned; this does not establish that the implementation is verified.','small');
+  let count=0;
+  for(const [name,items] of Object.entries(groups)){
+    if(!items.length)continue;
+    count++;
+    const group=add('section',sources,'','report-source-group');
+    add('h4',group,name);
+    for(const item of items){
+      const link=add('a',group,item.title,'report-source-link');
+      link.href=item.url;link.target='_blank';link.rel='noopener noreferrer';
+      add('small',link,item.note);
     }
   }
-  if(typeof research.suggestionHtml==='string' && research.suggestionHtml){
-    // Google-supplied Search Suggestions are displayed without editing the markup.
-    // Isolate provider HTML in a sandboxed frame; scripts and same-origin access stay disabled.
-    const frame=document.createElement('iframe');
-    frame.title='Google Search suggestions';
-    frame.className='search-suggestions';
-    frame.setAttribute('sandbox','allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation');
-    frame.setAttribute('referrerpolicy','no-referrer');
-    frame.srcdoc=research.suggestionHtml;
-    section.append(frame);
-  }
+  if(!count)add('p',sources,'No source references were provided in the model response. Do not assume external verification.','small');
 }
 function evidenceLabel(type){
   return ({
@@ -188,7 +589,9 @@ function evidenceLabel(type){
 }
 function render(data){
   for(const id of ['decision-summary','approaches','approval-outcomes','conclusions','facts','challenges','unknowns'])clear(el(id));
-  renderResearch(data);
+  renderEngineeringReferences(data);
+  renderRailSources(data);
+  renderAssessmentReport(data);
   const primary=data.conclusions?.[0];
   if(primary){
     title(el('decision-summary'),'Direct answer');
@@ -218,18 +621,24 @@ function render(data){
     }
   }
   if(data.conclusions?.length){
-    title(el('conclusions'),'Supporting reasoning and framework basis');
-    for(const conclusion of data.conclusions){
+    title(el('conclusions'),'Source basis and additional reasoning');
+    for(const [i,conclusion] of data.conclusions.entries()){
       const box=add('div',el('conclusions'),'','card');
       add('div',box,evidenceLabel(conclusion.basisType),'tag');
-      add('strong',box,'Scenario basis');
-      add('p',box,conclusion.scenarioBasis);
+      if(i===0){
+        add('strong',box,'Primary answer · source basis');
+      }else{
+        add('strong',box,'Scenario basis');
+        add('p',box,conclusion.scenarioBasis);
+      }
       if(conclusion.citations.length){
         add('strong',box,'Relevant catalog references');
         for(const citation of conclusion.citations)renderCitation(box,citation);
       }else add('p',box,'No directly applicable catalog provision cited. This is not verification of product behavior.','small');
-      add('strong',box,'Application to this design');
-      add('p',box,conclusion.application);
+      if(i>0){
+        add('strong',box,'Application to this design');
+        add('p',box,conclusion.application);
+      }
       add('strong',box,'Still to establish');
       add('p',box,conclusion.openQuestion);
     }
@@ -241,19 +650,24 @@ function render(data){
     add('div',box,f.support||'unknown','tag');
     add('p',box,f.statement||'');
   }
-  title(el('challenges'),'Questions worth testing');
+  title(el('challenges'),'Questions worth exploring');
   for(const ch of data.challenges||[]){
-    const box=add('div',el('challenges'),'', 'card');
-    add('h3',box,ch.question||'');
+    const box=document.createElement('details');
+    box.className='card';
+    el('challenges').append(box);
+    const summary=add('summary',box,ch.question||'Explore this question');
+    summary.setAttribute('aria-label','Expand challenge: '+(ch.question||''));
     if(ch.reason)add('p',box,ch.reason);
-    if(ch.tests?.length){add('strong',box,'What to test');list(box,ch.tests)}
-    if(ch.alternatives?.length){add('strong',box,'Alternatives');list(box,ch.alternatives)}
+    if(ch.tests?.length){add('strong',box,'Potential checks — validate their usefulness');list(box,ch.tests)}
+    if(ch.alternatives?.length){add('strong',box,'Additional approaches');list(box,ch.alternatives)}
   }
   if(data.unknowns?.length){title(el('unknowns'),'Still unknown');list(el('unknowns'),data.unknowns)}
   el('evidence-details').open=false;
   el('result').hidden=false;el('followup').hidden=false;
   el('turncount').textContent=state.turns.length+' of 6 follow-up turns used · '+state.continuityReceipts.length+' prior response snapshot(s) retained in this tab';
   el('continue').disabled=state.turns.length>=6;
+  document.querySelectorAll('[data-challenge]').forEach(btn=>btn.disabled=state.turns.length>=6);
+  setView('architecture');
 }
 async function ask(follow){
   if(state.busy)return;
@@ -263,9 +677,6 @@ async function ask(follow){
   if(follow && !state.scenario){status('Analyze a scenario first.',true);return}
   if(follow && state.scenario!==scenario){status('Scenario changed. Start a new challenge to avoid mixing analyses.',true);return}
   if(follow && (!question||state.turns.length>=6)){status('Enter a follow-up, or clear to start a new session.',true);return}
-  const researchMode=el('research').checked?'discover':'catalog';
-  const referenceUrl=el('reference').value.trim();
-  if(referenceUrl && researchMode==='catalog'){status('Enable research to investigate the reference URL.',true);return}
   const turns=follow?[...state.turns,{role:'user',content:question}]:[];
   busy(true);status('Asking Gemini…');
   try{
@@ -279,7 +690,7 @@ async function ask(follow){
     }
     const resp=await fetch('./api/challenge',{method:'POST',cache:'no-store',credentials:'same-origin',
       headers,
-      body:JSON.stringify({scenarioText:scenario,turns,researchMode,referenceUrl,continuityReceipts:follow?state.continuityReceipts:[]})});
+      body:JSON.stringify({scenarioText:scenario,turns,continuityReceipts:follow?state.continuityReceipts:[]})});
     if(resp.status===401 && state.remembered){
       setRemembered(false);
       el('token').focus();
@@ -301,13 +712,60 @@ async function ask(follow){
   }catch(err){status(err.message||'The request could not be completed.',true)}
   finally{busy(false);if(state.turns.length>=6)el('continue').disabled=true}
 }
+const challengePrompts={
+  assumptions:'Challenge your previous recommendation. What are its strongest unsupported assumptions, and what alternative explanation could undermine it? Distinguish documented product facts from engineering judgment. Correct errors, but do not agree with me automatically.',
+  simpler:'Find a genuinely simpler solution to the original engineering problem, including redesigning or removing unnecessary review steps. Compare the simpler design with your recommendation on authority, enforcement, developer friction, cost and reliability.',
+  evidence:'Identify the material technical claims in your previous answer and distinguish claims directly supported by the curated references from scenario inferences and undocumented assumptions. Correct unsupported technical statements and name the most relevant missing configuration evidence.',
+  failure:'Create one realistic failure scenario that could defeat your recommended architecture. Address the actual decision authority, agent/tool permissions, review revision, merge gate or deployment consequences as relevant. Compare likely detection and recovery with the existing workflow.'
+};
+document.querySelectorAll('#result [role="tab"]').forEach(tab=>{
+  tab.addEventListener('click',()=>setView(tab.dataset.view));
+  tab.addEventListener('keydown',event=>{
+    if(event.key!=='ArrowRight' && event.key!=='ArrowLeft')return;
+    event.preventDefault();
+    const tabs=[...document.querySelectorAll('#result [role="tab"]')];
+    const next=tabs[(tabs.indexOf(tab)+(event.key==='ArrowRight'?1:tabs.length-1))%tabs.length];
+    setView(next.dataset.view);
+    next.focus();
+  });
+});
+document.querySelectorAll('.sidebar-group [data-target]').forEach(button=>{
+  button.addEventListener('click',()=>setView(button.dataset.target,true));
+});
+el('nav-scenario').addEventListener('click',()=>{
+  el('nav-scenario').setAttribute('aria-current','page');
+  document.querySelectorAll('.sidebar-group [data-target]').forEach(btn=>btn.setAttribute('aria-current','false'));
+  el('formtitle').scrollIntoView({behavior:'smooth',block:'start'});
+  el('scenario').focus();
+});
+document.querySelectorAll('#operating-models .model-selector [data-model]').forEach(button=>{
+  button.addEventListener('click',()=>{
+    const selected=button.dataset.model;
+    el('operating-models').dataset.selectedModel=selected;
+    document.querySelectorAll('#operating-models .model-selector button').forEach(btn=>{
+      btn.setAttribute('aria-pressed',String(btn.dataset.model===selected));
+    });
+  });
+});
+document.querySelectorAll('[data-challenge]').forEach(button=>{
+  button.addEventListener('click',()=>{
+    if(state.busy || state.turns.length>=6)return;
+    if(!state.scenario){setView('challenge',true);return}
+    const prompt=challengePrompts[button.dataset.challenge];
+    if(!prompt)return;
+    el('question').value=prompt;
+    setView('challenge',true);
+    ask(true);
+  });
+});
+el('report-preview-link').addEventListener('click',()=>setView('report',true));
 el('ask').addEventListener('click',()=>ask(false));
 el('continue').addEventListener('click',()=>ask(true));
 el('example').addEventListener('click',()=>{el('scenario').value='Two AI agents agree that a pull request is low risk. Is that enough to allow automatic approval?';status('Fictional example loaded.')});
 el('reset').addEventListener('click',async()=>{
   if(state.busy)return;
   const remembered=state.remembered;
-  state.scenario=null;state.turns=[];state.continuityReceipts=[];el('token').value='';el('scenario').value='';el('question').value='';el('reference').value='';el('research').checked=false;
+  state.scenario=null;state.turns=[];state.continuityReceipts=[];el('token').value='';el('scenario').value='';el('question').value='';
   el('remember').checked=false;
   el('result').hidden=true;el('followup').hidden=true;
   if(!remembered){status('Session cleared.');return}
