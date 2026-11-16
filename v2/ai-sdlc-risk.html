@@ -28,7 +28,7 @@
  <div class="takeaway"><strong>DECISION TAKEAWAY</strong><p>A risk label is not a policy decision. Management should define exposure, permitted authority, exceptions and escalation; Engineering then makes those constraints effective.</p></div>
 </section>
 <section class="secondary" aria-labelledby="second-title">
- <div><span class="mini-label">FOLLOW THE CONSEQUENCE</span><h2 id="second-title">Understand the dependency before selecting a safeguard.</h2><p>A change to lib/dedup/key.js can propagate to usage aggregation, billing calculations and reporting. That chain is deliberately fictional, but it illustrates why a restricted-file list may miss indirect critical-function impact.</p></div>
+ <div><span class="mini-label">FOLLOW THE CONSEQUENCE</span><h2 id="second-title">Understand the dependency before selecting a safeguard.</h2><p>A change to lib/dedup/key.js can propagate to usage aggregation, billing calculations and reporting. That chain is deliberately fictional, but it illustrates why a restricted-file list may miss indirect critical-function impact. The wider risk taxonomy also covers defective AI-generated code, data disclosure, tool misuse, prompt injection and software supply-chain compromise.</p></div>
  <div class="mini-stack" aria-label="Key considerations"><div class="mini-step"><b>01</b><div><strong>Shared code</strong><span>Deduplication behavior changes</span></div></div>
 <div class="mini-step"><b>02</b><div><strong>Consumer</strong><span>Usage aggregation depends on it</span></div></div>
 <div class="mini-step"><b>03</b><div><strong>Business process</strong><span>Billing may use affected usage</span></div></div>
