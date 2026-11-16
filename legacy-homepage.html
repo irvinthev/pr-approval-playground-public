@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Overview | AI-Enabled SDLC Risk &amp; Assurance Field Guide</title><link rel="stylesheet" href="./site.css?v=mobile-shell-1"><style>
+.overview .hero h1{max-width:960px;font-size:clamp(30px,4.2vw,50px)}
+.overview .hero .eyebrow{font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:750;color:var(--site-mint)}
+.overview .hero .lead{max-width:820px;font-size:17px}
+.overview-audience{margin:20px 0 25px;padding-left:21px;max-width:860px;color:var(--site-muted);font-size:15px}
+.overview-audience li{margin:10px 0;padding-left:3px}.overview-audience strong{color:var(--site-text)}
+.overview .guide-action{display:inline-flex;align-items:center;text-decoration:none}
+.overview .chapters{display:grid;grid-template-columns:1fr;gap:0;margin:12px 0 25px;border-top:1px solid var(--site-border)}
+.chapter-link{display:grid;grid-template-columns:190px minmax(0,1fr) 20px;gap:15px;align-items:center;padding:17px 12px;min-height:76px;text-decoration:none;border-bottom:1px solid var(--site-border)}
+.chapter-link:hover{background:#122d3c}.chapter-link h2{font-size:18px;line-height:1.3;margin:0;color:var(--site-text)}.chapter-link p{font-size:14px;line-height:1.5;margin:0;color:var(--site-muted)}.chapter-link>span{color:var(--site-mint)}
+.overview-references{border:1px solid var(--site-border);border-radius:9px;padding:0 16px;margin-top:24px}.overview-references summary{padding:13px 0;font-size:13px;min-height:44px}.reference-links{display:flex;flex-wrap:wrap;gap:8px 20px;padding:0 0 18px}.reference-links a{font-size:13px;padding:7px 0;min-height:36px}
+.overview-boundary p{font-size:12px;line-height:1.6;color:#a4bdcd;max-width:850px;margin:23px 0 0}
+@media(max-width:650px){.overview .hero h1{font-size:32px}.overview .hero .lead{font-size:16px}.overview-audience{font-size:14px}.chapter-link{grid-template-columns:minmax(0,1fr) 20px;gap:6px 12px;padding:15px 8px}.chapter-link h2{font-size:17px}.chapter-link p{grid-column:1;font-size:13px}.chapter-link>span{grid-column:2;grid-row:1/3}.reference-links{flex-direction:column;gap:0}.reference-links a{min-height:44px;display:flex;align-items:center}}
+
+.workflow-map{margin:22px 0 28px;padding:22px;border:1px solid var(--site-border);border-radius:12px;background:#102634}.workflow-map h2{margin:0 0 8px;font-size:22px}.workflow-map .intro{color:var(--site-muted);margin:0 0 18px}.workflow-stages{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.workflow-stage{padding:14px;border:1px solid var(--site-border);border-radius:8px;background:#152e3d}.workflow-stage strong{display:block;color:var(--site-text);font-size:14px}.workflow-stage p{font-size:12px;line-height:1.5;color:var(--site-muted);margin:7px 0 0}.workflow-note{margin:15px 0 0;font-size:13px;color:var(--site-muted)}@media(max-width:850px){.workflow-stages{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:480px){.workflow-stages{grid-template-columns:1fr}}
+
+/* Overview: one visible workflow, four bounded simulations, and contextual inspection. */
+.overview .overview-method{border:1px solid var(--site-border);background:#102d3b;border-radius:11px;padding:15px 18px;margin:12px 0 25px}.overview .overview-method p{color:var(--site-muted);font-size:14px;line-height:1.65;margin:0}.overview .overview-method strong{color:var(--site-text)}.overview .overview-method-links{display:flex;gap:8px 20px;flex-wrap:wrap;margin-top:12px}.overview .overview-method-links a{color:var(--site-mint);font-size:13px;font-weight:700}.overview .hero{padding-bottom:12px!important}.overview .hero h1{max-width:920px}.overview .hero .lead{max-width:900px}
+.hero-actions,.sim-actions{display:flex;gap:11px;flex-wrap:wrap;margin:22px 0 0}.hero-actions a,.sim-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;text-decoration:none}
+.overview .secondary-action{border:1px solid #699589;border-radius:9px;padding:11px 16px;font-weight:700;color:#c9f6e7;font-size:14px}
+.overview .section-kicker{text-transform:uppercase;letter-spacing:.11em;font-size:11px;font-weight:800;color:var(--site-mint)}
+.overview .section-heading{font-size:clamp(23px,2.6vw,29px);line-height:1.2;margin:7px 0 10px}
+.overview .section-intro{font-size:14px;max-width:850px;color:var(--site-muted);margin:0 0 19px}
+.overview .workflow-map{margin:17px 0 24px}.overview .workflow-stages{grid-template-columns:repeat(4,minmax(0,1fr));gap:11px}
+.overview .workflow-stage{display:block;position:relative;width:100%;font:inherit;text-align:left;min-height:123px;color:var(--site-text);cursor:pointer}
+.overview .workflow-stage::after{content:"→";position:absolute;right:-13px;top:45%;font-size:19px;color:var(--site-mint);z-index:2;pointer-events:none}
+.overview .workflow-stage:nth-child(4)::after,.overview .workflow-stage:nth-child(8)::after{content:""}
+.overview .workflow-stage:hover{background:#204254}.overview .workflow-stage[aria-pressed=true]{outline:2px solid #d2faee;outline-offset:2px}
+.overview .workflow-stage[data-state=done]{background:#123c3c;border-color:#47c0a8}
+.overview .workflow-stage[data-state=human]{background:#453523;border-color:#ecb965}
+.overview .workflow-stage[data-state=blocked],.overview .workflow-stage[data-state=alert]{background:#412a33;border-color:#f08e91}
+.overview .workflow-stage[data-state=skipped]{opacity:.55}
+.overview .stage-number{display:inline-block;font-size:11px;letter-spacing:.08em;color:#a9c9d4;margin-bottom:7px}
+.overview .workflow-stage strong{font-size:14px;line-height:1.4}.overview .workflow-stage p{line-height:1.45}
+.overview .workflow-stage .stage-state{display:block;margin-top:11px;font-size:11px;font-weight:800;color:#c2e8df}
+.overview .workflow-stage[data-state=human] .stage-state{color:#ffd596}.overview .workflow-stage[data-state=alert] .stage-state,.overview .workflow-stage[data-state=blocked] .stage-state{color:#ffc0c4}
+.overview .route-note{display:flex;gap:10px;align-items:center;padding:12px 15px;margin-top:12px;border:1px dashed #997445;border-radius:9px;background:#28271e;color:#f4d7aa;font-size:13px;line-height:1.5}
+.overview .route-note strong{white-space:nowrap}
+.overview .stage-inspector{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+.overview .stage-inspector>div{padding:14px 17px;background:#142f40;border:1px solid #36566b;border-radius:9px}
+.overview .stage-inspector h3{font-size:12px;color:#a5edda;text-transform:uppercase;letter-spacing:.06em;margin:0 0 7px}
+.overview .stage-inspector p{margin:0;color:#d6e5eb;font-size:13px;line-height:1.6}
+.overview .scenario-section{border:1px solid var(--site-border);border-radius:13px;padding:clamp(16px,2.6vw,25px);background:#102333;margin-bottom:26px;scroll-margin-top:20px}
+.overview .scenario-picker{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:18px 0}
+.overview .scenario-picker button{background:#162f41;border:1px solid #4b6b80;color:#edf7fa;border-radius:9px;min-height:64px;text-align:left;font-size:13px;line-height:1.4;font-weight:750;padding:11px 12px}
+.overview .scenario-picker button:hover{background:#22475a}
+.overview .scenario-picker button[aria-pressed=true]{border:2px solid var(--site-mint);background:#23524e;padding:10px 11px}
+.overview .scenario-result{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:14px}
+.overview .result-panel{padding:17px 19px;border:1px solid #416176;border-radius:10px;background:#152d3c}
+.overview .result-panel h3{margin:0 0 12px;font-size:13px;color:#b7e9df;text-transform:uppercase;letter-spacing:.07em}
+.overview .result-panel ul{padding-left:20px;margin:0;color:#d7e7ed;font-size:13px;line-height:1.9}
+.overview .result-panel .decision-label{font-size:19px;line-height:1.35;font-weight:800;margin:0 0 10px}
+.overview .result-panel p{font-size:14px;line-height:1.6;color:#d0e2ea}
+.overview .result-panel .next-action{font-size:13px;font-weight:750;color:#bbefde}
+.overview .result-panel[data-tone=human] .decision-label{color:#ffd394}
+.overview .result-panel[data-tone=blocked] .decision-label,.overview .result-panel[data-tone=alert] .decision-label{color:#ffadb6}
+.overview .result-panel[data-tone=pass] .decision-label{color:#a6f4d5}
+.overview .illustrative-note{font-size:12px;color:#aac2d2;margin:13px 0 0;line-height:1.5}
+.overview .build-section{margin:29px 0}.overview .build-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.overview .build-item{border:1px solid #375b70;border-radius:9px;padding:15px;background:#112b3b}
+.overview .build-item strong{font-size:14px;color:#f0fbff}.overview .build-item p{font-size:12px;line-height:1.55;color:var(--site-muted);margin:6px 0 0}
+.overview .lens-section{margin:31px 0 22px}.overview .lens-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.overview .lens-card{border:1px solid #3c6071;border-radius:10px;background:#112b3b;padding:19px;text-decoration:none}
+.overview .lens-card:hover{background:#1b3c4b}.overview .lens-card strong{display:block;color:#effffa;font-size:17px}
+.overview .lens-card p{margin:8px 0;color:#c4d8e0;font-size:13px;line-height:1.6}
+.overview .lens-card span{color:var(--site-mint);font-size:13px;font-weight:800}
+@media(max-width:850px){.overview .workflow-stages{grid-template-columns:repeat(2,minmax(0,1fr))}.overview .workflow-stage:nth-child(4)::after{content:"→"}.overview .workflow-stage:nth-child(even)::after{content:""}.overview .scenario-picker{grid-template-columns:repeat(2,minmax(0,1fr))}.overview .build-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:580px){.overview .workflow-map{padding:15px}.overview .workflow-stages{gap:8px}.overview .workflow-stage{min-height:137px;padding:11px}.overview .workflow-stage strong{font-size:12px}.overview .workflow-stage p{font-size:11px}.overview .workflow-stage::after{right:-11px}.overview .stage-inspector,.overview .scenario-result,.overview .lens-grid{grid-template-columns:1fr}.overview .scenario-picker{gap:8px}.overview .scenario-picker button{font-size:12px}.overview .build-grid{grid-template-columns:1fr}.overview .route-note{align-items:flex-start;flex-direction:column}.overview .hero-actions{flex-direction:column}.overview .hero-actions a{width:100%}}
+
+/* Connected investigation: additive layer; does not alter evaluator or scenario states. */
+.boundary-explorer{border:1px solid var(--site-border);border-radius:12px;background:#102634;padding:20px;margin:0 0 27px}
+.boundary-explorer h2{margin:7px 0 8px;font-size:clamp(21px,2.5vw,27px)}
+.boundary-explorer .boundary-intro{color:var(--site-muted);font-size:14px;line-height:1.6;max-width:900px}
+.boundary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:18px 0}
+.boundary-choice{background:#152e3d;border:1px solid #4b6b80;color:#e6f5f8;border-radius:9px;padding:12px;text-align:left;cursor:pointer;min-height:80px;font:inherit}
+.boundary-choice:hover{background:#214256}.boundary-choice[aria-pressed=true]{background:#214a4a;border-color:#92ead1;outline:2px solid #92ead1;outline-offset:1px}
+.boundary-choice strong{display:block;font-size:13px;margin-bottom:5px}.boundary-choice span{font-size:12px;color:#bdd4df;line-height:1.5}
+.investigation-header{margin:16px 0 10px}.investigation-header h3{margin:0 0 6px;font-size:19px;color:var(--site-text)}
+.investigation-header p{font-size:13px;color:var(--site-muted);margin:0;line-height:1.6}
+.investigation-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:16px 0 9px}
+.investigation-tab{font:inherit;font-size:12px;font-weight:750;min-height:44px;background:#173446;border:1px solid #496579;border-radius:8px;color:#d9eaf0;cursor:pointer;padding:8px}
+.investigation-tab[aria-selected=true]{background:#23514f;border-color:#97e9d6;color:#fff}
+.investigation-panel{background:#142f40;border:1px solid #36566b;border-radius:9px;padding:17px;min-height:120px}
+.investigation-panel h4{margin:0 0 9px;color:#a5edda;font-size:12px;letter-spacing:.05em;text-transform:uppercase}
+.investigation-panel p{color:#d8e6eb;font-size:14px;line-height:1.7;margin:0}
+.investigation-links{display:flex;flex-wrap:wrap;gap:11px 22px;margin-top:13px}.investigation-links a{font-size:13px;font-weight:700;color:var(--site-mint)}
+.investigation-note{color:#acc2d0;font-size:12px;line-height:1.6;margin:13px 0 0}
+@media(max-width:750px){.boundary-grid{grid-template-columns:1fr 1fr}.investigation-tabs{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.boundary-explorer{padding:15px}.boundary-grid{grid-template-columns:1fr}.boundary-choice{min-height:65px}}
+
+/* Integrate control investigation into the eight-stage journey without adding another long page section. */
+.overview .workflow-map{margin-bottom:16px}
+.overview .path-branch{margin:13px 0;padding:12px;border:1px solid #426477;border-radius:9px;background:#142b3a}
+.overview .path-branch-title{font-size:13px;font-weight:800;color:#e2f6f1;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.overview .path-branch-title span{color:#b5cbd4;font-size:12px;font-weight:400}
+.overview .path-branch-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.overview .path-branch-lane{background:#1b3849;border:1px solid #496b7d;border-radius:7px;padding:10px}
+.overview .path-branch-lane strong{display:block;font-size:13px;color:#eaf8f8}.overview .path-branch-lane span{display:block;font-size:12px;color:#bfd1da;line-height:1.5;margin-top:3px}
+.overview .path-branch-join{font-size:12px;color:#aee8d8;text-align:center}
+.overview .stage-inspector-toggle{margin:10px 0}.overview .stage-inspector-toggle>summary{color:#cce8e5;cursor:pointer;font-size:13px;padding:9px 3px}
+.overview .stage-inspector-toggle .stage-inspector{margin-top:6px}
+.overview .boundary-explorer{margin:12px 0;padding:12px;border:1px solid #456579;background:#132e3d}
+.overview .boundary-explorer h3{font-size:17px;margin:5px 0}.overview .boundary-intro{margin:4px 0;font-size:12px;line-height:1.55}
+.overview .boundary-grid{margin:10px 0 0;gap:7px}.overview .boundary-choice{min-height:66px;padding:10px}
+.overview .boundary-details{margin-top:9px}.overview .boundary-details>summary{cursor:pointer;min-height:44px;padding:11px 12px;border:1px solid #496b80;border-radius:7px;font-size:13px;font-weight:700;color:#d2f1e7}
+.overview .boundary-details>summary span{float:right}
+.overview .investigation-header{margin:12px 0 8px}.overview .investigation-header h3{font-size:16px}
+.overview .investigation-tabs{margin:11px 0 7px}.overview .investigation-panel{min-height:95px}
+.overview .investigation-links{margin-top:10px}.overview .investigation-note{margin-bottom:0}
+@media(max-width:520px){.overview .path-branch-grid{grid-template-columns:1fr 1fr}.overview .path-branch-title span{display:block}.overview .path-branch-lane{padding:8px}.overview .path-branch-lane strong{font-size:12px}.overview .path-branch-lane span{font-size:11px}}
+
+/* Distinguish neutral learning from scenario results without changing scenario evaluation. */
+.overview .overview-mode-line{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 11px}
+.overview .overview-mode{font-size:12px;font-weight:750;color:#c7e7e1}
+.overview #clear-scenario{border:1px solid #668e91;background:#173b46;color:#e0f6f0;border-radius:7px;padding:9px 12px;min-height:40px;font:inherit;font-size:12px;cursor:pointer}
+.overview .workflow-stage:not([data-state]) .stage-state{color:#a9bec9;font-weight:600}
+.overview .scenario-mode{font-size:12px;font-weight:750;color:#b4f0df;margin:0 0 12px}
+.overview .scenario-mini{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:5px;margin:0 0 15px}
+.overview .scenario-mini-stage{border:1px solid #4b6c79;background:#142f40;border-radius:6px;padding:9px 4px;text-align:center;min-width:0}
+.overview .scenario-mini-stage strong{display:block;font-size:11px;color:#f0f8fa}
+.overview .scenario-mini-stage span{display:block;font-size:10px;line-height:1.4;color:#c0d7df;margin-top:4px}
+.overview .scenario-mini-stage[data-state=done]{border-color:#47c0a8;background:#123c3c}
+.overview .scenario-mini-stage[data-state=human]{border-color:#ecb965;background:#453523}
+.overview .scenario-mini-stage[data-state=blocked],.overview .scenario-mini-stage[data-state=alert]{border-color:#f08e91;background:#412a33}
+.overview .scenario-mini-stage[data-state=skipped]{opacity:.58}
+@media(max-width:700px){.overview .scenario-mini{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+/* Scenario selector and outcome belong to the same workflow, not a separate page-length section. */
+.overview .scenario-inline{padding:12px 14px;border:1px solid #3e6275;background:#132e3d;border-radius:10px;margin:0 0 14px}
+.overview .scenario-inline h3{font-size:17px;margin:5px 0}
+.overview .scenario-inline-intro{font-size:13px;line-height:1.55;color:var(--site-muted);margin:5px 0 11px}
+.overview .scenario-inline .scenario-picker{margin:0;grid-template-columns:repeat(4,minmax(0,1fr))}
+.overview .scenario-inline .scenario-picker button{min-height:54px}
+.overview .scenario-inline-outcome{margin:13px 0;padding:13px;border:1px solid #4c7380;border-radius:9px;background:#112b3b}
+.overview .scenario-outcome-heading{font-size:16px;margin:0 0 12px;color:#e7f8f4}
+.overview .scenario-inline-outcome .scenario-result{margin-top:0}
+.overview .scenario-inline-outcome .sim-actions{margin-top:12px}
+@media(max-width:850px){.overview .scenario-inline .scenario-picker{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.overview .scenario-inline{padding:10px}.overview .scenario-inline .scenario-picker button{min-height:56px;font-size:12px}}
+
+/* Overview architecture anchor / PR #126: illustrative, independent of evaluator logic. */
+.authority-map{margin:20px 0 24px;padding:22px;border:1px solid #517e86;border-radius:13px;background:#102d3b;color:#eff9f6;scroll-margin-top:16px}
+.authority-map *{box-sizing:border-box}
+.authority-map-heading h2{margin:4px 0 7px;font-size:clamp(20px,2.6vw,28px);color:#f0faf7}
+.authority-map-heading p{max-width:920px;margin:0 0 17px;color:#ccdee5;font-size:14px;line-height:1.55}
+.authority-map-flow,.authority-map-merge{display:grid;grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr) 28px minmax(0,1.3fr);align-items:stretch;gap:7px}
+.authority-map-node{min-width:0;border:1px solid #5a8793;border-radius:9px;background:#1a3b4b;padding:12px 13px;display:flex;flex-direction:column;gap:4px}
+.authority-map-node strong{font-size:15px;color:#f0faf7;line-height:1.25}.authority-map-node small{font-size:12px;line-height:1.42;color:#c3d8df}
+.authority-map-icon{font-size:19px;color:#a9e5d3}
+.authority-map-policy{background:#18493f;border-color:#6ab3a0}.authority-map-agent{background:#233f61;border-color:#7ba6d0}
+.authority-map-chip{align-self:flex-start;margin-top:auto;color:#d5f8e8;font-size:10px;font-weight:800;letter-spacing:.025em}
+.authority-map-arrow{display:grid;place-items:center;font-size:22px;color:#8cd7bd}
+.authority-map-external{margin:10px 0 17px;display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 0 0 13px}
+.authority-map-agent-control,.authority-map-external-model{padding:10px 13px;border-left:3px solid #72b5da;background:#193849;border-radius:5px;display:flex;flex-direction:column;gap:4px}
+.authority-map-external-model{border-color:#efbf7b;background:#453b32}
+.authority-map-external strong{color:#f3faf5;font-size:13px}.authority-map-external span{font-size:12px;line-height:1.45;color:#d2e2e5}
+.authority-map-routes{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:10px 0 18px;padding-top:18px}
+.authority-map-routes:before{content:'ELIGIBILITY AND AI OUTPUTS INFORM THE ROUTE; POLICY AUTHORIZES IT';position:absolute;top:0;left:0;right:0;color:#b3d8d0;font-size:10px;letter-spacing:.05em;font-weight:800;text-align:center}
+.authority-map-route{border:1px solid #7e99bc;border-radius:9px;padding:12px 14px;background:#23374a;display:flex;flex-direction:column;gap:5px}
+.authority-map-human{border-color:#7ea6d4}.authority-map-auto{background:#1a483e;border-color:#79c3a8}
+.authority-map-route-label{font-size:10px;font-weight:800;letter-spacing:.05em;color:#c3dbfa}
+.authority-map-auto .authority-map-route-label{color:#b4eed6}.authority-map-route strong{font-size:15px;color:#f0faf7}.authority-map-route small{color:#cadfe5;font-size:12px;line-height:1.45}
+.authority-map-merge{padding-top:15px;border-top:1px dashed #598590}
+.authority-map-footer{margin-top:15px}.authority-map-footer p{font-size:12px;line-height:1.55;color:#c8dce0;margin:0 0 10px}.authority-map-footer strong{color:#e8f8f1}
+.authority-map-links{display:flex;flex-wrap:wrap;gap:9px 18px}.authority-map-links a{font-size:12px;font-weight:750;color:#afead7}
+.authority-map a:focus-visible{outline:2px solid #d6ffed;outline-offset:3px}
+@media(max-width:760px){
+.authority-map{padding:16px;margin:15px 0 18px}
+.authority-map-flow,.authority-map-merge{grid-template-columns:1fr;gap:5px}
+.authority-map-arrow{font-size:18px;line-height:1;min-height:18px;transform:rotate(90deg)}
+.authority-map-node{padding:10px 12px}.authority-map-node strong{font-size:14px}
+.authority-map-external{grid-template-columns:1fr;padding:0;margin:10px 0 18px}
+.authority-map-routes{grid-template-columns:1fr;padding-top:30px;gap:7px}.authority-map-routes:before{text-align:left}
+.authority-map-links{flex-direction:column;gap:8px}
+}
+
+/* Optional overview PNG enhancement: original responsive map remains usable when file is absent. */
+.overview-png-anchor{margin:20px 0 13px;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #547f88;color:#17314c}
+.overview-png-anchor[hidden]{display:none}
+.overview-png-anchor img{display:block;width:100%;height:auto;object-fit:contain}
+.overview-png-anchor figcaption{padding:11px 17px 14px;font-size:13px;line-height:1.5;color:#254760;background:#edf6fa}
+.overview-png-anchor figcaption a{color:#125ba0;font-weight:750}
+.overview-map-details{margin:12px 0 18px;border:1px solid var(--site-border);border-radius:10px}
+.overview-map-details>summary{cursor:pointer;padding:13px 16px;min-height:44px;font-size:14px;font-weight:750;color:var(--site-text)}
+.overview-map-details>.authority-map{margin:2px 12px 12px}
+@media(max-width:650px){.overview-png-anchor figcaption{font-size:12px;padding:10px 12px}}
+</style><link rel="stylesheet" href="./ui-polish.css?v=1"><link rel="stylesheet" href="./guided-investigation.css"><style>
+/* Progressive disclosure: preserve reference depth without front-loading secondary content. */
+details.field-deep-dive{margin:18px 0;border:1px solid var(--site-border,#4d6875);border-radius:12px;background:var(--site-panel,#112d3c);overflow:visible}
+details.field-deep-dive>summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:58px;padding:14px 18px;color:var(--site-text,#e8f5f5)}
+details.field-deep-dive>summary::-webkit-details-marker{display:none}
+details.field-deep-dive>summary:focus-visible{outline:3px solid var(--site-mint,#a4edda);outline-offset:3px}
+details.field-deep-dive .field-deep-dive-label{display:block;font-size:15px;font-weight:750;line-height:1.4}
+details.field-deep-dive .field-deep-dive-hint{display:block;font-size:12px;color:var(--site-muted,#bfd0d8);margin-top:3px;line-height:1.4}
+details.field-deep-dive .field-deep-dive-chevron{flex-shrink:0;font-size:19px;color:var(--site-mint,#a4edda)}
+details.field-deep-dive[open] .field-deep-dive-chevron{transform:rotate(180deg)}
+details.field-deep-dive>section{margin:0 14px 16px}
+@media(max-width:600px){details.field-deep-dive>summary{padding:13px 14px}details.field-deep-dive>section{margin:0 10px 12px}}
+</style><link rel="stylesheet" href="./page-orientation.css?v=1"><style>
+.overview-welcome{padding-top:30px!important;padding-bottom:16px!important}
+.overview .overview-welcome h1{max-width:960px;font-size:clamp(31px,4.3vw,52px)}
+.overview .overview-welcome .lead{max-width:940px;font-size:clamp(16px,1.6vw,19px);line-height:1.55}
+.overview-welcome-scope{max-width:900px;color:var(--site-muted);font-size:13px;line-height:1.65;margin:12px 0 0}
+.overview-chapter-gateway{margin:22px 0 26px}
+.overview-chapter-gateway h2{font-size:clamp(22px,2.7vw,30px);line-height:1.25;margin:8px 0}
+.overview-chapter-gateway>p{font-size:14px;line-height:1.6;color:var(--site-muted);margin:7px 0 18px}
+.overview-simulator-entry{margin:18px 0 0}
+.overview-chapter-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.overview-chapter-grid a{display:flex;flex-direction:column;gap:7px;min-height:134px;padding:18px;border:1px solid #527487;border-radius:10px;background:#173449;color:var(--site-text);text-decoration:none}
+.overview-chapter-grid a:hover,.overview-chapter-grid a:focus-visible{background:#254d61;border-color:#a4edda}
+.overview-chapter-grid a strong{font-size:17px;line-height:1.35}
+.overview-chapter-grid a span{font-size:13px;line-height:1.5;color:var(--site-muted)}
+.overview-chapter-grid a small{margin-top:auto;color:#a4edda;font-size:12px;font-weight:800}
+.overview-reference-collapse{margin:16px 0 22px;border:1px solid var(--site-border);border-radius:10px}
+.overview-reference-collapse>summary{cursor:pointer;padding:15px 17px;color:var(--site-text);font-size:13px;font-weight:750}
+.overview-reference-collapse>.authority-map{margin:0 12px 13px}
+
+@media(max-width:600px){.overview-chapter-grid{grid-template-columns:1fr}.overview-chapter-grid a{min-height:105px}}
+
+
+/* Figma-aligned Overview hierarchy: presentation only; simulator logic unchanged. */
+.overview .overview-welcome{max-width:1080px;padding-top:24px!important}
+.overview .overview-welcome h1{max-width:1060px;font-size:clamp(34px,4.5vw,57px);line-height:1.09;letter-spacing:-.035em}
+.overview .overview-welcome .lead{max-width:950px;font-size:clamp(16px,1.65vw,19px)}
+.overview .overview-welcome-scope{max-width:850px;font-size:13px;color:var(--site-muted)}
+.overview .overview-hero-actions{display:flex;align-items:center;flex-wrap:wrap;gap:12px 18px;margin:20px 0}
+.overview .overview-hero-actions a{min-height:44px;display:inline-flex;align-items:center;text-decoration:none}
+.overview .overview-quiet-link{border:1px solid var(--site-border);padding:10px 16px;border-radius:9px;font-size:14px;font-weight:750}
+.overview .overview-question-map{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:10px 0 28px}
+.overview .overview-question-map>div{background:#102738;border:1px solid #36566b;border-radius:12px;padding:18px;min-width:0}
+.overview .overview-question-map span{display:block;font-size:11px;letter-spacing:.09em;color:var(--site-mint);font-weight:800;margin-bottom:10px}
+.overview .overview-question-map strong{font-size:18px;line-height:1.3}
+.overview .overview-question-map p{color:var(--site-muted);font-size:13px;line-height:1.6;margin:9px 0 0}
+.overview .workflow-map{padding:clamp(16px,2.3vw,28px);border-radius:14px;margin:0 0 28px}
+.overview .workflow-map .section-heading{font-size:clamp(23px,2.8vw,30px)}
+.overview .overview-stage-label{margin:14px 0 10px;font-size:11px;letter-spacing:.09em;font-weight:800;color:var(--site-mint)}
+.overview .workflow-stages{margin-bottom:20px}
+.overview .workflow-stage{min-height:125px}
+.overview .scenario-inline{margin:14px 0 18px;border-top:1px solid var(--site-border);padding-top:23px}
+.overview .scenario-inline h3{font-size:23px;line-height:1.3;margin:8px 0}
+.overview .scenario-inline-intro{font-size:13px;color:var(--site-muted)}
+.overview .scenario-picker button{min-height:83px;padding:15px;line-height:1.5}
+.overview .scenario-inline-outcome{margin-bottom:18px}
+.overview .stage-inspector-toggle,.overview .boundary-details{scroll-margin-top:16px}
+.overview .lens-section{margin-top:30px}
+@media(max-width:800px){.overview .overview-question-map{grid-template-columns:1fr}.overview .overview-question-map>div{padding:15px}.overview .overview-question-map strong{font-size:16px}}
+@media(max-width:580px){.overview .overview-hero-actions{flex-direction:column;align-items:stretch}.overview .overview-hero-actions a{justify-content:center;text-align:center;width:100%}.overview .overview-welcome h1{font-size:clamp(31px,8.2vw,39px)}.overview .workflow-map{padding:15px}.overview .scenario-picker button{min-height:70px}.overview .overview-question-map{gap:8px;margin-bottom:20px}}
+
+
+/* Overview-first orientation — intentionally shared visually, not duplicated as prose in each chapter */
+.overview .overview-purpose-forward,.overview .overview-authority-preview,.overview .overview-investigation-entrance{border:1px solid #466c7a;border-radius:14px;background:#102e3d;padding:21px 23px;margin:18px 0;scroll-margin-top:24px}
+.overview .overview-purpose-forward{background:#10333e;border-color:#578b8e}
+.overview .overview-purpose-forward h2{font-size:clamp(21px,2.6vw,27px);line-height:1.3;margin:10px 0}
+.overview .overview-purpose-forward p{font-size:15px;line-height:1.6;color:#d2e3e8;max-width:940px;margin:10px 0}
+.overview .overview-purpose-roles{padding-top:12px;border-top:1px solid #3a6470}
+.overview .overview-purpose-roles strong{color:#effff7}
+.overview #field-guide-chapters{margin:18px 0;padding:19px 22px;border:1px solid #456b7a;border-radius:14px;background:#102837}
+.overview #field-guide-chapters .overview-chapter-grid{margin:14px 0 2px}
+.overview #field-guide-chapters .overview-chapter-grid a{border-radius:9px;min-height:78px}
+.overview #field-guide-chapters .overview-chapter-grid a:hover,.overview #field-guide-chapters .overview-chapter-grid a:focus-visible{border-color:#a4edda}
+.overview .overview-authority-preview h2{margin:8px 0;font-size:clamp(21px,2.6vw,28px)}
+.overview .overview-authority-preview>p{font-size:14px;line-height:1.6;color:#d0e2e7;max-width:930px}
+.overview .overview-authority-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;list-style:none;padding:0;margin:18px 0}
+.overview .overview-authority-steps li{display:flex;gap:11px;align-items:flex-start;border:1px solid #5b8191;border-radius:10px;padding:15px 12px;background:#1a3c4c;min-width:0}
+.overview .overview-authority-steps strong,.overview .overview-authority-steps small{display:block}
+.overview .overview-authority-steps strong{font-size:15px;color:#f0fcf7;line-height:1.35}
+.overview .overview-authority-steps small{font-size:12px;color:#c2d9df;line-height:1.5;margin-top:5px}
+.overview .overview-authority-num{color:#a4edda;font-weight:850;font-size:12px;flex-shrink:0}
+.overview .overview-authority-steps .overview-authority-policy{border-color:#73ad96;background:#164538}
+.overview .overview-authority-steps .overview-authority-ai{border-color:#79a6d7;background:#233c5e}
+.overview .overview-authority-steps .overview-authority-decision{border-color:#d0bd7a}
+.overview .overview-authority-limit{border-left:3px solid #7bbba8;padding-left:12px}
+.overview .overview-authority-deep-link{display:inline-flex;align-items:center;min-height:44px;color:#a4edda;font-size:14px;font-weight:750}
+.overview .overview-investigation-entrance{background:#133c49}
+.overview .overview-investigation-entrance h2{font-size:24px;margin:7px 0}
+.overview .overview-investigation-entrance p{font-size:14px;line-height:1.5;color:#cce1e9}
+@media(max-width:650px){
+ .overview .overview-purpose-forward,.overview .overview-authority-preview,.overview .overview-investigation-entrance{padding:16px;margin:14px 0}
+ .overview #field-guide-chapters{padding:16px;margin:14px 0}
+ .overview .overview-purpose-forward p{font-size:14px}
+ .overview .overview-authority-steps{display:flex;flex-direction:column;gap:23px;counter-reset:step}
+ .overview .overview-authority-steps li{position:relative;min-height:66px;padding:13px 14px}
+ .overview .overview-authority-steps li:not(:last-child):after{content:"↓";position:absolute;left:50%;bottom:-25px;transform:translateX(-50%);font-size:20px;line-height:22px;color:#a4edda}
+ .overview .overview-authority-steps strong{font-size:15px}
+ .overview .overview-authority-steps small{font-size:12px}
+}
+</style><link rel="stylesheet" href="./field-guide-v2.css?v=1"><script defer src="./field-guide-v2.js?v=1"></script></head>
+<body class="overview"><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a><a class="site-experiments" href="./playground.html">Optional interactive lab ↗</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html" aria-current="page">Overview</a><a href="./ai-sdlc-risk.html">Risk &amp; Governance</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Assurance</a></nav></header>
+
+<section class="hero overview-welcome" id="main-content" tabindex="-1">
+<span class="eyebrow">AI-ENABLED SDLC / FIELD GUIDE</span>
+<h1>When AI reviews code, who authorizes the change?</h1>
+<p class="lead">AI is changing how software is developed, reviewed, approved, and released. The harder question is not whether an AI reviewer labels a change low risk. It is who may authorize the exact change—and what independently prevents an unauthorized change from reaching production.</p>
+<p class="overview-welcome-scope">This practical field guide follows CASE-SHARED-01, a fictional shared-library change with potentially significant downstream dependencies, across Risk &amp; Governance, Engineering, Monitoring, and Assurance. It connects decisions about delegated authority to the safeguards Engineering can build and the evidence independent reviewers can examine.</p>
+<div class="overview-hero-actions"><a class="guide-action" href="#overview-authority-preview">See the end-to-end journey →</a><a class="overview-quiet-link" href="#field-guide-chapters">Read the five-page guide ↓</a></div>
+</section>
+<section class="overview-purpose-forward" id="overview-purpose" aria-labelledby="overview-purpose-title">
+ <span class="section-kicker">WHY THIS GUIDE EXISTS</span>
+ <h2 id="overview-purpose-title">Design for reliable delivery—and for evidence from the beginning.</h2>
+ <p>Established change-management and security principles still apply when AI enters the review process. The challenge is translating them into precise, testable requirements for eligibility, model behavior, authorization, release integrity, and oversight.</p>
+ <p class="overview-purpose-roles"><strong>Management</strong> owns authority and risk decisions. <strong>Engineering</strong> builds and operates the safeguards. <strong>Risk and GRC</strong> help frame and challenge the design. <strong>Independent assurance</strong> evaluates whether the claims are supported by evidence. Build what can be evaluated from the start—not controls reconstructed after deployment.</p>
+</section>
+
+
+<section class="overview-authority-preview" id="overview-authority-preview" aria-labelledby="overview-authority-preview-title">
+ <div class="section-kicker">ARCHITECTURE / AUTHORITY AT A GLANCE</div>
+ <h2 id="overview-authority-preview-title">One change. Several decision boundaries.</h2>
+ <p>Eligibility limits the route, AI provides analysis, authorization is a separate decision, and protected merge and release controls must still hold.</p>
+ <ol class="overview-authority-steps">
+  <li><span class="overview-authority-num">01</span><div><strong>Pull request</strong><small>Code, context and exact revision</small></div></li>
+  <li class="overview-authority-policy"><span class="overview-authority-num">02</span><div><strong>Eligibility policy</strong><small>Deterministic scope, paths and dependencies</small></div></li>
+  <li class="overview-authority-ai"><span class="overview-authority-num">03</span><div><strong>AI reviewers</strong><small>Analysis only — not approval authority</small></div></li>
+  <li class="overview-authority-decision"><span class="overview-authority-num">04</span><div><strong>Authorized decision</strong><small>Qualified human review, or independently permitted automation only when eligible</small></div></li>
+  <li class="overview-authority-policy"><span class="overview-authority-num">05</span><div><strong>Protected merge &amp; release</strong><small>Required checks, current revision and artifact integrity</small></div></li>
+  <li><span class="overview-authority-num">06</span><div><strong>Monitor &amp; evaluate</strong><small>Release signals, evidence and independent testing</small></div></li>
+ </ol>
+ <p class="overview-authority-limit">Illustrative only. AI agreement does not override policy or create authorization; excluded changes follow the human-review route.</p>
+ <a class="overview-authority-deep-link" href="#overview-authority-map">Explore the full authority and agent/model dependency map →</a>
+</section>
+<section class="lens-section overview-chapter-gateway" id="field-guide-chapters" aria-labelledby="lenses-title">
+<span class="section-kicker">01 / USE THIS GUIDE</span>
+<h2 id="lenses-title">Use this guide</h2>
+<p>Read the problem first, then follow the same change through four connected disciplinary chapters. The interactive lab is optional.</p>
+<nav class="overview-chapter-grid" aria-label="Explore the field guide perspectives">
+<a href="./ai-sdlc-risk.html"><strong>Risk &amp; Governance</strong><span>What could fail, and who decides what AI may do?</span><small>Explore failure paths →</small></a>
+<a href="./engineering-blueprint.html"><strong>Engineering &amp; Safeguards</strong><span>What independently enforces the boundary?</span><small>Explore implementation →</small></a>
+<a href="./continuous-monitoring.html"><strong>Monitoring &amp; Operations</strong><span>Who notices and responds when controls fail?</span><small>Explore monitoring →</small></a>
+<a href="./independent-assurance.html"><strong>Assurance</strong><span>What must an independent reviewer establish?</span><small>Explore assurance →</small></a>
+</nav>
+</section>
+<section class="overview-question-map" aria-label="Three questions for every AI-assisted change">
+  <div><span>01 / AUTHORITY</span><strong>Who may authorize?</strong><p>Define where an AI recommendation ends and an approved decision begins.</p></div>
+  <div><span>02 / ENFORCEMENT</span><strong>What prevents bypass?</strong><p>Verify independent gates, required checks, and restricted privileges.</p></div>
+  <div><span>03 / EVIDENCE</span><strong>What demonstrates it worked?</strong><p>Connect approval, policy, and release records to the same revision.</p></div>
+</section>
+
+
+<section class="overview-investigation-entrance"><span class="section-kicker">OPTIONAL INTERACTIVE WALKTHROUGH</span><h2>Explore the change</h2><p>After reading the guide, explore the illustrative stages and failure paths. This walkthrough is optional; the standalone Playground is a separate advanced tool.</p><a class="guide-action" href="#workflow">Investigate the eight touchpoints →</a></section>
+<section class="workflow-map" id="workflow" aria-labelledby="workflow-title">
+<div class="section-kicker">01 / FOLLOW A CHANGE</div>
+<h2 class="section-heading" id="workflow-title">Where does a recommendation become authority?</h2>
+<p class="section-intro">Follow the change through eight detailed touchpoints. Select any stage to inspect the safeguards and evidence; then test one of four fictional outcomes. Other chapters group the lifecycle into seven stages.</p>
+<div class="overview-mode-line"><span id="workflow-mode" class="overview-mode">Explore mode · No scenario selected</span><button id="clear-scenario" type="button" hidden>Return to Explore mode</button></div>
+<p class="overview-stage-label">SELECT A STAGE TO INSPECT THE ENFORCEMENT BOUNDARY</p>
+<div class="workflow-stages" id="workflow-stages" aria-label="Eight workflow stages">
+<button class="workflow-stage" type="button" data-stage="0" aria-pressed="true"><span class="stage-number">01 · ENTRY</span><strong>Pull request</strong><p>Identify the change and exact commit.</p><span class="stage-state">Explore stage</span></button>
+<button class="workflow-stage" type="button" data-stage="1" aria-pressed="false"><span class="stage-number">02 · RULES</span><strong>Deterministic gates</strong><p>Check eligibility, paths, dependencies, and exclusions.</p><span class="stage-state">Explore stage</span></button>
+<button class="workflow-stage" type="button" data-stage="2" aria-pressed="false"><span class="stage-number">03 · CODE QUALITY</span><strong>CI &amp; code checks</strong><p>Build, test, scan, and apply required reviews.</p><span class="stage-state">Explore stage</span></button>
+<button class="workflow-stage" type="button" data-stage="3" aria-pressed="false"><span class="stage-number">04 · AI SIGNALS</span><strong>AI reviewers</strong><p>Two fictional AI reviewers evaluate the same revision.</p><span class="stage-state">Explore stage</span></button>
+<button class="workflow-stage" type="button" data-stage="4" aria-pressed="false"><span class="stage-number">05 · AUTHORITY</span><strong>Policy decision</strong><p>Determine automated eligibility or human escalation.</p><span class="stage-state">Explore stage</span></button>
+<button class="workflow-stage" type="button" data-stage="5" aria-pressed="false"><span class="stage-number">06 · ENFORCEMENT</span><strong>GitHub merge</strong><p>Enforce required checks and valid authorization.</p><span class="stage-state">Explore stage</span></button>
+<button class="workflow-stage" type="button" data-stage="6" aria-pressed="false"><span class="stage-number">07 · DELIVERY</span><strong>Build &amp; deploy</strong><p>Bind released artifact to the authorized revision.</p><span class="stage-state">Explore stage</span></button>
+<button class="workflow-stage" type="button" data-stage="7" aria-pressed="false"><span class="stage-number">08 · OPERATIONS</span><strong>Monitor &amp; respond</strong><p>Observe health, exceptions, and rollback triggers.</p><span class="stage-state">Explore stage</span></button>
+</div>
+<div class="scenario-inline" id="scenario-lab" aria-labelledby="scenario-title">
+<div class="section-kicker">02 / RUN THE INVESTIGATION</div>
+<h3 id="scenario-title">Select what happens to the change</h3>
+<p class="scenario-inline-intro">Each selection runs the existing illustrative scenario logic. No selection means neutral Explore mode.</p>
+<div class="scenario-picker" role="group" aria-label="Simulation scenarios">
+<button type="button" data-scenario="pass" aria-pressed="false">✅ Standard low-risk pass</button>
+<button type="button" data-scenario="split" aria-pressed="false">🔀 AI split decision</button>
+<button type="button" data-scenario="excluded" aria-pressed="false">🛑 Hard-gate exclusion</button>
+<button type="button" data-scenario="canary" aria-pressed="false">💥 Production canary failure</button>
+</div>
+</div>
+<div class="scenario-inline-outcome" id="scenario-output" hidden aria-live="polite">
+<h3 class="scenario-outcome-heading">What happened in this scenario?</h3>
+<div class="scenario-result" aria-live="polite">
+<div class="result-panel"><h3>Illustrative pipeline state</h3><ul id="scenario-facts"><li>Select one of the four scenarios to see how the pipeline responds.</li></ul></div>
+<div class="result-panel" id="decision-panel" data-tone="neutral"><h3>Decision and explanation</h3><p class="decision-label" id="decision-label">SELECT A SCENARIO</p><p id="decision-reason">Explore mode explains the workflow without asserting any outcome.</p><p class="next-action" id="decision-action">Choose a fictional case above to run the simulation.</p></div>
+</div>
+<p id="overview-related-risk" hidden class="illustrative-note"><strong>Related risk to investigate:</strong> This example shows a hard gate correctly excluding a financial dependency. RR-02 explores the different failure where unsafe scope is incorrectly classified as eligible. <a href="./ai-sdlc-risk.html?risk=RR-02#risk-explorer">Explore RR-02 in Risk Management →</a></p>
+<div class="sim-actions"><a class="guide-action" href="./engineering-blueprint.html">Explore engineering implementation →</a><a class="secondary-action" href="./auditor-view.html">Challenge the decision in Auditor View →</a></div>
+<p class="illustrative-note">Synthetic teaching examples, not live decisions or implemented controls. Selecting another scenario updates this workflow.</p>
+</div>
+<div class="path-branch" role="group" aria-label="Human and AI approval routes">
+<div class="path-branch-title">Authorization routes <span>Different review paths · shared enforcement</span></div>
+<div class="path-branch-grid">
+<div class="path-branch-lane"><strong>Human review</strong><span>Qualified reviewer authorizes the current change</span></div>
+<div class="path-branch-lane"><strong>AI-assisted review</strong><span>Policy-bound eligibility and separate authorization</span></div>
+</div>
+<div class="path-branch-join">↓ Both require protected merge and release controls</div>
+</div><details class="stage-inspector-toggle"><summary>Selected stage: Engineering and assurance details</summary><div class="stage-inspector" id="stage-inspector" aria-live="polite">
+<div><h3>Engineering · What must work?</h3><p id="stage-engineering">Bind each assessment to the exact changed revision.</p></div>
+<div><h3>Assurance · What must be demonstrated?</h3><p id="stage-assurance">Confirm the change and commit being evaluated are unambiguous.</p></div>
+</div>
+</details>
+<div class="boundary-explorer" id="trust-boundaries" aria-labelledby="boundary-title">
+<div class="section-kicker">TRUST BOUNDARIES / BETWEEN STAGES</div>
+<h3 id="boundary-title">Where does authority change hands?</h3>
+<p class="boundary-intro">Choose a boundary to inspect who can review, authorize, enforce, or bypass a change.</p>
+<div class="boundary-grid" role="group" aria-label="Trust boundary examples">
+<button class="boundary-choice" type="button" data-boundary="review" aria-pressed="true"><strong>PR author → code review</strong><span>Reviewer independence · CODEOWNERS · SoD</span></button>
+<button class="boundary-choice" type="button" data-boundary="ai" aria-pressed="false"><strong>AI review → authorization</strong><span>Classification versus approval authority</span></button>
+<button class="boundary-choice" type="button" data-boundary="merge" aria-pressed="false"><strong>Approval → protected merge</strong><span>Policy enforcement · bypass restrictions</span></button>
+</div>
+<details class="boundary-details" id="boundary-details"><summary>Inspect the selected boundary <span aria-hidden="true">▾</span></summary><div class="investigation-header" aria-live="polite">
+<h3 id="investigation-title">Reviewer independence and code ownership</h3>
+<p id="investigation-summary">A change author must not be able to satisfy or quietly weaken the required independent review.</p>
+</div>
+<div class="investigation-tabs" role="tablist" aria-label="Control investigation perspectives">
+<button class="investigation-tab" type="button" id="investigation-tab-needed" role="tab" aria-controls="investigation-panel" aria-selected="true" data-perspective="needed">What's needed</button>
+<button class="investigation-tab" type="button" id="investigation-tab-demo" role="tab" aria-controls="investigation-panel" aria-selected="false" data-perspective="demo" tabindex="-1">Management demo</button>
+<button class="investigation-tab" type="button" id="investigation-tab-risk" role="tab" aria-controls="investigation-panel" aria-selected="false" data-perspective="risk" tabindex="-1">Risk scenario</button>
+<button class="investigation-tab" type="button" id="investigation-tab-audit" role="tab" aria-controls="investigation-panel" aria-selected="false" data-perspective="audit" tabindex="-1">Auditor evaluation</button>
+</div>
+<div class="investigation-panel" id="investigation-panel" role="tabpanel" aria-labelledby="investigation-tab-needed" tabindex="0" aria-live="polite">
+<h4 id="investigation-panel-title">What's needed</h4><p id="investigation-text">Protected branches, applicable CODEOWNERS rules, independent qualified reviewers, and restrictions on who can edit or bypass approval requirements.</p>
+</div>
+<div class="investigation-links"><a href="./engineering-blueprint.html">Implementation patterns →</a><a href="./ai-sdlc-risk.html">Related risks →</a><a href="./independent-assurance.html">Assurance and evidence →</a><a href="./rcm-view.html">RCM →</a></div>
+<p class="investigation-note">Illustrative, synthetic examples only. These are potential control designs and evaluation questions, not evidence that a specific organization has implemented them. Human approval is an independent authorization route, not a retry of failed AI review.</p>
+</div></details></div>
+<p class="workflow-note">Illustrative model only: these eight detailed simulator touchpoints are not a mandated architecture or a one-to-one match with the seven-stage lifecycle used in the other chapters. Stages may run concurrently. AI classification, approval-of-record, enforced merge, and production release eligibility remain separate decisions.</p>
+</section>
+<details class="overview-reference-collapse"><summary>Advanced reference: authority boundaries and agent/model dependencies</summary><section class="authority-map" id="overview-authority-map" aria-labelledby="authority-map-title">
+  <div class="authority-map-heading">
+    <span class="section-kicker">ARCHITECTURE / AUTHORITY AT A GLANCE</span>
+    <h2 id="authority-map-title">One change. Several decision boundaries.</h2>
+    <p>Follow how eligibility, AI review and protected merge remain separate decisions in this fictional design.</p>
+  </div>
+  <div class="authority-map-flow" role="group" aria-label="Illustrative change flow with eligibility, AI-assisted review, separate approval paths and protected merge">
+    <div class="authority-map-node authority-map-pr"><span class="authority-map-icon" aria-hidden="true">⌘</span><strong>Pull request</strong><small>Code, context, exact revision</small></div>
+    <div class="authority-map-arrow" aria-hidden="true">→</div>
+    <div class="authority-map-node authority-map-policy"><span class="authority-map-icon" aria-hidden="true">◇</span><strong>Eligibility policy</strong><small>Scope, dependencies, exclusions</small><span class="authority-map-chip">Deterministic</span></div>
+    <div class="authority-map-arrow" aria-hidden="true">→</div>
+    <div class="authority-map-node authority-map-agent"><span class="authority-map-icon" aria-hidden="true">✳</span><strong>AI agent + reviewers</strong><small>Prompts, context, tools, model calls</small><span class="authority-map-chip">Analysis, not approval</span></div>
+  </div>
+  <div class="authority-map-external" aria-label="AI dependency and control distinction">
+    <div class="authority-map-agent-control"><strong>Agent configuration</strong><span>Tool permissions, context access, instructions and orchestration can be governed by Engineering.</span></div>
+    <div class="authority-map-external-model"><strong>Externally managed model</strong><span>Opaque weights, provider-side updates, variable outputs and availability may be outside direct control.</span></div>
+  </div>
+  <div class="authority-map-routes" role="group" aria-label="Separate human and automated authorization routes">
+    <div class="authority-map-route authority-map-human">
+      <span class="authority-map-route-label">EXCLUDED · UNCERTAIN · SENSITIVE</span>
+      <strong>Authorized human review</strong>
+      <small>No AI-based approval substitution. Shadow analysis may observe, but cannot authorize.</small>
+    </div>
+    <div class="authority-map-route authority-map-auto">
+      <span class="authority-map-route-label">ELIGIBLE · REQUIRED CONDITIONS SATISFIED</span>
+      <strong>Policy-authorized automation</strong>
+      <small>Only within an approved scope; AI agreement alone is insufficient.</small>
+    </div>
+  </div>
+  <div class="authority-map-merge" role="group" aria-label="Protected merge, deployment and subsequent monitoring">
+    <div class="authority-map-node authority-map-policy"><strong>Protected merge</strong><small>Branch rules, required checks, current-SHA validity and restricted bypass</small></div>
+    <div class="authority-map-arrow" aria-hidden="true">→</div>
+    <div class="authority-map-node"><strong>Build &amp; deploy</strong><small>Release and artifact integrity</small></div>
+    <div class="authority-map-arrow" aria-hidden="true">→</div>
+    <div class="authority-map-node"><strong>Monitor &amp; evaluate</strong><small>Signals, evidence and independent testing</small></div>
+  </div>
+  <div class="authority-map-footer">
+    <p><strong>Where authority lives:</strong> Eligibility and protected merge restrictions must be independently enforced; the AI layer supplies assessments, not authority. An incomplete policy inventory can still produce an incorrect deterministic outcome.</p>
+    <div class="authority-map-links"><a href="./open-scenario.html">Describe any AI SDLC scenario →</a><a href="./review-plan-authorization.html">Test a human-approved AI review plan →</a><a href="./engineering-blueprint.html#rr02-negative-test">Challenge a missed dependency →</a><a href="./ai-sdlc-risk.html?risk=RR-02#risk-explorer">Explore the related risk →</a></div>
+  </div>
+</section></details>
+<details class="field-deep-dive"><summary><span><span class="field-deep-dive-label">How Engineering would implement this</span><span class="field-deep-dive-hint">Implementation context and next steps</span></span><span class="field-deep-dive-chevron" aria-hidden="true">⌄</span></summary><section class="build-section" aria-labelledby="build-title">
+<div class="section-kicker">02 / Engineering implementation</div><h2 class="section-heading" id="build-title">How would Engineering make this work?</h2>
+<p class="section-intro">AI reviewers are only one part of the workflow. Explore how existing CI/CD safeguards, deterministic policy, independent authorization, and deployment enforcement could work together in this fictional design.</p>
+<p><a class="guide-action" href="./engineering-blueprint.html#engineering-build-plan">Explore the engineering implementation →</a></p>
+</section></details>
+
+<details id="foundations" class="overview-references">
+<summary>Framework references and control objectives</summary>
+<div class="reference-links">
+<a href="https://csrc.nist.gov/pubs/sp/800/218/final" target="_blank" rel="noopener noreferrer">NIST SSDF ↗</a>
+<a href="https://airc.nist.gov/airmf-resources/airmf/" target="_blank" rel="noopener noreferrer">NIST AI RMF ↗</a>
+<a href="https://slsa.dev/spec/v1.2/provenance" target="_blank" rel="noopener noreferrer">SLSA v1.2 ↗</a>
+<a href="https://genai.owasp.org/llm-top-10/" target="_blank" rel="noopener noreferrer">OWASP LLM Top 10 ↗</a>
+<a href="https://pcaobus.org/oversight/standards/auditing-standards/details/AS2201" target="_blank" rel="noopener noreferrer">PCAOB AS 2201 ↗</a>
+<a href="./rcm-view.html">Current RCM and control objectives →</a>
+</div></details>
+<footer class="overview-boundary"><p>Illustrative educational model: fictional scenarios and simulated decisions are not implemented controls or evidence of compliance. <a href="./previous-overview.html">See archived previous Overview →</a></p></footer>
+
+<script>
+(function () {
+  "use strict";
+  const details = [
+    ["Capture the PR event, diff, repository, author, base branch, and immutable commit SHA. Re-evaluate on revision changes.","Verify that all evaluations and approvals refer to the exact revision that was merged."],
+    ["Run deterministic scope, path, dependency, and financial-impact rules before considering automated approval. Treat missing mappings as unresolved.","Test excluded and indirect-impact changes, incomplete inventories, and changes to the policy or mapping versions."],
+    ["Run required builds, tests, security scans, and applicable code review. Ensure failures cannot be ignored by a downstream AI score.","Inspect required-check configuration, negative test outcomes, code-review requirements, and bypass privileges."],
+    ["Evaluate both reviewers against the same commit; capture model/prompt versions, outputs, disagreements, and errors. Do not equate scores with approval.","Examine reviewer validation against adjudicated cases, missed unsafe changes, shared failure modes, and traceable inputs."],
+    ["Apply explicit policy to independent evidence, completeness, version binding, and approved authorization routes; route ambiguity to humans.","Confirm that authority is independent of the PR author and that stale, conflicting, or incomplete evidence cannot approve."],
+    ["Enforce protected branch rules and required status checks at merge; restrict approval credentials and audit bypass actions.","Reconcile GitHub settings, reviewer identities, bypass actors, and final merged SHA to the recorded authorization."],
+    ["Build from the authorized commit; verify artifact identity, release permissions, and every production deployment path.","Trace a representative approved commit through build provenance to the deployed artifact, including emergency routes."],
+    ["Observe canaries, quality and policy metrics, overrides, incidents, and rollback conditions; make suspension actionable.","Test alerts, exception handling, post-deployment evidence, remediation, and the ability to halt unsafe automation."]
+  ];
+  const scenarios = {
+    pass: {
+      tone:"pass",states:["done","done","done","done","done","done","done","done"],
+      facts:["Eligibility and dependency checks pass.","CI checks and both AI reviewers pass.","An independent policy and approval mechanism authorizes the exact revision.","Protected merge, artifact verification, and release monitoring succeed."],
+      label:"AUTO-APPROVAL ELIGIBLE",
+      reason:"The fictional low-risk change satisfies the modeled policy and evidence conditions. Review scores do not confer authorization; independently enforced approval and release controls remain necessary.",
+      action:"Next: retain the revision-bound authorization and release evidence."
+    },
+    split: {
+      tone:"human",states:["done","done","done","human","human","skipped","skipped","skipped"],
+      facts:["Eligibility and CI checks pass.","The fictional reviewers disagree.","The automated decision path refuses authorization.","An authorized human must review before any merge and subsequent release."],
+      label:"HUMAN REVIEW REQUIRED",
+      reason:"Conflicting AI assessments are not resolved by resubmitting the same change to AI. The case exits automated approval.",
+      action:"Next: obtain an independent human decision on the current commit; downstream steps are not shown as completed."
+    },
+    excluded: {
+      tone:"blocked",states:["done","blocked","skipped","skipped","skipped","skipped","skipped","skipped"],
+      facts:["The shared-library change is connected to a financially relevant billing service.","A deterministic dependency rule excludes automated approval.","AI scores cannot override this policy exclusion.","The change can proceed only through the separately authorized human route."],
+      label:"AUTOMATED APPROVAL EXCLUDED",
+      reason:"Financial dependency mapping triggers a mandatory exclusion before AI review. This is a restriction on automated approval, not a claim that the proposed code is defective.",
+      action:"Next: route the change for qualified human review and apply ordinary protected merge and release controls."
+    },
+    canary: {
+      tone:"alert",states:["done","done","done","done","done","done","done","alert"],
+      facts:["The change was validly approved and merged.","The build is linked to the authorized revision.","Deployment begins under the permitted release route.","The production canary fails; operations intervene."],
+      label:"RELEASE INTERVENTION REQUIRED",
+      reason:"A production health-check failure is a downstream operational problem. It does not retroactively change the original PR approval into an unauthorized one.",
+      action:"Next: stop promotion or roll back according to the release policy, investigate, and retain incident evidence."
+    }
+  };
+  const stageButtons=[...document.querySelectorAll("[data-stage]")];
+  const scenarioButtons=[...document.querySelectorAll("[data-scenario]")];
+  let activeStage=0;
+  function inspect(index) {
+    activeStage=index;
+    stageButtons.forEach((button,i)=>button.setAttribute("aria-pressed",String(index===i)));
+    document.getElementById("stage-engineering").textContent=details[index][0];
+    document.getElementById("stage-assurance").textContent=details[index][1];
+  }
+  const scenarioOutput=document.getElementById("scenario-output");
+  const mode=document.getElementById("workflow-mode");
+
+  const clearButton=document.getElementById("clear-scenario");
+
+  function resetExplore(){
+    scenarioButtons.forEach(button=>button.setAttribute("aria-pressed","false"));
+    stageButtons.forEach(button=>{delete button.dataset.state;button.querySelector(".stage-state").textContent="Explore stage";});
+    scenarioOutput.hidden=true;document.getElementById("overview-related-risk").hidden=true;
+    mode.textContent="Explore mode · No scenario selected";clearButton.hidden=true;
+    document.getElementById("scenario-facts").replaceChildren();
+    const item=document.createElement("li");item.textContent="Select one of the four scenarios to see how the pipeline responds.";document.getElementById("scenario-facts").appendChild(item);
+    document.getElementById("decision-panel").dataset.tone="neutral";
+    document.getElementById("decision-label").textContent="SELECT A SCENARIO";
+    document.getElementById("decision-reason").textContent="Explore mode explains the workflow without asserting any outcome.";
+    document.getElementById("decision-action").textContent="Choose a fictional case above to run the simulation.";
+  }
+  function selectScenario(key) {
+    const data=scenarios[key];
+    if (!data) return;
+    scenarioButtons.forEach(button=>button.setAttribute("aria-pressed",String(button.dataset.scenario===key)));
+    const selected=scenarioButtons.find(button=>button.dataset.scenario===key);
+    mode.textContent="Simulation mode · "+selected.textContent.trim();
+    clearButton.hidden=false;scenarioOutput.hidden=false;document.getElementById("overview-related-risk").hidden=(key!=="excluded");
+    stageButtons.forEach((button,index)=>{
+      const state=data.states[index];
+      button.dataset.state=state;
+      const labels={done:"Modeled pass",human:"Human route",blocked:"Excluded",skipped:"Not reached",alert:"Intervention"};
+      button.querySelector(".stage-state").textContent=labels[state];
+    });
+    const facts=document.getElementById("scenario-facts");
+    facts.replaceChildren();
+    data.facts.forEach(value=>{const li=document.createElement("li");li.textContent=value;facts.appendChild(li);});
+    document.getElementById("decision-panel").dataset.tone=data.tone;
+    document.getElementById("decision-label").textContent=data.label;
+    document.getElementById("decision-reason").textContent=data.reason;
+    document.getElementById("decision-action").textContent=data.action;
+  }
+  stageButtons.forEach((button,index)=>button.addEventListener("click",()=>inspect(index)));
+  scenarioButtons.forEach(button=>button.addEventListener("click",()=>selectScenario(button.dataset.scenario)));
+  clearButton.addEventListener("click",resetExplore);
+  inspect(activeStage);
+  resetExplore();
+  if(new URLSearchParams(location.search).get('journey')==='rr02') selectScenario('excluded');
+})();
+</script>
+<script>
+/* Content-only control investigation. No changes to simulator or policy evaluator. */
+(function () {
+"use strict";
+const records={
+review:{
+title:"Reviewer independence and code ownership",
+summary:"A change author must not be able to satisfy or quietly weaken the required independent review.",
+needed:"Protected branches, applicable CODEOWNERS rules, qualified independent reviewers, required review enforcement, and restrictions on editing or bypassing policy.",
+demo:"Show a synthetic pull request affecting a protected path, the effective CODEOWNERS file and ruleset, required reviewer selection, and a denied attempt to merge without the designated approval. Show who can edit the ruleset.",
+risk:"A contributor obtains approval from an unauthorized peer, edits reviewer requirements, or merges without code-owner review. A passing CI check masks the missing authorization.",
+audit:"Inspect the applicable repository and branch coverage; compare CODEOWNERS to required-review settings; test author/self-review and unauthorized reviewer cases; inspect administrators, bypass actors, approval invalidation, and retained logs."
+},
+ai:{
+title:"AI classification is not approval authority",
+summary:"A favorable AI review does not independently establish that a change is eligible for automatic approval.",
+needed:"A separately governed eligibility policy, deterministic exclusions, version-bound AI outputs, fail-closed handling, and an explicit authorized human fallback for excluded or uncertain changes.",
+demo:"Run the same fictional change with a favorable AI classification but a protected-path exclusion. Demonstrate that the exclusion prevails, the exact revision is recorded, and escalation leads to an authorized human reviewer.",
+risk:"An AI review score is treated as permission to approve; a shared infrastructure or financially significant change bypasses human review despite an exclusion.",
+audit:"Review policy ownership and configuration permissions; test excluded and conflicting cases; verify output-to-SHA binding, failure handling, and evidence that AI classification alone cannot satisfy approval requirements."
+},
+merge:{
+title:"An approval must survive enforcement",
+summary:"A valid-looking review is insufficient unless protected merge controls enforce the authorized decision on the final revision.",
+needed:"Effective GitHub branch/ruleset protections, protected required checks, restricted bot credentials, current-SHA approval validity, and monitored override pathways.",
+demo:"Demonstrate that a new commit invalidates a prior approval where policy requires it; attempt a merge with a missing required check and show the rejection; inspect bypass actors and the final merged SHA.",
+risk:"A stale approval survives a code update; an actor disables a required check or uses a privileged bypass; the merged code differs from what was reviewed.",
+audit:"Reconcile the effective ruleset, check source, approval identity, current and merged SHAs, privileged changes, and exception logs. Test both ordinary and privileged paths rather than relying on screenshots."
+}
+};
+const choices=[...document.querySelectorAll("[data-boundary]")], tabs=[...document.querySelectorAll("[data-perspective]")];
+let boundary="review",perspective="needed";
+const captions={needed:"What's needed",demo:"What management should demonstrate",risk:"Risk scenario",audit:"What auditors evaluate"};
+function render(){
+ const record=records[boundary];
+ choices.forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.boundary===boundary)));
+ tabs.forEach(t=>{const active=t.dataset.perspective===perspective;t.setAttribute("aria-selected",String(active));t.tabIndex=active?0:-1;});
+ document.getElementById("investigation-title").textContent=record.title;
+ document.getElementById("investigation-summary").textContent=record.summary;
+ document.getElementById("investigation-panel-title").textContent=captions[perspective];
+ document.getElementById("investigation-text").textContent=record[perspective];
+ document.getElementById("investigation-panel").setAttribute("aria-labelledby","investigation-tab-"+perspective);
+}
+choices.forEach(b=>b.addEventListener("click",()=>{boundary=b.dataset.boundary;perspective="needed";document.getElementById("boundary-details").open=true;render();}));
+tabs.forEach((t,i)=>{t.addEventListener("click",()=>{perspective=t.dataset.perspective;render();});t.addEventListener("keydown",e=>{if(!["ArrowRight","ArrowLeft","Home","End"].includes(e.key))return;e.preventDefault();const n=e.key==="Home"?0:e.key==="End"?tabs.length-1:(i+(e.key==="ArrowRight"?1:-1)+tabs.length)%tabs.length;perspective=tabs[n].dataset.perspective;render();tabs[n].focus();});});
+render();
+})();
+</script>
+</main><script src="./guided-investigation.js"></script><script>
+/* Expand collapsed source material when a linked subsection is the destination. */
+(function(){
+function reveal(){
+  var hash=window.location.hash;
+  if(!hash||hash.length<2)return;
+  var id;try{id=decodeURIComponent(hash.slice(1))}catch(_){return}
+  var target=document.getElementById(id);
+  if(!target)return;
+  var parent=target.closest('details');
+  while(parent){if(!parent.open)parent.open=true;parent=parent.parentElement&&parent.parentElement.closest('details');}
+}
+window.addEventListener('hashchange',reveal);
+reveal();
+})();
+</script></body></html>
