@@ -23,77 +23,45 @@
     stages:stages.map(s=>Object.freeze({...s})),
     note:'Teaching scenario only. No real policy decision, model output, approval or release evidence is asserted.'
   });
-  if(defaultFocus===undefined)return; // The Overview already has a detailed full-size journey.
-  function render(){
-    if(document.getElementById('field-guide-shared-journey'))return;
-    const anchor=document.querySelector('.risk-main-hero, .assurance-hero, section.hero');
-    if(!anchor)return;
-    const el=document.createElement('section');
-    el.id='field-guide-shared-journey';
-    el.className='field-guide-shared-journey';
-    el.setAttribute('aria-label','Shared illustrative PR journey');
-    const header=document.createElement('div');header.className='fgj-heading';
-    const title=document.createElement('strong');title.textContent='ONE CHANGE / EIGHT LIFECYCLE STAGES';
-    const caption=document.createElement('span');caption.textContent='CASE-SHARED-01 · shared-library change · fictional case';
-    header.append(title,caption);el.append(header);
-    const instructions=document.createElement('p');instructions.className='fgj-instructions';
-    instructions.textContent='Select a stage to inspect it here. Open its full chapter only when you want to go deeper.';
-    el.append(instructions);
-    const list=document.createElement('div');list.className='fgj-stages';
-    list.setAttribute('role','group');list.setAttribute('aria-label','Inspect a lifecycle stage without navigating');
-    const buttons=[];
-    const detail=document.createElement('div');detail.className='fgj-case-detail';
-    detail.setAttribute('role','region');detail.setAttribute('aria-label','Selected lifecycle stage');
-    const label=document.createElement('strong');label.id='fgj-selected-label';
-    const description=document.createElement('p');
-    const evidence=document.createElement('p');
-    const deeper=document.createElement('a');deeper.className='fgj-open-chapter';
-    deeper.textContent='Open full chapter →';
-    const warning=document.createElement('small');
-    warning.textContent='Illustrative case state; this view does not synchronize or validate the separate interactive labs.';
-    detail.append(label,description,evidence,deeper,warning);
-    let current=selected;
-    function select(index){
-      if(index<0||index>=stages.length)return;
-      current=index;
-      const stage=stages[index];
-      buttons.forEach((button,i)=>{
-        const active=i===index;
-        button.setAttribute('aria-pressed',String(active));
-        button.classList.toggle('fgj-selected',active);
-      });
-      label.textContent='CASE STATE / '+stage.name;
-      description.textContent=stage.description;
-      evidence.textContent='Question: '+stage.question+' Evidence to seek: '+stage.evidence;
-      const params=new URLSearchParams({case:'CASE-SHARED-01',journeyStage:String(index)});
-      deeper.href='./'+stage.page+'?'+params.toString()+'#'+stage.hash;
-      deeper.textContent=stage.page===currentPage?'Open detailed section →':'Open '+({
-        'index.html':'Overview',
-        'ai-sdlc-risk.html':'Risk & Governance',
-        'engineering-blueprint.html':'Engineering & Safeguards',
-        'continuous-monitoring.html':'Monitoring & Operations',
-        'independent-assurance.html':'Assurance'
-      }[stage.page]||'chapter')+' →';
-    }
-    stages.forEach((stage,i)=>{
-      const button=document.createElement('button');
-      button.type='button';
-      button.className='fgj-stage';
-      button.textContent=stage.name;
-      button.title=stage.question;
-      button.setAttribute('aria-label','Inspect '+stage.name+': '+stage.question);
-      button.setAttribute('aria-controls','fgj-selected-label');
-      button.setAttribute('aria-pressed','false');
-      button.addEventListener('click',()=>select(i)); // No location/hash or scroll change.
-      buttons.push(button);list.append(button);
-    });
-    el.append(list);
-    const mobileHint=document.createElement('p');mobileHint.className='fgj-scroll-hint';
-    mobileHint.textContent='Swipe or scroll horizontally to view all eight stages.';
-    el.append(mobileHint);
-    el.append(detail);
-    anchor.insertAdjacentElement('afterend',el);
-    select(current);
+  if(defaultFocus===undefined)return; // Overview has its own introduction.
+const context = {
+  'ai-sdlc-risk.html': {
+    role:'RISK / EXPOSURE', question:'Could this shared dependency affect protected business functions?',
+    insight:'Two LOW reviewer outputs cannot resolve missing downstream dependency evidence.',
+    anchor:'#risk-explorer', action:'Inspect failure paths'
+  },
+  'engineering-blueprint.html': {
+    role:'ENGINEERING / ENFORCEMENT', question:'What independently restricts this change?',
+    insight:'The approval decision, execution identity, branch gate, and release path are distinct boundaries.',
+    anchor:'#engineering-build-plan', action:'Inspect the enforcement path'
+  },
+  'continuous-monitoring.html': {
+    role:'OPERATIONS / RECONCILIATION', question:'Would revision B inherit revision A’s authorization?',
+    insight:'A previous approval can remain in history but must not automatically authorize revised code.',
+    anchor:'#fg-monitoring-dashboard', action:'Investigate the evidence'
+  },
+  'independent-assurance.html': {
+    role:'ASSURANCE / CLAIM', question:'What conclusion is supported by the actual evidence?',
+    insight:'Sampled approvals, complete populations, and adversarial evaluations substantiate different assertions.',
+    anchor:'#assurance-control-explorer', action:'Inspect evidence limits'
   }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',render,{once:true});else render();
-})();
+};
+function render() {
+  if(document.getElementById('field-guide-shared-journey'))return;
+  const hero=document.getElementById('main-content'),c=context[currentPage];
+  if(!hero||!c)return;
+  const panel=document.createElement('aside');
+  panel.id='field-guide-shared-journey';
+  panel.className='fgj-context';
+  panel.setAttribute('aria-label','Shared fictional case context');
+  const marker=document.createElement('strong');
+  marker.textContent='CASE-SHARED-01 · '+c.role+' · FICTIONAL';
+  const question=document.createElement('p');question.className='fgj-context-question';
+  question.textContent=c.question;
+  const note=document.createElement('p');note.textContent=c.insight;
+  const link=document.createElement('a');link.href=c.anchor;link.textContent=c.action+' →';
+  panel.append(marker,question,note,link);
+  hero.insertAdjacentElement('afterend',panel);
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',render,{once:true});else render();
+})(typeof window!=='undefined'?window:globalThis);
