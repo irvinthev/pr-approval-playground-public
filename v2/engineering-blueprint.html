@@ -12,9 +12,18 @@
 <main class="shell" id="main">
 <section class="hero" aria-labelledby="page-title">
  <div><span class="eyebrow">03 / DESIGN · Engineering &amp; Safeguards</span>
- <h1 id="page-title">What actually prevents an unsafe approval?</h1>
- <p class="lead">Engineering has multiple choices: improve human review, let agents execute explicit decisions, simplify the route, or delegate narrow approval authority. The right architecture depends on the problem and the independent enforcement.</p></div>
+ <h1 id="page-title">Which AI architecture is worth building—and what keeps it within bounds?</h1>
+ <p class="lead">Start with what Engineering needs to improve: review quality, developer focus, lead time, or safer delivery. Then compare simpler workflow changes with AI-assisted, human-directed, and autonomous options—and the independent boundaries each would need.</p></div>
  <aside class="hero-aside" aria-label="Why this chapter matters"><strong>The architectural choice</strong><p>Who decides is not necessarily who clicks Approve. Who clicks Approve is not necessarily who controls credentials, branch rules, or deployment.</p><p>An LLM’s instruction to “only approve safe changes” is not an access-control boundary.</p></aside>
+</section>
+<section class="engineering-brief" aria-labelledby="engineering-brief-title">
+ <span class="mini-label">BEFORE SELECTING AN AGENT</span>
+ <h2 id="engineering-brief-title">Solve the real bottleneck, not the approval ceremony.</h2>
+ <div class="engineering-brief-questions">
+  <p><strong>Actual constraint</strong>Is it reviewer availability, code ownership, CI latency, or review quality?</p>
+  <p><strong>Simplest alternative</strong>Could assignment, scoped Fast Track, or advisory AI deliver the value without new approval authority?</p>
+  <p><strong>Evidence of value</strong>Measure substantive review quality, lead time, exceptions, operating cost, and rework—not just approvals per hour.</p>
+ </div>
 </section>
 <div class="case-line" aria-label="Shared fictional example"><strong>SHARED CASE / FICTIONAL</strong><span>lib/dedup/key.js</span><span>Two AI LOW results</span><span>Revision A → B</span><span>Protected downstream functions possible</span></div>
 <section class="focus" data-scenario-root aria-labelledby="focus-title">
@@ -34,7 +43,7 @@
 <div class="mini-step"><b>03</b><div><strong>Enforcement</strong><span>Block unauthorized merges and overrides</span></div></div>
 <div class="mini-step"><b>04</b><div><strong>Release</strong><span>Trace authorized source to artifact</span></div></div></div>
 </section>
-<aside class="note"><strong>Evidence boundary.</strong> Tradeoff: more independent enforcement can increase complexity and operational cost. Start with the simplest architecture that achieves the actual engineering objective; validate whether existing review controls deliver meaningful judgment.</aside>
+<aside class="note"><strong>Ownership is part of the design.</strong> The capability owner is accountable for the agent runtime, permissions, and enforcement; consuming repository or service owners understand downstream impact and recovery; authorized management accepts residual exposure. If a necessary owner or stop authority is unassigned, the decision remains open. Additional enforcement also creates operating cost—confirm it solves a real problem.</aside>
 <div class="chapter-outro">
  <details><summary>Need deeper technical material? Open the previous extended chapter</summary><p>The extensive previous chapter is retained for reference during V2 review. It is not the proposed primary reading experience.</p><a href="../engineering-blueprint.html">View original Engineering &amp; Safeguards reference ↗</a></details>
  <a class="next" href="./continuous-monitoring.html">Next: Monitoring &amp; Operations →</a>
