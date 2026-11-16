@@ -45,7 +45,7 @@ test('all chapter interactions update information and selected controls without 
    createElement(tag){const el={tag,dataset:{},attrs:{},listeners:{},setAttribute(k,v){this.attrs[k]=v},addEventListener(k,fn){this.listeners[k]=fn}};return el}
   };
   vm.runInNewContext(script,{document,window:{}});
-  assert.ok(buttons.length>=3,chapter);
+  assert.equal(buttons.length,chapter==='engineering'?4:chapter==='monitoring'?4:chapter==='assurance'?5:3,chapter+' option count');
   assert.ok(title.textContent&&summary.textContent&&status.textContent&&next.textContent);
   assert.equal(buttons.filter(b=>b.attrs['aria-pressed']==='true').length,1);
   const previous=title.textContent;buttons[1].listeners.click();
@@ -123,4 +123,42 @@ test('Risk page presents the source Top 10 taxonomy and one bounded worked examp
  const css=read('site.css');
  assert.match(css,/\.risk-table/);
  assert.match(css,/@media\(max-width:700px\)/);
+});
+
+test('Engineering remains problem-first with named responsibilities and one architecture explorer',()=>{
+ const html=read('engineering-blueprint.html');
+ assert.match(html,/Which AI architecture is worth building/);
+ for(const term of ['Actual constraint','Simplest alternative','Evidence of value','capability owner','repository or service owners','authorized management']){
+  assert.ok(html.includes(term),'missing Engineering design element: '+term);
+ }
+ assert.equal((html.match(/data-scenario-root/g)||[]).length,1);
+ assert.equal((html.match(/class="engineering-brief-questions"/g)||[]).length,1);
+ assert.match(read('site.css'),/\.engineering-brief-questions/);
+});
+
+test('Monitoring prioritizes four operational signal sources and investigation triggers without invented health data',()=>{
+ const html=read('continuous-monitoring.html');
+ const table=html.match(/<table class="risk-table monitoring-signal-table">([\s\S]*?)<\/table>/);
+ assert.ok(table,'operational signal matrix missing');
+ assert.equal((table[1].match(/scope="row"/g)||[]).length,4);
+ for(const term of ['Decision ↔ revision integrity','Authorization ↔ merge ↔ release','Decision quality and adjudication','Privileges, rulesets and policy drift','source coverage','not proof of a violation']){
+  assert.ok(html.includes(term),'missing monitoring concept: '+term);
+ }
+ assert.equal((html.match(/data-scenario-root/g)||[]).length,1);
+ assert.doesNotMatch(html,/1,248|186 automated approvals|release paused|connected to production telemetry/);
+});
+
+test('Assurance expands the existing lens selector to five source-defined methods, without creating an RCM builder',()=>{
+ const html=read('independent-assurance.html');
+ const script=read('guide.js');
+ for(const term of ['FIVE COMPLEMENTARY TEST LENSES','configuration, population, negative, judgment, and period-of-reliance','Make credible evidence a by-product of engineering','Implementation status, design effectiveness']){
+  assert.ok(html.includes(term),'missing Assurance emphasis: '+term);
+ }
+ const assurance=script.slice(script.indexOf(' assurance:{'),script.indexOf('\n }\n};',script.indexOf(' assurance:{')));
+ for(const key of ["configuration","population","negative","judgment","period"]){
+  assert.ok(assurance.includes("key:'"+key+"'"),key);
+ }
+ assert.equal((assurance.match(/key:'/g)||[]).length,5);
+ assert.equal((html.match(/data-scenario-root/g)||[]).length,1);
+ assert.doesNotMatch(html,/risk-score-input|rcm-builder-form|data-live-audit-conclusion/);
 });
