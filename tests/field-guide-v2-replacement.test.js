@@ -70,3 +70,21 @@ test('the V2 preview has no extra sixth chapter and leaves legacy reference cont
  assert.ok(fs.existsSync(path.join(base,'site.css')));
  assert.ok(fs.existsSync(path.join(base,'guide.js')));
 });
+
+test('Overview broadens the AI-SDLC premise without rebuilding the approval explorer',()=>{
+ const html=read('index.html'),css=read('site.css');
+ assert.match(html,/AI is changing how software gets built—and who gets to act/);
+ assert.match(html,/write, test, review, and deliver software/);
+ assert.match(html,/WHAT CHANGES WITH AI/);
+ for(const phrase of ['Advice → Action','Small change → Wider impact','Event log → Accountability']){
+  assert.ok(html.includes(phrase),phrase);
+ }
+ assert.equal((html.match(/class="overview-shift"/g)||[]).length,3);
+ assert.equal((html.match(/data-scenario-root/g)||[]).length,1);
+ assert.match(html,/Who really approved this change/);
+ assert.match(html,/Start with the problem, then design the authority/);
+ assert.match(html,/WORKED EXAMPLE \/ AI PR APPROVAL/);
+ assert.match(css,/\.overview-shift-grid/);
+ assert.match(css,/@media\(max-width:700px\)/);
+ assert.doesNotMatch(html,/stakeholder matrix|framework comparison|risk scorecard/i);
+});
