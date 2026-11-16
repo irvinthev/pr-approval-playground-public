@@ -12,14 +12,39 @@
 <main class="shell" id="main">
 <section class="hero" aria-labelledby="page-title">
  <div><span class="eyebrow">02 / EXPOSE · Risk &amp; Governance</span>
- <h1 id="page-title">Two LOW verdicts. One shared dependency.</h1>
- <p class="lead">A small-looking PR can alter a business-critical function through a dependency neither model considered. The risk is not the LOW label itself—it is the decision a system might make because of it.</p></div>
- <aside class="hero-aside" aria-label="Why this chapter matters"><strong>The exposure</strong><p>CASE-SHARED-01 changes a shared deduplication library. The fictional dependency chain reaches usage, billing and reporting.</p><p>Management policy coverage and the current dependency map are assumptions to validate, not facts the AI can invent.</p></aside>
+ <h1 id="page-title">AI can introduce defects—and gain authority to ship them.</h1>
+ <p class="lead">AI-enabled engineering changes both the software we produce and who—or what—can build, review, approve, and release it. Understanding exposure starts with concrete failure conditions, their consequences, and the authority to accept what remains.</p></div>
+ <aside class="hero-aside" aria-label="Why this chapter matters"><strong>The practical question</strong><p>What could realistically fail, how far could the consequences reach, and what must be true before an AI-enabled workflow is acceptable?</p><p>The risk taxonomy is broader than PR approval; the shared-library case below is one fictional example.</p></aside>
+</section>
+
+<section class="risk-taxonomy" aria-labelledby="top-risks-title">
+ <div class="risk-taxonomy-intro">
+  <div><span class="mini-label">THE RISK LANDSCAPE</span><h2 id="top-risks-title">Top 10 AI-enabled SDLC risks</h2><p>Start with plausible failures, not an invented score. The categories cover software quality, agent authority, security, delivery integrity, and operations.</p></div>
+  <a href="#risk-case" class="risk-case-link">Explore one worked example ↓</a>
+ </div>
+ <div class="risk-table-scroll" role="region" aria-label="Ten AI-enabled SDLC risks" tabindex="0">
+ <table class="risk-table">
+  <thead><tr><th scope="col">Risk</th><th scope="col">Failure example</th><th scope="col">Question to resolve</th></tr></thead>
+  <tbody>
+  <tr><th scope="row"><span class="risk-rank">01</span><span>Insecure or defective AI-generated code</span></th><td data-label="Failure example">A generated API works but fails to isolate tenants, exposing customer data.</td><td data-label="Question to resolve">What tests or reviews challenge security and business logic?</td></tr>
+  <tr><th scope="row"><span class="risk-rank">02</span><span>Unauthorized AI decision-making and execution</span></th><td data-label="Failure example">An AI reviewer submits approvals or triggers a release beyond its mandate.</td><td data-label="Question to resolve">Where is decision and execution authority enforced?</td></tr>
+  <tr><th scope="row"><span class="risk-rank">03</span><span>Agent identity, credential, and privilege abuse</span></th><td data-label="Failure example">An agent uses an engineer’s token to access protected repositories or CI functions.</td><td data-label="Question to resolve">What can each identity do through every tool path?</td></tr>
+  <tr><th scope="row"><span class="risk-rank">04</span><span>Prompt injection and agent manipulation</span></th><td data-label="Failure example">A malicious repository instruction redirects review or command execution.</td><td data-label="Question to resolve">What untrusted inputs can influence agent actions?</td></tr>
+  <tr><th scope="row"><span class="risk-rank">05</span><span>Sensitive data, intellectual property, and secret exposure</span></th><td data-label="Failure example">Sensitive repository context or production credentials reach an unintended endpoint.</td><td data-label="Question to resolve">Where can data travel through prompts, tools, and logs?</td></tr>
+  <tr><th scope="row"><span class="risk-rank">06</span><span>AI-enabled software supply-chain compromise</span></th><td data-label="Failure example">An invented package name is claimed by an attacker and executed in CI.</td><td data-label="Question to resolve">How are dependencies, plugins, and MCP tools trusted?</td></tr>
+  <tr><th scope="row"><span class="risk-rank">07</span><span>False assurance from AI review and testing</span></th><td data-label="Failure example">Two AI reviewers miss the same material dependency or authentication flaw.</td><td data-label="Question to resolve">How do we test shared blind spots and false LOW results?</td></tr>
+  <tr><th scope="row"><span class="risk-rank">08</span><span>Loss of change integrity, traceability, and accountability</span></th><td data-label="Failure example">An approval for revision A survives a rebase that changes the actual content.</td><td data-label="Question to resolve">Can decisions be traced to what merged and deployed?</td></tr>
+  <tr><th scope="row"><span class="risk-rank">09</span><span>High-speed propagation of failures</span></th><td data-label="Failure example">An automated remediation applies a flawed fix across many services.</td><td data-label="Question to resolve">Can the blast radius be bounded and automation stopped?</td></tr>
+  <tr><th scope="row"><span class="risk-rank">10</span><span>Uncontrolled AI workflow evolution and operational dependency</span></th><td data-label="Failure example">A model or tool update changes judgments without renewed validation.</td><td data-label="Question to resolve">Who owns behavioral drift, changes, and recovery readiness?</td></tr>
+  </tbody>
+ </table></div>
+ <p class="risk-taxonomy-foot">Editorial prioritization from the November 2026 design draft—not an official NIST or OWASP ranking. The actual severity and relevance of each risk depend on the workflow, permissions, dependencies, and production exposure.</p>
+ <div class="risk-decision-line"><strong>Decision rights</strong><span><b>Own:</b> Engineering designs and operates the system.</span><span><b>Accept:</b> Authorized management decides on residual exposure.</span><span><b>Challenge:</b> Security/GRC advise; IA evaluates independently.</span></div>
 </section>
 <div class="case-line" aria-label="Shared fictional example"><strong>SHARED CASE / FICTIONAL</strong><span>lib/dedup/key.js</span><span>Two AI LOW results</span><span>Revision A → B</span><span>Protected downstream functions possible</span></div>
-<section class="focus" data-scenario-root aria-labelledby="focus-title">
- <span class="mini-label">FOLLOW A PLAUSIBLE FAILURE</span><h2 class="section-heading" id="focus-title">What breaks the approval decision?</h2>
- <p class="section-intro">Select a failure mechanism. The impact and management decision change even when two AI reviewers agree.</p>
+<section class="focus" id="risk-case" data-scenario-root aria-labelledby="focus-title">
+ <span class="mini-label">WORKED EXAMPLE / AI AUTO APPROVE</span><h2 class="section-heading" id="focus-title">What breaks the approval decision?</h2>
+ <p class="section-intro">This fictional case concentrates several of the risks above. Select a failure mechanism to see how a LOW verdict could miss a dependency, authorization boundary, or policy change.</p>
  <div class="picker" data-picker aria-label="Select an example"></div>
  <div class="insight" role="region" aria-label="Selected example detail" aria-live="polite" aria-atomic="false">
   <div><span class="verdict" data-insight-status></span><h3 data-insight-title></h3><p class="insight-summary" data-insight-summary></p><p class="insight-next" data-insight-next></p></div>
