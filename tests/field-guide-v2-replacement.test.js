@@ -114,7 +114,7 @@ test('Risk page presents the source Top 10 taxonomy and one bounded worked examp
  });
  assert.match(html,/Editorial prioritization from the November 2026 design draft/);
  assert.match(html,/Decision rights/);
- for(const concept of ['Engineering designs and operates','Authorized management decides','Security\/GRC advise','IA evaluates independently'])
+ for(const concept of ['Engineering designs and operates','Delegated management accepts','Security\/GRC challenge','IA evaluates independently'])
   assert.ok(html.includes(concept.replace('\\/','/')),concept);
  assert.equal((html.match(/data-scenario-root/g)||[]).length,1);
  assert.match(html,/id="risk-case"/);
