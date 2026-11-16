@@ -18,13 +18,13 @@ test('shared case retains its eight evidence stages without repeating the stage 
  assert.doesNotMatch(js, /fgj-stages|fgj-stage|button\.addEventListener\('click',\(\)=>select\(i\)\)/);
 });
 
-test('the five chapters use the common journey without replacing their existing advanced cases', () => {
+test('the legacy chapters retain the common journey while the V2 homepage is self-contained', () => {
  for (const page of ['ai-sdlc-risk.html','engineering-blueprint.html','continuous-monitoring.html','independent-assurance.html']) {
   const html=read(page);
   assert.match(html,/\.\/field-guide-journey\.js/);
   assert.match(html,/\.\/field-guide-journey\.css/);
  }
- const html=read('index.html');
+ const html=read('legacy-homepage.html');
  assert.match(html,/id="overview-authority-preview"/);
  assert.match(html,/id="workflow"/);
 });
