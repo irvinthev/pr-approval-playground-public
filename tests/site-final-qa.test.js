@@ -9,9 +9,9 @@ const read = file => fs.readFileSync(path.join(root,file),'utf8');
 const htmlOnly = file => read(file).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,'');
 const ids = file => new Set([...htmlOnly(file).matchAll(/\bid=["']([^"']+)["']/g)].map(m=>m[1]));
 
-test('five core chapters use the same navigation labels and keep advanced tools separate', () => {
+test('legacy chapters retain navigation while V2 is the new main entry', () => {
  const canonical = ['Overview','Risk &amp; Governance','Engineering &amp; Safeguards','Monitoring &amp; Operations','Assurance'];
- for(const file of pages){
+ for(const file of pages.filter(p=>p!=='index.html')){
   const nav = htmlOnly(file).match(/<nav class="site-chapters"[^>]*>([\s\S]*?)<\/nav>/);
   assert.ok(nav,file+' missing primary navigation');
   const hrefs = [...nav[1].matchAll(/href="\.\/([^"#?]+)"/g)].map(m=>m[1]);
@@ -19,7 +19,7 @@ test('five core chapters use the same navigation labels and keep advanced tools 
   for(const label of canonical) assert.ok(nav[1].includes('>'+label+'</a>'),file+' missing '+label);
   assert.doesNotMatch(nav[1],/\.\/playground\.html|\.\/rcm-view\.html/,file+' advanced tools should not be chapters');
  }
- assert.match(htmlOnly('index.html'),/href="\.\/playground\.html"/);
+ assert.match(htmlOnly('legacy-homepage.html'),/href="\.\/playground\.html"/);
  assert.match(htmlOnly('independent-assurance.html'),/href="\.\/rcm-view\.html/);
  assert.ok(fs.existsSync(path.join(root,'assets/ai-sdlc-scenario-rcm-template.csv')));
 });
@@ -79,6 +79,6 @@ test('redundant chapter guides are secondary and optional experiments remain int
  assert.match(risk,/<details class="fg-supplementary-guide"[\s\S]*?<nav class="risk-chapter-guide"/);
  assert.match(monitoring,/<details class="fg-supplementary-guide"[\s\S]*?<section class="monitoring-chapter-guide"/);
  assert.equal((monitoring.match(/id="fg-monitoring-dashboard"/g)||[]).length,1);
- assert.match(read('index.html'),/id="workflow"/);
+ assert.match(read('legacy-homepage.html'),/id="workflow"/);
  assert.match(read('playground.html'),/data-lab=/);
 });

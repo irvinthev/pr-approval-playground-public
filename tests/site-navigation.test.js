@@ -3,8 +3,8 @@ const root=path.resolve(__dirname,'..');
 const pages=['index.html','ai-sdlc-risk.html','experience.html','engineering-blueprint.html','risk-controls.html','control-matrix.html','continuous-monitoring.html','independent-assurance.html','auditor-view.html','playground.html','previous-overview.html'];
 const primary=['index.html','ai-sdlc-risk.html','engineering-blueprint.html','continuous-monitoring.html','independent-assurance.html'];
 const read=p=>fs.readFileSync(path.join(root,p),'utf8').replace(/<script\b[^>]*>[\s\S]*?<\/script>/g,'');
-test('current pages use five-section navigation, with reference pages not impersonating primary destinations',()=>{
- for(const page of pages.filter(p=>p!=='previous-overview.html')){
+test('legacy chapters retain five-section navigation, while V2 has its own entry',()=>{
+ for(const page of pages.filter(p=>p!=='previous-overview.html'&&p!=='index.html')){
  const html=read(page),nav=html.match(/<nav class="site-chapters"[^>]*>([\s\S]*?)<\/nav>/);
  assert.ok(nav,page);
  const hrefs=[...nav[1].matchAll(/href="\.\/([^"#?]+)"/g)].map(m=>m[1]);
@@ -17,6 +17,22 @@ test('current pages use five-section navigation, with reference pages not impers
  assert.equal(active[0][2],page===mapped[page]?'page':'location',page);
  }else assert.equal(active.length,0,page);
  }
+});
+
+test('V2 homepage has four primary destinations, all local section anchors, and a preserved legacy route',()=>{
+ const html=read('index.html');
+ const nav=html.match(/<nav aria-label="Main navigation"[^>]*>([\s\S]*?)<\/nav>/);
+ assert.ok(nav,'V2 primary navigation');
+ const targets=[...nav[1].matchAll(/href="#([^"]+)"/g)].map(x=>x[1]);
+ assert.deepEqual(targets,['page-overview','page-evaluate','page-assurance','page-lab']);
+ for(const id of targets)assert.ok(html.includes('id="'+id+'"'),id+' must exist');
+ assert.match(html,/href="#page-overview"/,'the logo points to the real Overview anchor');
+ assert.match(html,/id="risk-register"/);
+ assert.match(html,/id="as-risk-id"/);
+ assert.match(html,/id="fg-flow-stages"/);
+ assert.match(html,/Illustrative|fictional/i);
+ assert.doesNotMatch(html,/Braze|Appboy|braze\.com/i);
+ assert.ok(fs.existsSync(path.join(root,'legacy-homepage.html')),'legacy homepage preserved for old lesson links');
 });
 test('previous overview remains an intact historical simulation reference',()=>{
  const old=read('previous-overview.html');
@@ -45,8 +61,8 @@ test('legacy Assurance redirects are bounded and missing destinations still fail
  assert.equal(localDestinationExists('missing-page.html',''),false);
  assert.equal(supportedRedirect('independent-assurance.html','case=%7B%7D'),null);
 });
-test('homepage reconciles the interactive approval illustration with the broader AI-SDLC journey',()=>{
- const html=read('index.html');
+test('archived legacy homepage preserves its interactive approval illustration',()=>{
+ const html=read('legacy-homepage.html');
  assert.match(html,/href="\.\/ai-sdlc-risk\.html">Risk &amp; Governance/);
  assert.match(html,/href="\.\/previous-overview\.html">See archived previous Overview/);
  assert.match(html,/When AI reviews code, who authorizes the change\?/i);
@@ -212,8 +228,8 @@ test('Assurance differentiates authoritative source types and the integration ch
  assert.match(html,/id="shared-case-root" hidden/);
 });
 
-test('Overview architecture map separates AI analysis, external model dependencies and approval authority',()=>{
- const html=read('index.html');
+test('legacy Overview architecture map separates AI analysis and approval authority',()=>{
+ const html=read('legacy-homepage.html');
  assert.match(html,/id="overview-authority-map"/);
  for(const term of ['Eligibility policy','AI agent + reviewers','Externally managed model','Authorized human review','Policy-authorized automation','Protected merge']) assert.ok(html.includes(term),'Missing architecture label: '+term);
  assert.match(html,/AI agreement alone is insufficient/);
@@ -222,8 +238,8 @@ test('Overview architecture map separates AI analysis, external model dependenci
  assert.match(html,/\.\/ai-sdlc-risk\.html\?risk=RR-02#risk-explorer/);
 });
 
-test('Homepage retains one interactive simulator with the workflow preceding scenarios',()=>{
- const html=read('index.html'),engineering=read('engineering-blueprint.html');
+test('legacy homepage retains its original interactive simulator and workflow',()=>{
+ const html=read('legacy-homepage.html'),engineering=read('engineering-blueprint.html');
  assert.match(html,/When AI reviews code, who authorizes the change\?/);
  assert.doesNotMatch(html,/id="overview-stages"|class="overview-simple-journey"|class="overview-simple-stages"/);
  assert.match(html,/href="#overview-authority-preview">See the end-to-end journey/);

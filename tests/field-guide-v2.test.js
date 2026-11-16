@@ -6,8 +6,8 @@ const vm=require('node:vm');
 const root=path.resolve(__dirname,'..');
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 
-test('all five public chapters load the shared V2 experience without changing lab routes',()=>{
- for(const page of ['index.html','ai-sdlc-risk.html','engineering-blueprint.html','continuous-monitoring.html','independent-assurance.html']){
+test('legacy chapters retain their shared V2 experience without changing lab routes',()=>{
+ for(const page of ['legacy-homepage.html','ai-sdlc-risk.html','engineering-blueprint.html','continuous-monitoring.html','independent-assurance.html']){
   const html=read(page);
   assert.match(html,/\.\/field-guide-v2\.css\?v=1/);
   assert.match(html,/\.\/field-guide-v2\.js\?v=1/);
@@ -33,7 +33,7 @@ test('each focus link references a current chapter anchor',()=>{
  const js=read('field-guide-v2.js');
  for(const anchor of ['overview-authority-preview','engineering-build-plan','rr02-negative-test','fg-monitoring-dashboard','monitoring-investigations','monitoring-guide','assurance-control-explorer','fg-worked-investigation']){
   assert.ok(js.includes("link:'#"+anchor+"'"),anchor);
-  const target=/^overview/.test(anchor)?'index.html':/^(engineering|rr02)/.test(anchor)?'engineering-blueprint.html':/^(fg-monitor|monitoring)/.test(anchor)?'continuous-monitoring.html':'independent-assurance.html';
+  const target=/^overview/.test(anchor)?'legacy-homepage.html':/^(engineering|rr02)/.test(anchor)?'engineering-blueprint.html':/^(fg-monitor|monitoring)/.test(anchor)?'continuous-monitoring.html':'independent-assurance.html';
   assert.ok(read(target).includes('id="'+anchor+'"'),target+'#'+anchor);
  }
 });

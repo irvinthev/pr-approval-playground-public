@@ -2,7 +2,7 @@
 (function () {
   'use strict';
   const chapters = {
-    'index.html': {
+    'legacy-homepage.html': {
       title: 'The same GitHub approval can mean three different things.',
       intro: 'Choose who made the decision. The recorded GitHub event alone cannot settle that question.',
       labels: ['Who decides?', 'Who performs the action?', 'What still needs evidence?'],
