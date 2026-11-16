@@ -21,3 +21,10 @@
  .field-guide-shared-journey .fgj-scroll-hint{display:block!important;margin:0 0 10px;color:#bdd0da;font-size:12px}
 }
 @media(prefers-reduced-motion:reduce){.fgj-stages{scroll-behavior:auto}}
+
+/* V2: The shared case is a contextual reference, not a duplicate eight-stage simulator. */
+.fgj-context{padding:14px 18px;margin:14px 0;border:1px solid #375d69;border-radius:11px;background:#102837;color:#d2e4ed}
+.fgj-context strong{display:block;color:#9be8d3;font-size:11px;letter-spacing:.08em}
+.fgj-context .fgj-context-question{margin:8px 0 4px;font-size:15px;font-weight:750;color:#eef7f7}
+.fgj-context p{font-size:13px;line-height:1.5;margin:4px 0;color:#c2d8e2}
+.fgj-context a{display:inline-block;color:#a7ebd8;font-size:13px;font-weight:700;padding:7px 0}
