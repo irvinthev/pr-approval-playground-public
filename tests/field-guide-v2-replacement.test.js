@@ -18,7 +18,7 @@ test('five rewritten chapters are concise and share only the canonical case cont
   assert.match(page,/lib\/dedup\/key.js/);
   assert.match(page,/Two AI LOW results/);
   assert.match(page,/role="region" aria-label="Selected example detail"/);
-  assert.match(page,/Evidence boundary/);
+  assert.match(page,chapters[i]==='engineering'?/Ownership is part of the design/:/Evidence boundary/);
   assert.match(page,/skip" href="#main"/);
   for(const filename of filenames)assert.ok(page.includes('href="./'+filename+'"'));
   assert.doesNotMatch(page,/https?:\/\/|\/api\/challenge|data-lab=|data-scenario="pass"/);
