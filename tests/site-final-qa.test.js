@@ -43,7 +43,7 @@ test('static local page destinations and fragment identifiers resolve', () => {
  }
 });
 
-test('the shared case appears across all chapters and preserves a canonical revision chain', () => {
+test('the shared case appears across chapters while each chapter owns its investigation', () => {
  for(const file of chapters) assert.match(read(file),/CASE-SHARED-01/,file);
  for(const file of ['engineering-blueprint.html','continuous-monitoring.html','independent-assurance.html']){
   assert.match(read(file),/example-sha-A/,file);
@@ -51,23 +51,23 @@ test('the shared case appears across all chapters and preserves a canonical revi
  }
  const journey=read('field-guide-journey.js');
  assert.match(journey,/const stages = \[/);
- assert.match(journey,/does not synchronize or validate the separate interactive labs/);
- assert.match(journey,/function select\(index\)/);
- assert.match(journey,/button\.addEventListener\('click',\(\)=>select\(i\)\)/);
- assert.match(journey,/deeper\.href=/);
+ assert.match(journey,/field-guide-shared-journey/);
+ assert.match(journey,/fgj-context/);
+ assert.doesNotMatch(journey,/fgj-stages|function select\(index\)|deeper\.href=/);
  assert.doesNotMatch(journey,/history\.(pushState|replaceState)|location\.(assign|replace)/);
 });
 
-test('mobile and keyboard contracts keep stage navigation operable', () => {
- const css=read('field-guide-journey.css');
- assert.match(css,/@media\(max-width:760px\)/);
- assert.match(css,/overflow-x:auto/);
+test('mobile and keyboard contracts support focused chapter choices without an extra stage strip', () => {
+ const css=read('field-guide-v2.css');
+ const contextCSS=read('field-guide-journey.css');
+ const js=read('field-guide-v2.js');
+ assert.match(css,/@media\(max-width:640px\)/);
  assert.match(css,/focus-visible/);
- assert.match(css,/min-height:47px/);
- assert.match(css,/fgj-scroll-hint/);
- const js=read('field-guide-journey.js');
+ assert.match(css,/min-height:44px/);
+ assert.match(contextCSS,/fgj-context/);
+ assert.match(js,/setAttribute\('aria-pressed'/);
  assert.match(js,/setAttribute\('aria-label'/);
- assert.match(js,/Swipe or scroll horizontally/);
+ assert.doesNotMatch(read('field-guide-journey.js'),/Swipe or scroll horizontally/);
  const monitoring=read('continuous-monitoring.html');
  assert.match(monitoring,/aria-pressed="true"/);
  assert.match(monitoring,/id="fg-monitor-signal-detail" aria-live="polite"/);
