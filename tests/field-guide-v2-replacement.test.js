@@ -11,7 +11,7 @@ const read=file=>fs.readFileSync(path.join(base,file),'utf8');
 test('five rewritten chapters are concise and share only the canonical case context',()=>{
  for(let i=0;i<filenames.length;i++){
   const page=read(filenames[i]);
-  assert.ok(page.length<9000,filenames[i]+' is too long');
+  assert.ok(page.length<(chapters[i]==='risk'?12000:9000),filenames[i]+' is too long');
   assert.match(page,new RegExp('data-chapter="'+chapters[i]+'"'));
   assert.equal((page.match(/data-scenario-root/g)||[]).length,1);
   assert.match(page,/SHARED CASE \/ FICTIONAL/);
@@ -87,4 +87,40 @@ test('Overview broadens the AI-SDLC premise without rebuilding the approval expl
  assert.match(css,/\.overview-shift-grid/);
  assert.match(css,/@media\(max-width:700px\)/);
  assert.doesNotMatch(html,/stakeholder matrix|framework comparison|risk scorecard/i);
+});
+
+test('Risk page presents the source Top 10 taxonomy and one bounded worked example',()=>{
+ const html=read('ai-sdlc-risk.html');
+ const expected=[
+  'Insecure or defective AI-generated code',
+  'Unauthorized AI decision-making and execution',
+  'Agent identity, credential, and privilege abuse',
+  'Prompt injection and agent manipulation',
+  'Sensitive data, intellectual property, and secret exposure',
+  'AI-enabled software supply-chain compromise',
+  'False assurance from AI review and testing',
+  'Loss of change integrity, traceability, and accountability',
+  'High-speed propagation of failures',
+  'Uncontrolled AI workflow evolution and operational dependency'
+ ];
+ const table=html.match(/<table class="risk-table">([\s\S]*?)<\/table>/);
+ assert.ok(table,'missing top-risk table');
+ assert.equal((table[1].match(/<tr>/g)||[]).length,11,'ten risks plus heading');
+ assert.equal((table[1].match(/scope="row"/g)||[]).length,10);
+ expected.forEach((name,i)=>{
+   const first=table[1].indexOf(name);
+   assert.ok(first!==-1,name+' missing from risk taxonomy');
+   if(i>0)assert.ok(first>table[1].indexOf(expected[i-1]),'risks out of source order');
+ });
+ assert.match(html,/Editorial prioritization from the November 2026 design draft/);
+ assert.match(html,/Decision rights/);
+ for(const concept of ['Engineering designs and operates','Authorized management decides','Security\/GRC advise','IA evaluates independently'])
+  assert.ok(html.includes(concept.replace('\\/','/')),concept);
+ assert.equal((html.match(/data-scenario-root/g)||[]).length,1);
+ assert.match(html,/id="risk-case"/);
+ assert.match(html,/href="#risk-case"/);
+ assert.doesNotMatch(html,/data-risk-score|weighted-risk-score|risk-register-input/);
+ const css=read('site.css');
+ assert.match(css,/\.risk-table/);
+ assert.match(css,/@media\(max-width:700px\)/);
 });
