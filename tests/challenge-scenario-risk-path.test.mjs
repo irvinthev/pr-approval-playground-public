@@ -116,6 +116,7 @@ test('interactive view is a read-only local stage selector, with no HTML injecti
  assert.match(view,/No specific causal point was mapped/);
  assert.match(view,/aria-pressed/);
  assert.match(view,/select\(selected\.find/);
- assert.match(view,/renderRiskPath\(project,root\)/);
+ assert.match(view,/renderRiskPath\(project,details\)/);
+ assert.match(view,/Supporting analysis: operational path, tests and source limits/);
  assert.doesNotMatch(view,/innerHTML|eval\(|\bfetch\s*\(/);
 });

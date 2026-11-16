@@ -132,6 +132,8 @@ export function projectConnectedReport(data,scenarioText=''){
     counterargument:words(data.counterargument,900),
     leadRisk:words(lead.question,400),
     leadRiskReason:words(lead.reason,900),
+    alternatives:options,
+    experiments:tests,
     safeguards,
     facts:facts.slice(0,12).map(f=>({statement:words(f.statement,700),label:evidenceLabel(f.support)})),
     unknowns,
