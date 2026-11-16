@@ -1,0 +1,17 @@
+/* One primary decision per Field Guide chapter. No separate or repeated simulator. */
+.fgv2-focus{margin:18px 0 24px;padding:clamp(16px,2.5vw,26px);border:1px solid #426479;border-radius:15px;background:#102837;color:#edf6fa}
+.fgv2-kicker{display:block;color:#9be8d3;font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}
+.fgv2-focus h2{font-size:clamp(22px,3vw,30px);line-height:1.2;letter-spacing:-.02em;margin:10px 0 8px}
+.fgv2-intro{max-width:850px;margin:0 0 16px;color:#c6dce7;font-size:15px;line-height:1.6}
+.fgv2-selector{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 13px}
+.fgv2-selector button{font:inherit;min-height:44px;border:1px solid #527a88;border-radius:9px;padding:10px 14px;color:#e3f4f6;background:#163749;cursor:pointer;font-size:14px;font-weight:650}
+.fgv2-selector button[aria-pressed="true"]{background:#b3ecd9;border-color:#b3ecd9;color:#09252b;font-weight:800}
+.fgv2-selector button:focus-visible,.fgv2-link:focus-visible,.fgj-context a:focus-visible{outline:3px solid #b3ecd9;outline-offset:3px}
+.fgv2-detail{border:1px solid #365b6b;border-radius:10px;background:#0e2230;padding:18px}
+.fgv2-detail h3{font-size:18px;line-height:1.3;margin:0 0 13px;color:#eaf9f3}
+.fgv2-field{display:grid;grid-template-columns:170px minmax(0,1fr);gap:18px;padding:12px 0;border-top:1px solid #2b4b5a}
+.fgv2-field strong{color:#a7e8d9;font-size:13px}
+.fgv2-field p{color:#d5e6ed;font-size:14px;line-height:1.6;margin:0}
+.fgv2-link{display:inline-block;margin-top:15px;color:#a7eed8;font-weight:750;font-size:14px;padding:6px 0}
+.fgv2-limit{color:#a8bdcd;font-size:12px;margin:12px 0 0;line-height:1.55}
+@media(max-width:640px){.fgv2-selector{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.fgv2-selector button{font-size:12px;padding:9px 7px;line-height:1.3;min-width:0}.fgv2-field{grid-template-columns:1fr;gap:5px}.fgv2-detail{padding:14px}.fgv2-focus h2{font-size:24px}}
