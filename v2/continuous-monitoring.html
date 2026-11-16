@@ -13,7 +13,7 @@
 <section class="hero" aria-labelledby="page-title">
  <div><span class="eyebrow">04 / OPERATE · Monitoring &amp; Operations</span>
  <h1 id="page-title">A PR changed after approval. Would we know?</h1>
- <p class="lead">Observability tells us that something happened. Reconciliation tells us whether that action matched authority for the relevant revision and whether the same change reached production.</p></div>
+ <p class="lead">Observability tells us that something happened. Reconciliation asks whether it was authorized for the relevant revision and reached the intended release path. The principle applies beyond PR approval to coding, testing, remediation, and deployment agents.</p></div>
  <aside class="hero-aside" aria-label="Why this chapter matters"><strong>The incident</strong><p>Revision A receives approval. Revision B arrives later. The old approval is still a historical record, but the delivery system must resolve whether it remains valid.</p><p>An unmatched event could be a broken rule, an authorized exception, or incomplete evidence. Investigate before concluding.</p></aside>
 </section>
 <div class="case-line" aria-label="Shared fictional example"><strong>SHARED CASE / FICTIONAL</strong><span>lib/dedup/key.js</span><span>Two AI LOW results</span><span>Revision A → B</span><span>Protected downstream functions possible</span></div>
@@ -26,6 +26,21 @@
   <ul class="insight-points"><li><strong data-insight-label></strong><span data-insight-point></span></li><li><strong data-insight-label></strong><span data-insight-point></span></li><li><strong data-insight-label></strong><span data-insight-point></span></li></ul>
  </div>
  <div class="takeaway"><strong>DECISION TAKEAWAY</strong><p>Dashboards are not enough. Operational confidence requires independently scoped event populations, tested join logic, response ownership and a credible path to contain and recover.</p></div>
+</section>
+<section class="monitoring-signals" aria-labelledby="monitoring-signals-title">
+ <div class="risk-taxonomy-intro"><div><span class="mini-label">OPERATIONAL VISIBILITY</span><h2 id="monitoring-signals-title">Four signals worth investigating.</h2><p>These are monitoring hypotheses, not live alerts or measured control performance. Every signal needs verified source coverage and a responder.</p></div></div>
+ <div class="risk-table-scroll" role="region" tabindex="0" aria-label="Four operational signals and investigation prompts">
+  <table class="risk-table monitoring-signal-table">
+   <thead><tr><th scope="col">Signal</th><th scope="col">Source to corroborate</th><th scope="col">Investigate when</th></tr></thead>
+   <tbody>
+    <tr><th scope="row">Decision ↔ revision integrity</th><td data-label="Source to corroborate">Approval intent or policy record; PR revisions; GitHub actions</td><td data-label="Investigate when">An approval predates changed content or the recorded evaluated revision is missing</td></tr>
+    <tr><th scope="row">Authorization ↔ merge ↔ release</th><td data-label="Source to corroborate">GitHub merge events; CI/build provenance; artifact and deployment records</td><td data-label="Investigate when">A production change cannot be linked to a valid authorization for the released content</td></tr>
+    <tr><th scope="row">Decision quality and adjudication</th><td data-label="Source to corroborate">AI decisions; representative negative cases; human adjudication; defect outcomes</td><td data-label="Investigate when">Material false-LOW decisions, shared model blind spots, or missing evaluation coverage emerge</td></tr>
+    <tr><th scope="row">Privileges, rulesets and policy drift</th><td data-label="Source to corroborate">GitHub App/identity audit events; effective rulesets; policy and model versions</td><td data-label="Investigate when">New bypass rights, broader eligibility, or unreviewed changes to decision inputs appear</td></tr>
+   </tbody>
+  </table>
+ </div>
+ <p class="risk-taxonomy-foot">An unmatched event is an investigation lead, not proof of a violation. Missing telemetry means coverage is unknown—not “no exception detected.” Confirm population, retention, event identity, and cross-system join logic.</p>
 </section>
 <section class="secondary" aria-labelledby="second-title">
  <div><span class="mini-label">TRACE THE REAL PATH</span><h2 id="second-title">The change-to-production chain is the unit of reconciliation.</h2><p>A useful signal connects the approved decision or human instruction to the executing identity, GitHub merge event, CI/build provenance, released artifact and deployment. Not every commit hash should match naively: squash, rebase and merge-queue mappings need explicit treatment. For other AI agents, reconstruct instructions, tool actions, changes and production effects with equivalent rigor.</p></div>
