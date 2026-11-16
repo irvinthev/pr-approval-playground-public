@@ -2,7 +2,7 @@
 (function () {
   'use strict';
   const stages = [
-    {name:'PR',description:'One shared-library PR is submitted at example-sha-A.',page:'index.html',hash:'overview-authority-preview',question:'What exactly changed?',evidence:'Changed files, dependencies and immutable revision.'},
+    {name:'PR',description:'One shared-library PR is submitted at example-sha-A.',page:'legacy-homepage.html',hash:'overview-authority-preview',question:'What exactly changed?',evidence:'Changed files, dependencies and immutable revision.'},
     {name:'Eligibility',description:'Financial dependencies are uncertain; an unknown dependency must follow the human route.',page:'ai-sdlc-risk.html',hash:'risk-explorer',question:'Does scope policy allow automated review?',evidence:'Versioned scope exclusions and dependency inventory.'},
     {name:'AI ×2',description:'Two nondeterministic reviewers provide advice, but neither reviewer authorizes.',page:'engineering-blueprint.html',hash:'engineering-build-plan',question:'Can two assessments fail together?',evidence:'Individual reviewer results, model/prompt versions and adjudicated evaluation cases.'},
     {name:'Authorize',description:'Only a permitted actor and policy can authorize the evaluated revision.',page:'engineering-blueprint.html',hash:'engineering-build-plan',question:'Who can grant approval and change the rules?',evidence:'Policy-of-record, approver identity, authorization event and bypass configuration.'},
