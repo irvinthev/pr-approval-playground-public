@@ -12,14 +12,22 @@
 <main class="shell" id="main">
 <section class="hero" aria-labelledby="page-title">
  <div><span class="eyebrow">01 / ORIENT · Overview</span>
- <h1 id="page-title">The same approval can mean three different things.</h1>
- <p class="lead">AI can review code, execute a human’s decision, or make a decision under delegated policy. A GitHub approval event looks similar in each case. The authority behind it is not.</p></div>
- <aside class="hero-aside" aria-label="Why this chapter matters"><strong>The question</strong><p>Before debating AI accuracy or SOX requirements, ask: who actually decided, who acted, and what stops an action outside that authority?</p><p>This is an architectural distinction, not an assumption that human review is always superior.</p></aside>
+ <h1 id="page-title">AI is changing how software gets built—and who gets to act.</h1>
+ <p class="lead">AI can help teams write, test, review, and deliver software faster. As systems move from recommendations to tool use and independent decisions, the challenge is to capture that value while understanding who is authorized to act, what could be affected, and what makes the result trustworthy.</p></div>
+ <aside class="hero-aside" aria-label="Why this chapter matters"><strong>The practical question</strong><p>What problem should AI solve, what can it change or decide, and which technical boundaries prevent an unacceptable outcome?</p><p>Start with the engineering opportunity. Then assess exposure, enforcement, and evidence—without assuming human review or AI autonomy is inherently better.</p></aside>
+</section>
+<section class="overview-shifts" aria-labelledby="overview-shifts-title">
+ <div class="overview-shifts-heading"><span class="mini-label">WHAT CHANGES WITH AI</span><h2 id="overview-shifts-title">More than a faster code review.</h2></div>
+ <div class="overview-shift-grid">
+  <div class="overview-shift"><strong>Advice → Action</strong><p>An AI assistant may suggest a change; an agent may execute tools or decisions with real permissions.</p></div>
+  <div class="overview-shift"><strong>Small change → Wider impact</strong><p>A change in shared code can reach customers, data, services, or financial processes through dependencies.</p></div>
+  <div class="overview-shift"><strong>Event log → Accountability</strong><p>A recorded action does not, by itself, establish who decided, whether it was authorized, or what was affected.</p></div>
+ </div>
 </section>
 <div class="case-line" aria-label="Shared fictional example"><strong>SHARED CASE / FICTIONAL</strong><span>lib/dedup/key.js</span><span>Two AI LOW results</span><span>Revision A → B</span><span>Protected downstream functions possible</span></div>
 <section class="focus" data-scenario-root aria-labelledby="focus-title">
- <span class="mini-label">ONE RECORD / DIFFERENT AUTHORITY</span><h2 class="section-heading" id="focus-title">Who really approved this change?</h2>
- <p class="section-intro">Switch operating models. See how the same apparent GitHub approval can represent different decisions and evidence obligations.</p>
+ <span class="mini-label">WORKED EXAMPLE / AI PR APPROVAL</span><h2 class="section-heading" id="focus-title">Who really approved this change?</h2>
+ <p class="section-intro">One GitHub approval can represent different decisions. Compare who decided, who acted, and what evidence would be needed. This is one example of the broader AI-enabled SDLC.</p>
  <div class="picker" data-picker aria-label="Select an example"></div>
  <div class="insight" role="region" aria-label="Selected example detail" aria-live="polite" aria-atomic="false">
   <div><span class="verdict" data-insight-status></span><h3 data-insight-title></h3><p class="insight-summary" data-insight-summary></p><p class="insight-next" data-insight-next></p></div>
