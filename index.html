@@ -285,21 +285,45 @@ details.field-deep-dive>section{margin:0 14px 16px}
  .overview .overview-authority-steps strong{font-size:15px}
  .overview .overview-authority-steps small{font-size:12px}
 }
+</style><style id="overview-teaching-style">
+.overview-outcome-cases{margin:24px 0;padding:0;scroll-margin-top:18px}
+.overview-outcome-cases h2{font-size:clamp(22px,2.7vw,29px);line-height:1.25;margin:6px 0 9px}
+.overview-outcome-intro{max-width:840px;color:var(--site-muted);font-size:14px;line-height:1.6;margin:0 0 15px}
+.overview-outcome-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.overview-outcome-card{border:1px solid #45697a;background:#112e3d;border-radius:10px;padding:18px;min-width:0}
+.overview-outcome-kicker{display:block;font-size:11px;letter-spacing:.07em;font-weight:800;color:#addfd3}
+.overview-outcome-card h3{font-size:17px;line-height:1.3;margin:9px 0 7px;color:#f0f9fc}
+.overview-outcome-card p{font-size:13px;line-height:1.65;margin:7px 0 0;color:#c8dbe4}
+.overview-outcome-card .overview-outcome-decision{font-size:13px;font-weight:750;color:#b3f1df}
+.overview-outcome-card[data-outcome="split"] .overview-outcome-decision{color:#ffe0a3}
+.overview-outcome-card[data-outcome="excluded"] .overview-outcome-decision{color:#ffc4bb}
+.overview-outcome-card[data-outcome="canary"] .overview-outcome-decision{color:#ffc4bb}
+.overview-outcome-note{font-size:12px;line-height:1.6;color:var(--site-muted);margin:12px 0 0}
+.overview-simulator-collapse{border:1px solid #496b7c;border-radius:10px;background:#102634;margin:20px 0 24px;overflow:hidden}
+.overview-simulator-collapse>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;min-height:64px;cursor:pointer;list-style:none;color:#e9f7f5}
+.overview-simulator-collapse>summary::-webkit-details-marker{display:none}
+.overview-simulator-collapse>summary strong{display:block;font-size:15px;line-height:1.4}
+.overview-simulator-collapse>summary small{display:block;font-size:12px;line-height:1.5;color:#bad1dc;margin-top:3px}
+.overview-simulator-collapse>summary:focus-visible{outline:3px solid #9df5e0;outline-offset:-3px}
+.overview-simulator-collapse[open]>summary{border-bottom:1px solid #496b7c}
+.overview-simulator-content{padding:0 14px 14px}
+.overview-simulator-note{font-size:12px;color:#baceda;line-height:1.65;padding:12px 3px 0;margin:0}
+@media(max-width:650px){.overview-outcome-grid{grid-template-columns:1fr}.overview-outcome-card{padding:15px}.overview-simulator-content{padding:0 9px 10px}}
 </style></head>
-<body class="overview"><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a><a class="site-experiments" href="./playground.html">Optional interactive lab ↗</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html" aria-current="page">Overview</a><a href="./ai-sdlc-risk.html">Risk &amp; Governance</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Assurance</a></nav></header>
+<body class="overview"><main class="wrap"><a class="site-skip" href="#main-content">Skip to content</a><header class="site-header"><div class="site-brand-row"><a class="site-brand" href="./index.html">◈ AI SDLC / FIELD GUIDE</a><a class="site-experiments" href="./playground.html">Advanced simulations ↗</a></div><nav class="site-chapters" aria-label="Primary sections"><a href="./index.html" aria-current="page">Overview</a><a href="./ai-sdlc-risk.html">Risk &amp; Governance</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Assurance</a></nav></header>
 
 <section class="hero overview-welcome" id="main-content" tabindex="-1">
 <span class="eyebrow">AI-ENABLED SDLC / FIELD GUIDE</span>
 <h1>When AI reviews code, who authorizes the change?</h1>
 <p class="lead">AI is changing how software is developed, reviewed, approved, and released. The harder question is not whether an AI reviewer labels a change low risk. It is who may authorize the exact change—and what independently prevents an unauthorized change from reaching production.</p>
-<p class="overview-welcome-scope">This practical field guide follows CASE-SHARED-01, a fictional shared-library change with potentially significant downstream dependencies, across Risk &amp; Governance, Engineering, Monitoring, and Assurance. It connects decisions about delegated authority to the safeguards Engineering can build and the evidence independent reviewers can examine.</p>
+<p class="overview-welcome-scope">Follow CASE-SHARED-01, a fictional shared-library change, through a choice of review models, the safeguards that limit them, and the evidence needed to understand the outcome. Start with the decision, then use the four chapters for depth.</p>
 <div class="overview-hero-actions"><a class="guide-action" href="#overview-authority-preview">See the end-to-end journey →</a><a class="overview-quiet-link" href="#field-guide-chapters">Read the five-page guide ↓</a></div>
 </section>
 <section class="overview-purpose-forward" id="overview-purpose" aria-labelledby="overview-purpose-title">
  <span class="section-kicker">WHY THIS GUIDE EXISTS</span>
- <h2 id="overview-purpose-title">Design for reliable delivery—and for evidence from the beginning.</h2>
- <p>Established change-management and security principles still apply when AI enters the review process. The challenge is translating them into precise, testable requirements for eligibility, model behavior, authorization, release integrity, and oversight.</p>
- <p class="overview-purpose-roles"><strong>Management</strong> owns authority and risk decisions. <strong>Engineering</strong> builds and operates the safeguards. <strong>Risk and GRC</strong> help frame and challenge the design. <strong>Independent assurance</strong> evaluates whether the claims are supported by evidence. Build what can be evaluated from the start—not controls reconstructed after deployment.</p>
+ <h2 id="overview-purpose-title">Choose the operating model before automating the approval.</h2>
+ <p>AI can help an engineer review a change, submit an approval the engineer has explicitly decided to give, or decide approval within a policy-defined class. Those are different architectures—not interchangeable versions of “AI review.”</p>
+ <p><strong>The engineering tradeoff:</strong> Can a simpler review process deliver the intended speed and quality, or does additional automation justify new identity, enforcement, and recovery dependencies? Management owns the decision and risk acceptance; Engineering owns the implementation.</p>
 </section>
 
 
@@ -318,11 +342,23 @@ details.field-deep-dive>section{margin:0 14px 16px}
  <p class="overview-authority-limit">Illustrative only. AI agreement does not override policy or create authorization; excluded changes follow the human-review route.</p>
  <a class="overview-authority-deep-link" href="#overview-authority-map">Explore the full authority and agent/model dependency map →</a>
 </section>
+<section class="overview-outcome-cases" id="overview-cases" aria-labelledby="overview-cases-title">
+ <span class="section-kicker">THE SAME CHANGE · FOUR OUTCOMES</span>
+ <h2 id="overview-cases-title">What changes the decision?</h2>
+ <p class="overview-outcome-intro">A low-risk label is not a release decision. These fictional cases illustrate how eligibility, judgment, enforcement and production health lead to different next steps.</p>
+ <div class="overview-outcome-grid">
+  <article class="overview-outcome-card" data-outcome="pass"><span class="overview-outcome-kicker">01 · QUALIFIED PATH</span><h3>Standard low-risk pass</h3><p class="overview-outcome-decision">Conditional automated approval permitted</p><p>Scope rules, required checks, both AI reviews, and independent authorization conditions pass for the same revision. Protected merge and release checks still apply.</p></article>
+  <article class="overview-outcome-card" data-outcome="split"><span class="overview-outcome-kicker">02 · UNCERTAINTY</span><h3>AI split decision</h3><p class="overview-outcome-decision">Human review required</p><p>AI reviewers disagree. The automation cannot authorize the change; a qualified human must make a new decision. Disagreement does not itself prove the code is unsafe.</p></article>
+  <article class="overview-outcome-card" data-outcome="excluded"><span class="overview-outcome-kicker">03 · SCOPE LIMIT</span><h3>Hard-gate exclusion</h3><p class="overview-outcome-decision">Automated approval excluded</p><p>The shared-library change has a financially relevant dependency. Deterministic policy excludes it before AI can influence approval; the authorized human path remains available.</p></article>
+  <article class="overview-outcome-card" data-outcome="canary"><span class="overview-outcome-kicker">04 · PRODUCTION SIGNAL</span><h3>Production canary failure</h3><p class="overview-outcome-decision">Release intervention required</p><p>The change was correctly authorized and merged, but the canary fails after deployment starts. Stop promotion or take permitted recovery action; earlier approval does not establish production health.</p></article>
+ </div>
+ <p class="overview-outcome-note">Illustrative outcomes, not evidence of effective safeguards. Expand the optional simulator below to inspect the detailed pipeline behavior.</p>
+</section>
 <section class="lens-section overview-chapter-gateway" id="field-guide-chapters" aria-labelledby="lenses-title">
 <span class="section-kicker">01 / USE THIS GUIDE</span>
-<h2 id="lenses-title">Use this guide</h2>
-<p>Read the problem first, then follow the same change through four connected disciplinary chapters. The interactive lab is optional.</p>
-<p><a class="overview-quiet-link" href="./ai-sdlc-risk.html#risk-score-templates">Finish with a worked engineering decision + blank and completed risk templates →</a> <small style="display:block;margin-top:7px;color:var(--site-muted)">Illustrative 1–5 scoring with explicit assumptions; not a verified control rating or authorization to deploy.</small></p>
+<h2 id="lenses-title">Continue into the four chapters</h2>
+<p>Each chapter answers a different question about the same change. The interactive simulator is available below if you want to inspect a full stage-by-stage example.</p>
+
 <nav class="overview-chapter-grid" aria-label="Explore the field guide perspectives">
 <a href="./ai-sdlc-risk.html"><strong>Risk &amp; Governance</strong><span>What could fail, and who decides what AI may do?</span><small>Explore failure paths →</small></a>
 <a href="./engineering-blueprint.html"><strong>Engineering &amp; Safeguards</strong><span>What independently enforces the boundary?</span><small>Explore implementation →</small></a>
@@ -330,14 +366,13 @@ details.field-deep-dive>section{margin:0 14px 16px}
 <a href="./independent-assurance.html"><strong>Assurance</strong><span>What must an independent reviewer establish?</span><small>Explore assurance →</small></a>
 </nav>
 </section>
-<section class="overview-question-map" aria-label="Three questions for every AI-assisted change">
-  <div><span>01 / AUTHORITY</span><strong>Who may authorize?</strong><p>Define where an AI recommendation ends and an approved decision begins.</p></div>
-  <div><span>02 / ENFORCEMENT</span><strong>What prevents bypass?</strong><p>Verify independent gates, required checks, and restricted privileges.</p></div>
-  <div><span>03 / EVIDENCE</span><strong>What demonstrates it worked?</strong><p>Connect approval, policy, and release records to the same revision.</p></div>
-</section>
 
 
-<section class="overview-investigation-entrance"><span class="section-kicker">OPTIONAL INTERACTIVE WALKTHROUGH</span><h2>Explore the change</h2><p>After reading the guide, explore the illustrative stages and failure paths. This walkthrough is optional; the standalone Playground is a separate advanced tool.</p><a class="guide-action" href="#workflow">Investigate the eight touchpoints →</a></section>
+
+<details class="overview-simulator-collapse" id="overview-advanced-simulator">
+<summary><span><strong>Explore the eight-touchpoint simulator</strong><small>Optional detailed workflow, stage inspection, and four interactive outcomes</small></span><span aria-hidden="true">⌄</span></summary>
+<div class="overview-simulator-content">
+<p class="overview-simulator-note">The simulator provides a more detailed eight-touchpoint view of the same fictional change. Other chapters may group implementation into seven stages. The underlying scenarios remain illustrative, not live evaluations.</p>
 <section class="workflow-map" id="workflow" aria-labelledby="workflow-title">
 <div class="section-kicker">01 / FOLLOW A CHANGE</div>
 <h2 class="section-heading" id="workflow-title">Where does a recommendation become authority?</h2>
@@ -414,6 +449,7 @@ details.field-deep-dive>section{margin:0 14px 16px}
 </div></details></div>
 <p class="workflow-note">Illustrative model only: these eight detailed simulator touchpoints are not a mandated architecture or a one-to-one match with the seven-stage lifecycle used in the other chapters. Stages may run concurrently. AI classification, approval-of-record, enforced merge, and production release eligibility remain separate decisions.</p>
 </section>
+</div></details>
 <details class="overview-reference-collapse"><summary>Advanced reference: authority boundaries and agent/model dependencies</summary><section class="authority-map" id="overview-authority-map" aria-labelledby="authority-map-title">
   <div class="authority-map-heading">
     <span class="section-kicker">ARCHITECTURE / AUTHORITY AT A GLANCE</span>
@@ -470,6 +506,7 @@ details.field-deep-dive>section{margin:0 14px 16px}
 <a href="https://genai.owasp.org/llm-top-10/" target="_blank" rel="noopener noreferrer">OWASP LLM Top 10 ↗</a>
 <a href="https://pcaobus.org/oversight/standards/auditing-standards/details/AS2201" target="_blank" rel="noopener noreferrer">PCAOB AS 2201 ↗</a>
 <a href="./rcm-view.html">Current RCM and control objectives →</a>
+<a href="./ai-sdlc-risk.html#risk-score-templates">Alternative worked decision and optional risk worksheets →</a>
 </div></details>
 <footer class="overview-boundary"><p>Illustrative educational model: fictional scenarios and simulated decisions are not implemented controls or evidence of compliance. <a href="./previous-overview.html">See archived previous Overview →</a></p></footer>
 

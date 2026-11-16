@@ -285,7 +285,7 @@ test('Overview architecture map separates AI analysis, external model dependenci
  assert.match(html,/\.\/ai-sdlc-risk\.html\?risk=RR-02#risk-explorer/);
 });
 
-test('Homepage retains one interactive simulator with the workflow preceding scenarios',()=>{
+test('Overview teaches four static outcomes and keeps one optional interactive simulator',()=>{
  const html=read('index.html'),engineering=read('engineering-blueprint.html');
  assert.match(html,/When AI reviews code, who authorizes the change\?/);
  assert.doesNotMatch(html,/id="overview-stages"|class="overview-simple-journey"|class="overview-simple-stages"/);
@@ -299,13 +299,17 @@ test('Homepage retains one interactive simulator with the workflow preceding sce
  assert.ok(at('id="workflow-stages"')<at('Authorization routes'));
  assert.ok(at('Authorization routes')<at('id="stage-inspector"'));
  assert.ok(at('id="stage-inspector"')<at('id="trust-boundaries"'));
- // Approved editorial order: purpose -> primary visual -> chapters -> optional simulator.
+ // Intended editorial order: purpose -> primary visual -> four outcomes -> chapters -> optional simulator.
  assert.ok(at('id="main-content"')<at('id="overview-purpose"'));
  assert.ok(at('id="overview-purpose"')<at('id="overview-authority-preview"'));
- assert.ok(at('id="overview-authority-preview"')<at('id="field-guide-chapters"'));
- assert.ok(at('id="field-guide-chapters"')<at('class="overview-question-map"'));
- assert.ok(at('class="overview-question-map"')<at('id="workflow"'));
+ assert.ok(at('id="overview-authority-preview"')<at('id="overview-cases"'));
+ assert.ok(at('id="overview-cases"')<at('id="field-guide-chapters"'));
+ assert.ok(at('id="field-guide-chapters"')<at('id="overview-advanced-simulator"'));
+ assert.ok(at('id="overview-advanced-simulator"')<at('id="workflow"'));
  assert.ok(at('id="trust-boundaries"')<at('<details class="overview-reference-collapse">'));
+ assert.match(html,/<details class="overview-simulator-collapse" id="overview-advanced-simulator">/);
+ for(const kind of ['pass','split','excluded','canary']) assert.match(html,new RegExp('class="overview-outcome-card" data-outcome="'+kind+'"'));
+ assert.ok(at('id="overview-cases"')<at('class="overview-chapter-grid"'));
  assert.match(html,/class="overview-authority-steps"/);
  assert.match(html,/Protected merge &amp; release/);
  assert.match(html,/@media\(max-width:650px\)[\s\S]*?overview-authority-steps\{display:flex;flex-direction:column/);
