@@ -8,12 +8,13 @@ const MAX_TURNS = 6;
 const MAX_TURN_CHARS = 1000;
 const MAX_SCENARIO = 4000;
 const MAX_TOKENS = 3500;
-// Restrict the private prototype to models listed on Google's current free API tier.
-// Do not silently fall back to paid or unrelated models when configuration is wrong.
-const ALLOWED_MODELS = new Set(['gemini-2.5-flash','gemini-2.5-flash-lite']);
+// Explicitly allow only current Gemini models with published free-tier access.
+// The original 2.5 models have usage-based access restrictions for new projects.
+// Do not silently fall back to any other model when configuration is wrong.
+const ALLOWED_MODELS = new Set(['gemini-3.5-flash-lite','gemini-3.8-flash']);
 const MODEL_URL = 'https://generativelanguage.googleapis.com/v1beta/models/';
 export const selectedModel = () => {
-  const model=(process.env.GEMINI_MODEL||'gemini-2.5-flash').trim();
+  const model=(process.env.GEMINI_MODEL||'gemini-3.5-flash-lite').trim();
   return ALLOWED_MODELS.has(model)?model:null;
 };
 const json = (res,status,body) => {
@@ -115,7 +116,7 @@ export default async function handler(req,res){
     if(response.status===400)
       return reply(502,{error:'Gemini rejected the request format',code:'GEMINI_REQUEST_INVALID'},'gemini-400');
     if(response.status===404)
-      return reply(502,{error:'Configured Gemini model is unavailable',code:'GEMINI_MODEL_UNAVAILABLE'},'gemini-404');
+      return reply(502,{error:'Configured Gemini model is not accessible to this project, or the model endpoint is unavailable',code:'GEMINI_MODEL_UNAVAILABLE'},'gemini-404');
     if(!response.ok)return reply(502,{error:'Gemini provider unavailable',code:'GEMINI_PROVIDER_ERROR'},'gemini-other');
     const envelope=await response.json();
     const candidate=envelope?.candidates?.[0];
