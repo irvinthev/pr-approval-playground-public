@@ -21,7 +21,78 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{
 .card{padding:17px;border:1px solid #3d6475;border-radius:11px;margin:14px 0;background:#123646}
 .card h3{color:#defaed}.tag{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:#a8f2d6}
 ul{padding-left:23px;margin:8px 0}.citation{padding:10px 0;border-top:1px solid #3d6475}.citation:first-child{border:0}
+.decision-brief{background:#153b49;border:1px solid #6a9c9d;border-radius:12px;padding:20px;margin-top:18px}
+.decision-brief h3{font-size:19px;line-height:1.35;margin:6px 0 8px;color:#f1fffa}
+.decision-brief .decision-why{font-size:15px;color:#e1f1f1;margin:0 0 15px}
+.decision-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.decision-grid>div{border-top:1px solid #456a75;padding-top:10px}
+.decision-grid p{margin:5px 0 0;font-size:14px;color:#e1f1f1}
+.detail-archive{margin-top:20px;border-top:1px solid var(--line);padding-top:14px}
+.detail-archive>summary{font-weight:700;color:var(--mint);cursor:pointer;padding:10px 0}
+.detail-archive>summary:focus-visible{outline:3px solid var(--mint)}
+.followup-thread{margin-top:22px}.followup-thread:empty{display:none}.followup-thread .card{margin-top:12px;border-color:#4c8a89}.followup-thread details{margin-top:12px;padding:9px 12px;border:1px solid #436875;border-radius:9px}.followup-thread summary{cursor:pointer;color:var(--mint);font-weight:700}.followup-thread summary:focus-visible{outline:3px solid var(--mint)}
 #result[hidden],#followup[hidden]{display:none}.section{margin-top:21px}.mono{font-family:ui-monospace,monospace;word-break:break-all}
+
+/* Linked assessment and safeguard explorer, adapted from approved standalone prototype. */
+main{max-width:1150px}
+[hidden]{display:none!important}
+.viewtabs{display:flex;gap:8px;padding:6px;background:#0e2a37;border:1px solid var(--line);border-radius:13px;width:fit-content;max-width:100%;margin:18px 0;overflow-x:auto}
+.viewtab{border:0;border-radius:9px;background:transparent;color:#c3dad9;white-space:nowrap;padding:10px 15px;cursor:pointer}
+.viewtab[aria-selected="true"]{background:var(--mint);color:#10302e}
+.viewtab:hover:not([aria-selected="true"]){background:#1a4351}
+.scenario-card{background:#123240;border:1px solid var(--line);border-radius:12px;padding:19px;margin:15px 0;display:grid;grid-template-columns:1.4fr 1fr;gap:18px}
+.scenario-card h3{margin:5px 0 9px}
+.scenario-card p{margin:0;color:var(--muted);white-space:pre-wrap;overflow-wrap:anywhere}
+.scenario-card .assumptions{border-left:1px solid #507784;padding-left:18px}
+.mini-kicker{font-size:11px;letter-spacing:.10em;text-transform:uppercase;color:var(--mint);font-weight:800}
+.summary-label{color:var(--muted);font-size:13px;margin:18px 0 10px}
+.paired-stack{display:grid;gap:14px;margin-top:15px}
+.paired-card{background:#102f3c;border:1px solid var(--line);border-radius:13px;overflow:hidden;scroll-margin-top:18px}
+.paired-head{padding:17px 20px;display:flex;align-items:start;justify-content:space-between;flex-wrap:wrap;gap:9px}
+.paired-head h3{font-size:18px;margin:5px 0 0}
+.category-label{border:1px solid #507784;padding:5px 8px;border-radius:7px;font-size:12px;color:var(--muted)}
+.paired-columns{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.risk-side,.safeguard-side{padding:17px 20px}
+.risk-side{background:#102c39}
+.safeguard-side{background:#1a4048;border-left:1px solid #4b7478}
+.paired-columns p{font-size:14px;color:#e0eeeb;margin:5px 0 13px}
+.paired-columns p:last-child{margin-bottom:0}
+.paired-foot{padding:10px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.inspect-btn{border:1px solid #7db3a5;background:#224e4d;color:#effff9;border-radius:8px;padding:9px 12px;font-size:13px}
+.inspect-btn:hover{background:#2d6963}
+.controls-layout{display:grid;grid-template-columns:minmax(245px,.88fr) minmax(0,1.5fr);gap:14px;align-items:start;margin-top:14px}
+.control-selector{display:grid;gap:9px}
+.control-option{display:block;text-align:left;width:100%;padding:15px;border:1px solid var(--line);border-radius:10px;background:#102f3c;color:white}
+.control-option[aria-pressed="true"]{background:#1a4550;border-color:#80bea9;box-shadow:inset 3px 0 var(--mint)}
+.control-option:hover{border-color:#80bea9}
+.control-option strong,.control-option .small{display:block;margin-top:5px}
+.control-inspector{border:1px solid #567985;border-radius:13px;background:linear-gradient(148deg,#193e4b,#10313e 60%);padding:18px}
+.inspector-head{display:flex;align-items:start;justify-content:space-between;gap:9px;flex-wrap:wrap}
+.inspector-head h3{font-size:20px;margin:4px 0}
+.inspector-status{border:1px solid #688a98;padding:5px 9px;color:#d2e4e8;border-radius:8px;font-size:12px}
+.inspector-callout{background:#143947;border:1px solid #3c6a78;border-radius:10px;padding:14px;margin:15px 0}
+.inspector-callout p{margin:6px 0 0}
+.mechanism{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:13px 0}
+.mechanism>div{border:1px solid var(--line);border-radius:9px;background:#0d2a36;padding:12px}
+.mechanism p{font-size:13px;color:var(--muted);margin:5px 0}
+.mechanism strong{font-size:13px}
+.inspector-grid,.evidence-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.inspector-block{background:#102f3c;border:1px solid var(--line);border-radius:9px;padding:13px}
+.inspector-block p{font-size:13px;color:var(--muted);margin:7px 0 0}
+.evidence-grid{margin-top:12px}
+.evidence-grid>div{background:#10313e;border:1px solid #3d5f6b;border-radius:9px;padding:11px}
+.evidence-grid strong{display:block;font-size:13px;margin:5px 0}
+.evidence-grid span{font-size:12px;color:var(--muted)}
+.inspector-gap{border-left:3px solid #f2c88a;margin:17px 0;padding-left:11px;font-size:13px}
+.inspector-relations{border-top:1px solid var(--line);padding-top:15px;margin-top:18px}
+.pill-link{border:1px solid #5c8690;border-radius:8px;background:#173e4b;color:var(--mint);font-size:12px;padding:7px 9px;margin:5px 6px 5px 0}
+.metric-line{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:13px;margin-top:10px}
+.metric-line span{border:1px solid var(--line);background:#123646;border-radius:8px;padding:8px 11px}
+.empty-analysis{border:1px dashed #67929a;border-radius:10px;padding:16px;color:var(--muted)}
+#view-controls{margin-top:20px}
+@media(max-width:900px){.controls-layout{grid-template-columns:1fr}.control-selector{grid-template-columns:repeat(2,minmax(0,1fr))}.scenario-card{grid-template-columns:1fr}.scenario-card .assumptions{border-left:0;border-top:1px solid var(--line);padding:12px 0 0}}
+@media(max-width:620px){.paired-columns,.mechanism,.inspector-grid,.evidence-grid{grid-template-columns:1fr}.safeguard-side{border-left:0;border-top:1px solid #4b7478}.control-selector{grid-template-columns:1fr}.scenario-card,.paired-head,.risk-side,.safeguard-side{padding:15px}.viewtab{padding:9px 11px}}
+
 </style>
 </head>
 <body><main>
@@ -38,21 +109,68 @@ ul{padding-left:23px;margin:8px 0}.citation{padding:10px 0;border-top:1px solid 
 <div class="field"><label for="scenario">What should the AI challenge?</label>
 <textarea id="scenario" maxlength="4000" placeholder="Two AI agents agree that a pull request is low risk. Is that enough to allow automatic approval?"></textarea>
 </div>
-<div class="row"><button class="primary" id="ask" type="button">Challenge my design</button><button id="example" type="button">Load example</button><button id="reset" type="button">Clear session</button></div>
+<div class="row"><button class="primary" id="ask" type="button">Challenge my design</button><button id="example" type="button">Load example</button><button id="reset" type="button">Clear session</button><button id="check-connection" type="button">Check connection</button></div>
 <p id="status" role="status" aria-live="polite"></p>
 </section>
 <section id="result" class="panel" hidden aria-labelledby="resulttitle">
 <h2 id="resulttitle">02 · Gemini's design challenge</h2>
-<p class="small">Model-generated interpretation; facts, references, and implications require independent validation.</p>
-<div id="facts"></div>
-<div id="challenges"></div>
-<div class="section" id="assessment-section" aria-label="Risk and control assessment">
-  <h3>Risk → Expected control → Framework → Evidence → Assessment</h3>
-  <p class="small">Proposed control expectations for discussion, not evidence of implementation. Management must demonstrate the safeguard; this lab cannot verify it.</p>
-  <div id="assessments"></div>
-</div>
-<div id="unknowns"></div>
-<div class="section"><h3>Suggested framework references</h3><div id="citations"></div></div>
+<p class="small">Gemini-generated design analysis, not a finding that any safeguard exists or operates effectively.</p>
+<nav class="viewtabs" role="tablist" aria-label="Assessment views">
+ <button id="tab-assessment" class="viewtab" role="tab" type="button" aria-controls="view-assessment" aria-selected="true">01 · Risk Assessment</button>
+ <button id="tab-controls" class="viewtab" role="tab" type="button" aria-controls="view-controls" aria-selected="false" tabindex="-1">02 · Safeguard Explorer</button>
+</nav>
+<section id="view-assessment" role="tabpanel" aria-labelledby="tab-assessment">
+ <div class="scenario-card">
+  <div><div class="mini-kicker">PROPOSED SCENARIO</div><h3>What was submitted</h3><p id="scenario-summary"></p></div>
+  <div class="assumptions"><div class="mini-kicker">WHAT REMAINS UNCERTAIN</div><p id="scenario-unknowns"></p></div>
+ </div>
+ <div id="recommendation" class="decision-brief" aria-label="Engineering recommendation"></div>
+ <h3 class="summary-label">MATERIAL EXPOSURE · RISKS PAIRED WITH EXPECTED SAFEGUARDS</h3>
+ <div id="paired-risk-list" class="paired-stack" aria-label="Linked risk and safeguard assessment"></div>
+ <details id="assessment-details" class="detail-archive">
+  <summary>Explore the reasoning, safeguards, and framework references</summary>
+  <div id="facts"></div><div id="challenges"></div>
+  <div class="section" id="assessment-section" aria-label="Risk and control assessment">
+    <h3>Risk → Expected control → Framework → Evidence → Assessment</h3>
+    <p class="small">Fallback for older model responses. Expected controls are not verified.</p>
+    <div id="assessments"></div>
+  </div>
+  <div id="unknowns"></div>
+  <div class="section"><h3>Suggested framework references</h3><div id="citations"></div></div>
+ </details>
+</section>
+<section id="view-controls" role="tabpanel" aria-labelledby="tab-controls" hidden>
+ <h3>What actually protects this design?</h3>
+ <p class="small">Select a proposed safeguard to inspect authority, enforcement, evidence, bypass tests, and the risks it addresses.</p>
+ <div id="model-metrics" class="metric-line"></div>
+ <div class="controls-layout">
+  <div id="control-selector" class="control-selector" role="group" aria-label="Proposed safeguards"></div>
+  <article id="control-inspector" class="control-inspector" aria-live="polite" aria-label="Selected safeguard details">
+   <div class="inspector-head"><div><div class="mini-kicker" id="control-id"></div><h3 id="control-title"></h3></div><span class="inspector-status">Implementation unverified</span></div>
+   <div class="inspector-callout"><div class="mini-kicker">FAILURE THIS SAFEGUARD ADDRESSES</div><p id="control-trigger"></p></div>
+   <div class="mini-kicker">AUTHORITY → ENFORCEMENT → EVIDENCE</div>
+   <div class="mechanism">
+    <div><strong>01 · Authority</strong><p id="control-authority"></p></div>
+    <div><strong>02 · Enforcement</strong><p id="control-enforcement"></p></div>
+    <div><strong>03 · Evidence</strong><p id="control-evidence"></p></div>
+   </div>
+   <div class="inspector-grid">
+    <div class="inspector-block"><div class="mini-kicker">TRY TO BREAK IT</div><p id="control-break"></p></div>
+    <div class="inspector-block"><div class="mini-kicker">WHAT WOULD DEMONSTRATE IT?</div><p id="control-proof"></p></div>
+   </div>
+   <h3 class="summary-label">WHAT DO WE ACTUALLY KNOW?</h3>
+   <div class="evidence-grid">
+    <div><div class="mini-kicker">DESIGN EXPECTATION</div><strong>Proposed</strong><span>Gemini-generated</span></div>
+    <div><div class="mini-kicker">IMPLEMENTATION</div><strong>Unverified</strong><span>User claims, if any, require corroboration</span></div>
+    <div><div class="mini-kicker">EVIDENCE BASIS</div><strong>Not independently validated</strong><span>Suggested artifacts are not proof</span></div>
+    <div><div class="mini-kicker">ASSURANCE</div><strong>Not performed</strong><span>No control effectiveness conclusion</span></div>
+   </div>
+   <div class="inspector-gap"><strong>What could change this assessment?</strong> <span id="control-gap"></span></div>
+   <div class="inspector-relations"><div class="mini-kicker">LINKED RISKS · RETURN TO ASSESSMENT</div><div id="control-risk-links"></div></div>
+  </article>
+ </div>
+</section>
+<div id="followup-history" class="followup-thread" role="log" aria-live="polite" aria-label="Follow-up conversation"></div>
 </section>
 <section class="panel" id="followup" hidden aria-labelledby="followtitle">
 <h2 id="followtitle">03 · Ask a follow-up</h2>
@@ -64,7 +182,7 @@ ul{padding-left:23px;margin:8px 0}.citation{padding:10px 0;border-top:1px solid 
 </main>
 <script type="module">
 const el=id=>document.getElementById(id);
-const state={scenario:null,turns:[],busy:false};
+const state={scenario:null,turns:[],followups:0,busy:false};
 function clear(node){node.replaceChildren()}
 function add(tag,parent,text,cls){
   const node=document.createElement(tag);
@@ -82,12 +200,219 @@ function title(parent,value){add('h3',parent,value)}
 function status(message,error=false){el('status').textContent=message;el('status').classList.toggle('error',error)}
 function busy(value){
   state.busy=value;
-  el('ask').disabled=value;el('continue').disabled=value;
+  el('ask').disabled=value;el('continue').disabled=value;el('check-connection').disabled=value;
   el('ask').textContent=value?'Analyzing…':'Challenge my design';
   el('continue').textContent=value?'Analyzing…':'Continue the challenge';
 }
+// Summarize the *actual* previous model response for continuity. The server still
+// treats all caller-provided turns, even those labelled "assistant", as untrusted.
+function compactAssistantSummary(data){
+  const recommendation=data.recommendation;
+  const mappedRisks=(data.risks||[]).slice(0,2).map(r=>'Risk: '+r.title+' — '+r.trigger);
+  const mappedControls=(data.safeguards||[]).slice(0,1).map(c=>'Safeguard: '+c.name+' — '+c.enforcement);
+  const judgment=recommendation?['Judgment: '+recommendation.judgment.slice(0,160),'Reason: '+recommendation.why.slice(0,100)].join(' '):'';
+  const facts=(data.facts||[]).slice(0,2).map(f=>'Context: '+f.statement);
+  const challenges=(data.challenges||[]).slice(0,2).map(c=>'Challenge: '+c.question+' '+(c.reason||''));
+  const risks=(data.assessments||[]).slice(0,2).map(a=>'Risk: '+a.risk+'; expected safeguard: '+a.expectedControl);
+  const unknowns=(data.unknowns||[]).slice(0,2).map(x=>'Unknown: '+x);
+  const alternatives=(data.alternatives||[]).slice(0,1).map(x=>'Alternative: '+x);
+  return ['Previous unverified AI interpretation:',judgment,...mappedRisks,...mappedControls,...risks,...challenges,...unknowns,...facts,...alternatives].filter(Boolean).join('\n').slice(0,720);
+}
+// Follow-ups append to the original analysis. Detailed structure remains available
+// without another model call; only submitting a new question requests Gemini.
+function appendFollowup(data,question){
+  const history=el('followup-history');
+  const card=add('article',history,'','card');
+  add('div',card,'FOLLOW-UP '+state.followups,'tag');
+  add('h3',card,question);
+  add('strong',card,'Gemini’s additional analysis');
+  if(data.recommendation)add('p',card,data.recommendation.judgment+' — '+data.recommendation.why);
+  if(data.risks?.length)list(card,data.risks.slice(0,3).map(r=>r.title+': '+r.trigger));
+  if((data.facts||[]).length)list(card,data.facts.slice(0,4).map(f=>f.statement));
+  if((data.challenges||[]).length){
+    add('strong',card,'Questions and competing explanations');
+    for(const ch of data.challenges.slice(0,3)){
+      add('p',card,ch.question+(ch.reason?' — '+ch.reason:''));
+    }
+  }
+  const details=document.createElement('details');
+  card.append(details);
+  add('summary',details,'Explore suggested safeguards, alternatives and references');
+  for(const a of data.assessments||[]){
+    add('strong',details,'Risk and proposed safeguard');
+    add('p',details,a.risk+' — '+a.expectedControl);
+    if(a.demonstration?.length)list(details,a.demonstration);
+  }
+  if(data.safeguards?.length){add('strong',details,'Additional proposed safeguards');list(details,data.safeguards.slice(0,4).map(c=>c.name+' — '+c.enforcement))}
+  if(data.alternatives?.length){add('strong',details,'Alternatives');list(details,data.alternatives)}
+  if(data.unknowns?.length){add('strong',details,'Remaining unknowns');list(details,data.unknowns)}
+  if(data.citations?.length){
+    add('strong',details,'Suggested references');
+    for(const c of data.citations){
+      add('p',details,(c.sourceTitle||'Source')+' — '+(c.provisionTitle||c.provisionId));
+    }
+  }
+  add('p',card,'Model-generated interpretation; no implementation or control effectiveness verified.','small');
+  return card;
+}
+
+function renderRecommendation(data){
+  const root=el('recommendation');
+  clear(root);
+  add('div',root,'GEMINI’S ENGINEERING JUDGMENT · UNVERIFIED','tag');
+  const r=data.recommendation;
+  if(!r){
+    add('h3',root,'No consolidated recommendation returned.','decision-why');
+    add('p',root,'Review the detailed analysis below. The model did not provide enough structured information for a summary.');
+    return;
+  }
+  add('h3',root,r.judgment);
+  add('p',root,r.why,'decision-why');
+  const grid=add('div',root,'','decision-grid');
+  for(const [label,value] of [
+    ['WHAT COULD GO WRONG',r.failureCondition],
+    ['CREDIBLE ALTERNATIVE',r.alternative],
+    ['WHAT COULD CHANGE THIS VIEW',r.decisionChanger]
+  ]){
+    const block=add('div',grid,'');
+    add('strong',block,label,'tag');
+    add('p',block,value);
+  }
+}
+
+// Both views use the SAME normalized, validated response. All IDs are server
+// generated; reference relationships, content and status are model-derived or
+// explicitly marked unverified. Navigation never calls Gemini.
+const assessmentView={data:null,view:'assessment',control:null};
+function changeAssessmentView(view,{focus=true,scroll=true}={}){
+  if(view!=='assessment'&&view!=='controls')return;
+  assessmentView.view=view;
+  for(const key of ['assessment','controls']){
+    const active=key===view;
+    el('view-'+key).hidden=!active;
+    const tab=el('tab-'+key);
+    tab.setAttribute('aria-selected',String(active));
+    tab.tabIndex=active?0:-1;
+  }
+  if(focus)el('tab-'+view).focus({preventScroll:true});
+  if(scroll)el('result').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function selectSafeguard(id,{navigate=false}={}){
+  const data=assessmentView.data;
+  const c=(data?.safeguards||[]).find(x=>x.id===id);
+  if(!c)return;
+  assessmentView.control=id;
+  for(const option of el('control-selector').querySelectorAll('button')){
+    option.setAttribute('aria-pressed',String(option.dataset.id===id));
+  }
+  const linked=(data.risks||[]).filter(r=>c.riskIds.includes(r.id));
+  const trigger=linked.length?linked.map(r=>r.trigger).join(' '):'No mapped failure condition';
+  const values={
+    'control-id':c.id+' · Proposed safeguard','control-title':c.name,
+    'control-trigger':trigger,'control-authority':c.authority,
+    'control-enforcement':c.enforcement,'control-evidence':c.evidence,
+    'control-break':c.negativeTest,'control-proof':c.proof,'control-gap':c.gap
+  };
+  for(const [key,value]of Object.entries(values))el(key).textContent=value||'Not established by this assessment.';
+  const links=el('control-risk-links');clear(links);
+  for(const risk of linked){
+    const button=add('button',links,risk.id+' · '+risk.title,'pill-link');
+    button.type='button';
+    button.addEventListener('click',()=>{
+      changeAssessmentView('assessment',{focus:false,scroll:false});
+      el('risk-'+risk.id)?.scrollIntoView({behavior:'smooth',block:'center'});
+    });
+  }
+  if(navigate){
+    changeAssessmentView('controls',{focus:false,scroll:false});
+    el('control-inspector').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+}
+function renderAssessmentModel(data){
+  assessmentView.data=data;
+  assessmentView.control=null;
+  changeAssessmentView('assessment',{focus:false,scroll:false});
+  const scenario=data.scenarioText||'';
+  el('scenario-summary').textContent=scenario.length>650?scenario.slice(0,650)+'… (full proposal above)':scenario;
+  const unknowns=(data.unknowns||[]).slice(0,3);
+  el('scenario-unknowns').textContent=unknowns.length?unknowns.join(' · '):
+    'Implementation, enforcement and outcomes have not been independently verified.';
+  const risks=data.risks||[], safeguards=data.safeguards||[];
+  // The legacy detailed control rendering remains only as a backwards-compatibility
+  // fallback. We never show both versions of the control analysis at once.
+  el('assessment-section').hidden=risks.length>0;
+  const root=el('paired-risk-list');clear(root);
+  if(!risks.length)add('p',root,'Gemini did not return a linked risk and safeguard model. The earlier assessment is available under detailed reasoning.','empty-analysis');
+  for(const risk of risks){
+    const linked=safeguards.filter(c=>c.riskIds.includes(risk.id));
+    const primary=linked[0];
+    const card=add('article',root,'','paired-card');card.id='risk-'+risk.id;
+    const header=add('div',card,'','paired-head');
+    const heading=add('div',header);
+    add('div',heading,risk.id+' · RISK → SAFEGUARD','mini-kicker');
+    add('h3',heading,risk.title);
+    add('span',header,risk.category,'category-label');
+    const columns=add('div',card,'','paired-columns');
+    const riskSide=add('div',columns,'','risk-side');
+    add('div',riskSide,'Failure condition','mini-kicker');add('p',riskSide,risk.trigger);
+    add('div',riskSide,'Why it matters','mini-kicker');add('p',riskSide,risk.impact);
+    const safeguardSide=add('div',columns,'','safeguard-side');
+    add('div',safeguardSide,'EXPECTED SAFEGUARD'+(primary?' · '+primary.id:''),'mini-kicker');
+    add('h3',safeguardSide,primary?primary.name:'No mapped safeguard');
+    add('p',safeguardSide,primary?primary.why:'The assessment did not identify a credible safeguard for this risk. It remains an explicit design gap.');
+    if(linked.length>1){
+      add('div',safeguardSide,'Also depends on','mini-kicker');
+      add('p',safeguardSide,linked.slice(1).map(c=>c.id+' · '+c.name).join('; '));
+    }
+    const foot=add('div',card,'','paired-foot');
+    add('span',foot,'Implementation unverified · No independent effectiveness assessment','small');
+    if(primary){
+      const button=add('button',foot,'Inspect '+primary.id+' safeguard →','inspect-btn');
+      button.type='button';button.addEventListener('click',()=>selectSafeguard(primary.id,{navigate:true}));
+    }
+  }
+  const metrics=el('model-metrics');clear(metrics);
+  for(const label of [
+    risks.length+' material risk'+(risks.length===1?'':'s'),
+    safeguards.length+' proposed safeguard'+(safeguards.length===1?'':'s'),
+    'Implementation not independently verified'
+  ])add('span',metrics,label);
+  const options=el('control-selector');clear(options);
+  if(!safeguards.length){
+    add('p',options,'No linked safeguards were returned. Review the detailed assessment and retry with a more specific proposal.','empty-analysis');
+    el('control-inspector').hidden=true;
+  }else{
+    el('control-inspector').hidden=false;
+    for(const control of safeguards){
+      const button=add('button',options,'','control-option');
+      button.type='button';button.dataset.id=control.id;
+      add('div',button,control.id+' · Inspect →','mini-kicker');
+      add('strong',button,control.name);
+      add('span',button,control.why,'small');
+      add('span',button,'Linked: '+control.riskIds.join(', ')+' · Evidence not independently verified','small');
+      button.addEventListener('click',()=>{
+        selectSafeguard(control.id);
+        if(window.matchMedia('(max-width:900px)').matches)
+          el('control-inspector').scrollIntoView({behavior:'smooth',block:'start'});
+      });
+    }
+    selectSafeguard(safeguards[0].id);
+  }
+}
+el('tab-assessment').addEventListener('click',()=>changeAssessmentView('assessment'));
+el('tab-controls').addEventListener('click',()=>changeAssessmentView('controls'));
+el('result').querySelector('.viewtabs').addEventListener('keydown',event=>{
+  if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
+  event.preventDefault();
+  const next=event.key==='Home'?'assessment':event.key==='End'?'controls':
+    assessmentView.view==='assessment'?'controls':'assessment';
+  changeAssessmentView(next);
+});
+
 function render(data){
-  for(const id of ['facts','challenges','assessments','unknowns','citations'])clear(el(id));
+  renderRecommendation(data);
+  renderAssessmentModel(data);
+  for(const id of ['facts','challenges','assessments','unknowns','citations','followup-history'])clear(el(id));
   title(el('facts'),'Facts, inferences and unknowns');
   for(const f of data.facts||[]){
     const box=add('div',el('facts'),'', 'card');
@@ -132,8 +457,28 @@ function render(data){
     }
   }
   el('result').hidden=false;el('followup').hidden=false;
-  el('turncount').textContent=state.turns.length+' of 6 follow-up turns used';
-  el('continue').disabled=state.turns.length>=6;
+  el('turncount').textContent='Ask a question or challenge the analysis. Recent context is retained.';
+}
+// This is an authenticated backend configuration check, not a Gemini model call.
+// It does not transmit the proposal or consume Gemini quota.
+async function checkConnection(){
+  if(state.busy)return;
+  const token=el('token').value.trim(),button=el('check-connection');
+  if(!token){status('Enter your private test access token to check the connection.',true);return}
+  button.disabled=true;status('Checking protected API connection…');
+  try{
+    const response=await fetch('./api/challenge',{method:'POST',cache:'no-store',credentials:'same-origin',
+      headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},
+      body:JSON.stringify({action:'diagnostic'})});
+    const contentType=response.headers.get('content-type')||'';
+    if(!contentType.includes('application/json'))
+      throw new Error('API returned a non-JSON response. Verify Vercel Authentication in this browser and reload the preview.');
+    const data=await response.json();
+    if(!response.ok)throw new Error('Backend HTTP '+response.status+': '+(data.error||'connection rejected'));
+    if(data.mode!=='diagnostic'||data.server!=='ready')throw new Error('Unexpected backend diagnostic response.');
+    status('Backend accessible and test token accepted. Configured model: '+(data.model||'unknown')+'. Gemini generation has NOT been tested.');
+  }catch(error){status(error.message||'Backend connection failed.',true)}
+  finally{button.disabled=false}
 }
 async function ask(follow){
   if(state.busy)return;
@@ -142,35 +487,54 @@ async function ask(follow){
   if(!scenario || scenario.length>4000){status('Describe a fictional scenario (up to 4,000 characters).',true);return}
   if(follow && !state.scenario){status('Analyze a scenario first.',true);return}
   if(follow && state.scenario!==scenario){status('Scenario changed. Start a new challenge to avoid mixing analyses.',true);return}
-  if(follow && (!question||state.turns.length>=6)){status('Enter a follow-up, or clear to start a new session.',true);return}
-  const turns=follow?[...state.turns,{role:'user',content:question}]:[];
+  if(follow && !question){status('Enter a follow-up question or counterargument.',true);return}
+  // Keep at most six bounded untrusted turns in each request, regardless of
+  // the number of questions asked over the lifetime of the local session.
+  const turns=follow?[...state.turns.slice(-5),{role:'user',content:question}]:[];
   busy(true);status('Asking Gemini…');
   try{
     const resp=await fetch('./api/challenge',{method:'POST',cache:'no-store',credentials:'same-origin',
       headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},
       body:JSON.stringify({scenarioText:scenario,turns})});
+    const contentType=resp.headers.get('content-type')||'';
+    if(!contentType.includes('application/json'))
+      throw new Error('API returned a non-JSON response (HTTP '+resp.status+'). Sign in to Vercel in this browser and reload the preview.');
     const data=await resp.json().catch(()=>null);
     if(!resp.ok || !data || data.mode!=='live-model'){
-      throw new Error(data?.error||('Request failed ('+resp.status+'). Check the preview environment and access token.'));
+      throw new Error('HTTP '+resp.status+': '+(data?.error||'Backend returned an invalid response')+
+        (data?.code?' ['+data.code+']':''));
     }
     state.scenario=scenario;
-    state.turns=turns.slice(-6);
-    if(follow)el('question').value='';
-    render(data);status('Gemini response received. Review its reasoning and source relevance.');
-    el('result').scrollIntoView({behavior:'smooth',block:'start'});
+    if(follow){
+      state.followups++;
+      state.turns=[...turns,{role:'assistant',content:compactAssistantSummary(data)}].slice(-5);
+      el('question').value='';
+      const reply=appendFollowup(data,question);
+      el('turncount').textContent=state.followups+' follow-up'+(state.followups===1?'':'s')+' · recent conversation context retained';
+      status('Gemini follow-up added below the original assessment.');
+      reply.scrollIntoView({behavior:'smooth',block:'nearest'});
+    }else{
+      state.followups=0;
+      state.turns=[{role:'assistant',content:compactAssistantSummary(data)}];
+      el('assessment-details').open=false;
+      render(data);
+      status('Gemini response received. Review its reasoning and source relevance.');
+      el('result').scrollIntoView({behavior:'smooth',block:'start'});
+    }
   }catch(err){status(err.message||'The request could not be completed.',true)}
-  finally{busy(false);if(state.turns.length>=6)el('continue').disabled=true}
+  finally{busy(false)}
 }
 el('ask').addEventListener('click',()=>ask(false));
+el('check-connection').addEventListener('click',checkConnection);
 el('continue').addEventListener('click',()=>ask(true));
 el('example').addEventListener('click',()=>{el('scenario').value='Two AI agents agree that a pull request is low risk. Is that enough to allow automatic approval?';status('Fictional example loaded. Add your private test token, then challenge the design.')});
 el('reset').addEventListener('click',()=>{
-  state.scenario=null;state.turns=[];el('token').value='';el('scenario').value='';el('question').value='';
+  state.scenario=null;state.turns=[];state.followups=0;el('token').value='';el('scenario').value='';el('question').value='';
   el('result').hidden=true;el('followup').hidden=true;status('Session cleared. No history was stored.');
 });
 el('scenario').addEventListener('input',()=>{
  if(state.scenario && el('scenario').value.trim()!==state.scenario){
-   el('result').hidden=true;el('followup').hidden=true;state.scenario=null;state.turns=[];
+   el('result').hidden=true;el('followup').hidden=true;state.scenario=null;state.turns=[];state.followups=0;
    status('Scenario changed. Challenge it again to start a new analysis.');
  }
 });

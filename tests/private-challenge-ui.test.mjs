@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import vm from 'node:vm';
 const source=fs.readFileSync(new URL('../private-challenge.html',import.meta.url),'utf8');
 test('Private challenge lab has mobile accessible scenario input and follow-up',()=>{
  for(const id of ['token','scenario','ask','question','continue','reset','result','status']){
@@ -28,4 +29,108 @@ test('private lab renders bounded evidence-based control assessment without clai
  assert.match(source,/EXPECTED CONTROL/);
  assert.match(source,/MANAGEMENT DEMONSTRATION/);
  assert.match(source,/Not assessed — implementation and effectiveness have not been verified/);
+});
+
+test('follow-ups retain the original assessment and append to a separate conversation thread',()=>{
+ assert.match(source,/id="followup-history"/);
+ assert.match(source,/state\.followups\+\+/);
+ assert.match(source,/appendFollowup\(data,question\)/);
+ assert.match(source,/if\(follow\)\{[\s\S]*?appendFollowup\(data,question\)[\s\S]*?\}else\{[\s\S]*?render\(data\)/);
+ assert.match(source,/for\(const id of \['facts','challenges','assessments','unknowns','citations','followup-history'\]\)clear/);
+ assert.match(source,/state\.followups=0/);
+});
+test('bounded continuity conveys previous model output as untrusted assistant context',()=>{
+ const fn=source.match(/function compactAssistantSummary\(data\)\{[\s\S]*?\n\}/);
+ assert.ok(fn,'Expected a pure compactAssistantSummary function');
+ const compact=vm.runInNewContext('('+fn[0]+')');
+ const result=compact({
+   facts:[{statement:'Engineer approved a plan'}],
+   challenges:[{question:'Who approved this exact commit?',reason:'Plan and code approval differ'}],
+   assessments:[{risk:'Unreviewed source revision',expectedControl:'Commit-bound permission enforcement'}],
+   unknowns:['Effective rulesets were not provided'],
+   alternatives:['AI-assisted human approval']
+ });
+ assert.match(result,/Engineer approved a plan/);
+ assert.match(result,/Who approved this exact commit/);
+ assert.match(result,/Unreviewed source revision/);
+ assert.ok(result.length<=720);
+ assert.match(source,/role:'assistant',content:compactAssistantSummary\(data\)/);
+ assert.match(source,/state\.turns\.slice\(-5\)/);
+ assert.match(source,/role:'user',content:question/);
+});
+test('follow-up history does not suppress further conversation or persist tokens in storage',()=>{
+ assert.doesNotMatch(source,/state\.turns\.length>=6/);
+ assert.match(source,/recent conversation context retained/);
+ assert.doesNotMatch(source,/localStorage|sessionStorage|document\.cookie/);
+ assert.match(source,/node\.textContent=String/);
+});
+
+test('private Lab can check authorized backend configuration without generating Gemini output',()=>{
+ assert.match(source,/id="check-connection"/);
+ assert.match(source,/function checkConnection/);
+ assert.match(source,/body:JSON\.stringify\(\{action:'diagnostic'\}\)/);
+ assert.match(source,/Gemini generation has NOT been tested/);
+ assert.match(source,/API returned a non-JSON response/);
+ assert.match(source,/Sign in to Vercel/);
+ assert.match(source,/data\?\.code/);
+ assert.doesNotMatch(source,/localStorage|sessionStorage|document\.cookie/);
+});
+
+test('the first result leads with recommendation; detailed references remain locally expandable',()=>{
+ assert.match(source,/id="recommendation"/);
+ assert.match(source,/<details id="assessment-details"/);
+ assert.match(source,/Explore the reasoning, safeguards, and framework references/);
+ assert.match(source,/function renderRecommendation\(data\)/);
+ assert.match(source,/renderRecommendation\(data\);/);
+ assert.match(source,/el\('assessment-details'\)\.open=false/);
+ assert.match(source,/WHAT COULD GO WRONG/);
+ assert.match(source,/CREDIBLE ALTERNATIVE/);
+ assert.match(source,/WHAT COULD CHANGE THIS VIEW/);
+ assert.match(source,/r\.judgment/);
+ assert.match(source,/r\.why/);
+ assert.match(source,/node\.textContent=String/);
+});
+test('initial judgment enters bounded untrusted conversation memory',()=>{
+ const fn=source.match(/function compactAssistantSummary\(data\)\{[\s\S]*?\n\}/);
+ assert.ok(fn);
+ const compact=vm.runInNewContext('('+fn[0]+')');
+ const r=compact({
+   recommendation:{judgment:'Pilot conditionally',why:'Faster review, uncertain dependency scope'},
+   assessments:[{risk:'Risk of outdated commit approval',expectedControl:'Revision-bound branch rules'}],
+   facts:[{statement:'Two reviewers agree'}],
+   challenges:[{question:'Who decides?',reason:'Unclear authority'}],
+   unknowns:['Can rules protect deployment?'],
+   alternatives:['Human-led approval']
+ });
+ assert.match(r,/Judgment: Pilot conditionally/);
+ assert.match(r,/Risk of outdated commit approval/);
+ assert.ok(r.length<=720);
+ assert.match(source,/role:'assistant',content:compactAssistantSummary\(data\)/);
+});
+
+test('approved risk assessment and Safeguard Explorer replace stakeholder grid and standalone register',()=>{
+ for(const id of ['tab-assessment','tab-controls','view-assessment','view-controls','paired-risk-list',
+   'control-selector','control-inspector','control-risk-links','scenario-summary','scenario-unknowns']){
+   assert.match(source,new RegExp('id="'+id+'"'));
+ }
+ assert.match(source,/role="tablist"/);
+ assert.match(source,/function renderAssessmentModel\(data\)/);
+ assert.match(source,/function selectSafeguard\(id/);
+ assert.match(source,/function changeAssessmentView\(view/);
+ assert.match(source,/risk\.id/);
+ assert.match(source,/c\.riskIds\.includes\(r\.id\)/);
+ assert.match(source,/data\.safeguards/);
+ assert.match(source,/Implementation unverified/);
+ assert.match(source,/Not independently validated/);
+ assert.doesNotMatch(source,/Jon · Architecture|Greg · Delivery|Chase · Governance|Andrew · Assurance/);
+});
+test('two-view navigation and linked risk/control details are client-side only',()=>{
+ const viewSource=source.slice(source.indexOf('const assessmentView='),source.indexOf("el('tab-assessment').addEventListener"));
+ assert.doesNotMatch(viewSource,/fetch\(|XMLHttpRequest|localStorage|sessionStorage/);
+ assert.match(viewSource,/textContent=/);
+ assert.match(viewSource,/scrollIntoView/);
+ assert.match(viewSource,/setAttribute/);
+ assert.match(viewSource,/aria-pressed/);
+ assert.match(source,/data\.risks\|\|\[\]/);
+ assert.match(source,/risks.length>0/);
 });
