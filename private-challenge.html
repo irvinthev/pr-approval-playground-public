@@ -21,6 +21,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{
 .card{padding:17px;border:1px solid #3d6475;border-radius:11px;margin:14px 0;background:#123646}
 .card h3{color:#defaed}.tag{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:#a8f2d6}
 ul{padding-left:23px;margin:8px 0}.citation{padding:10px 0;border-top:1px solid #3d6475}.citation:first-child{border:0}
+.followup-thread{margin-top:22px}.followup-thread:empty{display:none}.followup-thread .card{margin-top:12px;border-color:#4c8a89}.followup-thread details{margin-top:12px;padding:9px 12px;border:1px solid #436875;border-radius:9px}.followup-thread summary{cursor:pointer;color:var(--mint);font-weight:700}.followup-thread summary:focus-visible{outline:3px solid var(--mint)}
 #result[hidden],#followup[hidden]{display:none}.section{margin-top:21px}.mono{font-family:ui-monospace,monospace;word-break:break-all}
 </style>
 </head>
@@ -53,6 +54,7 @@ ul{padding-left:23px;margin:8px 0}.citation{padding:10px 0;border-top:1px solid 
 </div>
 <div id="unknowns"></div>
 <div class="section"><h3>Suggested framework references</h3><div id="citations"></div></div>
+<div id="followup-history" class="followup-thread" role="log" aria-live="polite" aria-label="Follow-up conversation"></div>
 </section>
 <section class="panel" id="followup" hidden aria-labelledby="followtitle">
 <h2 id="followtitle">03 · Ask a follow-up</h2>
@@ -64,7 +66,7 @@ ul{padding-left:23px;margin:8px 0}.citation{padding:10px 0;border-top:1px solid 
 </main>
 <script type="module">
 const el=id=>document.getElementById(id);
-const state={scenario:null,turns:[],busy:false};
+const state={scenario:null,turns:[],followups:0,busy:false};
 function clear(node){node.replaceChildren()}
 function add(tag,parent,text,cls){
   const node=document.createElement(tag);
@@ -86,8 +88,53 @@ function busy(value){
   el('ask').textContent=value?'Analyzing…':'Challenge my design';
   el('continue').textContent=value?'Analyzing…':'Continue the challenge';
 }
+// Summarize the *actual* previous model response for continuity. The server still
+// treats all caller-provided turns, even those labelled "assistant", as untrusted.
+function compactAssistantSummary(data){
+  const facts=(data.facts||[]).slice(0,2).map(f=>'Context: '+f.statement);
+  const challenges=(data.challenges||[]).slice(0,2).map(c=>'Challenge: '+c.question+' '+(c.reason||''));
+  const risks=(data.assessments||[]).slice(0,2).map(a=>'Risk: '+a.risk+'; expected safeguard: '+a.expectedControl);
+  const unknowns=(data.unknowns||[]).slice(0,2).map(x=>'Unknown: '+x);
+  const alternatives=(data.alternatives||[]).slice(0,1).map(x=>'Alternative: '+x);
+  return ['Previous unverified AI interpretation:',...facts,...challenges,...risks,...unknowns,...alternatives].join('\n').slice(0,720);
+}
+// Follow-ups append to the original analysis. Detailed structure remains available
+// without another model call; only submitting a new question requests Gemini.
+function appendFollowup(data,question){
+  const history=el('followup-history');
+  const card=add('article',history,'','card');
+  add('div',card,'FOLLOW-UP '+state.followups,'tag');
+  add('h3',card,question);
+  add('strong',card,'Gemini’s additional analysis');
+  if((data.facts||[]).length)list(card,data.facts.slice(0,4).map(f=>f.statement));
+  if((data.challenges||[]).length){
+    add('strong',card,'Questions and competing explanations');
+    for(const ch of data.challenges.slice(0,3)){
+      add('p',card,ch.question+(ch.reason?' — '+ch.reason:''));
+    }
+  }
+  const details=document.createElement('details');
+  card.append(details);
+  add('summary',details,'Explore suggested safeguards, alternatives and references');
+  for(const a of data.assessments||[]){
+    add('strong',details,'Risk and proposed safeguard');
+    add('p',details,a.risk+' — '+a.expectedControl);
+    if(a.demonstration?.length)list(details,a.demonstration);
+  }
+  if(data.alternatives?.length){add('strong',details,'Alternatives');list(details,data.alternatives)}
+  if(data.unknowns?.length){add('strong',details,'Remaining unknowns');list(details,data.unknowns)}
+  if(data.citations?.length){
+    add('strong',details,'Suggested references');
+    for(const c of data.citations){
+      add('p',details,(c.sourceTitle||'Source')+' — '+(c.provisionTitle||c.provisionId));
+    }
+  }
+  add('p',card,'Model-generated interpretation; no implementation or control effectiveness verified.','small');
+  return card;
+}
+
 function render(data){
-  for(const id of ['facts','challenges','assessments','unknowns','citations'])clear(el(id));
+  for(const id of ['facts','challenges','assessments','unknowns','citations','followup-history'])clear(el(id));
   title(el('facts'),'Facts, inferences and unknowns');
   for(const f of data.facts||[]){
     const box=add('div',el('facts'),'', 'card');
@@ -132,8 +179,7 @@ function render(data){
     }
   }
   el('result').hidden=false;el('followup').hidden=false;
-  el('turncount').textContent=state.turns.length+' of 6 follow-up turns used';
-  el('continue').disabled=state.turns.length>=6;
+  el('turncount').textContent='Ask a question or challenge the analysis. Recent context is retained.';
 }
 async function ask(follow){
   if(state.busy)return;
@@ -142,8 +188,10 @@ async function ask(follow){
   if(!scenario || scenario.length>4000){status('Describe a fictional scenario (up to 4,000 characters).',true);return}
   if(follow && !state.scenario){status('Analyze a scenario first.',true);return}
   if(follow && state.scenario!==scenario){status('Scenario changed. Start a new challenge to avoid mixing analyses.',true);return}
-  if(follow && (!question||state.turns.length>=6)){status('Enter a follow-up, or clear to start a new session.',true);return}
-  const turns=follow?[...state.turns,{role:'user',content:question}]:[];
+  if(follow && !question){status('Enter a follow-up question or counterargument.',true);return}
+  // Keep at most six bounded untrusted turns in each request, regardless of
+  // the number of questions asked over the lifetime of the local session.
+  const turns=follow?[...state.turns.slice(-5),{role:'user',content:question}]:[];
   busy(true);status('Asking Gemini…');
   try{
     const resp=await fetch('./api/challenge',{method:'POST',cache:'no-store',credentials:'same-origin',
@@ -154,23 +202,34 @@ async function ask(follow){
       throw new Error(data?.error||('Request failed ('+resp.status+'). Check the preview environment and access token.'));
     }
     state.scenario=scenario;
-    state.turns=turns.slice(-6);
-    if(follow)el('question').value='';
-    render(data);status('Gemini response received. Review its reasoning and source relevance.');
-    el('result').scrollIntoView({behavior:'smooth',block:'start'});
+    if(follow){
+      state.followups++;
+      state.turns=[...turns,{role:'assistant',content:compactAssistantSummary(data)}].slice(-5);
+      el('question').value='';
+      const reply=appendFollowup(data,question);
+      el('turncount').textContent=state.followups+' follow-up'+(state.followups===1?'':'s')+' · recent conversation context retained';
+      status('Gemini follow-up added below the original assessment.');
+      reply.scrollIntoView({behavior:'smooth',block:'nearest'});
+    }else{
+      state.followups=0;
+      state.turns=[{role:'assistant',content:compactAssistantSummary(data)}];
+      render(data);
+      status('Gemini response received. Review its reasoning and source relevance.');
+      el('result').scrollIntoView({behavior:'smooth',block:'start'});
+    }
   }catch(err){status(err.message||'The request could not be completed.',true)}
-  finally{busy(false);if(state.turns.length>=6)el('continue').disabled=true}
+  finally{busy(false)}
 }
 el('ask').addEventListener('click',()=>ask(false));
 el('continue').addEventListener('click',()=>ask(true));
 el('example').addEventListener('click',()=>{el('scenario').value='Two AI agents agree that a pull request is low risk. Is that enough to allow automatic approval?';status('Fictional example loaded. Add your private test token, then challenge the design.')});
 el('reset').addEventListener('click',()=>{
-  state.scenario=null;state.turns=[];el('token').value='';el('scenario').value='';el('question').value='';
+  state.scenario=null;state.turns=[];state.followups=0;el('token').value='';el('scenario').value='';el('question').value='';
   el('result').hidden=true;el('followup').hidden=true;status('Session cleared. No history was stored.');
 });
 el('scenario').addEventListener('input',()=>{
  if(state.scenario && el('scenario').value.trim()!==state.scenario){
-   el('result').hidden=true;el('followup').hidden=true;state.scenario=null;state.turns=[];
+   el('result').hidden=true;el('followup').hidden=true;state.scenario=null;state.turns=[];state.followups=0;
    status('Scenario changed. Challenge it again to start a new analysis.');
  }
 });
