@@ -191,3 +191,14 @@ test('Gemini network and timeout errors have distinct safe codes',()=>withEnv(as
   assert.equal(res.body.code,'GEMINI_NETWORK_ERROR');
   assert.doesNotMatch(JSON.stringify(res.body),/UNSAFE SECRET/);
 }));
+
+test('model prompt requests a decisive architecture judgment and alternative before control mapping',()=>{
+ const p=buildModelRequest({scenarioText:'Agent merges stacked PRs',turns:[]}).systemInstruction.parts[0].text;
+ const recommendationIndex=p.indexOf('Lead with recommendation {judgment,why,failureCondition,alternative,decisionChanger}');
+ const assessmentIndex=p.indexOf('Also provide assessments: 1-2 concise objects');
+ assert.ok(recommendationIndex>=0);
+ assert.ok(assessmentIndex>recommendationIndex);
+ assert.match(p,/Do not assume human approval is effective/);
+ assert.match(p,/single unanswered architectural or implementation question/);
+ assert.match(p,/not a compliance verdict or approval/);
+});
