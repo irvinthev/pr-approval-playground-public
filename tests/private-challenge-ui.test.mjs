@@ -131,6 +131,6 @@ test('two-view navigation and linked risk/control details are client-side only',
  assert.match(viewSource,/\\.scrollIntoView/);
  assert.match(viewSource,/\\.setAttribute\('aria-selected'/);
  assert.match(viewSource,/\\.setAttribute\('aria-pressed'/);
- assert.match(source,/data\.risks\\|\\|\\[\\]/);
+ assert.match(source,/data\.risks\|\|\[\]/);
  assert.match(source,/risks\\.length>0/);
 });
