@@ -77,3 +77,45 @@ test('incomplete recommendation cannot silently become a definitive judgment',()
  assert.equal(r.ok,false);
  assert.ok(r.errors.some(e=>e.includes('Malformed leading recommendation')));
 });
+
+test('linked risk and safeguard model creates stable server-controlled IDs without claims of effectiveness',()=>{
+ const riskModel={
+   risks:[
+     {title:'Security sensitive code is misclassified',category:'Application security',trigger:'Dependency change bypasses the exclusion inventory',impact:'An unsafe change could reach production'},
+     {title:'Approval authority escapes delegation',category:'Agent identity',trigger:'Agent uses an alternate GitHub credential',impact:'The system can approve without a valid decision'}
+   ],
+   safeguards:[
+     {name:'Protected eligibility gate',why:'Rejects excluded changes independent of model agreement',authority:'Engineering owns the approved scope',enforcement:'Protected required check blocks merges',evidence:'Policy version, SHA and check result',negativeTest:'Attempt excluded PR merge',proof:'Effective rules and denied merge event',gap:'Can alternate identities bypass the required check?',riskIndexes:[1]},
+     {name:'Least-privilege approval authority',why:'Limits agent access to delegated paths',authority:'Engineer or policy makes decision',enforcement:'Scoped GitHub app and protected approval command',evidence:'Principal and approved SHA event',negativeTest:'Try privileged API route',proof:'Permission configuration and denial',gap:'Are all CLI and MCP paths covered?',riskIndexes:[1,2]}
+   ]
+ };
+ const result=validateAgentResponse({...good,...riskModel},{scenarioText:scenario});
+ assert.equal(result.ok,true,JSON.stringify(result.errors));
+ assert.deepEqual(result.data.risks.map(r=>r.id),['R-01','R-02']);
+ assert.deepEqual(result.data.safeguards.map(c=>c.id),['C-01','C-02']);
+ assert.deepEqual(result.data.safeguards[1].riskIds,['R-01','R-02']);
+ assert.equal(result.data.safeguards[0].enforcement,'Protected required check blocks merges');
+ assert.equal(result.data.provenance.decisionStatus,'no-approval-or-certification');
+});
+test('mapped safeguards reject nonexistent, duplicate, and forged risk relationships',()=>{
+ const risk={title:'Unsafe change',category:'Security',trigger:'Untracked file',impact:'Vulnerability'};
+ const guard={name:'Scope check',why:'Blocks excluded scope',authority:'Engineering',enforcement:'Protected required check',evidence:'Workflow records',negativeTest:'Try excluded merge',proof:'Denied merge record',gap:'Unknown bypass routes',riskIndexes:[1]};
+ for(const invalid of [[0],[2],[1,1],['R-01']]){
+   const r=validateAgentResponse({...good,risks:[risk],safeguards:[{...guard,riskIndexes:invalid}]},{scenarioText:scenario});
+   assert.equal(r.ok,false,JSON.stringify({invalid,errors:r.errors}));
+   assert.ok(r.errors.some(e=>e.includes('Malformed safeguard model')));
+ }
+ const partial=validateAgentResponse({...good,risks:[risk]},{scenarioText:scenario});
+ assert.equal(partial.ok,false);
+ assert.ok(partial.errors.some(e=>e.includes('together')));
+});
+test('missing optional technical explanations remain explicit unknowns, not invented controls',()=>{
+ const r=validateAgentResponse({...good,
+   risks:[{title:'Stale PR',category:'Change integrity',trigger:'Head SHA changes',impact:'Unreviewed code could merge'}],
+   safeguards:[{name:'Revision bound authorization',why:'Makes approvals revision specific',riskIndexes:[1]}]
+ },{scenarioText:scenario});
+ assert.equal(r.ok,true,JSON.stringify(r.errors));
+ assert.equal(r.data.safeguards[0].enforcement,'');
+ assert.equal(r.data.safeguards[0].proof,'');
+ assert.equal(r.data.safeguards[0].id,'C-01');
+});
