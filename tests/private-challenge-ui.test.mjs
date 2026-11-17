@@ -75,3 +75,35 @@ test('private Lab can check authorized backend configuration without generating 
  assert.match(source,/data\?\.code/);
  assert.doesNotMatch(source,/localStorage|sessionStorage|document\.cookie/);
 });
+
+test('the first result leads with recommendation; detailed references remain locally expandable',()=>{
+ assert.match(source,/id="recommendation"/);
+ assert.match(source,/<details id="assessment-details"/);
+ assert.match(source,/Explore the reasoning, safeguards, and framework references/);
+ assert.match(source,/function renderRecommendation\(data\)/);
+ assert.match(source,/renderRecommendation\(data\);/);
+ assert.match(source,/el\('assessment-details'\)\.open=false/);
+ assert.match(source,/WHAT COULD GO WRONG/);
+ assert.match(source,/CREDIBLE ALTERNATIVE/);
+ assert.match(source,/WHAT COULD CHANGE THIS VIEW/);
+ assert.match(source,/r\.judgment/);
+ assert.match(source,/r\.why/);
+ assert.match(source,/node\.textContent=String/);
+});
+test('initial judgment enters bounded untrusted conversation memory',()=>{
+ const fn=source.match(/function compactAssistantSummary\(data\)\{[\s\S]*?\n\}/);
+ assert.ok(fn);
+ const compact=vm.runInNewContext('('+fn[0]+')');
+ const r=compact({
+   recommendation:{judgment:'Pilot conditionally',why:'Faster review, uncertain dependency scope'},
+   assessments:[{risk:'Risk of outdated commit approval',expectedControl:'Revision-bound branch rules'}],
+   facts:[{statement:'Two reviewers agree'}],
+   challenges:[{question:'Who decides?',reason:'Unclear authority'}],
+   unknowns:['Can rules protect deployment?'],
+   alternatives:['Human-led approval']
+ });
+ assert.match(r,/Judgment: Pilot conditionally/);
+ assert.match(r,/Risk of outdated commit approval/);
+ assert.ok(r.length<=720);
+ assert.match(source,/role:'assistant',content:compactAssistantSummary\(data\)/);
+});
