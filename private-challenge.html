@@ -313,7 +313,7 @@ function selectSafeguard(id,{navigate=false}={}){
     'control-enforcement':c.enforcement,'control-evidence':c.evidence,
     'control-break':c.negativeTest,'control-proof':c.proof,'control-gap':c.gap
   };
-  for(const [key,value]of Object.entries(values))el(key).textContent=value;
+  for(const [key,value]of Object.entries(values))el(key).textContent=value||'Not established by this assessment.';
   const links=el('control-risk-links');clear(links);
   for(const risk of linked){
     const button=add('button',links,risk.id+' · '+risk.title,'pill-link');
