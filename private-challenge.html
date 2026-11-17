@@ -198,7 +198,7 @@ async function checkConnection(){
     const data=await response.json();
     if(!response.ok)throw new Error('Backend HTTP '+response.status+': '+(data.error||'connection rejected'));
     if(data.mode!=='diagnostic'||data.server!=='ready')throw new Error('Unexpected backend diagnostic response.');
-    status('Backend accessible and test token accepted. Gemini generation has NOT been tested.');
+    status('Backend accessible and test token accepted. Configured model: '+(data.model||'unknown')+'. Gemini generation has NOT been tested.');
   }catch(error){status(error.message||'Backend connection failed.',true)}
   finally{button.disabled=false}
 }
