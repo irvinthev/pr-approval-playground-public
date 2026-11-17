@@ -208,13 +208,15 @@ function busy(value){
 // treats all caller-provided turns, even those labelled "assistant", as untrusted.
 function compactAssistantSummary(data){
   const recommendation=data.recommendation;
+  const mappedRisks=(data.risks||[]).slice(0,2).map(r=>'Risk: '+r.title+' — '+r.trigger);
+  const mappedControls=(data.safeguards||[]).slice(0,1).map(c=>'Safeguard: '+c.name+' — '+c.enforcement);
   const judgment=recommendation?['Judgment: '+recommendation.judgment.slice(0,160),'Reason: '+recommendation.why.slice(0,100)].join(' '):'';
   const facts=(data.facts||[]).slice(0,2).map(f=>'Context: '+f.statement);
   const challenges=(data.challenges||[]).slice(0,2).map(c=>'Challenge: '+c.question+' '+(c.reason||''));
   const risks=(data.assessments||[]).slice(0,2).map(a=>'Risk: '+a.risk+'; expected safeguard: '+a.expectedControl);
   const unknowns=(data.unknowns||[]).slice(0,2).map(x=>'Unknown: '+x);
   const alternatives=(data.alternatives||[]).slice(0,1).map(x=>'Alternative: '+x);
-  return ['Previous unverified AI interpretation:',judgment,...risks,...challenges,...unknowns,...facts,...alternatives].filter(Boolean).join('\n').slice(0,720);
+  return ['Previous unverified AI interpretation:',judgment,...mappedRisks,...mappedControls,...risks,...challenges,...unknowns,...facts,...alternatives].filter(Boolean).join('\n').slice(0,720);
 }
 // Follow-ups append to the original analysis. Detailed structure remains available
 // without another model call; only submitting a new question requests Gemini.
@@ -224,6 +226,8 @@ function appendFollowup(data,question){
   add('div',card,'FOLLOW-UP '+state.followups,'tag');
   add('h3',card,question);
   add('strong',card,'Gemini’s additional analysis');
+  if(data.recommendation)add('p',card,data.recommendation.judgment+' — '+data.recommendation.why);
+  if(data.risks?.length)list(card,data.risks.slice(0,3).map(r=>r.title+': '+r.trigger));
   if((data.facts||[]).length)list(card,data.facts.slice(0,4).map(f=>f.statement));
   if((data.challenges||[]).length){
     add('strong',card,'Questions and competing explanations');
@@ -239,6 +243,7 @@ function appendFollowup(data,question){
     add('p',details,a.risk+' — '+a.expectedControl);
     if(a.demonstration?.length)list(details,a.demonstration);
   }
+  if(data.safeguards?.length){add('strong',details,'Additional proposed safeguards');list(details,data.safeguards.slice(0,4).map(c=>c.name+' — '+c.enforcement))}
   if(data.alternatives?.length){add('strong',details,'Alternatives');list(details,data.alternatives)}
   if(data.unknowns?.length){add('strong',details,'Remaining unknowns');list(details,data.unknowns)}
   if(data.citations?.length){
@@ -274,8 +279,139 @@ function renderRecommendation(data){
     add('p',block,value);
   }
 }
+
+// Both views use the SAME normalized, validated response. All IDs are server
+// generated; reference relationships, content and status are model-derived or
+// explicitly marked unverified. Navigation never calls Gemini.
+const assessmentView={data:null,view:'assessment',control:null};
+function changeAssessmentView(view,{focus=true,scroll=true}={}){
+  if(view!=='assessment'&&view!=='controls')return;
+  assessmentView.view=view;
+  for(const key of ['assessment','controls']){
+    const active=key===view;
+    el('view-'+key).hidden=!active;
+    const tab=el('tab-'+key);
+    tab.setAttribute('aria-selected',String(active));
+    tab.tabIndex=active?0:-1;
+  }
+  if(focus)el('tab-'+view).focus({preventScroll:true});
+  if(scroll)el('result').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function selectSafeguard(id,{navigate=false}={}){
+  const data=assessmentView.data;
+  const c=(data?.safeguards||[]).find(x=>x.id===id);
+  if(!c)return;
+  assessmentView.control=id;
+  for(const option of el('control-selector').querySelectorAll('button')){
+    option.setAttribute('aria-pressed',String(option.dataset.id===id));
+  }
+  const linked=(data.risks||[]).filter(r=>c.riskIds.includes(r.id));
+  const trigger=linked.length?linked.map(r=>r.trigger).join(' '):'No mapped failure condition';
+  const values={
+    'control-id':c.id+' · Proposed safeguard','control-title':c.name,
+    'control-trigger':trigger,'control-authority':c.authority,
+    'control-enforcement':c.enforcement,'control-evidence':c.evidence,
+    'control-break':c.negativeTest,'control-proof':c.proof,'control-gap':c.gap
+  };
+  for(const [key,value]of Object.entries(values))el(key).textContent=value;
+  const links=el('control-risk-links');clear(links);
+  for(const risk of linked){
+    const button=add('button',links,risk.id+' · '+risk.title,'pill-link');
+    button.type='button';
+    button.addEventListener('click',()=>{
+      changeAssessmentView('assessment',{focus:false,scroll:false});
+      el('risk-'+risk.id)?.scrollIntoView({behavior:'smooth',block:'center'});
+    });
+  }
+  if(navigate){
+    changeAssessmentView('controls',{focus:false,scroll:false});
+    el('control-inspector').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+}
+function renderAssessmentModel(data){
+  assessmentView.data=data;
+  assessmentView.control=null;
+  changeAssessmentView('assessment',{focus:false,scroll:false});
+  const scenario=data.scenarioText||'';
+  el('scenario-summary').textContent=scenario.length>650?scenario.slice(0,650)+'… (full proposal above)':scenario;
+  const unknowns=(data.unknowns||[]).slice(0,3);
+  el('scenario-unknowns').textContent=unknowns.length?unknowns.join(' · '):
+    'Implementation, enforcement and outcomes have not been independently verified.';
+  const risks=data.risks||[], safeguards=data.safeguards||[];
+  // The legacy detailed control rendering remains only as a backwards-compatibility
+  // fallback. We never show both versions of the control analysis at once.
+  el('assessment-section').hidden=risks.length>0;
+  const root=el('paired-risk-list');clear(root);
+  if(!risks.length)add('p',root,'Gemini did not return a linked risk and safeguard model. The earlier assessment is available under detailed reasoning.','empty-analysis');
+  for(const risk of risks){
+    const linked=safeguards.filter(c=>c.riskIds.includes(risk.id));
+    const primary=linked[0];
+    const card=add('article',root,'','paired-card');card.id='risk-'+risk.id;
+    const header=add('div',card,'','paired-head');
+    const heading=add('div',header);
+    add('div',heading,risk.id+' · RISK → SAFEGUARD','mini-kicker');
+    add('h3',heading,risk.title);
+    add('span',header,risk.category,'category-label');
+    const columns=add('div',card,'','paired-columns');
+    const riskSide=add('div',columns,'','risk-side');
+    add('div',riskSide,'Failure condition','mini-kicker');add('p',riskSide,risk.trigger);
+    add('div',riskSide,'Why it matters','mini-kicker');add('p',riskSide,risk.impact);
+    const safeguardSide=add('div',columns,'','safeguard-side');
+    add('div',safeguardSide,'EXPECTED SAFEGUARD'+(primary?' · '+primary.id:''),'mini-kicker');
+    add('h3',safeguardSide,primary?primary.name:'No mapped safeguard');
+    add('p',safeguardSide,primary?primary.why:'The assessment did not identify a credible safeguard for this risk. It remains an explicit design gap.');
+    if(linked.length>1){
+      add('div',safeguardSide,'Also depends on','mini-kicker');
+      add('p',safeguardSide,linked.slice(1).map(c=>c.id+' · '+c.name).join('; '));
+    }
+    const foot=add('div',card,'','paired-foot');
+    add('span',foot,'Implementation unverified · No independent effectiveness assessment','small');
+    if(primary){
+      const button=add('button',foot,'Inspect '+primary.id+' safeguard →','inspect-btn');
+      button.type='button';button.addEventListener('click',()=>selectSafeguard(primary.id,{navigate:true}));
+    }
+  }
+  const metrics=el('model-metrics');clear(metrics);
+  for(const label of [
+    risks.length+' material risk'+(risks.length===1?'':'s'),
+    safeguards.length+' proposed safeguard'+(safeguards.length===1?'':'s'),
+    'Implementation not independently verified'
+  ])add('span',metrics,label);
+  const options=el('control-selector');clear(options);
+  if(!safeguards.length){
+    add('p',options,'No linked safeguards were returned. Review the detailed assessment and retry with a more specific proposal.','empty-analysis');
+    el('control-inspector').hidden=true;
+  }else{
+    el('control-inspector').hidden=false;
+    for(const control of safeguards){
+      const button=add('button',options,'','control-option');
+      button.type='button';button.dataset.id=control.id;
+      add('div',button,control.id+' · Inspect →','mini-kicker');
+      add('strong',button,control.name);
+      add('span',button,control.why,'small');
+      add('span',button,'Linked: '+control.riskIds.join(', ')+' · Evidence not independently verified','small');
+      button.addEventListener('click',()=>{
+        selectSafeguard(control.id);
+        if(window.matchMedia('(max-width:900px)').matches)
+          el('control-inspector').scrollIntoView({behavior:'smooth',block:'start'});
+      });
+    }
+    selectSafeguard(safeguards[0].id);
+  }
+}
+el('tab-assessment').addEventListener('click',()=>changeAssessmentView('assessment'));
+el('tab-controls').addEventListener('click',()=>changeAssessmentView('controls'));
+el('result').querySelector('.viewtabs').addEventListener('keydown',event=>{
+  if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
+  event.preventDefault();
+  const next=event.key==='Home'?'assessment':event.key==='End'?'controls':
+    assessmentView.view==='assessment'?'controls':'assessment';
+  changeAssessmentView(next);
+});
+
 function render(data){
   renderRecommendation(data);
+  renderAssessmentModel(data);
   for(const id of ['facts','challenges','assessments','unknowns','citations','followup-history'])clear(el(id));
   title(el('facts'),'Facts, inferences and unknowns');
   for(const f of data.facts||[]){
