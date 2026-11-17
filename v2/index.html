@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="AI-Enabled SDLC Field Guide V2: Overview. One practical question, one focused interactive explanation, and a bounded fictional case.">
+<title>Overview | AI-Enabled SDLC Field Guide V2</title>
+<link rel="stylesheet" href="./site.css"><script src="./guide.js" defer></script>
+</head>
+<body data-chapter="overview">
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><a class="brand" href="./index.html"><span class="brand-mark" aria-hidden="true">◈</span>AI-ENABLED SDLC <small>FIELD GUIDE · V2 PREVIEW</small></a>
+<nav class="chapter-nav" aria-label="Field Guide chapters"><a href="./index.html" aria-current="page">Overview</a><a href="./ai-sdlc-risk.html">Risk &amp; Governance</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Independent Assurance</a></nav></header>
+<main class="shell" id="main">
+<section class="hero" aria-labelledby="page-title">
+ <div><span class="eyebrow">01 / ORIENT · Overview</span>
+ <h1 id="page-title">AI is changing how software gets built—and who gets to act.</h1>
+ <p class="lead">AI can help teams write, test, review, and deliver software faster. As systems move from recommendations to tool use and independent decisions, the challenge is to capture that value while understanding who is authorized to act, what could be affected, and what makes the result trustworthy.</p></div>
+ <aside class="hero-aside" aria-label="Why this chapter matters"><strong>The practical question</strong><p>What problem should AI solve, what can it change or decide, and which technical boundaries prevent an unacceptable outcome?</p><p>Start with the engineering opportunity. Then assess exposure, enforcement, and evidence—without assuming human review or AI autonomy is inherently better.</p></aside>
+</section>
+<section class="overview-shifts" aria-labelledby="overview-shifts-title">
+ <div class="overview-shifts-heading"><span class="mini-label">WHAT CHANGES WITH AI</span><h2 id="overview-shifts-title">More than a faster code review.</h2></div>
+ <div class="overview-shift-grid">
+  <div class="overview-shift"><strong>Advice → Action</strong><p>An AI assistant may suggest a change; an agent may execute tools or decisions with real permissions.</p></div>
+  <div class="overview-shift"><strong>Small change → Wider impact</strong><p>A change in shared code can reach customers, data, services, or financial processes through dependencies.</p></div>
+  <div class="overview-shift"><strong>Event log → Accountability</strong><p>A recorded action does not, by itself, establish who decided, whether it was authorized, or what was affected.</p></div>
+ </div>
+</section>
+<div class="case-line" aria-label="Shared fictional example"><strong>SHARED CASE / FICTIONAL</strong><span>lib/dedup/key.js</span><span>Two AI LOW results</span><span>Revision A → B</span><span>Protected downstream functions possible</span></div>
+<section class="focus" data-scenario-root aria-labelledby="focus-title">
+ <span class="mini-label">WORKED EXAMPLE / AI PR APPROVAL</span><h2 class="section-heading" id="focus-title">Who really approved this change?</h2>
+ <p class="section-intro">One GitHub approval can represent different decisions. Compare who decided, who acted, and what evidence would be needed. This is one example of the broader AI-enabled SDLC.</p>
+ <div class="picker" data-picker aria-label="Select an example"></div>
+ <div class="insight" role="region" aria-label="Selected example detail" aria-live="polite" aria-atomic="false">
+  <div><span class="verdict" data-insight-status></span><h3 data-insight-title></h3><p class="insight-summary" data-insight-summary></p><p class="insight-next" data-insight-next></p></div>
+  <ul class="insight-points"><li><strong data-insight-label></strong><span data-insight-point></span></li><li><strong data-insight-label></strong><span data-insight-point></span></li><li><strong data-insight-label></strong><span data-insight-point></span></li></ul>
+ </div>
+ <div class="takeaway"><strong>DECISION TAKEAWAY</strong><p>The object in GitHub is an action record. Authorization depends on who made the decision, the effective policy, and the constraints that actually enforced it.</p></div>
+</section>
+<section class="secondary" aria-labelledby="second-title">
+ <div><span class="mini-label">THE METHOD</span><h2 id="second-title">Start with the problem, then design the authority.</h2><p>A productive engineering conversation begins by identifying the bottleneck: delayed review, weak code ownership, inconsistent judgments, or a costly approval ceremony. Those are different problems. An autonomous approver is one possible solution, not the default. This method also applies to coding agents, AI-generated tests, dependency tools and release automation.</p></div>
+ <div class="mini-stack" aria-label="Key considerations"><div class="mini-step"><b>01</b><div><strong>Problem</strong><span>What is slow or unreliable?</span></div></div>
+<div class="mini-step"><b>02</b><div><strong>Authority</strong><span>Who decides, acts and can override?</span></div></div>
+<div class="mini-step"><b>03</b><div><strong>Safeguards</strong><span>What operates independently of AI?</span></div></div>
+<div class="mini-step"><b>04</b><div><strong>Evidence</strong><span>How do we know the design holds?</span></div></div></div>
+</section>
+<aside class="note"><strong>Evidence boundary.</strong> The demonstration is fictional. No particular company’s approval process, bot permissions, or control operation is verified here.</aside>
+<div class="chapter-outro">
+ <details><summary>Need deeper technical material? Open the previous extended chapter</summary><p>The extensive previous chapter is retained for reference during V2 review. It is not the proposed primary reading experience.</p><a href="../index.html">View original Overview reference ↗</a></details>
+ <a class="next" href="./ai-sdlc-risk.html">Next: Risk &amp; Governance →</a>
+</div>
+</main>
+<footer><p>Public educational prototype · CASE-SHARED-01 is entirely fictional. This page does not connect to GitHub approvals, company systems, AI services, or production telemetry. No automated control or assurance conclusion is asserted.</p><nav class="footnav" aria-label="Other sections"><a href="./index.html">Overview</a><a href="./ai-sdlc-risk.html">Risk</a><a href="./engineering-blueprint.html">Engineering</a><a href="./continuous-monitoring.html">Monitoring</a><a href="./independent-assurance.html">Assurance</a></nav></footer>
+</body></html>

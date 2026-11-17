@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="AI-Enabled SDLC Field Guide V2: Monitoring &amp; Operations. One practical question, one focused interactive explanation, and a bounded fictional case.">
+<title>Monitoring &amp; Operations | AI-Enabled SDLC Field Guide V2</title>
+<link rel="stylesheet" href="./site.css"><script src="./guide.js" defer></script>
+</head>
+<body data-chapter="monitoring">
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><a class="brand" href="./index.html"><span class="brand-mark" aria-hidden="true">◈</span>AI-ENABLED SDLC <small>FIELD GUIDE · V2 PREVIEW</small></a>
+<nav class="chapter-nav" aria-label="Field Guide chapters"><a href="./index.html">Overview</a><a href="./ai-sdlc-risk.html">Risk &amp; Governance</a><a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a><a href="./continuous-monitoring.html" aria-current="page">Monitoring &amp; Operations</a><a href="./independent-assurance.html">Independent Assurance</a></nav></header>
+<main class="shell" id="main">
+<section class="hero" aria-labelledby="page-title">
+ <div><span class="eyebrow">04 / OPERATE · Monitoring &amp; Operations</span>
+ <h1 id="page-title">A PR changed after approval. Would we know?</h1>
+ <p class="lead">Observability tells us that something happened. Reconciliation asks whether it was authorized for the relevant revision and reached the intended release path. The principle applies beyond PR approval to coding, testing, remediation, and deployment agents.</p></div>
+ <aside class="hero-aside" aria-label="Why this chapter matters"><strong>The incident</strong><p>Revision A receives approval. Revision B arrives later. The old approval is still a historical record, but the delivery system must resolve whether it remains valid.</p><p>An unmatched event could be a broken rule, an authorized exception, or incomplete evidence. Investigate before concluding.</p></aside>
+</section>
+<div class="case-line" aria-label="Shared fictional example"><strong>SHARED CASE / FICTIONAL</strong><span>lib/dedup/key.js</span><span>Two AI LOW results</span><span>Revision A → B</span><span>Protected downstream functions possible</span></div>
+<section class="focus" data-scenario-root aria-labelledby="focus-title">
+ <span class="mini-label">OBSERVE / RECONCILE / INVESTIGATE / RECOVER</span><h2 class="section-heading" id="focus-title">Where does an operating signal become a decision?</h2>
+ <p class="section-intro">Follow four phases of a fictional stale-approval incident. Each phase changes what Engineering knows and can responsibly do.</p>
+ <div class="picker" data-picker aria-label="Select an example"></div>
+ <div class="insight" role="region" aria-label="Selected example detail" aria-live="polite" aria-atomic="false">
+  <div><span class="verdict" data-insight-status></span><h3 data-insight-title></h3><p class="insight-summary" data-insight-summary></p><p class="insight-next" data-insight-next></p></div>
+  <ul class="insight-points"><li><strong data-insight-label></strong><span data-insight-point></span></li><li><strong data-insight-label></strong><span data-insight-point></span></li><li><strong data-insight-label></strong><span data-insight-point></span></li></ul>
+ </div>
+ <div class="takeaway"><strong>DECISION TAKEAWAY</strong><p>Dashboards are not enough. Operational confidence requires independently scoped event populations, tested join logic, response ownership and a credible path to contain and recover.</p></div>
+</section>
+<section class="monitoring-signals" aria-labelledby="monitoring-signals-title">
+ <div class="risk-taxonomy-intro"><div><span class="mini-label">OPERATIONAL VISIBILITY</span><h2 id="monitoring-signals-title">Four signals worth investigating.</h2><p>These are monitoring hypotheses, not live alerts or measured control performance. Every signal needs verified source coverage and a responder.</p></div></div>
+ <div class="risk-table-scroll" role="region" tabindex="0" aria-label="Four operational signals and investigation prompts">
+  <table class="risk-table monitoring-signal-table">
+   <thead><tr><th scope="col">Signal</th><th scope="col">Source to corroborate</th><th scope="col">Investigate when</th></tr></thead>
+   <tbody>
+    <tr><th scope="row">Decision ↔ revision integrity</th><td data-label="Source to corroborate">Approval intent or policy record; PR revisions; GitHub actions</td><td data-label="Investigate when">An approval predates changed content or the recorded evaluated revision is missing</td></tr>
+    <tr><th scope="row">Authorization ↔ merge ↔ release</th><td data-label="Source to corroborate">GitHub merge events; CI/build provenance; artifact and deployment records</td><td data-label="Investigate when">A production change cannot be linked to a valid authorization for the released content</td></tr>
+    <tr><th scope="row">Decision quality and adjudication</th><td data-label="Source to corroborate">AI decisions; representative negative cases; human adjudication; defect outcomes</td><td data-label="Investigate when">Material false-LOW decisions, shared model blind spots, or missing evaluation coverage emerge</td></tr>
+    <tr><th scope="row">Privileges, rulesets and policy drift</th><td data-label="Source to corroborate">GitHub App/identity audit events; effective rulesets; policy and model versions</td><td data-label="Investigate when">New bypass rights, broader eligibility, or unreviewed changes to decision inputs appear</td></tr>
+   </tbody>
+  </table>
+ </div>
+ <p class="risk-taxonomy-foot">An unmatched event is an investigation lead, not proof of a violation. Missing telemetry means coverage is unknown—not “no exception detected.” Confirm population, retention, event identity, and cross-system join logic.</p>
+</section>
+<section class="secondary" aria-labelledby="second-title">
+ <div><span class="mini-label">TRACE THE REAL PATH</span><h2 id="second-title">The change-to-production chain is the unit of reconciliation.</h2><p>A useful signal connects the approved decision or human instruction to the executing identity, GitHub merge event, CI/build provenance, released artifact and deployment. Not every commit hash should match naively: squash, rebase and merge-queue mappings need explicit treatment. For other AI agents, reconstruct instructions, tool actions, changes and production effects with equivalent rigor.</p></div>
+ <div class="mini-stack" aria-label="Key considerations"><div class="mini-step"><b>01</b><div><strong>Intent / policy</strong><span>Authority for current revision</span></div></div>
+<div class="mini-step"><b>02</b><div><strong>Action</strong><span>Agent or human GitHub event</span></div></div>
+<div class="mini-step"><b>03</b><div><strong>Enforcement</strong><span>Ruleset and merge outcome</span></div></div>
+<div class="mini-step"><b>04</b><div><strong>Production</strong><span>Build, artifact and deploy identity</span></div></div></div>
+</section>
+<aside class="note"><strong>Evidence boundary.</strong> All event times and outcomes in this experience are hypothetical. Logging coverage, production population completeness, incident containment and recovery effectiveness have not been independently verified.</aside>
+<div class="chapter-outro">
+ <details><summary>Need deeper technical material? Open the previous extended chapter</summary><p>The extensive previous chapter is retained for reference during V2 review. It is not the proposed primary reading experience.</p><a href="../continuous-monitoring.html">View original Monitoring &amp; Operations reference ↗</a></details>
+ <a class="next" href="./independent-assurance.html">Next: Independent Assurance →</a>
+</div>
+</main>
+<footer><p>Public educational prototype · CASE-SHARED-01 is entirely fictional. This page does not connect to GitHub approvals, company systems, AI services, or production telemetry. No automated control or assurance conclusion is asserted.</p><nav class="footnav" aria-label="Other sections"><a href="./index.html">Overview</a><a href="./ai-sdlc-risk.html">Risk</a><a href="./engineering-blueprint.html">Engineering</a><a href="./continuous-monitoring.html">Monitoring</a><a href="./independent-assurance.html">Assurance</a></nav></footer>
+</body></html>
