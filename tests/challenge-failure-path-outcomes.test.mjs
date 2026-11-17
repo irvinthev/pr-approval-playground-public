@@ -9,6 +9,7 @@ const sample={
   facts:[{statement:'Engineers authorize the change.',support:'explicit-user-statement'}],
   challenges:[{question:'What happens after a new commit?',reason:'Approval may become stale.'}],
   citationIds:[],
+  approvalOutcomes:[],
   conclusions:[{
     scenarioBasis:'Engineer-approved PR changes before the agent acts.',
     application:'Treat approval as revision-specific.',
