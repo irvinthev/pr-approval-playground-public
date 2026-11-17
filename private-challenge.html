@@ -21,6 +21,15 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{
 .card{padding:17px;border:1px solid #3d6475;border-radius:11px;margin:14px 0;background:#123646}
 .card h3{color:#defaed}.tag{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:#a8f2d6}
 ul{padding-left:23px;margin:8px 0}.citation{padding:10px 0;border-top:1px solid #3d6475}.citation:first-child{border:0}
+.decision-brief{background:#153b49;border:1px solid #6a9c9d;border-radius:12px;padding:20px;margin-top:18px}
+.decision-brief h3{font-size:19px;line-height:1.35;margin:6px 0 8px;color:#f1fffa}
+.decision-brief .decision-why{font-size:15px;color:#e1f1f1;margin:0 0 15px}
+.decision-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.decision-grid>div{border-top:1px solid #456a75;padding-top:10px}
+.decision-grid p{margin:5px 0 0;font-size:14px;color:#e1f1f1}
+.detail-archive{margin-top:20px;border-top:1px solid var(--line);padding-top:14px}
+.detail-archive>summary{font-weight:700;color:var(--mint);cursor:pointer;padding:10px 0}
+.detail-archive>summary:focus-visible{outline:3px solid var(--mint)}
 .followup-thread{margin-top:22px}.followup-thread:empty{display:none}.followup-thread .card{margin-top:12px;border-color:#4c8a89}.followup-thread details{margin-top:12px;padding:9px 12px;border:1px solid #436875;border-radius:9px}.followup-thread summary{cursor:pointer;color:var(--mint);font-weight:700}.followup-thread summary:focus-visible{outline:3px solid var(--mint)}
 #result[hidden],#followup[hidden]{display:none}.section{margin-top:21px}.mono{font-family:ui-monospace,monospace;word-break:break-all}
 </style>
@@ -44,7 +53,10 @@ ul{padding-left:23px;margin:8px 0}.citation{padding:10px 0;border-top:1px solid 
 </section>
 <section id="result" class="panel" hidden aria-labelledby="resulttitle">
 <h2 id="resulttitle">02 · Gemini's design challenge</h2>
-<p class="small">Model-generated interpretation; facts, references, and implications require independent validation.</p>
+<p class="small">Model-generated interpretation, not a verified authorization or implementation assessment.</p>
+<div id="recommendation" class="decision-brief" aria-label="Engineering recommendation"></div>
+<details id="assessment-details" class="detail-archive">
+<summary>Explore the reasoning, safeguards, and framework references</summary>
 <div id="facts"></div>
 <div id="challenges"></div>
 <div class="section" id="assessment-section" aria-label="Risk and control assessment">
@@ -54,6 +66,7 @@ ul{padding-left:23px;margin:8px 0}.citation{padding:10px 0;border-top:1px solid 
 </div>
 <div id="unknowns"></div>
 <div class="section"><h3>Suggested framework references</h3><div id="citations"></div></div>
+</details>
 <div id="followup-history" class="followup-thread" role="log" aria-live="polite" aria-label="Follow-up conversation"></div>
 </section>
 <section class="panel" id="followup" hidden aria-labelledby="followtitle">
@@ -91,12 +104,14 @@ function busy(value){
 // Summarize the *actual* previous model response for continuity. The server still
 // treats all caller-provided turns, even those labelled "assistant", as untrusted.
 function compactAssistantSummary(data){
+  const recommendation=data.recommendation;
+  const judgment=recommendation?['Judgment: '+recommendation.judgment,'Reason: '+recommendation.why].join(' '):'';
   const facts=(data.facts||[]).slice(0,2).map(f=>'Context: '+f.statement);
   const challenges=(data.challenges||[]).slice(0,2).map(c=>'Challenge: '+c.question+' '+(c.reason||''));
   const risks=(data.assessments||[]).slice(0,2).map(a=>'Risk: '+a.risk+'; expected safeguard: '+a.expectedControl);
   const unknowns=(data.unknowns||[]).slice(0,2).map(x=>'Unknown: '+x);
   const alternatives=(data.alternatives||[]).slice(0,1).map(x=>'Alternative: '+x);
-  return ['Previous unverified AI interpretation:',...facts,...challenges,...risks,...unknowns,...alternatives].join('\n').slice(0,720);
+  return ['Previous unverified AI interpretation:',judgment,...facts,...challenges,...risks,...unknowns,...alternatives].filter(Boolean).join('\n').slice(0,720);
 }
 // Follow-ups append to the original analysis. Detailed structure remains available
 // without another model call; only submitting a new question requests Gemini.
@@ -133,7 +148,31 @@ function appendFollowup(data,question){
   return card;
 }
 
+function renderRecommendation(data){
+  const root=el('recommendation');
+  clear(root);
+  add('div',root,'GEMINI’S ENGINEERING JUDGMENT · UNVERIFIED','tag');
+  const r=data.recommendation;
+  if(!r){
+    add('h3',root,'No consolidated recommendation returned.','decision-why');
+    add('p',root,'Review the detailed analysis below. The model did not provide enough structured information for a summary.');
+    return;
+  }
+  add('h3',root,r.judgment);
+  add('p',root,r.why,'decision-why');
+  const grid=add('div',root,'','decision-grid');
+  for(const [label,value] of [
+    ['WHAT COULD GO WRONG',r.failureCondition],
+    ['CREDIBLE ALTERNATIVE',r.alternative],
+    ['WHAT COULD CHANGE THIS VIEW',r.decisionChanger]
+  ]){
+    const block=add('div',grid,'');
+    add('strong',block,label,'tag');
+    add('p',block,value);
+  }
+}
 function render(data){
+  renderRecommendation(data);
   for(const id of ['facts','challenges','assessments','unknowns','citations','followup-history'])clear(el(id));
   title(el('facts'),'Facts, inferences and unknowns');
   for(const f of data.facts||[]){
@@ -238,6 +277,7 @@ async function ask(follow){
     }else{
       state.followups=0;
       state.turns=[{role:'assistant',content:compactAssistantSummary(data)}];
+      el('assessment-details').open=false;
       render(data);
       status('Gemini response received. Review its reasoning and source relevance.');
       el('result').scrollIntoView({behavior:'smooth',block:'start'});
