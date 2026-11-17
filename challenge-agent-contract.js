@@ -21,6 +21,16 @@ function validateChallenge(ch){
  if(!question)return null;
  return {question,reason:maxLength(ch.reason,650),tests:strings(ch.tests,5,350),alternatives:strings(ch.alternatives,4,350)};
 }
+// The model's leading judgment is advisory only, never an authorization.
+// It is optional for backwards compatibility with earlier valid responses.
+function validateRecommendation(item){
+ if(!isPlainObject(item))return null;
+ const judgment=maxLength(item.judgment,260),why=maxLength(item.why,500);
+ const failureCondition=maxLength(item.failureCondition,400),alternative=maxLength(item.alternative,400);
+ const decisionChanger=maxLength(item.decisionChanger,400);
+ if(!judgment||!why||!failureCondition||!alternative||!decisionChanger)return null;
+ return {judgment,why,failureCondition,alternative,decisionChanger};
+}
 function validateAssessment(item){
  if(!isPlainObject(item))return null;
  const risk=maxLength(item.risk,350),expectedControl=maxLength(item.expectedControl,450);
@@ -40,6 +50,8 @@ export function validateAgentResponse(input,{scenarioText}={}){
  const scenario=maxLength(scenarioText,4000);
  if(!scenario)errors.push('Original scenario is required for binding');
  if(input.scenarioDigest !== undefined)errors.push('External model cannot assert its own trusted scenario digest');
+ const recommendation=input.recommendation===undefined?null:validateRecommendation(input.recommendation);
+ if(input.recommendation!==undefined && !recommendation)errors.push('Malformed leading recommendation');
  const facts=Array.isArray(input.facts)?input.facts.slice(0,12).map(validateFact).filter(Boolean):[];
  const challenges=Array.isArray(input.challenges)?input.challenges.slice(0,6).map(validateChallenge).filter(Boolean):[];
  const ids=Array.isArray(input.citationIds)?input.citationIds.slice(0,20):[];
@@ -66,6 +78,7 @@ export function validateAgentResponse(input,{scenarioText}={}){
    scenarioText:scenario,
    catalogVersion:sourceCatalog.schemaVersion,
    catalogAsOf:sourceCatalog.asOf,
+   recommendation,
    facts,
    challenges,
    assessments:assessments.map(a=>({...a,sourceStatus:'suggested-relevance-only',evidenceStatus:'not-demonstrated',assessmentStatus:'not-assessed'})),
