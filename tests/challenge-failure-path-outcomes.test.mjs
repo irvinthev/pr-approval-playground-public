@@ -60,7 +60,7 @@ test('invalid non-text outcomes are never used as stage observations',()=>{
   const unsafe=structuredClone(path);
   unsafe.steps[0].goodOutcome={status:'verified'};
   const data=validate(unsafe);
-  assert.equal(data.riskPath,null);
+  assert.ok(!data.riskPath,'invalid optional path must not reach the UI');
 });
 test('UI uses distinct expected/failure outcomes and hides untouched assessment panes',()=>{
   const source=fs.readFileSync(new URL('../challenge-connected-report-view.mjs',import.meta.url),'utf8');
