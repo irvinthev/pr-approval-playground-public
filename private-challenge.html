@@ -32,6 +32,67 @@ ul{padding-left:23px;margin:8px 0}.citation{padding:10px 0;border-top:1px solid 
 .detail-archive>summary:focus-visible{outline:3px solid var(--mint)}
 .followup-thread{margin-top:22px}.followup-thread:empty{display:none}.followup-thread .card{margin-top:12px;border-color:#4c8a89}.followup-thread details{margin-top:12px;padding:9px 12px;border:1px solid #436875;border-radius:9px}.followup-thread summary{cursor:pointer;color:var(--mint);font-weight:700}.followup-thread summary:focus-visible{outline:3px solid var(--mint)}
 #result[hidden],#followup[hidden]{display:none}.section{margin-top:21px}.mono{font-family:ui-monospace,monospace;word-break:break-all}
+
+/* Linked assessment and safeguard explorer, adapted from approved standalone prototype. */
+main{max-width:1150px}
+[hidden]{display:none!important}
+.viewtabs{display:flex;gap:8px;padding:6px;background:#0e2a37;border:1px solid var(--line);border-radius:13px;width:fit-content;max-width:100%;margin:18px 0;overflow-x:auto}
+.viewtab{border:0;border-radius:9px;background:transparent;color:#c3dad9;white-space:nowrap;padding:10px 15px;cursor:pointer}
+.viewtab[aria-selected="true"]{background:var(--mint);color:#10302e}
+.viewtab:hover:not([aria-selected="true"]){background:#1a4351}
+.scenario-card{background:#123240;border:1px solid var(--line);border-radius:12px;padding:19px;margin:15px 0;display:grid;grid-template-columns:1.4fr 1fr;gap:18px}
+.scenario-card h3{margin:5px 0 9px}
+.scenario-card p{margin:0;color:var(--muted);white-space:pre-wrap;overflow-wrap:anywhere}
+.scenario-card .assumptions{border-left:1px solid #507784;padding-left:18px}
+.mini-kicker{font-size:11px;letter-spacing:.10em;text-transform:uppercase;color:var(--mint);font-weight:800}
+.summary-label{color:var(--muted);font-size:13px;margin:18px 0 10px}
+.paired-stack{display:grid;gap:14px;margin-top:15px}
+.paired-card{background:#102f3c;border:1px solid var(--line);border-radius:13px;overflow:hidden;scroll-margin-top:18px}
+.paired-head{padding:17px 20px;display:flex;align-items:start;justify-content:space-between;flex-wrap:wrap;gap:9px}
+.paired-head h3{font-size:18px;margin:5px 0 0}
+.category-label{border:1px solid #507784;padding:5px 8px;border-radius:7px;font-size:12px;color:var(--muted)}
+.paired-columns{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.risk-side,.safeguard-side{padding:17px 20px}
+.risk-side{background:#102c39}
+.safeguard-side{background:#1a4048;border-left:1px solid #4b7478}
+.paired-columns p{font-size:14px;color:#e0eeeb;margin:5px 0 13px}
+.paired-columns p:last-child{margin-bottom:0}
+.paired-foot{padding:10px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.inspect-btn{border:1px solid #7db3a5;background:#224e4d;color:#effff9;border-radius:8px;padding:9px 12px;font-size:13px}
+.inspect-btn:hover{background:#2d6963}
+.controls-layout{display:grid;grid-template-columns:minmax(245px,.88fr) minmax(0,1.5fr);gap:14px;align-items:start;margin-top:14px}
+.control-selector{display:grid;gap:9px}
+.control-option{display:block;text-align:left;width:100%;padding:15px;border:1px solid var(--line);border-radius:10px;background:#102f3c;color:white}
+.control-option[aria-pressed="true"]{background:#1a4550;border-color:#80bea9;box-shadow:inset 3px 0 var(--mint)}
+.control-option:hover{border-color:#80bea9}
+.control-option strong,.control-option .small{display:block;margin-top:5px}
+.control-inspector{border:1px solid #567985;border-radius:13px;background:linear-gradient(148deg,#193e4b,#10313e 60%);padding:18px}
+.inspector-head{display:flex;align-items:start;justify-content:space-between;gap:9px;flex-wrap:wrap}
+.inspector-head h3{font-size:20px;margin:4px 0}
+.inspector-status{border:1px solid #688a98;padding:5px 9px;color:#d2e4e8;border-radius:8px;font-size:12px}
+.inspector-callout{background:#143947;border:1px solid #3c6a78;border-radius:10px;padding:14px;margin:15px 0}
+.inspector-callout p{margin:6px 0 0}
+.mechanism{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:13px 0}
+.mechanism>div{border:1px solid var(--line);border-radius:9px;background:#0d2a36;padding:12px}
+.mechanism p{font-size:13px;color:var(--muted);margin:5px 0}
+.mechanism strong{font-size:13px}
+.inspector-grid,.evidence-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.inspector-block{background:#102f3c;border:1px solid var(--line);border-radius:9px;padding:13px}
+.inspector-block p{font-size:13px;color:var(--muted);margin:7px 0 0}
+.evidence-grid{margin-top:12px}
+.evidence-grid>div{background:#10313e;border:1px solid #3d5f6b;border-radius:9px;padding:11px}
+.evidence-grid strong{display:block;font-size:13px;margin:5px 0}
+.evidence-grid span{font-size:12px;color:var(--muted)}
+.inspector-gap{border-left:3px solid #f2c88a;margin:17px 0;padding-left:11px;font-size:13px}
+.inspector-relations{border-top:1px solid var(--line);padding-top:15px;margin-top:18px}
+.pill-link{border:1px solid #5c8690;border-radius:8px;background:#173e4b;color:var(--mint);font-size:12px;padding:7px 9px;margin:5px 6px 5px 0}
+.metric-line{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:13px;margin-top:10px}
+.metric-line span{border:1px solid var(--line);background:#123646;border-radius:8px;padding:8px 11px}
+.empty-analysis{border:1px dashed #67929a;border-radius:10px;padding:16px;color:var(--muted)}
+#view-controls{margin-top:20px}
+@media(max-width:900px){.controls-layout{grid-template-columns:1fr}.control-selector{grid-template-columns:repeat(2,minmax(0,1fr))}.scenario-card{grid-template-columns:1fr}.scenario-card .assumptions{border-left:0;border-top:1px solid var(--line);padding:12px 0 0}}
+@media(max-width:620px){.paired-columns,.mechanism,.inspector-grid,.evidence-grid{grid-template-columns:1fr}.safeguard-side{border-left:0;border-top:1px solid #4b7478}.control-selector{grid-template-columns:1fr}.scenario-card,.paired-head,.risk-side,.safeguard-side{padding:15px}.viewtab{padding:9px 11px}}
+
 </style>
 </head>
 <body><main>
@@ -53,20 +114,62 @@ ul{padding-left:23px;margin:8px 0}.citation{padding:10px 0;border-top:1px solid 
 </section>
 <section id="result" class="panel" hidden aria-labelledby="resulttitle">
 <h2 id="resulttitle">02 · Gemini's design challenge</h2>
-<p class="small">Model-generated interpretation, not a verified authorization or implementation assessment.</p>
-<div id="recommendation" class="decision-brief" aria-label="Engineering recommendation"></div>
-<details id="assessment-details" class="detail-archive">
-<summary>Explore the reasoning, safeguards, and framework references</summary>
-<div id="facts"></div>
-<div id="challenges"></div>
-<div class="section" id="assessment-section" aria-label="Risk and control assessment">
-  <h3>Risk → Expected control → Framework → Evidence → Assessment</h3>
-  <p class="small">Proposed control expectations for discussion, not evidence of implementation. Management must demonstrate the safeguard; this lab cannot verify it.</p>
-  <div id="assessments"></div>
-</div>
-<div id="unknowns"></div>
-<div class="section"><h3>Suggested framework references</h3><div id="citations"></div></div>
-</details>
+<p class="small">Gemini-generated design analysis, not a finding that any safeguard exists or operates effectively.</p>
+<nav class="viewtabs" role="tablist" aria-label="Assessment views">
+ <button id="tab-assessment" class="viewtab" role="tab" type="button" aria-controls="view-assessment" aria-selected="true">01 · Risk Assessment</button>
+ <button id="tab-controls" class="viewtab" role="tab" type="button" aria-controls="view-controls" aria-selected="false" tabindex="-1">02 · Safeguard Explorer</button>
+</nav>
+<section id="view-assessment" role="tabpanel" aria-labelledby="tab-assessment">
+ <div class="scenario-card">
+  <div><div class="mini-kicker">PROPOSED SCENARIO</div><h3>What was submitted</h3><p id="scenario-summary"></p></div>
+  <div class="assumptions"><div class="mini-kicker">WHAT REMAINS UNCERTAIN</div><p id="scenario-unknowns"></p></div>
+ </div>
+ <div id="recommendation" class="decision-brief" aria-label="Engineering recommendation"></div>
+ <h3 class="summary-label">MATERIAL EXPOSURE · RISKS PAIRED WITH EXPECTED SAFEGUARDS</h3>
+ <div id="paired-risk-list" class="paired-stack" aria-label="Linked risk and safeguard assessment"></div>
+ <details id="assessment-details" class="detail-archive">
+  <summary>Explore the reasoning, safeguards, and framework references</summary>
+  <div id="facts"></div><div id="challenges"></div>
+  <div class="section" id="assessment-section" aria-label="Risk and control assessment">
+    <h3>Risk → Expected control → Framework → Evidence → Assessment</h3>
+    <p class="small">Fallback for older model responses. Expected controls are not verified.</p>
+    <div id="assessments"></div>
+  </div>
+  <div id="unknowns"></div>
+  <div class="section"><h3>Suggested framework references</h3><div id="citations"></div></div>
+ </details>
+</section>
+<section id="view-controls" role="tabpanel" aria-labelledby="tab-controls" hidden>
+ <h3>What actually protects this design?</h3>
+ <p class="small">Select a proposed safeguard to inspect authority, enforcement, evidence, bypass tests, and the risks it addresses.</p>
+ <div id="model-metrics" class="metric-line"></div>
+ <div class="controls-layout">
+  <div id="control-selector" class="control-selector" role="group" aria-label="Proposed safeguards"></div>
+  <article id="control-inspector" class="control-inspector" aria-live="polite" aria-label="Selected safeguard details">
+   <div class="inspector-head"><div><div class="mini-kicker" id="control-id"></div><h3 id="control-title"></h3></div><span class="inspector-status">Implementation unverified</span></div>
+   <div class="inspector-callout"><div class="mini-kicker">FAILURE THIS SAFEGUARD ADDRESSES</div><p id="control-trigger"></p></div>
+   <div class="mini-kicker">AUTHORITY → ENFORCEMENT → EVIDENCE</div>
+   <div class="mechanism">
+    <div><strong>01 · Authority</strong><p id="control-authority"></p></div>
+    <div><strong>02 · Enforcement</strong><p id="control-enforcement"></p></div>
+    <div><strong>03 · Evidence</strong><p id="control-evidence"></p></div>
+   </div>
+   <div class="inspector-grid">
+    <div class="inspector-block"><div class="mini-kicker">TRY TO BREAK IT</div><p id="control-break"></p></div>
+    <div class="inspector-block"><div class="mini-kicker">WHAT WOULD DEMONSTRATE IT?</div><p id="control-proof"></p></div>
+   </div>
+   <h3 class="summary-label">WHAT DO WE ACTUALLY KNOW?</h3>
+   <div class="evidence-grid">
+    <div><div class="mini-kicker">DESIGN EXPECTATION</div><strong>Proposed</strong><span>Gemini-generated</span></div>
+    <div><div class="mini-kicker">IMPLEMENTATION</div><strong>Unverified</strong><span>User claims, if any, require corroboration</span></div>
+    <div><div class="mini-kicker">EVIDENCE BASIS</div><strong>Not independently validated</strong><span>Suggested artifacts are not proof</span></div>
+    <div><div class="mini-kicker">ASSURANCE</div><strong>Not performed</strong><span>No control effectiveness conclusion</span></div>
+   </div>
+   <div class="inspector-gap"><strong>What could change this assessment?</strong> <span id="control-gap"></span></div>
+   <div class="inspector-relations"><div class="mini-kicker">LINKED RISKS · RETURN TO ASSESSMENT</div><div id="control-risk-links"></div></div>
+  </article>
+ </div>
+</section>
 <div id="followup-history" class="followup-thread" role="log" aria-live="polite" aria-label="Follow-up conversation"></div>
 </section>
 <section class="panel" id="followup" hidden aria-labelledby="followtitle">
