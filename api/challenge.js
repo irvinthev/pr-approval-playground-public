@@ -76,18 +76,29 @@ export function buildModelRequest(input){
 }
 
 export default async function handler(req,res){
+  const started=Date.now();
+  // Only report diagnostic stages, status codes and elapsed time.
+  // Never log prompts, returned model text, access tokens, API keys or headers.
+  const reply=(status,body,stage)=>{
+    if(stage)console.info('[challenge-api]',JSON.stringify({stage,status,elapsedMs:Date.now()-started}));
+    return json(res,status,body);
+  };
   res.setHeader('Cache-Control','no-store');
   if(req.method!=='POST')return json(res,405,{error:'POST required'});
   // No public CORS grant. This endpoint is server-to-server only in this slice.
   if(!process.env.CHALLENGE_API_TOKEN || !process.env.GEMINI_API_KEY || !selectedModel())
     return json(res,503,{error:'Backend not configured'});
   if(!safeEquals(req.headers.authorization||'', 'Bearer '+process.env.CHALLENGE_API_TOKEN))
-    return json(res,401,{error:'Unauthorized'});
+    return reply(401,{error:'Invalid private test access token',code:'AUTH_TOKEN_INVALID'},'auth-rejected');
   if(Number(req.headers['content-length']||0)>MAX_BODY)
     return json(res,413,{error:'Body too large'});
   let body=req.body;
   if(typeof body==='string'){if(body.length>MAX_BODY)return json(res,413,{error:'Body too large'});try{body=JSON.parse(body)}catch{return json(res,400,{error:'Invalid JSON'})}}
   if(JSON.stringify(body??{}).length>MAX_BODY)return json(res,413,{error:'Body too large'});
+  // No Gemini call or billable inference. Authorization is still required.
+  if(body?.action==='diagnostic')
+    return reply(200,{mode:'diagnostic',server:'ready',provider:'Gemini',model:selectedModel(),
+      note:'Server configuration and access token checked. Gemini API credentials, quota and generation are not tested.'},'diagnostic-ok');
   const input=validateRequest(body);
   if(input.error)return json(res,400,{error:input.error});
   const controller=new AbortController();
@@ -98,26 +109,35 @@ export default async function handler(req,res){
       headers:{'x-goog-api-key':process.env.GEMINI_API_KEY,'Content-Type':'application/json'},
       body:JSON.stringify(buildModelRequest(input))
     });
-    if(response.status===429)return json(res,429,{error:'Gemini free-tier rate limit or quota reached. Retry later.'});
+    if(response.status===429)return reply(429,{error:'Gemini free-tier quota or rate limit reached',code:'GEMINI_QUOTA'},'gemini-429');
     if(response.status===401 || response.status===403)
-      return json(res,503,{error:'Gemini API credentials or access unavailable'});
-    if(!response.ok)return json(res,502,{error:'Gemini provider unavailable'});
+      return reply(503,{error:'Gemini rejected the configured API key or project access',code:'GEMINI_ACCESS'},'gemini-auth');
+    if(response.status===400)
+      return reply(502,{error:'Gemini rejected the request format',code:'GEMINI_REQUEST_INVALID'},'gemini-400');
+    if(response.status===404)
+      return reply(502,{error:'Configured Gemini model is unavailable',code:'GEMINI_MODEL_UNAVAILABLE'},'gemini-404');
+    if(!response.ok)return reply(502,{error:'Gemini provider unavailable',code:'GEMINI_PROVIDER_ERROR'},'gemini-other');
     const envelope=await response.json();
     const candidate=envelope?.candidates?.[0];
     if(candidate?.finishReason && candidate.finishReason!=='STOP')
-      return json(res,502,{error:'Gemini response was interrupted or incomplete'});
+      return reply(502,{error:'Gemini response was interrupted or incomplete',code:'GEMINI_INCOMPLETE'},'gemini-incomplete');
     const raw=candidate?.content?.parts?.map(p=>typeof p?.text==='string'?p.text:'').join('');
     let parsed;
-    try{parsed=JSON.parse(raw)}catch{return json(res,502,{error:'Model returned invalid JSON'})}
+    try{parsed=JSON.parse(raw)}catch{return reply(502,{error:'Gemini returned invalid JSON',code:'GEMINI_JSON_INVALID'},'gemini-json-invalid')}
     // Source catalog retains historical records; this specific Lab must not emit
     // citations excluded from its public-facing framework selection.
     const returnedIds=[...(Array.isArray(parsed?.citationIds)?parsed.citationIds:[]),
       ...(Array.isArray(parsed?.assessments)?parsed.assessments.flatMap(a=>a?.citationIds||[]):[])];
     if(returnedIds.some(id=>typeof id==='string' && id.startsWith('COSAI-')))
-      return json(res,502,{error:'Gemini returned a disallowed framework citation'});
+      return reply(502,{error:'Gemini returned a disallowed framework citation',code:'GEMINI_CITATION_REJECTED'},'gemini-citation-invalid');
     const checked=validateAgentResponse(parsed,{scenarioText:input.scenarioText});
-    if(!checked.ok)return json(res,502,{error:'Model output failed contract validation',details:checked.errors});
-    return json(res,200,{...checked.data,turnsUsed:input.turns.length,mode:'live-model'});
-  }catch{return json(res,502,{error:'Model request failed or timed out'})}
+    if(!checked.ok)return reply(502,{error:'Gemini output failed contract validation',code:'GEMINI_OUTPUT_REJECTED',
+      details:checked.errors},'gemini-output-invalid');
+    return reply(200,{...checked.data,turnsUsed:input.turns.length,mode:'live-model'},'gemini-success');
+  }catch{
+    const timedOut=controller.signal.aborted;
+    return reply(502,{error:timedOut?'Gemini request timed out':'Gemini connection failed',
+      code:timedOut?'GEMINI_TIMEOUT':'GEMINI_NETWORK_ERROR'},timedOut?'gemini-timeout':'gemini-network');
+  }
   finally{clearTimeout(timeout)}
 }
