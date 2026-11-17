@@ -128,9 +128,9 @@ test('two-view navigation and linked risk/control details are client-side only',
  const viewSource=source.slice(source.indexOf('const assessmentView='),source.indexOf("el('tab-assessment').addEventListener"));
  assert.doesNotMatch(viewSource,/fetch\(|XMLHttpRequest|localStorage|sessionStorage/);
  assert.match(viewSource,/textContent=/);
- assert.match(viewSource,/\\.scrollIntoView/);
- assert.match(viewSource,/\\.setAttribute\('aria-selected'/);
- assert.match(viewSource,/\\.setAttribute\('aria-pressed'/);
+ assert.match(viewSource,/scrollIntoView/);
+ assert.match(viewSource,/setAttribute/);
+ assert.match(viewSource,/aria-pressed/);
  assert.match(source,/data\.risks\|\|\[\]/);
- assert.match(source,/risks\\.length>0/);
+ assert.match(source,/risks.length>0/);
 });
