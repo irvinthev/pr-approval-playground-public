@@ -57,3 +57,23 @@ test('assessment can only refer to citations included in response',()=>{
  const r=validateAgentResponse({...good,assessments:[{risk:'R',expectedControl:'C',citationIds:['SSDF:PW.1']}]},{scenarioText:scenario});
  assert.equal(r.ok,false);
 });
+
+test('leading engineering recommendation is bounded and remains unverified',()=>{
+ const recommendation={
+   judgment:'Proceed only with deterministic low-risk eligibility',
+   why:'Engineering may reduce review delays, but scores alone do not constrain authority.',
+   failureCondition:'If code alters protected dependencies, the automation could approve outside its mandate.',
+   alternative:'Retain human approval with automated analysis for changes outside explicit policy.',
+   decisionChanger:'Can protected-branch rules bind eligibility to the exact revision?'
+ };
+ const r=validateAgentResponse({...good,recommendation},{scenarioText:scenario});
+ assert.equal(r.ok,true,JSON.stringify(r.errors));
+ assert.deepEqual(r.data.recommendation,recommendation);
+ assert.equal(r.data.provenance.decisionStatus,'no-approval-or-certification');
+ assert.equal(validateAgentResponse(good,{scenarioText:scenario}).data.recommendation,null);
+});
+test('incomplete recommendation cannot silently become a definitive judgment',()=>{
+ const r=validateAgentResponse({...good,recommendation:{judgment:'Approved!'}},{scenarioText:scenario});
+ assert.equal(r.ok,false);
+ assert.ok(r.errors.some(e=>e.includes('Malformed leading recommendation')));
+});
