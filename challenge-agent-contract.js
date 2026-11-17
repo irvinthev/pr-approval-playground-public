@@ -136,7 +136,9 @@ function validateRiskPath(value){
       new Set(step.roles).size!==step.roles.length||
       typeof step.event!=='string'||!step.event.trim()||
       typeof step.evidence!=='string'||!step.evidence.trim()||
-      typeof step.interruption!=='string')return null;
+      typeof step.interruption!=='string'||
+      (step.goodOutcome!==undefined&&typeof step.goodOutcome!=='string')||
+      (step.failureOutcome!==undefined&&typeof step.failureOutcome!=='string'))return null;
    if(step.roles.includes('prevention')&&!step.interruption.trim())return null;
    previous=order.get(step.stageId);
    hasOrigin ||=step.roles.includes('origin');
@@ -145,7 +147,9 @@ function validateRiskPath(value){
      stageId:step.stageId,roles:step.roles,
      event:maxLength(step.event,250),
      interruption:maxLength(step.interruption,250),
-     evidence:maxLength(step.evidence,250)
+     evidence:maxLength(step.evidence,250),
+     goodOutcome:maxLength(step.goodOutcome,250),
+     failureOutcome:maxLength(step.failureOutcome,250)
    });
  }
  if(!hasOrigin||!hasConsequence)return null;
