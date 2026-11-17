@@ -64,3 +64,14 @@ test('follow-up history does not suppress further conversation or persist tokens
  assert.doesNotMatch(source,/localStorage|sessionStorage|document\.cookie/);
  assert.match(source,/node\.textContent=String/);
 });
+
+test('private Lab can check authorized backend configuration without generating Gemini output',()=>{
+ assert.match(source,/id="check-connection"/);
+ assert.match(source,/function checkConnection/);
+ assert.match(source,/body:JSON\.stringify\(\{action:'diagnostic'\}\)/);
+ assert.match(source,/Gemini generation has NOT been tested/);
+ assert.match(source,/API returned a non-JSON response/);
+ assert.match(source,/Sign in to Vercel/);
+ assert.match(source,/data\?\.code/);
+ assert.doesNotMatch(source,/localStorage|sessionStorage|document\.cookie/);
+});
