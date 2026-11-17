@@ -31,6 +31,28 @@ function validateRecommendation(item){
  if(!judgment||!why||!failureCondition||!alternative||!decisionChanger)return null;
  return {judgment,why,failureCondition,alternative,decisionChanger};
 }
+// A compact linked architecture-risk model for the two local views.
+// Gemini proposes relationships by 1-based indexes; the server assigns stable,
+// display-only R-01 / C-01 IDs after checking every index.
+function validateRiskItem(item){
+ if(!isPlainObject(item))return null;
+ const title=maxLength(item.title,120),trigger=maxLength(item.trigger,360),impact=maxLength(item.impact,360);
+ const category=maxLength(item.category,80);
+ if(!title||!trigger||!impact||!category)return null;
+ return {title,trigger,impact,category};
+}
+function validateSafeguardItem(item,riskCount){
+ if(!isPlainObject(item))return null;
+ const fields=['name','why','authority','enforcement','evidence','negativeTest','proof','gap'];
+ const limits=[120,320,330,430,340,360,360,330];
+ const obj={};
+ for(let i=0;i<fields.length;i++)obj[fields[i]]=maxLength(item[fields[i]],limits[i]);
+ if(fields.some(field=>!obj[field]))return null;
+ const indices=item.riskIndexes;
+ if(!Array.isArray(indices)||!indices.length||indices.length>riskCount ||
+    indices.some(n=>!Number.isInteger(n)||n<1||n>riskCount)||new Set(indices).size!==indices.length)return null;
+ return {...obj,riskIndexes:indices};
+}
 function validateAssessment(item){
  if(!isPlainObject(item))return null;
  const risk=maxLength(item.risk,350),expectedControl=maxLength(item.expectedControl,450);
@@ -51,6 +73,18 @@ export function validateAgentResponse(input,{scenarioText}={}){
  if(!scenario)errors.push('Original scenario is required for binding');
  if(input.scenarioDigest !== undefined)errors.push('External model cannot assert its own trusted scenario digest');
  const recommendation=input.recommendation===undefined?null:validateRecommendation(input.recommendation);
+ // Older structured responses remain accepted, but no missing technical
+ // details are invented to populate the new Safeguard Explorer.
+ const receivedRisks=input.risks;
+ const receivedSafeguards=input.safeguards;
+ const risks=Array.isArray(receivedRisks)?receivedRisks.slice(0,4).map(validateRiskItem):[];
+ const safeguards=Array.isArray(receivedSafeguards)?receivedSafeguards.slice(0,5).map(s=>validateSafeguardItem(s,risks.length)):[];
+ if(receivedRisks!==undefined&&(!Array.isArray(receivedRisks)||risks.length===0||risks.some(x=>!x)))
+   errors.push('Malformed risk assessment items');
+ if(receivedSafeguards!==undefined&&(!Array.isArray(receivedSafeguards)||safeguards.length===0||safeguards.some(x=>!x)))
+   errors.push('Malformed safeguard model');
+ if((receivedRisks===undefined)!==(receivedSafeguards===undefined))
+   errors.push('Risks and safeguards must be provided together');
  if(input.recommendation!==undefined && !recommendation)errors.push('Malformed leading recommendation');
  const facts=Array.isArray(input.facts)?input.facts.slice(0,12).map(validateFact).filter(Boolean):[];
  const challenges=Array.isArray(input.challenges)?input.challenges.slice(0,6).map(validateChallenge).filter(Boolean):[];
@@ -79,6 +113,11 @@ export function validateAgentResponse(input,{scenarioText}={}){
    catalogVersion:sourceCatalog.schemaVersion,
    catalogAsOf:sourceCatalog.asOf,
    recommendation,
+   risks:risks.filter(Boolean).map((item,i)=>({...item,id:'R-'+String(i+1).padStart(2,'0')})),
+   safeguards:safeguards.filter(Boolean).map((item,i)=>({
+     ...item,id:'C-'+String(i+1).padStart(2,'0'),
+     riskIds:item.riskIndexes.map(n=>'R-'+String(n).padStart(2,'0'))
+   })),
    facts,
    challenges,
    assessments:assessments.map(a=>({...a,sourceStatus:'suggested-relevance-only',evidenceStatus:'not-demonstrated',assessmentStatus:'not-assessed'})),
