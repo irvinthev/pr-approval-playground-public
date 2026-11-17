@@ -105,13 +105,13 @@ function busy(value){
 // treats all caller-provided turns, even those labelled "assistant", as untrusted.
 function compactAssistantSummary(data){
   const recommendation=data.recommendation;
-  const judgment=recommendation?['Judgment: '+recommendation.judgment,'Reason: '+recommendation.why].join(' '):'';
+  const judgment=recommendation?['Judgment: '+recommendation.judgment.slice(0,160),'Reason: '+recommendation.why.slice(0,100)].join(' '):'';
   const facts=(data.facts||[]).slice(0,2).map(f=>'Context: '+f.statement);
   const challenges=(data.challenges||[]).slice(0,2).map(c=>'Challenge: '+c.question+' '+(c.reason||''));
   const risks=(data.assessments||[]).slice(0,2).map(a=>'Risk: '+a.risk+'; expected safeguard: '+a.expectedControl);
   const unknowns=(data.unknowns||[]).slice(0,2).map(x=>'Unknown: '+x);
   const alternatives=(data.alternatives||[]).slice(0,1).map(x=>'Alternative: '+x);
-  return ['Previous unverified AI interpretation:',judgment,...facts,...challenges,...risks,...unknowns,...alternatives].filter(Boolean).join('\n').slice(0,720);
+  return ['Previous unverified AI interpretation:',judgment,...risks,...challenges,...unknowns,...facts,...alternatives].filter(Boolean).join('\n').slice(0,720);
 }
 // Follow-ups append to the original analysis. Detailed structure remains available
 // without another model call; only submitting a new question requests Gemini.
