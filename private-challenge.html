@@ -39,7 +39,7 @@ ul{padding-left:23px;margin:8px 0}.citation{padding:10px 0;border-top:1px solid 
 <div class="field"><label for="scenario">What should the AI challenge?</label>
 <textarea id="scenario" maxlength="4000" placeholder="Two AI agents agree that a pull request is low risk. Is that enough to allow automatic approval?"></textarea>
 </div>
-<div class="row"><button class="primary" id="ask" type="button">Challenge my design</button><button id="example" type="button">Load example</button><button id="reset" type="button">Clear session</button></div>
+<div class="row"><button class="primary" id="ask" type="button">Challenge my design</button><button id="example" type="button">Load example</button><button id="reset" type="button">Clear session</button><button id="check-connection" type="button">Check connection</button></div>
 <p id="status" role="status" aria-live="polite"></p>
 </section>
 <section id="result" class="panel" hidden aria-labelledby="resulttitle">
@@ -84,7 +84,7 @@ function title(parent,value){add('h3',parent,value)}
 function status(message,error=false){el('status').textContent=message;el('status').classList.toggle('error',error)}
 function busy(value){
   state.busy=value;
-  el('ask').disabled=value;el('continue').disabled=value;
+  el('ask').disabled=value;el('continue').disabled=value;el('check-connection').disabled=value;
   el('ask').textContent=value?'Analyzing…':'Challenge my design';
   el('continue').textContent=value?'Analyzing…':'Continue the challenge';
 }
@@ -181,6 +181,27 @@ function render(data){
   el('result').hidden=false;el('followup').hidden=false;
   el('turncount').textContent='Ask a question or challenge the analysis. Recent context is retained.';
 }
+// This is an authenticated backend configuration check, not a Gemini model call.
+// It does not transmit the proposal or consume Gemini quota.
+async function checkConnection(){
+  if(state.busy)return;
+  const token=el('token').value.trim(),button=el('check-connection');
+  if(!token){status('Enter your private test access token to check the connection.',true);return}
+  button.disabled=true;status('Checking protected API connection…');
+  try{
+    const response=await fetch('./api/challenge',{method:'POST',cache:'no-store',credentials:'same-origin',
+      headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},
+      body:JSON.stringify({action:'diagnostic'})});
+    const contentType=response.headers.get('content-type')||'';
+    if(!contentType.includes('application/json'))
+      throw new Error('API returned a non-JSON response. Verify Vercel Authentication in this browser and reload the preview.');
+    const data=await response.json();
+    if(!response.ok)throw new Error('Backend HTTP '+response.status+': '+(data.error||'connection rejected'));
+    if(data.mode!=='diagnostic'||data.server!=='ready')throw new Error('Unexpected backend diagnostic response.');
+    status('Backend accessible and test token accepted. Gemini generation has NOT been tested.');
+  }catch(error){status(error.message||'Backend connection failed.',true)}
+  finally{button.disabled=false}
+}
 async function ask(follow){
   if(state.busy)return;
   const token=el('token').value.trim(),scenario=el('scenario').value.trim(),question=el('question').value.trim();
@@ -197,9 +218,13 @@ async function ask(follow){
     const resp=await fetch('./api/challenge',{method:'POST',cache:'no-store',credentials:'same-origin',
       headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},
       body:JSON.stringify({scenarioText:scenario,turns})});
+    const contentType=resp.headers.get('content-type')||'';
+    if(!contentType.includes('application/json'))
+      throw new Error('API returned a non-JSON response (HTTP '+resp.status+'). Sign in to Vercel in this browser and reload the preview.');
     const data=await resp.json().catch(()=>null);
     if(!resp.ok || !data || data.mode!=='live-model'){
-      throw new Error(data?.error||('Request failed ('+resp.status+'). Check the preview environment and access token.'));
+      throw new Error('HTTP '+resp.status+': '+(data?.error||'Backend returned an invalid response')+
+        (data?.code?' ['+data.code+']':''));
     }
     state.scenario=scenario;
     if(follow){
@@ -221,6 +246,7 @@ async function ask(follow){
   finally{busy(false)}
 }
 el('ask').addEventListener('click',()=>ask(false));
+el('check-connection').addEventListener('click',checkConnection);
 el('continue').addEventListener('click',()=>ask(true));
 el('example').addEventListener('click',()=>{el('scenario').value='Two AI agents agree that a pull request is low risk. Is that enough to allow automatic approval?';status('Fictional example loaded. Add your private test token, then challenge the design.')});
 el('reset').addEventListener('click',()=>{
