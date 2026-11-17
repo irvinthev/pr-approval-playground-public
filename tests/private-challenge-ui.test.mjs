@@ -107,3 +107,30 @@ test('initial judgment enters bounded untrusted conversation memory',()=>{
  assert.ok(r.length<=720);
  assert.match(source,/role:'assistant',content:compactAssistantSummary\(data\)/);
 });
+
+test('approved risk assessment and Safeguard Explorer replace stakeholder grid and standalone register',()=>{
+ for(const id of ['tab-assessment','tab-controls','view-assessment','view-controls','paired-risk-list',
+   'control-selector','control-inspector','control-risk-links','scenario-summary','scenario-unknowns']){
+   assert.match(source,new RegExp('id="'+id+'"'));
+ }
+ assert.match(source,/role="tablist"/);
+ assert.match(source,/function renderAssessmentModel\(data\)/);
+ assert.match(source,/function selectSafeguard\(id/);
+ assert.match(source,/function changeAssessmentView\(view/);
+ assert.match(source,/risk\.id/);
+ assert.match(source,/c\.riskIds\.includes\(r\.id\)/);
+ assert.match(source,/data\.safeguards/);
+ assert.match(source,/Implementation unverified/);
+ assert.match(source,/Not independently validated/);
+ assert.doesNotMatch(source,/Jon · Architecture|Greg · Delivery|Chase · Governance|Andrew · Assurance/);
+});
+test('two-view navigation and linked risk/control details are client-side only',()=>{
+ const viewSource=source.slice(source.indexOf('const assessmentView='),source.indexOf("el('tab-assessment').addEventListener"));
+ assert.doesNotMatch(viewSource,/fetch\(|XMLHttpRequest|localStorage|sessionStorage/);
+ assert.match(viewSource,/textContent=/);
+ assert.match(viewSource,/\\.scrollIntoView/);
+ assert.match(viewSource,/\\.setAttribute\('aria-selected'/);
+ assert.match(viewSource,/\\.setAttribute\('aria-pressed'/);
+ assert.match(source,/data\.risks\\|\\|\\[\\]/);
+ assert.match(source,/risks\\.length>0/);
+});
