@@ -204,7 +204,7 @@ async function checkChallengeAssessment(page, captureDecisionBrief) {
   await page.locator('.cdr-workspace-tab[data-view="failure"]').click();
   check(await page.locator('#cdr-preview .cdr-path').isVisible(),
     'Scenario failure path should appear in the selected view');
-  check(await page.locator('#cdr-preview .cdr-path-outcome').count()===4,
+  check(await page.locator('#cdr-preview .cdr-path-outcome-grid > .cdr-path-outcome').count()===4,
     'Selected stage should show good outcome, failure, safeguard and evidence');
   check(await page.locator('.cdr-path-strip .cdr-path-button').count()===3,
     'Only the three relevant delivery touchpoints should show by default');
