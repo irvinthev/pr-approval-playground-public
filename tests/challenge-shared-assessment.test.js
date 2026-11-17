@@ -7,14 +7,16 @@ const {spawnSync}=require('node:child_process');
 const root=path.resolve(__dirname,'..');
 const read=name=>fs.readFileSync(path.join(root,name),'utf8');
 
-test('shared assessment renders one decision and concise role gates, not separate lens tabs',()=>{
+test('shared assessment retains one decision, with three presentation tabs—not independent model conclusions',()=>{
   const renderer=read('challenge-connected-report-view.mjs');
   assert.match(renderer,/ONE SHARED ASSESSMENT/);
   assert.match(renderer,/Engineering decision/);
   assert.match(renderer,/What could change the recommendation/);
   assert.match(renderer,/Next consideration by role/);
   assert.match(renderer,/Compare the current path, proposal and simpler alternatives/);
-  assert.doesNotMatch(renderer,/cdr-tabs|role','tablist|appendView\(/);
+  assert.match(renderer,/role','tablist/);
+  assert.match(renderer,/root.append\(navigation,brief,safeguardPanel,failurePanel\)/);
+  assert.doesNotMatch(renderer,/appendView\(|fetch\(|innerHTML/);
 });
 
 test('implementation claims remain user-reported and never become verified by projection',()=>{

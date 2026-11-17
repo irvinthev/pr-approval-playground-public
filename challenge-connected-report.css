@@ -142,3 +142,48 @@
   .cdr-decision-output{gap:12px}
   .cdr-decision-section{padding:14px}
 }
+
+
+/* Scenario-aware engineering fieldwork presentation (three views). */
+.cdr-workspace-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;border-bottom:1px solid #406574;padding-bottom:7px}
+.cdr-workspace-tab{padding:12px 8px;text-align:center;color:#bed4dd;background:#102c3e;border:1px solid #3c6472;border-radius:8px;font-size:12px;font-weight:800;min-height:48px}
+.cdr-workspace-tab[aria-selected="true"]{border-color:#91d6df;background:#214758;color:#e4ffff;box-shadow:inset 0 -3px 0 #9addde}
+.cdr-workspace-tab:focus-visible,.cdr-failure-path .cdr-path-button:focus-visible{outline:2px solid #bdeefc;outline-offset:2px}
+.cdr-workspace-panel{display:grid;gap:14px;min-width:0}
+.cdr-workspace-panel[hidden]{display:none!important}
+.cdr-role-expand,.cdr-safeguard-tests,.cdr-path-teams{padding:13px 15px;border:1px solid #395e6e;border-radius:10px;background:#112d3e}
+.cdr-role-expand summary,.cdr-safeguard-tests summary,.cdr-path-teams summary{font-size:13px;font-weight:750;cursor:pointer;color:#bcefe3}
+.cdr-role-expand .cdr-role-section{margin-top:14px}
+.cdr-safeguard-tests .cdr-list{margin:12px 0 4px}
+.cdr-failure-path{padding:19px;border-color:#4b7281}
+.cdr-failure-path .cdr-path-failure{margin-bottom:7px}
+.cdr-failure-path .cdr-path-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));overflow:visible;gap:8px;margin-top:16px}
+.cdr-failure-path .cdr-path-button{min-height:88px;flex:auto;background:#132e3e;border-color:#456877;justify-content:center}
+.cdr-failure-path .cdr-path-button[aria-pressed="true"]{border:2px solid #9fcfea;background:#24485e;box-shadow:none}
+.cdr-failure-path .cdr-path-full-grid .cdr-path-button{min-height:72px}
+.cdr-failure-path .cdr-path-outcome-panel{border:1px solid #406678;background:#112d3e;padding:15px;border-radius:11px;margin-top:5px}
+.cdr-failure-path .cdr-path-outcome-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:11px}
+.cdr-failure-path .cdr-path-outcome{border:1px solid #476577;border-left:4px solid #80b4c3;border-radius:10px;background:#102637;padding:14px;min-width:0}
+.cdr-failure-path .cdr-path-outcome-title{display:block;font-size:13px;margin:0 0 8px;color:#cbe0e9}
+.cdr-failure-path .cdr-path-outcome p{color:#d7e8ee;margin:0;font-size:13px;line-height:1.6}
+.cdr-failure-path .cdr-path-outcome-good{background:#133a36;border-color:#5b9c82;border-left-color:#9fe2be}
+.cdr-failure-path .cdr-path-outcome-good .cdr-path-outcome-title{color:#c1f4d5}
+.cdr-failure-path .cdr-path-outcome-bad{background:#3b2930;border-color:#996772;border-left-color:#f3a0a5}
+.cdr-failure-path .cdr-path-outcome-bad .cdr-path-outcome-title{color:#ffd1d0}
+.cdr-failure-path .cdr-path-outcome-safeguard{background:#133547;border-left-color:#7abce7}
+.cdr-failure-path .cdr-path-outcome-evidence{background:#13303f;border-left-color:#b8cbdc}
+.cdr-failure-path .cdr-path-event-note{color:#b8cbd2;font-size:11px;margin:13px 0 9px}
+.cdr-failure-path .cdr-path-unmapped-note{font-size:13px;line-height:1.6;color:#d8e5e9;padding:13px;background:#1d3544;border:1px dashed #54788b;border-radius:10px}
+.cdr-path-teams{margin-top:12px}
+.cdr-path-team-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:12px}
+.cdr-path-teams .cdr-path-outcome-team{padding:11px}
+.cdr-path-teams .cdr-path-outcome-team p{font-size:12px}
+.cdr-failure-path .cdr-path-caveat{margin:9px 0 0}
+@media(max-width:700px){
+ .cdr-failure-path .cdr-path-outcome-grid{grid-template-columns:1fr}
+ .cdr-path-team-grid{grid-template-columns:1fr}
+ .cdr-failure-path .cdr-path-steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .cdr-workspace-tabs{gap:4px}
+ .cdr-workspace-tab{padding:10px 3px;font-size:11px}
+ .cdr-failure-path{padding:13px}
+}

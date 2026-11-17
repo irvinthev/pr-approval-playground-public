@@ -189,29 +189,35 @@ async function checkChallengeAssessment(page, captureDecisionBrief) {
     'Evidence limitation must be visible in the decision summary');
   check(await page.locator('#cdr-preview .cdr-option-card').count()===3,
     'Compare the baseline, proposed approach and simpler alternative');
+  await page.locator('.cdr-workspace-tab[data-view="safeguards"]').click();
   check(await page.locator('#cdr-preview .cdr-safeguard-entry').count()>=3,
     'Safeguards should display shared status and basis');
+  check(await page.locator('#cdr-preview .cdr-safeguard-entry').first().isVisible(),
+    'Engineering Safeguards should show the shared safeguards');
+  await page.locator('.cdr-workspace-tab[data-view="brief"]').click();
   check(await page.locator('#cdr-preview .cdr-role-row').count()===3,
     'Engineering, Risk and Assurance should be concise next considerations');
-  check(await page.locator('#cdr-preview .cdr-tab').count()===0,
-    'No duplicate audience tab layer should be rendered');
+  check(await page.locator('#cdr-preview .cdr-workspace-tab').count()===3,
+    'One assessment has three focused presentation views');
   check(await page.locator('#cdr-preview .cdr-answer-button').isVisible(),
     'Clarification questions should remain reachable directly from the summary');
-  await page.locator('.cdr-supporting > summary').click();
+  await page.locator('.cdr-workspace-tab[data-view="failure"]').click();
   check(await page.locator('#cdr-preview .cdr-path').isVisible(),
-    'Scenario risk path remains available in supporting detail');
+    'Scenario failure path should appear in the selected view');
+  check(await page.locator('#cdr-preview .cdr-path-outcome-grid > .cdr-path-outcome').count()===4,
+    'Selected stage should show good outcome, failure, safeguard and evidence');
   check(await page.locator('.cdr-path-strip .cdr-path-button').count()===3,
     'Only the three relevant delivery touchpoints should show by default');
-  check((await page.locator('.cdr-path-detail').innerText()).includes('Agent submission is not rebound'),
+  check((await page.locator('.cdr-path-outcome-panel').innerText()).includes('Agent submission is not rebound'),
     'The initial stage should explain where the failure originates');
   await page.locator('.cdr-path-strip .cdr-path-button[data-path-stage="merge"]').click();
-  check((await page.locator('.cdr-path-detail').innerText()).includes('Block merges when review'),
+  check((await page.locator('.cdr-path-outcome-panel').innerText()).includes('Block merges when review'),
     'The downstream stage must explain the possible stopping mechanism');
   await page.locator('.cdr-path-full summary').click();
   check(await page.locator('.cdr-path-full-grid .cdr-path-button').count()===8,
     'The full Field Guide delivery lifecycle should remain available on demand');
   await page.locator('.cdr-path-full-grid .cdr-path-button[data-path-stage="ai-review"]').click();
-  check((await page.locator('.cdr-path-detail').innerText()).includes('not evidence that the stage has no risk'),
+  check((await page.locator('.cdr-path-outcome-panel').innerText()).includes('does not mean the stage is safe or controlled'),
     'Unmapped stages must not be represented as risk-free');
   await page.locator('.cdr-path-full summary').click();
   await page.waitForFunction(() =>
@@ -219,6 +225,8 @@ async function checkChallengeAssessment(page, captureDecisionBrief) {
       ?.getAttribute('aria-pressed')==='true',{timeout:3000});
   check(await page.locator('.cdr-path-full').evaluate(node=>!node.open),
     'The expanded lifecycle should be closed after restoration');
+  await page.locator('.cdr-workspace-tab[data-view="brief"]').click();
+  await page.locator('.cdr-supporting > summary').click();
   check(await page.locator('#cdr-preview .cdr-recon').isVisible(),
     'Human-delegated PR case must retain the reconciliation question');
   check((await page.locator('#cdr-preview .cdr-recon').innerText()).includes('Unknown'),

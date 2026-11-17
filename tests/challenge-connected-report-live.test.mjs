@@ -71,7 +71,9 @@ test('live report is opt-in reversible and retains current API and clarification
   assert.match(view,/projectConnectedReport\(response,scenarioText\)/);
   assert.match(view,/Next consideration by role/);
   assert.match(view,/What could change the recommendation/);
-  assert.doesNotMatch(view,/setAttribute\('role','tablist'\)/);
+  assert.match(view,/setAttribute\('role','tablist'\)/);
+  assert.match(view,/activate\('brief'\)/);
+  assert.match(view,/panel.hidden=!active/);
   assert.doesNotMatch(view,/\bfetch\s*\(|XMLHttpRequest|innerHTML|localStorage/);
 });
 test('new view contains neutral audience terminology',()=>{

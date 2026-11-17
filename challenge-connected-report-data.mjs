@@ -50,7 +50,9 @@ export function projectRiskPath(value){
       id:entry.stageId,label:stages[last].label,
       roles:entry.roles.map(id=>({id,label:riskPathRoles[id]})),
       event:words(entry.event,250),interruption:words(entry.interruption,250),
-      evidence:words(entry.evidence,250)
+      evidence:words(entry.evidence,250),
+      goodOutcome:words(entry.goodOutcome,250),
+      failureOutcome:words(entry.failureOutcome,250)
     });
   }
   if(!hasOrigin||!hasConsequence||!words(value.failure))return null;

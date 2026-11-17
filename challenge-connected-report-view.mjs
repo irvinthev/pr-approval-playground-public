@@ -63,30 +63,37 @@ function card(parent,title,body,className='cdr-card'){
 }
 // Compact causal trace: select only consequential stages first, optionally
 // expand all canonical touchpoints. Selection is local; no API/model calls.
+// Illustrative good/failure contrast is not an observed test result.
+// New model outputs may include explicit outcomes; older assessments use
+// qualified fallbacks from the same validated causal trace.
 function renderRiskPath(project,container){
   const path=project.riskPath;
   if(!path)return;
-  const section=el('section','cdr-path');
-  section.setAttribute('aria-label','Scenario risk path');
-  append(section,el('span','cdr-kicker','SCENARIO RISK PATH · PROPOSED'),
-    el('h3','','Where does the failure occur?'));
+  const section=el('section','cdr-path cdr-failure-path');
+  section.setAttribute('aria-label','Scenario failure path');
+  append(section,
+    el('span','cdr-kicker','FAILURE PATH · PROPOSED'),
+    el('h3','','Where should the system stop this failure?'));
   addText(section,'cdr-path-failure',path.failure);
-  const intro=el('p','cdr-mini','Select a stage to see the failure condition, possible stopping point and evidence to investigate.');
-  section.append(intro);
+  addText(section,'cdr-mini','Compare expected safe behavior with an illustrative failure. Selecting a stage does not establish that a safeguard exists or has been tested.');
 
-  const buttons=[],selected=path.steps;
-  const strip=el('div','cdr-path-strip');
+  const selected=path.steps,buttons=[];
+  const strip=el('div','cdr-path-strip cdr-path-steps');
   strip.setAttribute('role','group');
-  strip.setAttribute('aria-label','Relevant scenario stages');
-  strip.tabIndex=0;
-  const detail=el('div','cdr-path-detail');
+  strip.setAttribute('aria-label','Scenario pipeline stages');
+  const detail=el('div','cdr-path-outcome-panel');
+  detail.id='cdr-path-selected-detail';
   detail.setAttribute('role','region');
   detail.setAttribute('aria-live','polite');
-  detail.id='cdr-path-selected-detail';
-
-  let activeStageId=null;
+  let current=null;
+  function outcomeCard(title,description,kind){
+    const panel=el('div','cdr-path-outcome cdr-path-outcome-'+kind);
+    panel.append(el('strong','cdr-path-outcome-title',title),
+      el('p','',description));
+    return panel;
+  }
   function select(stageId){
-    activeStageId=stageId;
+    current=stageId;
     for(const button of buttons){
       const active=button.dataset.pathStage===stageId;
       button.setAttribute('aria-pressed',String(active));
@@ -95,17 +102,29 @@ function renderRiskPath(project,container){
     const mapped=selected.find(x=>x.id===stageId);
     const stage=path.stages.find(x=>x.id===stageId);
     detail.replaceChildren();
-    append(detail,el('span','cdr-kicker',stage?.label||'Lifecycle stage'));
+    append(detail,el('span','cdr-kicker','SELECTED STAGE · '+(stage?.label||'Lifecycle stage')));
     if(!mapped){
-      addText(detail,'cdr-mini','No specific causal point was mapped to this stage. This is not evidence that the stage has no risk.');
+      addText(detail,'cdr-path-unmapped-note','No specific causal point was mapped to this stage. This does not mean the stage is safe or controlled.');
       return;
     }
-    const labels=el('div','cdr-path-roles');
-    for(const role of mapped.roles)labels.append(el('span','cdr-path-role cdr-path-role-'+role.id,role.label));
-    detail.append(labels);
-    addText(detail,'cdr-path-event',mapped.event);
-    if(mapped.interruption)addText(detail,'cdr-mini','Potential interruption: '+mapped.interruption);
-    addText(detail,'cdr-mini','Evidence to investigate: '+mapped.evidence);
+    const cells=el('div','cdr-path-outcome-grid');
+    const good=mapped.goodOutcome||
+      (mapped.interruption?
+        'If the proposed stopping point works: '+mapped.interruption:
+        'No stage-specific safe outcome was supplied. Establish expected behavior before relying on this stage.');
+    const failure=mapped.failureOutcome||
+      'If this condition is not contained: '+mapped.event+
+        ' The wider scenario could lead to: '+path.failure;
+    cells.append(
+      outcomeCard('What good looks like',good,'good'),
+      outcomeCard('What failure looks like',failure,'bad'),
+      outcomeCard('What should prevent or detect it',
+        mapped.interruption||'No specific interruption was supplied for this stage. That is an assessment gap, not proof that no safeguard exists.','safeguard'),
+      outcomeCard('How we would know',mapped.evidence,'evidence')
+    );
+    detail.append(cells);
+    const source=el('p','cdr-path-event-note','Causal condition: '+mapped.event);
+    detail.append(source);
     addFieldGuideContext(detail,path.pathway,stageId);
   }
   function stageButton(stage,collection){
@@ -117,9 +136,9 @@ function renderRiskPath(project,container){
     append(button,el('strong','',stage.label));
     const mapped=selected.find(x=>x.id===stage.id);
     if(mapped){
-      const badges=el('span','cdr-path-mini-roles');
-      for(const role of mapped.roles)badges.append(el('i','cdr-path-dot cdr-path-dot-'+role.id));
-      button.append(badges);
+      const roles=el('span','cdr-path-mini-roles');
+      for(const role of mapped.roles)roles.append(el('i','cdr-path-dot cdr-path-dot-'+role.id));
+      button.append(roles);
     }else button.classList.add('cdr-path-unmapped');
     button.addEventListener('click',()=>select(stage.id));
     collection.append(button);buttons.push(button);
@@ -127,20 +146,35 @@ function renderRiskPath(project,container){
   for(const stage of selected)stageButton(stage,strip);
   section.append(strip,detail);
   const all=el('details','cdr-path-full');
-  all.append(el('summary','','Show all '+path.stages.length+' lifecycle touchpoints'));
+  all.append(el('summary','','Explore all '+path.stages.length+' lifecycle touchpoints'));
   const grid=el('div','cdr-path-full-grid');
   for(const stage of path.stages)stageButton(stage,grid);
   all.append(grid);
   all.addEventListener('toggle',()=>{
-    if(!all.open&&!selected.some(x=>x.id===activeStageId))
+    if(!all.open&&!selected.some(x=>x.id===current))
       select(selected.find(x=>x.roles.some(role=>role.id==='origin'))?.id||selected[0].id);
   });
-  addText(all,'cdr-mini','Unmapped does not mean risk-free. These are illustrative touchpoints, not a required workflow.');
+  addText(all,'cdr-mini','An unmapped stage is neither verified safe nor necessarily in scope. The path is a model-generated hypothesis.');
   section.append(all);
+
+  const teamDetails=el('details','cdr-path-teams');
+  teamDetails.append(el('summary','','What Engineering, Risk/GRC and IA should examine'));
+  const actions=el('div','cdr-path-team-grid');
+  for(const [role,label] of [
+    ['engineering','Engineering'],['risk','Risk & GRC'],
+    ['assurance','Independent assurance']
+  ]){
+    const action=project.perspectives?.[role]?.action;
+    if(action)actions.append(outcomeCard(label,action,'team'));
+  }
+  if(actions.childElementCount)teamDetails.append(actions);
+  else teamDetails.append(el('p','cdr-mini','No role-specific actions were returned.'));
+  section.append(teamDetails);
   addText(section,'cdr-path-caveat',path.uncertainty?
     'Mapping uncertainty: '+path.uncertainty:
-    'This is a proposed failure path; implementation and safeguards have not been verified.');
-  addText(section,'cdr-path-caveat','This trace is model interpretation, not an observation of actual system behavior or proof that safeguards exist.');
+    'Stage mapping is illustrative; actual system configuration has not been inspected.');
+  addText(section,'cdr-path-caveat',
+    'Green and red describe hypothetical outcomes—not observed control performance. Blue identifies the selected stage.');
   container.append(section);
   select(selected.find(x=>x.roles.some(role=>role.id==='origin'))?.id||selected[0].id);
 }
@@ -341,7 +375,6 @@ export function renderConnectedReport(target,response,scenarioText=''){
     details.append(el('h3','','Potential experiments (not evidence of execution)'),
       bulletList(project.experiments,5));
   }
-  if(project.riskPath)renderRiskPath(project,details);
   renderShared(project,details);
   more.append(details);
   root.append(more);
@@ -356,6 +389,61 @@ export function renderConnectedReport(target,response,scenarioText=''){
   for(const message of project.advisoryWarnings)addText(root,'cdr-source-limit',message);
   root.append(el('p','cdr-foot',
     'These role-specific next considerations are generated from the same assessment. They do not constitute separate risk acceptance or an independent assurance opinion.'));
+  // Preserve all existing analysis; move it into focused presentation tabs.
+  const brief=el('section','cdr-workspace-panel');
+  const safeguardPanel=el('section','cdr-workspace-panel');
+  const failurePanel=el('section','cdr-workspace-panel');
+  brief.id='cdr-workspace-brief';
+  safeguardPanel.id='cdr-workspace-safeguards';
+  failurePanel.id='cdr-workspace-failure';
+  for(const node of [...root.children]){
+    if(node===safeguards)safeguardPanel.append(node);
+    else if(node===roles){
+      const disclosure=el('details','cdr-role-expand');
+      disclosure.append(el('summary','','What each team should examine'),node);
+      brief.append(disclosure);
+    }else brief.append(node);
+  }
+  if(project.experiments.length){
+    const experiments=el('details','cdr-safeguard-tests');
+    experiments.append(el('summary','','Suggested technical experiments (not executed)'));
+    experiments.append(bulletList(project.experiments,5));
+    safeguardPanel.append(experiments);
+  }
+  if(project.riskPath)renderRiskPath(project,failurePanel);
+  else failurePanel.append(
+    el('p','cdr-path-unmapped-note',
+      'No defensible scenario failure path was returned. The model did not identify enough reliable stage context; this is not evidence that the proposal has no risk.'));
+  const navigation=el('div','cdr-workspace-tabs');
+  navigation.setAttribute('role','tablist');
+  navigation.setAttribute('aria-label','Challenge Lab assessment views');
+  const panels=[
+    ['brief','Decision Brief',brief],
+    ['safeguards','Engineering Safeguards',safeguardPanel],
+    ['failure','Failure Path',failurePanel]
+  ];
+  function activate(name){
+    for(const [id,,panel] of panels){
+      const active=id===name;
+      panel.hidden=!active;
+      navigation.querySelector('[data-view="'+id+'"]')?.setAttribute('aria-selected',String(active));
+    }
+  }
+  for(const [id,label,panel] of panels){
+    panel.setAttribute('role','tabpanel');
+    panel.setAttribute('aria-labelledby','cdr-tab-'+id);
+    const tab=el('button','cdr-workspace-tab',label);
+    tab.id='cdr-tab-'+id;
+    tab.type='button';
+    tab.dataset.view=id;
+    tab.setAttribute('role','tab');
+    tab.setAttribute('aria-controls',panel.id);
+    tab.setAttribute('aria-selected','false');
+    tab.addEventListener('click',()=>activate(id));
+    navigation.append(tab);
+  }
+  root.append(navigation,brief,safeguardPanel,failurePanel);
+  activate('brief');
   target.replaceChildren(root);
   return true;
 }
