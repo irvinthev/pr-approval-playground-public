@@ -44,9 +44,11 @@ test('Gemini request uses bounded JSON output, system instructions and a single 
 
 test('only explicitly supported free-tier Gemini models can be selected',()=>withEnv(async()=>{
   delete process.env.GEMINI_MODEL;
-  assert.equal(selectedModel(),'gemini-2.5-flash');
-  process.env.GEMINI_MODEL='gemini-2.5-flash-lite';
-  assert.equal(selectedModel(),'gemini-2.5-flash-lite');
+  assert.equal(selectedModel(),'gemini-3.5-flash-lite');
+  process.env.GEMINI_MODEL='gemini-3.8-flash';
+  assert.equal(selectedModel(),'gemini-3.8-flash');
+  process.env.GEMINI_MODEL='gemini-2.5-flash';
+  assert.equal(selectedModel(),null);
   process.env.GEMINI_MODEL='gemini-pro-paid-custom';
   assert.equal(selectedModel(),null);
 }));
@@ -107,7 +109,7 @@ test('valid Gemini response returns a bounded evidence-unverified interpretation
   assert.equal(res.body.mode,'live-model');
   assert.equal(res.body.assessments[0].assessmentStatus,'not-assessed');
   assert.equal(res.body.provenance.decisionStatus,'no-approval-or-certification');
-  assert.equal(seen.url,'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent');
+  assert.equal(seen.url,'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent');
   assert.equal(seen.options.headers['x-goog-api-key'],'test-provider-key');
   assert.equal(seen.options.headers.Authorization,undefined);
   assert.equal(JSON.parse(seen.options.body).generationConfig.responseMimeType,'application/json');
