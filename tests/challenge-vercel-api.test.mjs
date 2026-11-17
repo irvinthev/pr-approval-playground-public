@@ -147,3 +147,45 @@ test('truncated Gemini output fails closed and never fabricates a valid interpre
   assert.equal(res.statusCode,502);
   assert.match(res.body.error,/interrupted or incomplete/);
 }));
+
+test('authorized connection diagnostic does not call Gemini or consume provider quota',()=>withEnv(async()=>{
+  process.env.CHALLENGE_API_TOKEN='test-access';
+  process.env.GEMINI_API_KEY='test-provider-key';
+  let calls=0;globalThis.fetch=async()=>{calls++;throw Error('Provider should not be called');};
+  const res=mockRes();
+  await handler({method:'POST',headers:{authorization:'Bearer test-access'},body:{action:'diagnostic'}},res);
+  assert.equal(res.statusCode,200);
+  assert.equal(res.body.mode,'diagnostic');
+  assert.equal(res.body.server,'ready');
+  assert.match(res.body.note,/NOT|not tested|not/i);
+  assert.equal(calls,0);
+  assert.doesNotMatch(JSON.stringify(res.body),/test-provider-key|test-access/);
+}));
+test('unauthenticated connection diagnostic remains forbidden',()=>withEnv(async()=>{
+  process.env.CHALLENGE_API_TOKEN='test-access';
+  process.env.GEMINI_API_KEY='test-provider-key';
+  const res=mockRes();
+  await handler({method:'POST',headers:{authorization:'Bearer invalid'},body:{action:'diagnostic'}},res);
+  assert.equal(res.statusCode,401);
+  assert.equal(res.body.code,'AUTH_TOKEN_INVALID');
+}));
+test('Gemini invalid request gets a bounded diagnostic code without provider error body',()=>withEnv(async()=>{
+  process.env.CHALLENGE_API_TOKEN='test-access';
+  process.env.GEMINI_API_KEY='test-provider-key';
+  globalThis.fetch=async()=>({ok:false,status:400,text:async()=>JSON.stringify({sensitive:'DO NOT LOG'})});
+  const res=mockRes();
+  await handler({method:'POST',headers:{authorization:'Bearer test-access'},body:{scenarioText:'A PR'}},res);
+  assert.equal(res.statusCode,502);
+  assert.equal(res.body.code,'GEMINI_REQUEST_INVALID');
+  assert.doesNotMatch(JSON.stringify(res.body),/DO NOT LOG|test-provider-key/);
+}));
+test('Gemini network and timeout errors have distinct safe codes',()=>withEnv(async()=>{
+  process.env.CHALLENGE_API_TOKEN='test-access';
+  process.env.GEMINI_API_KEY='test-provider-key';
+  globalThis.fetch=async()=>{throw Error('UNSAFE SECRET');};
+  const res=mockRes();
+  await handler({method:'POST',headers:{authorization:'Bearer test-access'},body:{scenarioText:'A PR'}},res);
+  assert.equal(res.statusCode,502);
+  assert.equal(res.body.code,'GEMINI_NETWORK_ERROR');
+  assert.doesNotMatch(JSON.stringify(res.body),/UNSAFE SECRET/);
+}));
