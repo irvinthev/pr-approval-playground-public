@@ -47,7 +47,9 @@ function validateSafeguardItem(item,riskCount){
  const limits=[120,320,330,430,340,360,360,330];
  const obj={};
  for(let i=0;i<fields.length;i++)obj[fields[i]]=maxLength(item[fields[i]],limits[i]);
- if(fields.some(field=>!obj[field]))return null;
+ // An absent technical detail remains explicitly unknown in the UI, rather
+ // than rejecting an otherwise useful model response or inventing enforcement.
+ if(!obj.name || !obj.why)return null;
  const indices=item.riskIndexes;
  if(!Array.isArray(indices)||!indices.length||indices.length>riskCount ||
     indices.some(n=>!Number.isInteger(n)||n<1||n>riskCount)||new Set(indices).size!==indices.length)return null;
