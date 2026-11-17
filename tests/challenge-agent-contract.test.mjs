@@ -109,3 +109,13 @@ test('mapped safeguards reject nonexistent, duplicate, and forged risk relations
  assert.equal(partial.ok,false);
  assert.ok(partial.errors.some(e=>e.includes('together')));
 });
+test('missing optional technical explanations remain explicit unknowns, not invented controls',()=>{
+ const r=validateAgentResponse({...good,
+   risks:[{title:'Stale PR',category:'Change integrity',trigger:'Head SHA changes',impact:'Unreviewed code could merge'}],
+   safeguards:[{name:'Revision bound authorization',why:'Makes approvals revision specific',riskIndexes:[1]}]
+ },{scenarioText:scenario});
+ assert.equal(r.ok,true,JSON.stringify(r.errors));
+ assert.equal(r.data.safeguards[0].enforcement,'');
+ assert.equal(r.data.safeguards[0].proof,'');
+ assert.equal(r.data.safeguards[0].id,'C-01');
+});
