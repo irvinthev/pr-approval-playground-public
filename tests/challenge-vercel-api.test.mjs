@@ -202,3 +202,13 @@ test('model prompt requests a decisive architecture judgment and alternative bef
  assert.match(p,/single unanswered architectural or implementation question/);
  assert.match(p,/not a compliance verdict or approval/);
 });
+
+test('Gemini is requested to provide linked engineering and security risk/safeguard structures',()=>{
+ const system=buildModelRequest({scenarioText:'AI agents approve PRs',turns:[]}).systemInstruction.parts[0].text;
+ assert.match(system,/Provide risks: 3-4 material items/);
+ assert.match(system,/Provide safeguards: 3-5 unique technically meaningful items/);
+ assert.match(system,/riskIndexes refers to 1-based ordinal positions/);
+ assert.match(system,/software security, engineering quality, authority/);
+ assert.match(system,/one safeguard may address multiple risks/);
+ assert.match(system,/PROPOSED expectations/);
+});
