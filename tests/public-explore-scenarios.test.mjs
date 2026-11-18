@@ -11,7 +11,8 @@ const home=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
 test('three distinct, completely fictional assessments contain complete engineering views',()=>{
   assert.deepEqual(Object.keys(scenarioCases),['routing','substitution','agent']);
   for(const [id,scenario] of Object.entries(scenarioCases)){
-    for(const field of ['number','category','title','description','authority','assumption',
+    assert.match(scenario.number,/^0[1-3]$/);
+    for(const field of ['category','title','description','authority','assumption',
       'decision','why','pivot','current','proposed','alternative','counterargument','failureQuestion'])
       assert.ok(typeof scenario[field]==='string'&&scenario[field].length>12,id+': '+field);
     assert.equal(scenario.risks.length,3,id+': risk count');
