@@ -328,7 +328,7 @@ function publisherLink(parent,urlText,label){
 function renderReference(parent,ref,{inSafeguard=false}={}){
   const box=add('div',parent,'','citation');
   add('strong',box,ref.title||ref.id);
-  if(!inSafeguard)add('p',box,ref.modelUsed?'Selected by Gemini':'Provided as context','small');
+  if(!inSafeguard)add('p',box,ref.modelUsed?'Referenced in Gemini output':'Provided to Gemini (not referenced)','small');
   list(box,ref.facts);
   if(ref.limits)add('p',box,ref.limits,'small');
   if(!inSafeguard && ref.reviewedAsOf)add('p',box,'Summary reviewed '+ref.reviewedAsOf,'small');
@@ -447,6 +447,7 @@ function renderAssessmentReport(data){
   el('report-model-examples').hidden=!prTopic;
   for(const id of ['report-more-safeguards','report-more-risks','report-reasoning',
     'report-context','report-model-examples','report-sources-details'])el(id).open=false;
+  add('p',sources,'A model-returned source ID shows attribution in its output, not live retrieval, independent verification, or proof of implemented settings.','small');
   for(const ref of data.engineeringReferences)renderReference(sources,ref);
   const provisions=new Set();
   for(const conclusion of data.conclusions){
