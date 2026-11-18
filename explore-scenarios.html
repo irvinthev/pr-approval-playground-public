@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Explore three fictional engineering proposals through decision briefs, safeguard assessments and interactive failure paths. No AI calls or user submissions.">
+<meta name="color-scheme" content="dark">
+<title>Explore Engineering Scenarios | AI-Enabled SDLC Field Guide</title>
+<link rel="stylesheet" href="./explore-scenarios.css">
+<script type="module" src="./explore-scenarios.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to assessment</a>
+<header class="site-header">
+  <div class="site-header-inner">
+    <a class="brand" href="./index.html#page-lab"><span class="brand-mark">◈</span><span>AI-Enabled SDLC <small>FIELD GUIDE / CHALLENGE LAB</small></span></a>
+    <nav aria-label="Site navigation" class="header-nav">
+      <a href="./index.html">Overview</a>
+      <a href="./index.html#page-lab">Challenge Lab</a>
+      <span aria-current="page" class="current-section">Explore Scenarios</span>
+    </nav>
+  </div>
+</header>
+<div class="workspace">
+  <aside class="scenario-sidebar" aria-label="Choose a fictional scenario">
+    <div class="sidebar-intro">
+      <p class="eyebrow">Explore examples</p>
+      <h2>Choose a scenario</h2>
+      <p>Three fictional engineering decisions. Different authority, different consequences.</p>
+    </div>
+    <div class="scenario-list" role="group" aria-label="Available scenarios">
+      <button type="button" class="scenario-choice" data-case="routing" aria-pressed="true">
+        <span class="scenario-index">01 / WORKFLOW</span>
+        <strong>Automated PR routing</strong>
+        <span>Assign reviewers; preserve merge rules</span>
+      </button>
+      <button type="button" class="scenario-choice" data-case="substitution" aria-pressed="false">
+        <span class="scenario-index">02 / AUTHORITY</span>
+        <strong>Manager-only approval</strong>
+        <span>Replace specialist approval for eligible PRs</span>
+      </button>
+      <button type="button" class="scenario-choice" data-case="agent" aria-pressed="false">
+        <span class="scenario-index">03 / AGENTIC EXECUTION</span>
+        <strong>Agent-submitted approval</strong>
+        <span>Human decides; agent records approval</span>
+      </button>
+    </div>
+    <div class="sidebar-note">
+      <strong>Curated, not generated</strong>
+      <p>Every answer is prewritten and illustrative. Nothing here calls Gemini, accesses GitHub repositories, or changes production systems.</p>
+    </div>
+  </aside>
+  <main id="main" tabindex="-1" class="main-content">
+    <div class="page-heading">
+      <p class="eyebrow">Public Challenge Lab / Explore Engineering Scenarios</p>
+      <h1>Challenge the design.<br><span>Understand the tradeoffs.</span></h1>
+      <p>Compare how engineering proposals affect decision authority, technical enforcement and failure recovery. Select a scenario, then follow the same assessment across three views.</p>
+    </div>
+
+    <section class="scenario-hero" aria-labelledby="scenario-title">
+      <div class="scenario-hero-top">
+        <span class="pill">FICTIONAL CASE <span id="case-number">01</span></span>
+        <span class="scenario-kind" id="case-category">Workflow improvement</span>
+      </div>
+      <h2 id="scenario-title">Automated PR routing</h2>
+      <p id="scenario-description">A service assigns low-risk PRs to managers while preserving required technical approvals.</p>
+      <div class="scenario-facts">
+        <div><span class="fact-label">Proposed authority</span><strong id="case-authority">Reviewer assignment only</strong></div>
+        <div><span class="fact-label">Architecture assumption</span><strong id="case-assumption">Existing merge requirements remain in effect</strong></div>
+      </div>
+    </section>
+
+    <div class="assessment-tabs" role="tablist" aria-label="Assessment views">
+      <button type="button" role="tab" id="tab-brief" aria-controls="view-brief" aria-selected="true" tabindex="0" data-view="brief">Decision Brief</button>
+      <button type="button" role="tab" id="tab-safeguards" aria-controls="view-safeguards" aria-selected="false" tabindex="-1" data-view="safeguards">Engineering Safeguards</button>
+      <button type="button" role="tab" id="tab-failure" aria-controls="view-failure" aria-selected="false" tabindex="-1" data-view="failure">Failure Path</button>
+    </div>
+
+    <section class="view-panel" id="view-brief" role="tabpanel" aria-labelledby="tab-brief">
+      <div class="section-heading"><p class="eyebrow">01 / Engineering Decision Brief</p><h2>Would we pursue this design?</h2></div>
+      <div class="decision-lead">
+        <div class="recommendation"><span class="field-label">RECOMMENDATION · CONDITIONAL</span><h3 id="decision-title"></h3><p id="decision-why"></p></div>
+        <div class="decision-pivot"><span class="field-label">WHAT COULD CHANGE THE ANSWER?</span><p id="decision-pivot"></p></div>
+      </div>
+      <div class="section-heading compact"><h3>What could realistically go wrong?</h3><p>Choose a risk to inspect the safeguard in the next view.</p></div>
+      <div id="risk-list" class="risk-list"></div>
+      <div class="section-heading compact"><h3>Compare the architectures</h3></div>
+      <div class="comparison-grid">
+        <article><span class="field-label">CURRENT PROCESS</span><p id="option-current"></p></article>
+        <article><span class="field-label">PROPOSED CHANGE</span><p id="option-proposed"></p></article>
+        <article><span class="field-label">SIMPLER ALTERNATIVE</span><p id="option-alternative"></p></article>
+      </div>
+      <details class="supporting-disclosure"><summary>Strongest counterargument</summary><p id="decision-counterargument"></p></details>
+    </section>
+
+    <section class="view-panel" id="view-safeguards" role="tabpanel" aria-labelledby="tab-safeguards" hidden>
+      <div class="section-heading"><p class="eyebrow">02 / Engineering Safeguard Assessment</p><h2>What must the system actually enforce?</h2><p>Each safeguard is an expected behavior, not evidence of an implemented control.</p></div>
+      <div class="implementation-note"><span class="dot-unknown"></span><span><strong>Implementation status: Not assessed.</strong> This fictional example has no live system configuration or test results.</span></div>
+      <div id="safeguard-list" class="safeguard-list"></div>
+    </section>
+
+    <section class="view-panel" id="view-failure" role="tabpanel" aria-labelledby="tab-failure" hidden>
+      <div class="section-heading"><p class="eyebrow">03 / Failure Path · Hypothetical</p><h2>Where should the system stop the failure?</h2><p id="failure-question"></p></div>
+      <div class="stage-strip" id="stage-strip" role="group" aria-label="Choose a pipeline stage"></div>
+      <section class="stage-panel" aria-label="Selected stage outcomes">
+        <div class="stage-panel-heading"><span class="eyebrow">SELECTED STAGE</span><h3 id="stage-title"></h3><p id="stage-condition"></p></div>
+        <div class="outcome-grid">
+          <article class="outcome-card good"><span class="outcome-label">✓ WHAT GOOD LOOKS LIKE</span><p id="outcome-good"></p></article>
+          <article class="outcome-card bad"><span class="outcome-label">! WHAT FAILURE LOOKS LIKE</span><p id="outcome-bad"></p></article>
+          <article class="outcome-card stop"><span class="outcome-label">◇ WHAT SHOULD PREVENT OR DETECT IT</span><p id="outcome-safeguard"></p></article>
+          <article class="outcome-card evidence"><span class="outcome-label">◎ HOW WE WOULD KNOW</span><p id="outcome-evidence"></p></article>
+        </div>
+        <p class="path-limit">Green and red are hypothetical outcomes, not actual pass/fail test results. Blue indicates the selected stage.</p>
+      </section>
+      <details class="supporting-disclosure" id="teams-disclosure"><summary>Questions for Engineering, Risk and Assurance</summary><div id="team-questions" class="team-questions"></div></details>
+    </section>
+
+    <footer class="page-footer">
+      <strong>Educational example · no live assessment</strong>
+      <p>These are deliberately fictional and simplified proposals. No implementation was inspected, no safeguard was verified, and no risk decision was authorized. For reference material, visit the <a href="./engineering-blueprint.html">Engineering &amp; Safeguards</a>, <a href="./ai-sdlc-risk.html">Risk &amp; Governance</a>, and <a href="./independent-assurance.html">Assurance</a> chapters.</p>
+      <p><a href="./index.html#page-lab">← Return to the Field Guide Challenge Lab</a></p>
+    </footer>
+  </main>
+</div>
+<noscript><p class="noscript">This curated explorer requires JavaScript to switch fictional scenarios and assessment views. No external API is called.</p></noscript>
+</body>
+</html>
