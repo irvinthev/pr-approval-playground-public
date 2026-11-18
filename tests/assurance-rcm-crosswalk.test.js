@@ -30,7 +30,7 @@ test('six-domain assurance explorer reuses one crosswalk, shows cross-cutting ch
  for(const id of ['ace-picker','ace-selected','ace-rcm-crosswalk','ace-rcm-list','ace-crosscut-cards','ace-progress','prelaunch-validation'])
   assert.ok(html.includes('id="'+id+'"'),id);
  assert.match(html,/crosswalk\.domains\[d\.key\]/);
- assert.match(html,/a\.href='\.\/rcm-view\.html#control-'\+id/);
+ assert.match(html,/a\.href='\.\/rcm-view\.html#safeguard-SG-'\+id\.slice\(-2\)/);
  assert.match(html,/\['Change Management','change'\]/);
  assert.match(html,/\['Testing & Validation','testing'\]/);
  assert.match(html,/\['Operating Effectiveness','operation'\]/);
