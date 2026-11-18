@@ -7,7 +7,7 @@ function buildRows(controls, inventory){
  const rows=controls.map(c=>{
   const qualified='WEB15:'+c.id;
   const related=inventory.workbookControls.filter(w=>w.webIds.includes(qualified)).map(w=>w.id);
-  return [c.domain,c.engineeringArea||'Not mapped',c.engineeringStage||'Not mapped',c.risk,c.id,c.title,c.objective||c.title,c.activity,c.nature||'Not assigned',c.trigger||'Not assigned',c.evidence,c.test,c.frameworkRelationship||c.framework,c.applicability||'Applicability not assessed',c.authorityFocus||'Not classified',c.scenario,'WEB15',qualified,related.join('; '),'Proposed related intent; not equivalence','Proposed example; not assessed','Fictional simulation only; not operating evidence','Not assessed','Retention, integrity and independent production-population completeness are not established by this export'];
+  return [c.domain,c.engineeringArea||'Not mapped',c.engineeringStage||'Not mapped',c.risk,'SG-'+c.id.slice(-2),c.title,c.objective||c.title,c.activity,c.nature||'Not assigned',c.trigger||'Not assigned',c.evidence,c.test,c.frameworkRelationship||c.framework,c.applicability||'Applicability not assessed',c.authorityFocus||'Not classified',c.scenario,'WEB15',qualified,related.join('; '),'Proposed related intent; not equivalence','Proposed example; not assessed','Fictional simulation only; not operating evidence','Not assessed','Retention, integrity and independent production-population completeness are not established by this export'];
  });
  return [headings,...rows];
 }
