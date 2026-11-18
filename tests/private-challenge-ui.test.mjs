@@ -22,7 +22,8 @@ test('private lab uses the same-origin authenticated endpoints and keeps continu
 test('model text is rendered as text and source links are HTTPS only',()=>{
  assert.match(source,/node\.textContent=String/);
  assert.match(source,/url\.protocol!=='https:'/);
- assert.match(source,/ref\.modelUsed\?'Selected by Gemini':'Provided as context'/);
+ assert.match(source,/ref\.modelUsed\?'Referenced in Gemini output':'Provided to Gemini \(not referenced\)'/);
+ assert.match(source,/not live retrieval, independent verification/);
  assert.match(source,/No live web research is performed/);
  assert.doesNotMatch(source,/\.innerHTML|frame\.srcdoc/);
 });
