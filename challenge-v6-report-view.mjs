@@ -214,10 +214,10 @@ export function renderV6Report(target,response,scenarioText=''){
    buttonNodes.push(b);stages.append(b);
   }
   failure.append(stages,stageCard);
-  const focus=project.riskPath.steps.find(s=>s.roles.some(role=>role.id==='exposure'))||
+  const focusStage=project.riskPath.steps.find(s=>s.roles.some(role=>role.id==='exposure'))||
     project.riskPath.steps.find(s=>s.roles.some(role=>role.id==='prevention'))||
     project.riskPath.steps[0];
-  selectStage(focus.id);
+  selectStage(focusStage.id);
  }else{
   text(failure,'v6-empty','No defensible stage-by-stage failure path was returned. This does not establish that the design is risk-free.');
  }
