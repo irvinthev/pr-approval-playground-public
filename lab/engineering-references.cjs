@@ -413,15 +413,33 @@ const references=[
 function selectEngineeringReferences(scenario,turns=[],limit=5){
  const text=[scenario,...(Array.isArray(turns)?turns.filter(t=>t && t.role==='user').slice(-2).map(t=>t.content):[])].join(' ').slice(0,6000).toLowerCase();
  const scored=references.map(r=>({r,score:r.terms.reduce((n,term)=>n+(text.includes(term)?(term.includes(' ')?3:2):0),0)}));
- // PR approval scenarios depend on both how a review is submitted and whether
- // a later code change invalidates that review. Those are separate GitHub
- // capabilities, so include both source cards even when the scenario uses
- // ordinary language such as "stacked PRs" rather than "stale approval".
+ // GitHub approval needs both submission mechanics and actual merge enforcement.
+ // These are different boundaries, even when a user says only "stacked PRs".
  const githubPullRequest=/\bgithub\b/.test(text)&&/\b(?:pull requests?|prs?)\b/.test(text);
- const approvalWorkflow=githubPullRequest&&/\b(?:review|reviews|approve|approves|approval|approvals|approver|approvers)\b/.test(text);
+ const approvalWorkflow=githubPullRequest&&/\b(?:review|reviews|approve|approves|approved|approval|approvals|approver|approvers)\b/.test(text);
+ const delegatedExecution=approvalWorkflow&&/\b(?:agent|batch|stacked|delegat(?:e|ed|ion)|submi(?:t|ts|tted|tting))\b/.test(text);
  const contextualBoosts=approvalWorkflow?{'GH-REVIEWS-API':6,'GH-PROTECTED-BRANCHES':5}:{};
- if(approvalWorkflow&&/\b(?:agent|batch|stacked|delegate|submi(?:t|ts|tted|tting))\b/.test(text))
-  contextualBoosts['GH-RULESETS']=4;
+ if(delegatedExecution)contextualBoosts['GH-RULESETS']=4;
+
+ // "Claude" is how users often name Claude Code. Requiring the exact phrase
+ // "Claude Code" suppressed the executor boundary in a delegated-approval case.
+ // Match the name only in technical/execution context; never force Claude
+ // documentation into unrelated personal or purely GitHub scenarios.
+ const mentionsClaude=/\b(?:claude(?:\s+code)?|anthropic)\b/.test(text);
+ const technicalContext=approvalWorkflow||
+   /\b(?:agent|coding|tool|mcp|cli|permission|permissions|hook|hooks|sandbox|terminal|bash|execute|execution|automation)\b/.test(text);
+ if(mentionsClaude&&technicalContext){
+  contextualBoosts['CLAUDE-PERMISSIONS']=8;
+  if(delegatedExecution)contextualBoosts['CLAUDE-SECURITY']=3;
+ }
+
+ // Tool-path documents are pertinent only if the scenario actually names
+ // the route. Claude Code alone does not establish whether it uses MCP or CLI.
+ if(approvalWorkflow&&/\bmcp\b/.test(text))
+  contextualBoosts['GH-MCP-SERVER']=7;
+ if(approvalWorkflow&&/\b(?:github cli|gh pr review|gh cli)\b/.test(text))
+  contextualBoosts['GH-CLI-REVIEW']=7;
+
  for(const item of scored)item.score+=contextualBoosts[item.r.id]||0;
  const matched=scored.filter(x=>x.score>0);
  matched.sort((a,b)=>b.score-a.score || a.r.id.localeCompare(b.r.id));
