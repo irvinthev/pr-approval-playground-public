@@ -44,7 +44,7 @@ export function recommend({useCase='approval',authority='authorize',risks=['scop
 }
 export function rowsForExport(items){
  return [
-  ['Source-qualified ID','Control title','Risk','Objective','Safeguard activity','Evidence request','Testing approach','Framework relationship','Applicability caveat','Recommendation rationale','Implementation status'],
-  ...items.map(c=>[c.id,c.title,c.risk,c.objective,c.activity,c.evidence,c.test,c.framework,c.applicability,c.reasons.join('; '),'Not assessed — illustrative candidate'])
+  ['Safeguard ID','Control title','Risk','Objective','Safeguard activity','Evidence request','Testing approach','Framework relationship','Applicability caveat','Recommendation rationale','Implementation status'],
+  ...items.map(c=>['SG-'+c.id.slice(-2),c.title,c.risk,c.objective,c.activity,c.evidence,c.test,c.framework,c.applicability,c.reasons.join('; '),'Not assessed — illustrative candidate'])
  ];
 }
