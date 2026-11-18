@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
+import {readFileSync} from 'node:fs';
 import handler,{buildModelRequest,validateRequest,buildContractRepairRequest,contractFailureCodes,invalidSourceIds,normalizeEngineeringReferences} from '../api/challenge.js';
 const require=createRequire(import.meta.url);
 const {references,selectEngineeringReferences,referencePrompt}=require('../lab/engineering-references.cjs');
@@ -239,4 +240,69 @@ test('invented framework or technical source IDs fail without retry',async t=>{
  assert.equal(res.statusCode,502);
  assert.match(res.body.error,/UNRECOGNIZED_CITATION/);
  assert.equal(calls,1);
+});
+
+
+const claudeStackedPrompt='An engineer reviews three stacked GitHub pull requests and explicitly decides to approve each one. An agent viai claude would submit those decisions in one batch to avoid repetitive clicks. Should we pursue this, and under what conditions?';
+test('original Claude-in-batch prompt covers executor permissions and GitHub submission/enforcement',()=>{
+ const selected=selectEngineeringReferences(claudeStackedPrompt);
+ const ids=selected.map(r=>r.id);
+ assert.ok(ids.length<=5);
+ for(const id of ['CLAUDE-PERMISSIONS','CLAUDE-SECURITY','GH-REVIEWS-API','GH-PROTECTED-BRANCHES','GH-RULESETS'])
+   assert.ok(ids.includes(id),'Missing technical boundary: '+id+'; retrieved '+ids.join(', '));
+ assert.ok(!ids.includes('GH-MCP-SERVER'),'Do not infer an MCP integration from Claude alone');
+ assert.ok(!ids.includes('GH-CLI-REVIEW'),'Do not infer a CLI route from Claude alone');
+ const request=buildModelRequest(validateRequest({scenarioText:claudeStackedPrompt}));
+ for(const id of ids)assert.ok(request.messages[0].content.includes('[REFERENCE '+id+']'));
+ assert.match(request.messages[0].content,/named, evaluate tool permissions/);
+ assert.match(request.messages[0].content,/not proof that the integration uses the documented feature/);
+});
+test('Claude Code phrasing and execution-path details select specific, bounded technical sources',()=>{
+ const named=selectEngineeringReferences(claudeStackedPrompt.replace('viai claude','using Claude Code')).map(r=>r.id);
+ assert.ok(named.includes('CLAUDE-PERMISSIONS'));
+ const cli=selectEngineeringReferences(claudeStackedPrompt.replace('viai claude','using Claude Code and GitHub CLI')).map(r=>r.id);
+ assert.ok(cli.includes('GH-CLI-REVIEW'),'Explicit GitHub CLI path should expose its documentation');
+ assert.ok(cli.includes('CLAUDE-PERMISSIONS'),'Retain the executor boundary when CLI is named');
+ const mcp=selectEngineeringReferences(claudeStackedPrompt.replace('viai claude','using Claude Code with GitHub MCP')).map(r=>r.id);
+ assert.ok(mcp.includes('GH-MCP-SERVER'),'Explicit GitHub MCP path should expose MCP documentation');
+ assert.ok(mcp.includes('CLAUDE-PERMISSIONS'),'Retain the executor boundary when MCP is named');
+});
+test('unrelated Claude mentions and non-Claude approval keep source selection scoped',()=>{
+ const personal=selectEngineeringReferences('My coworker Claude recommends a new lunch spot.').map(r=>r.id);
+ assert.ok(!personal.some(id=>id.startsWith('CLAUDE-')));
+ const githubOnly=selectEngineeringReferences(claudeStackedPrompt.replace('viai claude','through a generic automation service')).map(r=>r.id);
+ assert.ok(!githubOnly.some(id=>id.startsWith('CLAUDE-')));
+ const cursor=selectEngineeringReferences('Cursor Agent reviews GitHub pull requests; a developer confirms approval.').map(r=>r.id);
+ assert.ok(!cursor.some(id=>id.startsWith('CLAUDE-')));
+});
+test('source cards distinguish model-returned reference IDs from retrieved or verified sources',()=>{
+ const html=readFileSync(new URL('../private-challenge.html',import.meta.url),'utf8');
+ const connected=readFileSync(new URL('../challenge-connected-report-view.mjs',import.meta.url),'utf8');
+ assert.match(html,/Referenced in Gemini output/);
+ assert.match(html,/Provided to Gemini \(not referenced\)/);
+ assert.doesNotMatch(html,/Selected by Gemini/);
+ assert.match(connected,/Referenced in model output/);
+ assert.match(connected,/Provided to model \(not referenced\)/);
+ assert.match(connected,/not live retrieval, independent verification/);
+ assert.doesNotMatch(connected,/Used in assessment/);
+});
+test('model can cite only provided Claude source cards and reports model attribution without verification',async t=>{
+ const oldToken=process.env.CHALLENGE_API_TOKEN,oldKey=process.env.GEMINI_API_KEY;
+ process.env.CHALLENGE_API_TOKEN='private-test-token';
+ process.env.GEMINI_API_KEY='provider-test-key';
+ t.after(()=>{
+  if(oldToken===undefined)delete process.env.CHALLENGE_API_TOKEN;else process.env.CHALLENGE_API_TOKEN=oldToken;
+  if(oldKey===undefined)delete process.env.GEMINI_API_KEY;else process.env.GEMINI_API_KEY=oldKey;
+ });
+ const withClaude={...response,referenceIds:['CLAUDE-PERMISSIONS']};
+ t.mock.method(globalThis,'fetch',async (_url,opts)=>{
+  const prompt=JSON.parse(opts.body).messages[0].content;
+  assert.match(prompt,/\[REFERENCE CLAUDE-PERMISSIONS\]/);
+  return {ok:true,json:async()=>({choices:[{message:{content:JSON.stringify(withClaude)}}]})};
+ });
+ const res=mockRes();
+ await handler({method:'POST',headers:{authorization:'Bearer private-test-token'},body:{scenarioText:claudeStackedPrompt}},res);
+ assert.equal(res.statusCode,200,JSON.stringify(res.body));
+ assert.equal(res.body.engineeringReferences.find(x=>x.id==='CLAUDE-PERMISSIONS').modelUsed,true);
+ assert.equal(res.body.engineeringReferences.find(x=>x.id==='GH-REVIEWS-API').modelUsed,false);
 });
