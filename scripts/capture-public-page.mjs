@@ -122,6 +122,29 @@ async function checkChallengeAssessment(page, captureDecisionBrief) {
             nextStep:'Inspect an authorized and an unmatched approval sequence.',
             pivot:'What reconciled records establish the decision?',referenceIds:['GH-REVIEWS']}
         },
+        decisionChallenge:{
+          objective:'Reduce repeated review clicks without delegating human approval judgment.',
+          tension:'PR-2 is rebased after the engineer authorized the earlier revision.',
+          question:'Pause all reviews or proceed with independently authorized unaffected PRs?',
+          boundary:{
+            decision:'Engineer decides on each exact PR revision.',
+            execution:'Agent submits the selected reviews through an assumed GitHub path.',
+            enforcement:'GitHub rules may restrict merge, but settings are unverified.'
+          },
+          options:[
+            {label:'Pause the entire batch',consequence:'All submissions stop pending renewed authorization.',
+             tradeoff:'Simpler recovery, but it delays unaffected reviews.',
+             verification:'Observe that no reviews are submitted after PR-2 changes.',
+             managementImplication:'Lower recovery complexity but less potential throughput.',
+             safeguardIndex:0},
+            {label:'Submit only still-authorized reviews',
+             consequence:'Unaffected revisions proceed only when dependencies and per-PR approval remain valid.',
+             tradeoff:'More throughput, but partial completion is more complex.',
+             verification:'Verify the selected SHA and dependency graph for every review submitted.',
+             managementImplication:'Better throughput in some cases, but requires partial-batch recovery.',
+             safeguardIndex:2}
+          ]
+        },
         operationalReview:{kind:'reconciliation',
           question:'Can the human instruction, agent API action and persisted review be reconciled?',
           detection:'Match human authorization, API request and recorded review by revision.',
@@ -178,143 +201,121 @@ async function checkChallengeAssessment(page, captureDecisionBrief) {
   await page.locator('#token').fill('local-browser-fixture');
   await page.locator('#scenario').fill('An engineer reviews and approves four stacked pull requests. An agent submits those approvals.');
   await page.locator('#ask').click();
-  await page.locator('#cdr-preview .cdr').waitFor();
-  check(await page.locator('#result').evaluate(node=>node.classList.contains('cdr-active')),
-    'The connected report should be primary after assessment');
-  check(await page.locator('#cdr-preview .cdr-recommendation-text').isVisible(),
-    'Connected report must use the real assessment conclusion');
-  check(await page.locator('#cdr-preview .cdr-decision-gate').isVisible(),
-    'Decision-changing question should appear with the recommendation');
-  check((await page.locator('#cdr-preview .cdr-evidence-summary').innerText()).includes('No independently verified effectiveness'),
-    'Evidence limitation must be visible in the decision summary');
-  check(await page.locator('#cdr-preview .cdr-option-card').count()===3,
-    'Compare the baseline, proposed approach and simpler alternative');
-  await page.locator('.cdr-workspace-tab[data-view="safeguards"]').click();
-  check(await page.locator('#cdr-preview .cdr-safeguard-entry').count()>=3,
-    'Safeguards should display shared status and basis');
-  check(await page.locator('#cdr-preview .cdr-safeguard-entry').first().isVisible(),
-    'Engineering Safeguards should show the shared safeguards');
-  await page.locator('.cdr-workspace-tab[data-view="brief"]').click();
-  check(await page.locator('#cdr-preview .cdr-role-row').count()===3,
-    'Engineering, Risk and Assurance should be concise next considerations');
-  check(await page.locator('#cdr-preview .cdr-workspace-tab').count()===3,
-    'One assessment has three focused presentation views');
-  check(await page.locator('#cdr-preview .cdr-answer-button').isVisible(),
-    'Clarification questions should remain reachable directly from the summary');
-  await page.locator('.cdr-workspace-tab[data-view="failure"]').click();
-  check(await page.locator('#cdr-preview .cdr-path').isVisible(),
-    'Scenario failure path should appear in the selected view');
-  check(await page.locator('#cdr-preview .cdr-path-outcome-grid > .cdr-path-outcome').count()===4,
-    'Selected stage should show good outcome, failure, safeguard and evidence');
-  check(await page.locator('.cdr-path-strip .cdr-path-button').count()===3,
-    'Only the three relevant delivery touchpoints should show by default');
-  check((await page.locator('.cdr-path-outcome-panel').innerText()).includes('Agent submission is not rebound'),
-    'The initial stage should explain where the failure originates');
-  await page.locator('.cdr-path-strip .cdr-path-button[data-path-stage="merge"]').click();
-  check((await page.locator('.cdr-path-outcome-panel').innerText()).includes('Block merges when review'),
-    'The downstream stage must explain the possible stopping mechanism');
-  await page.locator('.cdr-path-full summary').click();
-  check(await page.locator('.cdr-path-full-grid .cdr-path-button').count()===8,
-    'The full Field Guide delivery lifecycle should remain available on demand');
-  await page.locator('.cdr-path-full-grid .cdr-path-button[data-path-stage="ai-review"]').click();
-  check((await page.locator('.cdr-path-outcome-panel').innerText()).includes('does not mean the stage is safe or controlled'),
-    'Unmapped stages must not be represented as risk-free');
-  await page.locator('.cdr-path-full summary').click();
-  await page.waitForFunction(() =>
-    document.querySelector('.cdr-path-strip .cdr-path-button[data-path-stage="authorization"]')
-      ?.getAttribute('aria-pressed')==='true',{timeout:3000});
-  check(await page.locator('.cdr-path-full').evaluate(node=>!node.open),
-    'The expanded lifecycle should be closed after restoration');
-  await page.locator('.cdr-workspace-tab[data-view="brief"]').click();
-  await page.locator('.cdr-supporting > summary').click();
-  check(await page.locator('#cdr-preview .cdr-recon').isVisible(),
-    'Human-delegated PR case must retain the reconciliation question');
-  check((await page.locator('#cdr-preview .cdr-recon').innerText()).includes('Unknown'),
-    'Reconciliation must not be reported as implemented');
-  check((await page.locator('#cdr-preview .cdr-recon').innerText()).includes('Match human authorization'),
-    'Operational reconciliation should have model-specific detection reasoning');
-  await page.locator('.cdr-sources summary').click();
-  check(await page.locator('#cdr-preview .cdr-source-link[href*="docs.github.com/en/rest/pulls/reviews"]').first().isVisible(),
-    'The primary GitHub technical reference should remain available');
-  check((await page.locator('#cdr-preview .cdr-sources').innerText()).includes('does not establish originating human authorization'),
-    'Source limitations should remain available');
-  await page.locator('.cdr-sources summary').click();
-  await page.locator('.cdr-supporting > summary').click();
-  check(await page.evaluate(() => document.documentElement.scrollWidth<=innerWidth),
-    'Connected report must fit the viewport');
-  await page.locator('#token').fill('');
-  await captureDecisionBrief();
-  await page.locator('#token').fill('local-browser-fixture');
-  await page.locator('#cdr-toggle').click();
-  check(!(await page.locator('#result').evaluate(node=>node.classList.contains('cdr-active'))),
-    'The detailed assessment should be reachable');
-  check(await page.locator('#report-lead-risk').getByText('After a push or rebase, an approval could apply to code the engineer never saw.',{exact:true}).isVisible(),
-    'The lead failure condition should be visible without a tap');
-  check(await page.locator('#report-expected-safeguards summary').count()===3,'Three safeguards should lead the brief');
-  check(await page.locator('#refinement-questions summary').textContent()==='Could a changed revision merge on the original approval?',
-    'The decision-changing question should be visible before expanding answers');
-  check(await page.evaluate(() => document.documentElement.scrollWidth<=innerWidth),'Decision brief must fit the viewport');
-  for (const selector of ['#report-expected-safeguards summary','#report-more-safeguards > summary',
-    '#report-other-safeguards summary','#report-more-risks > summary','#report-reasoning > summary','#refinement-questions summary']) {
-    await page.locator(selector).first().click();
-  }
-  check(await page.locator('#report-other-safeguards').getByText('Partial · User-reported',{exact:true}).isVisible(),
-    'The remaining safeguards should retain provenance');
-  check(requests.length===1,'Reading and expanding the decision brief should use only the initial request');
+  await page.locator('#cdr-preview .v6-journey').waitFor();
+  check(await page.locator('#result').evaluate(node=>node.classList.contains('cdr-active')&&node.classList.contains('v6-capable')),
+    'The V6 journey should be the primary validated assessment');
+  check(await page.locator('#cdr-preview .v6-title').isVisible(),
+    'The engineering objective must lead the assessment');
+  check(await page.locator('#cdr-preview .v6-actor').count()===3,
+    'Decision, execution and enforcement must be visibly distinguished');
+  check(await page.locator('#cdr-preview .v6-choice').count()===2,
+    'The delegated scenario must present two comparable engineering strategies');
+  check(await page.locator('#cdr-preview .v6-tab').count()===3,
+    'V6 retains three connected assessment views');
+  check(await page.locator('#cdr-preview .v6-stage-button').count()===3,
+    'Only the model-mapped causal events should appear as selectable stages');
+  check((await page.locator('#cdr-preview .v6-stage-title').innerText()).includes('Merge'),
+    'Default to the consequential exposure stage rather than the earliest routine step');
+  check(await page.locator('#cdr-preview .v6-outcome').count()===4,
+    'Good/failure/interruption/evidence outcomes must have distinct cards');
 
-  requests = [];
+  const initial=await page.locator('#cdr-preview .v6-consequence').innerText();
+  await page.locator('#cdr-preview .v6-choice').nth(1).click();
+  check((await page.locator('#cdr-preview .v6-consequence').innerText())!==initial,
+    'A change in design choice must change its conditional outcome');
+  check((await page.locator('#cdr-preview [data-v6-selection="failure"]').innerText()).includes('dependency graph'),
+    'Selected choice must change the failure-path verification');
+  await page.locator('.v6-stage-button').first().click();
+  check((await page.locator('#cdr-preview .v6-stage-event').innerText()).includes('Agent submission'),
+    'Selecting a causal stage must show the corresponding model event');
+  await page.locator('.v6-safeguard-jump').click();
+  check(await page.locator('#v6-panel-safeguards').isVisible(),
+    'Related safeguard opens the Engineering Safeguards view');
+  check(await page.locator('#v6-safeguard-2').evaluate(node=>node.open),
+    'The selected option must link to its validated safeguard index');
+  check((await page.locator('#v6-safeguard-2').innerText()).includes('Unknown'),
+    'Missing implementation evidence must remain unknown');
+  await page.locator('[data-tab="management"]').click();
+  check(await page.locator('#v6-panel-management').isVisible(),'Management view should be available');
+  check((await page.locator('[data-v6-selection="management"]').innerText()).includes('partial-batch recovery'),
+    'Management implications must depend on the selected strategy');
+  check((await page.locator('#v6-panel-management').innerText()).includes('Use a narrow batch submitter'),
+    'A simpler alternative must remain available');
+  check((await page.locator('.v6-management-card').innerText()).includes('Keep approvals manual'),
+    'Management view must retain the actual model recommendation');
+  await page.locator('.v6-support > summary').click();
+  check(await page.locator('.v6-role').count()===3,
+    'Role-specific questions should appear only once');
+  check(await page.locator('.v6-reference').count()>=1,
+    'Publisher sources must remain available in compact form');
+  await page.locator('.v6-support > summary').click();
+  check(requests.length===1,'V6 exploration must not request Gemini again');
+  check(await page.evaluate(() => document.documentElement.scrollWidth<=innerWidth),
+    'V6 journey must fit the viewport');
+  await captureDecisionBrief();
+  await page.locator('#v6-panel-management .v6-button').last().click();
+  check(await page.locator('#result').evaluate(node=>node.classList.contains('v6-clarify-mode')),
+    'Clarification should open a focused pane rather than the duplicate legacy report');
+  check(!(await page.locator('#report-lead-risk').isVisible()),
+    'Duplicate legacy risk report must remain visually hidden');
+  check(await page.locator('#refine-panel').isVisible(),
+    'The real clarification form must be accessible');
+  check(await page.locator('#refinement-questions summary').count()===1,
+    'The decision-changing question must remain available');
+  await page.locator('#cdr-toggle').click();
+  check(await page.locator('#result').evaluate(node=>node.classList.contains('cdr-active')),
+    'Back to assessment returns to the single V6 report');
+
+  // Scenario-adaptive fallback: no model choice or causal path must not invent one.
+  requests=[];
   await page.locator('#examples summary').click();
   await page.locator('[data-example="plan"]').click();
   await page.locator('#ask').click();
-  await page.locator('#cdr-preview .cdr').waitFor();
-  check(!(await page.locator('#cdr-preview .cdr-recon').isVisible()),
-    'An autonomous PR Plan scenario must not inherit human-delegated reconciliation');
-  check(await page.locator('.cdr-path').count()===0,
-    'A model-null causal path must not be replaced with an invented lifecycle');
-  await page.locator('#cdr-toggle').click();
-  check(!(await page.locator('#refine-panel').isVisible()),'Zero questions should hide the reassessment form');
-  check(await page.locator('#report-model-examples').isVisible(),'PR examples should appear for PR proposals');
+  await page.locator('#cdr-preview .v6-journey').waitFor();
+  check(await page.locator('.v6-choice').count()===0,
+    'No fabricated design dilemma for an autonomous-approval fixture');
+  check((await page.locator('.v6-choices').innerText()).includes('No artificial decision'),
+    'The no-choice fallback should explain the missing decision tension');
+  check(await page.locator('.v6-stage-button').count()===0,
+    'Null causal path must not turn into a fabricated pipeline');
+  check(await page.locator('#cdr-controls').isHidden(),
+    'A scenario with no clarification questions has no inert reassessment action');
+  check(requests.length===1,'Reading fallback scenario should use one API request');
 
-  requests = [];
+  // Non-GitHub architecture must retain its own operational stages.
+  requests=[];
   await page.locator('#examples summary').click();
   await page.locator('[data-example="rotation"]').click();
   await page.locator('#ask').click();
-  await page.locator('#cdr-preview .cdr').waitFor();
-  await page.locator('.cdr-supporting > summary').click();
-  check(!(await page.locator('#cdr-preview .cdr-recon').innerText()).includes('GitHub review'),
-    'Unrelated credential rotation must not show PR-specific reconciliation');
-  check((await page.locator('#cdr-preview .cdr-recon').innerText()).includes('Track credential rejection rates'),
-    'Unrelated proposal must receive its own operational monitoring analysis');
-  check((await page.locator('.cdr-path-strip').innerText()).includes('Execute'),
-    'Credential rotation must use the operational lifecycle');
-  check(!(await page.locator('.cdr-path').innerText()).includes('AI review'),
-    'Unrelated proposals must not receive a GitHub or AI review causal path');
-  check(await page.locator('.cdr-path-full-grid .cdr-path-button').count()===7,
-    'The operational lifecycle must have its own canonical stage set');
-  await page.locator('#cdr-toggle').click();
-  check(!(await page.locator('#report-model-examples').isVisible()),'PR examples should be hidden for credential rotation');
-  for (const selector of ['#report-expected-safeguards summary','#report-sources-details summary']) {
-    await page.locator(selector).first().click();
-  }
-  check(requests.length===1,'Expanding details must not call the model');
+  await page.locator('#cdr-preview .v6-journey').waitFor();
+  check(await page.locator('.v6-stage-button').count()===3,
+    'Credential rotation should show only its relevant operational stages');
+  check((await page.locator('.v6-stage-buttons').innerText()).includes('Verify'),
+    'Credential rotation should retain its operational lifecycle');
+  check(!(await page.locator('.v6-journey').innerText()).includes('GitHub review ID'),
+    'Credential rotation should not inherit delegated GitHub reconciliation');
+  await page.locator('[data-tab="management"]').click();
+  await page.locator('#v6-panel-management .v6-button').last().click();
+  check(await page.locator('#refine-panel').isVisible(),
+    'Real Gemini clarification must remain available in a non-GitHub scenario');
   await page.locator('#refinement-questions summary').first().click();
   await page.getByText('Yes, during cutover',{exact:true}).click();
   await page.locator('#refinement-questions summary').nth(1).click();
   await page.getByText('Some consumers',{exact:true}).click();
   await page.locator('#refinement-submit').click();
-  await page.locator('#cdr-preview').getByText('What changed on reassessment?',{exact:false}).waitFor();
-  check((await page.locator('#cdr-preview').innerText()).includes('What changed on reassessment?'),
-    'Connected report should reflect reassessment');
-  await page.locator('#cdr-toggle').click();
-  await page.locator('#report-delta').waitFor();
-  check(requests.length===2,'Assessment plus clarification should use two application requests');
-  check(requests[1].continuityReceipts[0]==='fixture-initial','Reassessment must use initial signed continuity');
-  check(/Yes, during cutover[\s\S]*Some consumers/.test(requests[1].turns[0].content),'Both answers must travel in one batch');
-  check(!(await page.locator('#refine-panel').isVisible()),'Closing the clarification loop should prevent further submissions');
-  await page.locator('#report-expected-safeguards summary').click();
-  check((await page.locator('#report-expected-safeguards').innerText()).includes('Partial · User-reported'),
-    'Reassessment should preserve the provenance of a reported safeguard');
-  check(await page.evaluate(() => document.documentElement.scrollWidth<=innerWidth),'Assessment must fit the viewport');
+  await page.locator('#cdr-preview .v6-journey').waitFor();
+  await page.locator('[data-tab="management"]').click();
+  check((await page.locator('#v6-panel-management').innerText()).includes('Overlap changes the safeguard'),
+    'Real Gemini follow-up must render a revised management consideration');
+  check(requests.length===2,'One assessment and one batch follow-up should produce two API requests');
+  check(requests[1].continuityReceipts[0]==='fixture-initial',
+    'Signed continuity must remain bound to the initial assessment');
+  check(/Yes, during cutover[\s\S]*Some consumers/.test(requests[1].turns[0].content),
+    'Both clarification answers must be submitted in one follow-up');
+  check(await page.locator('#cdr-controls').isHidden(),'Reassessment must be a one-time action');
+  check(await page.evaluate(() => document.documentElement.scrollWidth<=innerWidth),
+    'The reassessed journey must fit the viewport');
+
 }
 
 async function runCase(label, path, viewportName, viewport, scenario) {

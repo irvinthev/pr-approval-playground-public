@@ -5,6 +5,7 @@
 <meta name="color-scheme" content="dark">
 <title>Private Gemini Challenge Lab | AI SDLC Field Guide</title>
 <link rel="stylesheet" href="./challenge-connected-report.css">
+<link rel="stylesheet" href="./challenge-v6-report.css">
 <style>
 :root{color-scheme:dark;font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;background:#081824;color:#eff8fc;--line:#365766;--mint:#a8f2d6;--muted:#c6d9e3}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top left,#174453,#081824 65%);min-height:100vh}
@@ -279,6 +280,7 @@ summary:focus-visible{outline:3px solid var(--mint);outline-offset:3px}
 </main></div>
 <script type="module">
 import {renderConnectedReport} from './challenge-connected-report-view.mjs';
+import {renderV6Report} from './challenge-v6-report-view.mjs';
 const el=id=>document.getElementById(id);
 const state={scenario:null,receipt:null,busy:false,remembered:false,
   refinementAnswers:{},reassessmentUsed:false,latestResponse:null,previousTakeaway:null};
@@ -512,11 +514,16 @@ function showAssessment(){
 }
 function setConnectedReportMode(active){
   const enabled=active&&!el('cdr-preview').hidden;
+  const v6=el('result').classList.contains('v6-capable');
   el('result').classList.toggle('cdr-active',enabled);
+  el('result').classList.toggle('v6-clarify-mode',v6&&!enabled);
   el('cdr-toggle').setAttribute('aria-pressed',String(enabled));
-  el('cdr-toggle').textContent=enabled?'Show detailed assessment and questions':'View connected assessment report';
+  el('cdr-toggle').textContent=v6?
+    (enabled?'Clarify & reassess':'Back to assessment'):
+    (enabled?'Show detailed assessment and questions':'View connected assessment report');
 }
 function clearAssessment(){
+  el('result').classList.remove('v6-capable','v6-clarify-mode');
   state.scenario=null;
   state.receipt=null;
   state.refinementAnswers={};
@@ -586,11 +593,19 @@ async function ask(answers=''){
     renderRefinementQuestions(data);
     // Projection is read-only and uses the same validated model response.
     // A rendering issue must never interrupt the existing assessment flow.
-    let previewReady=false;
-    try{previewReady=renderConnectedReport(el('cdr-preview'),data,scenario)}
-    catch{previewReady=false}
+    let previewReady=false,v6Ready=false;
+    try{v6Ready=renderV6Report(el('cdr-preview'),data,scenario);previewReady=v6Ready}
+    catch{v6Ready=false}
+    // If the V6 projection cannot render, keep the previously validated
+    // connected report available; never fall back to an empty result.
+    if(!previewReady){
+      try{previewReady=renderConnectedReport(el('cdr-preview'),data,scenario)}
+      catch{previewReady=false}
+    }
     el('cdr-preview').hidden=!previewReady;
-    el('cdr-controls').hidden=!previewReady;
+    el('result').classList.toggle('v6-capable',v6Ready);
+    el('cdr-controls').hidden=!previewReady ||
+      (v6Ready && (!data.clarifications.length || state.reassessmentUsed));
     setConnectedReportMode(previewReady);
     el('result').hidden=false;
     el('nav-assessment').disabled=false;

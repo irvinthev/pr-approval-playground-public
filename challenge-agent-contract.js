@@ -156,6 +156,44 @@ function validateRiskPath(value){
  return {pathway:value.pathway,failure:maxLength(value.failure,350),
    uncertainty:maxLength(value.uncertainty,280),steps};
 }
+// Optional V6 decision-led presentation. Never convert a model's design options
+// into management authorization or a simulated change to deployed safeguards.
+function validateDecisionChallenge(value,safeguardCount){
+ if(!isPlainObject(value)||
+   !isPlainObject(value.boundary)||
+   !Array.isArray(value.options)||value.options.length!==2)return null;
+ const required=['objective','tension','question'];
+ if(required.some(k=>typeof value[k]!=='string'||!value[k].trim()))return null;
+ const boundary={};
+ for(const k of ['decision','execution','enforcement']){
+  if(typeof value.boundary[k]!=='string'||!value.boundary[k].trim())return null;
+  boundary[k]=maxLength(value.boundary[k],120);
+ }
+ const options=[];
+ for(const option of value.options){
+  if(!isPlainObject(option)||
+    ['label','consequence','tradeoff','verification','managementImplication'].some(
+      k=>typeof option[k]!=='string'||!option[k].trim()))return null;
+  if(option.safeguardIndex!==null&&
+     (!Number.isInteger(option.safeguardIndex)||option.safeguardIndex<0||
+      option.safeguardIndex>=safeguardCount))return null;
+  options.push({
+    label:maxLength(option.label,110),
+    consequence:maxLength(option.consequence,290),
+    tradeoff:maxLength(option.tradeoff,260),
+    verification:maxLength(option.verification,260),
+    managementImplication:maxLength(option.managementImplication,260),
+    safeguardIndex:option.safeguardIndex
+  });
+ }
+ if(options[0].label.toLowerCase()===options[1].label.toLowerCase())return null;
+ return {
+   objective:maxLength(value.objective,230),
+   tension:maxLength(value.tension,280),
+   question:maxLength(value.question,230),
+   boundary,options
+ };
+}
 function validateClarification(item){
  if(!isPlainObject(item)||typeof item.question!=='string'||!item.question.trim()||
     typeof item.why!=='string'||!item.why.trim()||
@@ -248,6 +286,8 @@ export function validateAgentResponse(input,{scenarioText,requireGrounding=false
  const operationalReview=input.operationalReview==null?null:
    validateOperationalReview(input.operationalReview,allowedReferenceIds);
  const riskPath=input.riskPath==null?null:validateRiskPath(input.riskPath);
+ const decisionChallenge=input.decisionChallenge==null?null:
+   validateDecisionChallenge(input.decisionChallenge,safeguards.length);
  // Record structural omission without echoing untrusted content into logs.
  // A malformed optional analytical lens is suppressed instead of accepted.
  const advisoryWarnings=[];
@@ -257,6 +297,8 @@ export function validateAgentResponse(input,{scenarioText,requireGrounding=false
    advisoryWarnings.push('An operational analysis field was invalid and was not used.');
  if(input.riskPath!==undefined && input.riskPath!==null && !riskPath)
    advisoryWarnings.push('The proposed lifecycle trace could not be validated and was not shown.');
+ if(input.decisionChallenge!==undefined && input.decisionChallenge!==null && !decisionChallenge)
+   advisoryWarnings.push('The proposed decision comparison could not be validated and was not shown.');
  const state={
    contractVersion:AGENT_CONTRACT_VERSION,
    scenarioText:scenario,
@@ -271,6 +313,7 @@ export function validateAgentResponse(input,{scenarioText,requireGrounding=false
    ...(decisionPerspectives?{decisionPerspectives}:{}),
    ...(operationalReview?{operationalReview}:{}),
    ...(riskPath?{riskPath}:{}),
+   ...(decisionChallenge?{decisionChallenge}:{}),
    ...(advisoryWarnings.length?{advisoryWarnings}:{}),
    citations,
    ...(requireGrounding ? {conclusions,approvalOutcomes} : {}),

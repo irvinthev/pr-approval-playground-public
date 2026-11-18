@@ -64,6 +64,40 @@ export function projectRiskPath(value){
     stages:stages.map(stage=>({id:stage.id,label:stage.label,selected:steps.some(x=>x.id===stage.id)}))
   };
 }
+// Projection is intentionally defensive; legacy/test callers can bypass
+// the API contract. Malformed optional choices never become UI controls.
+export function projectDecisionChallenge(value,safeguardCount){
+ if(!value||typeof value!=='object'||Array.isArray(value)||
+    !value.boundary||typeof value.boundary!=='object'||
+    !Array.isArray(value.options)||value.options.length!==2)return null;
+ const objective=words(value.objective,230),tension=words(value.tension,280),
+   question=words(value.question,230);
+ if(!objective||!tension||!question)return null;
+ const boundary={};
+ for(const key of ['decision','execution','enforcement']){
+  boundary[key]=words(value.boundary[key],120);
+  if(!boundary[key])return null;
+ }
+ const options=[];
+ for(const option of value.options){
+  if(!option||typeof option!=='object'||Array.isArray(option))return null;
+  const item={
+    label:words(option.label,110),
+    consequence:words(option.consequence,290),
+    tradeoff:words(option.tradeoff,260),
+    verification:words(option.verification,260),
+    managementImplication:words(option.managementImplication,260),
+    safeguardIndex:option.safeguardIndex
+  };
+  if(['label','consequence','tradeoff','verification','managementImplication'].some(k=>!item[k])||
+     (item.safeguardIndex!==null&&
+      (!Number.isInteger(item.safeguardIndex)||item.safeguardIndex<0||item.safeguardIndex>=safeguardCount)))
+    return null;
+  options.push(item);
+ }
+ if(options[0].label.toLowerCase()===options[1].label.toLowerCase())return null;
+ return {objective,tension,question,boundary,options};
+}
 export function projectConnectedReport(data,scenarioText=''){
   if(!data||typeof data!=='object'||!array(data.conclusions).length) return null;
   const primary=data.conclusions[0]||{};
@@ -129,6 +163,7 @@ export function projectConnectedReport(data,scenarioText=''){
     (implementationLabels[operational.implementation]||'Unknown'):'Not assessed';
   return {
     riskPath:projectRiskPath(data.riskPath),
+    decisionChallenge:projectDecisionChallenge(data.decisionChallenge,safeguards.length),
     recommendation:words(primary.application,1200),
     basis:words(primary.scenarioBasis,800),
     counterargument:words(data.counterargument,900),
