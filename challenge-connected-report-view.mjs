@@ -230,10 +230,11 @@ function renderSources(project,container){
   append(summary,el('strong','','Referenced sources and limits'),
     el('span','cdr-mini',project.references.length+' technical · '+project.frameworkSources.length+' framework'));
   details.append(summary);
+  details.append(el('p','cdr-mini','A model-returned source ID shows attribution in its output, not live retrieval, independent verification, or proof that a safeguard is configured.'));
   const cards=el('div','cdr-source-grid');
   for(const source of project.references){
     const s=card(cards,source.title,'','cdr-source');
-    s.prepend(el('span','cdr-kicker',source.used?'Used in assessment':'Provided as context'));
+    s.prepend(el('span','cdr-kicker',source.used?'Referenced in model output':'Provided to model (not referenced)'));
     addText(s,'cdr-mini',source.facts.slice(0,2).join(' · '));
     addText(s,'cdr-source-limit','Source limit: '+(source.limits||'Not stated in the selected card.'));
     sourceLink(s,source.url,source.publisher||'Open documentation');
