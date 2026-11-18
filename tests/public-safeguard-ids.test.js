@@ -50,5 +50,5 @@ test('Assurance links show public SG names while retaining existing routes',()=>
   const assurance = read('independent-assurance.html');
   assert.match(assurance,/Safeguard SG-02/);
   assert.match(assurance,/code\.textContent='SG-'\+id\.slice\(-2\)/);
-  assert.match(assurance,/a\.href='\.\/rcm-view\.html#control-'\+id/);
+  assert.match(assurance,/a\.href='\.\/rcm-view\.html#safeguard-SG-'\+id\.slice\(-2\)/);
 });
