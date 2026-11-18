@@ -30,6 +30,8 @@ const controls=[{"id":"AI-01","domain":"Change Management & Secure SDLC","title"
 
 
 const searchEl=document.getElementById('find'),tbody=document.getElementById('rcm-rows'),count=document.getElementById('count'),domainCards=document.getElementById('rcm-domain-cards'),clearFilter=document.getElementById('rcm-clear-filter');
+const publicId=id=>'SG-'+id.slice(-2);
+function matchesControlHash(c){return location.hash==='#control-'+c.id||location.hash==='#safeguard-'+publicId(c.id)}
 const authorityFocus=Object.freeze({'AI-01':['automated'],'AI-02':['foundation','automated'],'AI-03':['foundation','automated'],'AI-04':['foundation','review','automated'],'AI-05':['review','automated'],'AI-06':['review','automated'],'AI-07':['automated'],'AI-08':['foundation','automated'],'AI-09':['foundation','automated'],'AI-10':['foundation'],'AI-11':['foundation'],'AI-12':['review','automated'],'AI-13':['foundation'],'AI-14':['review','automated'],'AI-15':['foundation','automated']});
 const focusNames={foundation:'Foundational SDLC',review:'AI advice / review',automated:'Automated authorization'};
 for(const control of controls){control.authorityFocus=(authorityFocus[control.id]||[]).join('; ');}
@@ -55,19 +57,19 @@ function render(){
  const q=searchEl.value.trim().toLowerCase();
  for(const b of domainCards.querySelectorAll('button'))b.setAttribute('aria-pressed',String(Boolean(selectedDomain)&&b.dataset.domain===selectedDomain));
  clearFilter.hidden=!selectedDomain&&!q;
- const rows=controls.filter(c=>(authorityEl.value==='all'||(authorityFocus[c.id]||[]).includes(authorityEl.value))&&(!selectedDomain||c.domain===selectedDomain)&&[c.id,c.domain,c.engineeringArea,c.title,c.objective,c.risk,c.activity,c.framework].join(' ').toLowerCase().includes(q));
- tbody.replaceChildren();count.textContent=rows.length+' of '+controls.length+' controls'+(selectedDomain?' · '+selectedDomain:'');
+ const rows=controls.filter(c=>(authorityEl.value==='all'||(authorityFocus[c.id]||[]).includes(authorityEl.value))&&(!selectedDomain||c.domain===selectedDomain)&&[c.id,publicId(c.id),c.domain,c.engineeringArea,c.title,c.objective,c.risk,c.activity,c.framework].join(' ').toLowerCase().includes(q));
+ tbody.replaceChildren();count.textContent=rows.length+' of '+controls.length+' illustrative safeguards'+(selectedDomain?' · '+selectedDomain:'');
  for(const c of rows){
   const tr=add('tr',null,tbody,'rcm-main-row');tr.id='control-'+c.id;
-  for(const [label,val] of [['Domain',c.domain],['Engineering area',c.engineeringArea],['Risk',c.risk],['Control ID',c.id],['Control objective',c.objective]]){
+  for(const [label,val] of [['Domain',c.domain],['Engineering area',c.engineeringArea],['Risk',c.risk],['Safeguard ID',publicId(c.id)],['Control objective',c.objective]]){
    const td=add('td',val,tr);td.dataset.label=label;
   }
   const action=add('td',null,tr);action.dataset.label='Detail';
-  const button=add('button','View detail',action);button.type='button';button.setAttribute('aria-expanded','false');button.setAttribute('aria-controls','detail-'+c.id);button.setAttribute('aria-label','Expand '+c.id+' details');
+  const button=add('button','View detail',action);button.type='button';button.setAttribute('aria-expanded','false');button.setAttribute('aria-controls','detail-'+c.id);button.setAttribute('aria-label','Expand '+publicId(c.id)+' details');
   const detailRow=add('tr',null,tbody);detailRow.id='detail-'+c.id;detailRow.hidden=true;
   const cell=add('td',null,detailRow);cell.colSpan=6;
   const detail=add('div',null,cell,'rcm-detail rcm-detail-compact');
-  const heading=add('h2',c.id+' · '+c.title,detail);
+  const heading=add('h2',publicId(c.id)+' · '+c.title,detail);
   const meta=add('p',c.engineeringStage+' · '+c.nature+' · '+c.trigger,detail,'rcm-compact-meta');
   add('p','Authority focus (illustrative): '+(authorityFocus[c.id]||[]).map(key=>focusNames[key]).join(' · '),detail,'rcm-focus-tags');
   entry(detail,'Engineering safeguard',c.activity);
@@ -81,16 +83,16 @@ function render(){
   detailLink(c,detail);
   const toggle=()=>{const open=detailRow.hidden;detailRow.hidden=!open;button.textContent=open?'Hide detail':'View detail';button.setAttribute('aria-expanded',String(open))};
   button.addEventListener('click',toggle);
-  if(location.hash==='#control-'+c.id){toggle();setTimeout(()=>tr.scrollIntoView({block:'start'}),0)}
+  if(matchesControlHash(c)){toggle();setTimeout(()=>tr.scrollIntoView({block:'start'}),0)}
  }
 }
-function revealHash(){const c=controls.find(x=>location.hash==='#control-'+x.id);if(!c)return;selectedDomain=c.domain;searchEl.value='';authorityEl.value='all';render()}
+function revealHash(){const c=controls.find(matchesControlHash);if(!c)return;selectedDomain=c.domain;searchEl.value='';authorityEl.value='all';render()}
 clearFilter.addEventListener('click',()=>{authorityEl.value='all';showDomain('')});
 authorityEl.addEventListener('change',render);
 searchEl.addEventListener('input',()=>{selectedDomain='';render()});
-if(controls.some(c=>location.hash==='#control-'+c.id))revealHash();else render();
+if(controls.some(matchesControlHash))revealHash();else render();
 window.addEventListener('hashchange',revealHash);
-document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#control-"]');if(!a)return;const c=controls.find(x=>'#control-'+x.id===a.getAttribute('href'));if(!c)return;selectedDomain=c.domain;searchEl.value='';render()});
+document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#control-"],a[href^="#safeguard-"]');if(!a)return;const c=controls.find(x=>'#control-'+x.id===a.getAttribute('href')||'#safeguard-'+publicId(x.id)===a.getAttribute('href'));if(!c)return;selectedDomain=c.domain;searchEl.value='';render()});
 document.getElementById('rcm-csv-download').addEventListener('click',()=>{
  const cells=window.RcmExport.buildRows(controls,window.ControlCrosswalk);
  const csv=cells.map(row=>row.map(value=>'"'+String(value??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');
