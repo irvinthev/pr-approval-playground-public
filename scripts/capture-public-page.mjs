@@ -82,6 +82,64 @@ async function runCase(label, path, viewportName, viewport, scenario) {
     check((await page.locator('h1').count()) > 0, label + ': missing primary heading');
 
     const checks = ['HTTP ' + response.status(), 'h1 present'];
+    // Public worked-assessment gallery: exercise each scenario/view/stage
+    // with real browser interactions before producing review screenshots.
+    if (path.split('?')[0] === 'explore-scenarios.html') {
+      check(await page.locator('[data-case]').count() === 3,
+        'Expected exactly three fictional scenarios');
+      check(await page.locator('.assessment-tabs [role="tab"]').count() === 3,
+        'Expected three assessment views');
+      check(await page.locator('#view-brief').isVisible(),
+        'Initial decision brief is missing');
+      await capture(page, label + '-decision-brief', response,
+        [...checks, 'Default fictional decision brief']);
+      for (const [caseId,caseTitle] of [
+        ['routing','Automated PR routing'],
+        ['substitution','Manager-only approval'],
+        ['agent','Agent-submitted approval']
+      ]) {
+        await page.locator('[data-case="'+caseId+'"]').click();
+        check(await page.locator('#scenario-title').innerText()===caseTitle,
+          'Scenario selector did not update the decision brief: '+caseId);
+        check(await page.locator('#risk-list button').count()===3,
+          'Missing scenario risks: '+caseId);
+        await page.locator('#risk-list button').first().click();
+        check(await page.locator('#view-safeguards').isVisible(),
+          'Risk drilldown did not open Engineering Safeguards: '+caseId);
+        check(await page.locator('#safeguard-0').isVisible(),
+          'Risk drilldown did not identify safeguard: '+caseId);
+        check(await page.locator('.safeguard-card').count()===3,
+          'Expected three safeguard objectives: '+caseId);
+        await page.locator('.assessment-tabs [data-view="failure"]').click();
+        check(await page.locator('#view-failure').isVisible(),
+          'Failure Path tab did not activate: '+caseId);
+        check(await page.locator('#stage-strip .stage-button').count()===5,
+          'Expected five stages: '+caseId);
+        for (let stage=0;stage<5;stage++) {
+          await page.locator('#stage-strip .stage-button').nth(stage).click();
+          check((await page.locator('#outcome-good').innerText()).length>30,
+            'Expected safe behavior missing: '+caseId+' stage '+stage);
+          check((await page.locator('#outcome-bad').innerText()).length>30,
+            'Expected failure behavior missing: '+caseId+' stage '+stage);
+          check((await page.locator('#outcome-safeguard').innerText()).length>30,
+            'Safeguard behavior missing: '+caseId+' stage '+stage);
+          check((await page.locator('#outcome-evidence').innerText()).length>25,
+            'Evidence trace missing: '+caseId+' stage '+stage);
+        }
+        await page.locator('.assessment-tabs [data-view="brief"]').click();
+        check(await page.locator('#view-brief').isVisible(),
+          'Decision brief not restored: '+caseId);
+      }
+      // Capture the highest authority impact case at the enforcement point.
+      await page.locator('[data-case="substitution"]').click();
+      await page.locator('.assessment-tabs [data-view="failure"]').click();
+      await page.locator('#stage-strip .stage-button').nth(3).click();
+      check(await page.locator('#stage-title').innerText()==='Authorize',
+        'Authorization enforcement stage did not render');
+      check(await page.locator('.outcome-card').count()===4,
+        'Good / failure / safeguard / evidence panel incomplete');
+      checks.push('3 cases × 3 views; risk drilldown; 15 scenario-specific pipeline stages');
+    }
     if (scenario?.startsWith('scenario-journey:')) {
       const [, variant, stepNumber, layer] = scenario.split(':');
       const title = {pass:'Standard low-risk pass',split:'AI split decision',excluded:'Hard gate scope exclusion',canary:'Production canary failure'}[variant];
