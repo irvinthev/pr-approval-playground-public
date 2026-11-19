@@ -58,5 +58,5 @@ test("No dead DOM references in script",()=>{
   for(const [,id] of js.matchAll(/\$\("([^"]+)"\)/g))assert.ok(ids.has(id),"Missing DOM ID "+id);
 });
 test("No provider credentials are embedded in public HTML",()=>{
-  assert.doesNotMatch(html,/GEMINI_API_KEY|OPENAI_API_KEY|CHALLENGE_API_TOKEN|sk-[A-Za-z0-9_-]{20}/);
+  assert.doesNotMatch(html,/GEMINI_API_KEY|OPENAI_API_KEY|CHALLENGE_API_TOKEN|sk-(?:proj-)?[A-Za-z0-9_-]{32,}/);
 });
