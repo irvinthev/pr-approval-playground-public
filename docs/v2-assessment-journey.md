@@ -32,10 +32,10 @@ Choose from the Risk Assessment page's **Compare fictional architecture scenario
 | --- | --- |
 | Shared-library autonomous approval | AI independently approves and exempt identity can reach merge |
 | Agent submits an engineer's explicit approval | The human decides; agent execution needs revision-bound limits |
-| D&O routing only | Managers receive review assignments; existing approval substitution is not indicated |
-| D&O manager substitutes approval | Reviewer authority changes; do not infer a bot exemption without evidence |
+| Manager-review routing only | Managers receive review assignments; existing approval substitution is not indicated |
+| Manager-review manager substitutes approval | Reviewer authority changes; do not infer a bot exemption without evidence |
 
-The D&O scenarios are explicitly fictional variants; they do not claim a real organization has selected either model.
+The Manager-review scenarios are explicitly fictional variants; they do not claim a real organization has selected either model.
 
 ## Verification and limitations
 
