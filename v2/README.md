@@ -1,6 +1,6 @@
 # V2 — Environment-to-Evidence Assessment Journey
 
-**Status:** Design-branch prototype. Public-safe, fictional, not independently validated. The existing Field Guide and Gemini Challenge Lab remain unchanged.
+**Status:** Design-branch prototype. Public-safe, fictional, not independently validated. The earlier Field Guide is preserved at `/field-guide-v2.html`; the existing Gemini Challenge Lab backend remains unchanged.
 
 ## Preview
 
@@ -41,7 +41,7 @@ Export is a locally generated JSON payload clearly labeled fictional/unverified.
 10. Switch proposed to existing. Confirm the conclusion changes from design viability to evidence-bounded implementation assessment.
 11. Export JSON; verify it includes environment, applicability, priority, evidence state, history and disclaimer. Do not export actual confidential content.
 12. Review on mobile; test keyboard navigation and visible focus.
-13. Ensure original `/index.html`, `/open-scenario.html`, and private Gemini preview remain unaffected.
+13. Confirm the branch root redirects to `/v2/index.html`, the previous guide remains available at `/field-guide-v2.html`, and `/open-scenario.html` plus the private Gemini backend are unaffected.
 
 ## Out of scope / limitations
 
@@ -53,4 +53,4 @@ Export is a locally generated JSON payload clearly labeled fictional/unverified.
 
 ## Release strategy
 
-Keep `main` unchanged and review this as a **draft pull request**. Validate the above scenarios, fix issues on the feature branch, and only then decide whether to promote V2 as the site's primary landing page. Do not merge before the four-stage walkthrough and mobile checks have been completed.
+Keep `main` unchanged and review this as a **draft pull request**. Validate the above scenarios, fix issues on the feature branch, and only then decide whether to merge the branch-level homepage redirect. Do not merge before the four-stage walkthrough and mobile checks have been completed.
