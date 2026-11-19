@@ -4,7 +4,7 @@
 
 ## Scope and navigation
 
-On this branch, the root entry redirects to `v2/index.html`. The previous long-form Field Guide remains available as `field-guide-v2.html`. No original experiment, backend, integration, or data source is deleted.
+The existing root `index.html` remains intact to preserve existing navigation and regressions. The new V2 assessment is available directly at `v2/index.html`. The previous long-form Field Guide remains available as `field-guide-v2.html`. No original experiment, backend, integration, or data source is deleted.
 
 The V2 journey has four stages:
 
