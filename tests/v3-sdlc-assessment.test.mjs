@@ -32,7 +32,9 @@ test('A design-only environment surfaces design scenarios',()=>{
 });
 test('Advisory review does not silently qualify autonomous AI approval',()=>{
  const x=evaluate(profile(['review'])).find(x=>x.risk.id==='R02');
- assert.ok(x);assert.ok(x.conditions.some(c=>c.includes('independently')));
+ assert.ok(x);assert.equal(x.status,'Not applicable under stated architecture');
+ assert.match(x.reason,/does not delegate autonomous/);
+ assert.match(x.reassess,/Reassess if/);
 });
 test('Autonomous approval can surface R02 without authority caveat',()=>{
  const x=evaluate(profile(['review'],'autonomous',['tools','untrusted'])).find(x=>x.risk.id==='R02');
@@ -49,4 +51,31 @@ test('New risks do not claim the legacy assessor provides a risk score',()=>{
 });
 test('All shared records expose evidence and challenge fields',()=>{
  for(const r of risks)assert.ok(r.id&&r.challenge&&r.evidence&&r.primaryStage&&r.stages.includes(r.primaryStage));
+});
+
+test('Advisory coding without tool access excludes execution-only mechanisms',()=>{
+ const result=evaluate(profile(['coding'],'advisory'));
+ for(const id of ['R12','R13','R18','R21']){
+  const match=result.find(x=>x.risk.id===id);
+  assert.equal(match.status,'Not applicable under stated architecture',id);
+  assert.ok(match.reason&&match.reassess,id);
+ }
+ assert.equal(result.find(x=>x.risk.id==='R14').status,'Potentially applicable');
+ assert.match(result.find(x=>x.risk.id==='R14').description,/assistant suggests/);
+ assert.match(result.find(x=>x.risk.id==='R17').description,/advisory assistant/);
+});
+test('Autonomous agent scenarios are not excluded by advisory-only rules',()=>{
+ const result=evaluate(profile(['review'],'autonomous',['tools','untrusted']));
+ for(const id of ['R01','R02','R03','R12','R13','R21']){
+  assert.notEqual(result.find(x=>x.risk.id===id)?.status,'Not applicable under stated architecture',id);
+ }
+});
+test('Unknown external transfer remains conditional rather than excluded',()=>{
+ const x=evaluate(profile(['coding'],'advisory')).find(x=>x.risk.id==='R06');
+ assert.equal(x.status,'Needs verification');
+});
+test('Excluded results appear in decision brief and exported results',()=>{
+ assert.match(assessment,/Excluded under the stated architecture/);
+ assert.match(assessment,/reason:x.reason\|\|null/);
+ assert.match(assessment,/Not applicable under stated architecture/);
 });
