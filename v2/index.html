@@ -80,51 +80,85 @@
 </div></div>
 </section>
 <section id="view-engineering" class="view" hidden>
-<div class="crumb"><a href="#risk">Risk Assessment</a> / Engineering Expectations</div><div class="page-intro"><div><div class="eyebrow">03 / Engineering expectations</div><h1>What must the design accomplish?</h1><p>Translate one material failure scenario into expected behavior, credible design options and a specific enforcement boundary—not a universal control checklist.</p></div></div>
+<div class="crumb"><a href="#risk">Risk Assessment</a> / Engineering Architecture</div>
+<div class="page-intro"><div><div class="eyebrow">03 / Engineering architecture &amp; build</div><h1>What is worth building—and how?</h1><p>Start with the workflow problem, compare actual implementation approaches, then define the minimum architecture, telemetry and operational responsibilities. Compliance is a constraint, not the design objective.</p></div></div>
 <div class="panel">
-<div class="summary-line"><div><div class="muted-label">Selected risk from the matrix</div><h2 id="eng-heading">R03</h2></div><span class="status" id="eng-state"></span></div>
+<div class="summary-line"><div><div class="muted-label">Current workflow</div><h2 id="eng-objective"></h2></div><span class="status" id="eng-phase"></span></div>
+<div class="grid two space"><div class="card soft"><div class="muted-label">Engineering problem to validate</div><p id="eng-business-problem"></p></div><div class="card soft"><div class="muted-label">Benefit and baseline</div><p id="eng-benefit"></p></div></div>
+<div class="note-box"><strong>Decision before building:</strong> <span id="eng-value-question"></span></div>
+</div>
+<div class="panel section">
+<div class="eyebrow">Architecture alternatives</div><h2>Compare implementable options</h2><p class="small">Select an approach to inspect its build plan and operational implications. The options are illustrative—not a conclusion that more infrastructure is better.</p>
+<div class="grid three" id="eng-architecture-options"></div>
+<div class="detail" id="eng-blueprint" aria-live="polite">
+<div class="summary-line"><h3 id="eng-selected-approach"></h3><span class="status" id="eng-complexity"></span></div>
+<div class="grid two space">
+<div><div class="muted-label">Reuse existing capabilities</div><p id="eng-reuse"></p></div>
+<div><div class="muted-label">Configure or integrate</div><p id="eng-configure"></p></div>
+<div><div class="muted-label">Potentially build</div><p id="eng-build"></p></div>
+<div><div class="muted-label">Authority &amp; enforcement</div><p id="eng-enforce"></p></div>
+</div><div class="note-box"><strong>Key engineering tradeoff:</strong> <span id="eng-tradeoff"></span></div>
+</div></div>
+<div class="panel section">
+<div class="eyebrow">Operational design</div><h2>How will we know it works?</h2>
+<p>Measure intended benefit and failure conditions. These are suggested signals: verify which are actually available in GitHub, the agent/tool boundary and CI/CD before building new telemetry.</p>
+<div class="table-scroll"><table class="matrix"><thead><tr><th>Signal or event</th><th>Purpose / likely source</th><th>Engineering response</th></tr></thead><tbody id="eng-telemetry"></tbody></table></div>
+<div class="grid two space"><div class="card soft"><div class="muted-label">Failure handling &amp; fallback</div><p id="eng-fallback"></p></div><div class="card soft"><div class="muted-label">Service ownership</div><p id="eng-owner"></p></div></div>
+</div>
+<div class="panel section">
+<div class="eyebrow">Connected risk → expectation</div>
+<h2 id="eng-heading"></h2><span class="status" id="eng-state"></span>
 <div class="risk-buttons" id="engineering-risk-buttons" aria-label="Select risk"></div>
-<div class="grid two space">
-<div class="card soft"><div class="muted-label">Failure mechanism / when it matters</div><p id="eng-failure"></p></div>
-<div class="card soft"><div class="muted-label">Expected engineering behavior</div><p id="eng-expectation"></p></div></div>
-<div class="section-header space"><h2>Compare designs, not just controls</h2><p>Potential approaches are examples with tradeoffs. They are not claims about any particular company's implementation.</p></div>
-<div class="grid three" id="approach-cards"></div>
-<div class="grid two space">
-<div class="card"><div class="muted-label">Independence boundary</div><p id="eng-boundary"></p><div class="muted-label">Operational expectation</div><p id="eng-operations"></p></div>
-<div class="card"><div class="muted-label">What is currently known</div><p id="eng-maturity"></p><p class="mini">A source description establishes intent or reported design—not technical effectiveness.</p></div></div>
-<div class="section-header space"><h2>Why this expectation exists</h2><p>References play different roles. Their applicability must be checked against the actual architecture, and none proves that a specific implementation works.</p></div>
-<div class="grid two" id="framework-cards"></div>
-<details><summary>Inspect fictional Engineering source excerpt and analytical provenance</summary><div id="source-inspection" class="space"></div></details>
+<div class="grid two">
+<div class="card soft"><div class="muted-label">What could fail</div><p id="eng-failure"></p></div>
+<div class="card soft"><div class="muted-label">What the architecture must accomplish</div><p id="eng-expectation"></p></div>
 </div>
-<div class="panel section" id="optional-simulator"><div class="eyebrow">Optional illustration · not evidence</div><h2>Explore an authorization failure</h2><p>See how one hypothetical independent restriction changes the simulated outcome. This is an educational mechanism, not a live GitHub test.</p>
-<label class="check"><input type="checkbox" id="sim-exempt" checked> A merge identity has a code-owner exemption</label>
-<label class="check"><input type="checkbox" id="sim-gate"> An independent, non-bypassable gate rejects ineligible changes</label>
-<div id="sim-outcome" class="note-box" aria-live="polite"></div>
+<div class="grid two space"><div class="card"><div class="muted-label">Independence boundary</div><p id="eng-boundary"></p></div><div class="card"><div class="muted-label">Operational expectation</div><p id="eng-operations"></p></div></div>
+<details><summary>Technical references and fictional source provenance</summary><p class="mini">References inform design; they do not establish implementation effectiveness.</p><div class="grid two" id="framework-cards"></div><div id="source-inspection" class="space"></div></details>
 </div>
-<div class="buttons space"><a href="#risk" class="btn">← Return to risk matrix</a><a href="#testing" class="btn primary">Continue to assessment &amp; testing →</a></div>
+<div class="panel section">
+<div class="eyebrow">Technical experiment · illustrative, not a live test</div><h2 id="eng-experiment-title"></h2><p id="eng-experiment"></p>
+<div class="grid two"><div class="card soft"><div class="muted-label">Expected behavior</div><p id="eng-experiment-expected"></p></div><div class="card soft"><div class="muted-label">What would change the design decision</div><p id="eng-experiment-decision"></p></div></div>
+<p class="mini">Experiments must be executed in an authorized test environment. The prototype does not run GitHub commands or simulate actual enforcement.</p>
+</div>
+<div class="buttons space"><a href="#risk" class="btn">← Return to risk assessment</a><a href="#testing" class="btn primary">Assess the selected expectation →</a></div>
 </section>
 <section id="view-testing" class="view" hidden>
-<div class="crumb"><a href="#engineering">Engineering Expectations</a> / Assessment &amp; Testing</div><div class="page-intro"><div><div class="eyebrow">04 / Assessment &amp; testing</div><h1>What does the evidence actually establish?</h1><p>Separate a plausible design from verified enforcement and an operating conclusion. Record observations explicitly; new evidence does not silently approve a safeguard.</p></div></div>
-<div class="grid two-up">
-<div class="panel"><div class="muted-label">Illustrative 30-second assessment brief</div><h2 id="brief-title"></h2><p id="brief-rationale"></p><div class="grid two" id="brief-summary"></div><div class="note-box" id="decision-unknown"></div><p class="mini" id="brief-disclaimer"></p></div>
-<div class="panel"><div class="eyebrow">Assessment boundary</div><h2>Scope before conclusion</h2>
-<p id="scope-description"></p><div class="muted-label">Current assessment state</div><p id="evidence-overall"></p>
-<div class="export-actions space"><button class="btn primary" id="export-assessment">Export structured JSON</button><button class="btn" id="print-assessment">Print / save PDF</button></div></div>
+<div class="crumb"><a href="#engineering">Engineering Architecture</a> / Assessment &amp; Testing</div>
+<div class="page-intro"><div><div class="eyebrow">04 / Guided assessment</div><h1>What should we examine, and what did we find?</h1><p>Follow the selected failure scenario through inspection, an authorized negative test and a bounded conclusion. For a proposed design, evaluate design viability rather than pretending that operating evidence exists.</p></div></div>
+<div class="panel">
+<div class="summary-line"><div><div class="muted-label">Current assessment question</div><h2 id="test-question"></h2></div><span class="status" id="test-mode"></span></div>
+<div class="risk-buttons" id="testing-risk-buttons" aria-label="Choose a risk to assess"></div>
+<div class="note-box"><strong>Expected outcome:</strong> <span id="test-expected"></span></div>
+<div class="grid two space">
+<div class="card soft"><div class="muted-label">Step 1 · Trace the architecture</div><p id="test-inspect"></p></div>
+<div class="card soft"><div class="muted-label">Step 2 · Challenge the failure condition</div><p id="test-negative"></p></div>
+<div class="card soft"><div class="muted-label">Step 3 · Inspect supporting records</div><p id="test-evidence"></p></div>
+<div class="card soft"><div class="muted-label">Step 4 · Interpret failure and response</div><p id="test-failure"></p><p id="test-response"></p></div>
 </div>
-<div class="panel section"><div class="eyebrow">Inspect a risk</div><h2 id="test-risk-heading"></h2><div class="risk-buttons" id="testing-risk-buttons"></div>
-<div class="grid two">
-<div class="card soft"><div class="muted-label">Design inspection</div><p id="test-inspect"></p><div class="muted-label">Expected negative test</div><p id="test-negative"></p><div class="muted-label">What a failure would mean</div><p id="test-failure"></p></div>
-<div class="card soft"><div class="muted-label">Evidence completeness and source</div><p id="test-evidence"></p><div class="muted-label">Operational response</div><p id="test-response"></p></div></div>
-<div class="section-header space"><h2>Record an evidence observation</h2><p>This is a local demonstration of reviewer-attested maturity, not automated verification. Select only what you have actually inspected; a configuration screenshot alone does not establish operating effectiveness.</p></div>
-<div class="field"><label for="evidence-level">Evidence state for selected risk</label>
-<select id="evidence-level"><option value="unknown">Unknown / no evidence reviewed</option><option value="reported">Management-reported design</option><option value="configuration">Observed configuration for defined scope and time</option><option value="negative">Observed relevant negative test for a specific failure</option><option value="operation">Reviewed representative operating evidence and population completeness</option></select></div>
-<div class="buttons space"><button class="btn primary" id="accept-evidence">Accept my reviewed observation</button><span class="status unknown" id="evidence-review-status">No verified implementation evidence</span></div>
-<p class="mini">An accepted entry records the user's representation in this browser session. It is <b>not</b> independently validated by the website, and it does not authorize Engineering activation.</p>
+<details><summary>See a fictional worked test result</summary><div id="worked-test" class="space"></div><p class="mini">This is an educational illustration, not a test performed against a real company or GitHub environment.</p></details>
 </div>
-<div class="grid two section">
-<div class="panel"><h3>Review history</h3><p class="small">Only explicit assessment-context or evidence acknowledgements appear here. No background reassessment occurs.</p><ol id="review-history" class="review-log"></ol></div>
-<div class="panel"><h3>Conclusion discipline</h3><p>For a <strong>proposal</strong>: assess technical plausibility, design options, prerequisites and decision-changing unknowns. For an <strong>existing workflow</strong>: narrow findings to the actual configuration, tests and period inspected.</p><p class="small">Neither architecture documentation nor framework alignment establishes operating effectiveness.</p></div></div>
-<div class="buttons space"><a href="#risk" class="btn">← Change the environment</a><a href="#overview" class="btn">Back to overview</a></div>
+<div class="panel section">
+<div class="eyebrow">Record your assessment · optional, local only</div><h2>What did the investigation establish?</h2>
+<p id="finding-guidance"></p>
+<div class="field"><label for="assessment-result">Result for this risk</label>
+<select id="assessment-result"><option value="not-assessed">Not assessed</option><option value="design-open">Design requires clarification or changes</option><option value="design-viable">Proposed approach appears viable subject to prerequisites</option><option value="blocked">Observed unauthorized action was blocked</option><option value="succeeded">Observed unauthorized action succeeded</option><option value="inconclusive">Test or inspection was inconclusive</option></select></div>
+<div class="field space"><label for="assessment-notes">Observation, evidence reference, test boundary or remaining question</label><textarea id="assessment-notes" rows="4" placeholder="Example: Authorized test environment; PR and revision; execution identity; expected versus observed outcome; records examined. Do not include secrets or proprietary information."></textarea></div>
+<div class="buttons space"><button class="btn primary" id="record-finding">Record assessment result</button><span class="status unknown" id="finding-state">Not assessed</span></div>
+<p class="mini">This saves an unverified user statement for the current browser session. The site cannot validate uploaded evidence, test completeness or operating effectiveness.</p>
+</div>
+<div class="panel section">
+<div class="eyebrow">Decision-ready summary</div><h2 id="assessment-summary-heading">Assessment not yet established</h2><p id="assessment-summary-explanation"></p>
+<div class="grid two" id="assessment-result-list"></div>
+<div class="note-box space"><strong>Most important unresolved question:</strong> <span id="decision-unknown"></span></div>
+<p id="scope-description" class="mini"></p>
+<div class="export-actions space"><button class="btn primary" id="export-assessment">Export structured assessment JSON</button><button class="btn" id="print-assessment">Print / save PDF</button></div>
+</div>
+<details class="section"><summary>Activity history and methodology notes</summary>
+<p class="small">The history reflects local changes and recorded assertions, not a tamper-resistant audit trail.</p><ol id="review-history" class="review-log"></ol>
+<p class="mini">Source descriptions and framework guidance support investigation, not control effectiveness. This demonstration does not authorize management's implementation or create an IA conclusion.</p>
+</details>
+<div class="buttons space"><a href="#engineering" class="btn">← Engineering architecture</a><a href="#risk" class="btn">Revisit environment and risk</a></div>
 </section>
 </main>
 <footer class="footer"><div class="wrap">AI-Enabled SDLC Field Guide · V2 design branch · Fictional public educational example. No automated approval, AI assessment, deployment, credential collection, or evidence upload. <a href="../field-guide-v2.html">Previous Field Guide version</a> <a href="../open-scenario.html">Existing experimental Challenge Lab</a></div></footer>
