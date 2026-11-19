@@ -10,7 +10,7 @@ test("All three navigation stages connect bidirectionally",()=>{
   for(const html of [learn,engineering,assess]){
     assert.match(html,/href="\.\/learn\.html"/);
     assert.match(html,/href="\.\/nondeterministic-audit\.html"/);
-    assert.match(html,/href="\.\/index\.html(?:#risk|")/);
+    assert.ok(html===assess ? html.includes('href="#risk"') : /href="\.\/index\.html(?:\?risk=R\d+)?(?:#risk)?"/.test(html));
   }
 });
 test("Risk reference covers every assessor mechanism and provides safeguard and test",()=>{
@@ -31,7 +31,7 @@ test("Three scenarios preserve distinct human authority",()=>{
   assert.match(learn,/autonomous AI approval/i);
 });
 test("Nondeterministic assurance methods include critical misses, access and log reconciliation",()=>{
-  for(const term of ["False-low-risk rate","Run-to-run instability","prompt injection","GitHub merged/review populations","revoke permissions","two agreeing models"])
+  for(const term of ["False-low-risk rate","Run-to-run instability","prompt injection","GitHub merged/review populations","revoke permissions","Two-model agreement"])
     assert.ok(engineering.toLowerCase().includes(term.toLowerCase()),term);
 });
 test("Assessor accepts only known risk deep links and retains explicit environment changes",()=>{
