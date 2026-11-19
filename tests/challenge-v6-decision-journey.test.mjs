@@ -134,13 +134,16 @@ test('missing or invalid causal traces preserve the primary modeled risk rather 
  assert.equal(malformed.riskPath,undefined);
  assert.ok(malformed.advisoryWarnings.some(w=>/lifecycle trace/.test(w)));
 });
-test('model prompt seeks a grounded conditional trace for PR Plan and GitHub tool permission examples',()=>{
+test('model prompt explains conditions without forcing risk paths or scenario-specific failures',()=>{
  const request=buildModelRequest(validateRequest({scenarioText:original,assessment:true}));
  const prompt=request.messages[0].content;
- assert.match(prompt,/A CONDITIONAL causal hypothesis is useful/);
- assert.match(prompt,/For a PR-Plan-based autonomous approval proposal/);
- assert.match(prompt,/For a PR summarization assistant with local GitHub CLI or MCP credentials/);
- assert.match(prompt,/Use riskPath:null only when no supportable causal sequence/);
+ assert.match(prompt,/what could happen, why it could happen, and the material condition that must hold/);
+ assert.match(prompt,/Make unverified assumptions conditional/);
+ assert.match(prompt,/existing safeguards or a competing explanation/);
+ assert.match(prompt,/riskPath:null remains valid/);
+ assert.doesNotMatch(prompt,/try to return a short riskPath/);
+ assert.doesNotMatch(prompt,/For a PR-Plan-based autonomous approval proposal/);
+ assert.doesNotMatch(prompt,/For a PR summarization assistant with local GitHub CLI or MCP credentials/);
 });
 test('V6 empty-state fallback renders scenario challenge and safeguard rather than an empty failure card',()=>{
  const view=fs.readFileSync(new URL('../challenge-v6-report-view.mjs',import.meta.url),'utf8');
