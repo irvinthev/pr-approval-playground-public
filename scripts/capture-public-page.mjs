@@ -274,10 +274,17 @@ async function checkChallengeAssessment(page, captureDecisionBrief) {
   await page.locator('#cdr-preview .v6-journey').waitFor();
   check(await page.locator('.v6-choice').count()===0,
     'No fabricated design dilemma for an autonomous-approval fixture');
-  check((await page.locator('.v6-choices').innerText()).includes('No artificial decision'),
-    'The no-choice fallback should explain the missing decision tension');
+  check((await page.locator('.v6-choices').innerText()).includes('does not establish two comparable design strategies'),
+    'A missing design choice should be explained without technical model jargon');
   check(await page.locator('.v6-stage-button').count()===0,
     'Null causal path must not turn into a fabricated pipeline');
+  check(await page.locator('.v6-fallback-card').isVisible(),
+    'A missing stage sequence should still show the validated primary failure mechanism');
+  check((await page.locator('.v6-fallback-card').innerText()).includes('A partial rollout may fail'),
+    'The fallback must use the scenario-specific model challenge rather than a generic empty state');
+  await page.locator('.v6-fallback-card .v6-button').click();
+  check(await page.locator('#v6-panel-safeguards').isVisible(),
+    'A reader should be able to navigate from the failure mechanism to engineering safeguards');
   check(await page.locator('#cdr-controls').isHidden(),
     'A scenario with no clarification questions has no inert reassessment action');
   check(requests.length===1,'Reading fallback scenario should use one API request');
