@@ -118,3 +118,40 @@ test('V6 UI is a single text-only report, and clarification still uses the real 
  assert.match(style,/@media\(max-width:560px\)/);
  assert.match(style,/v6-clarify-mode/);
 });
+
+test('missing or invalid causal traces preserve the primary modeled risk rather than imply absence of failure',()=>{
+ const noTrace=validate({...response,riskPath:null,decisionChallenge:undefined});
+ const output=projectConnectedReport(noTrace,original);
+ assert.equal(output.riskPath,null);
+ assert.match(output.leadRisk,/stale revision/i);
+ assert.match(output.leadRiskReason,/change before the execution/i);
+ assert.equal(output.safeguards.length,2);
+ const malformed=validate({...response,decisionChallenge:undefined,riskPath:{
+  pathway:'delivery',failure:'Stale authorization',
+  uncertainty:'Current merge gates unknown',
+  steps:[{stageId:'invented-stage',roles:['origin'],event:'Not grounded',interruption:'',evidence:'None'}]
+ }});
+ assert.equal(malformed.riskPath,undefined);
+ assert.ok(malformed.advisoryWarnings.some(w=>/lifecycle trace/.test(w)));
+});
+test('model prompt explains conditions without forcing risk paths or scenario-specific failures',()=>{
+ const request=buildModelRequest(validateRequest({scenarioText:original,assessment:true}));
+ const prompt=request.messages[0].content;
+ assert.match(prompt,/what could happen, why it could happen, and the material condition that must hold/);
+ assert.match(prompt,/Make unverified assumptions conditional/);
+ assert.match(prompt,/existing safeguards or a competing explanation/);
+ assert.match(prompt,/riskPath:null remains valid/);
+ assert.doesNotMatch(prompt,/try to return a short riskPath/);
+ assert.doesNotMatch(prompt,/For a PR-Plan-based autonomous approval proposal/);
+ assert.doesNotMatch(prompt,/For a PR summarization assistant with local GitHub CLI or MCP credentials/);
+});
+test('V6 empty-state fallback renders scenario challenge and safeguard rather than an empty failure card',()=>{
+ const view=fs.readFileSync(new URL('../challenge-v6-report-view.mjs',import.meta.url),'utf8');
+ assert.match(view,/v6-fallback-card/);
+ assert.match(view,/project\.leadRiskReason/);
+ assert.match(view,/project\.safeguards\[0\]\.objective/);
+ assert.match(view,/Inspect engineering safeguards/);
+ assert.match(view,/invalidTrace/);
+ assert.doesNotMatch(view,/No defensible stage-by-stage failure path was returned/);
+ assert.doesNotMatch(view,/No artificial decision was generated/);
+});
