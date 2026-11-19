@@ -118,3 +118,37 @@ test('V6 UI is a single text-only report, and clarification still uses the real 
  assert.match(style,/@media\(max-width:560px\)/);
  assert.match(style,/v6-clarify-mode/);
 });
+
+test('missing or invalid causal traces preserve the primary modeled risk rather than imply absence of failure',()=>{
+ const noTrace=validate({...response,riskPath:null,decisionChallenge:undefined});
+ const output=projectConnectedReport(noTrace,original);
+ assert.equal(output.riskPath,null);
+ assert.match(output.leadRisk,/stale revision/i);
+ assert.match(output.leadRiskReason,/change before the execution/i);
+ assert.equal(output.safeguards.length,2);
+ const malformed=validate({...response,decisionChallenge:undefined,riskPath:{
+  pathway:'delivery',failure:'Stale authorization',
+  uncertainty:'Current merge gates unknown',
+  steps:[{stageId:'invented-stage',roles:['origin'],event:'Not grounded',interruption:'',evidence:'None'}]
+ }});
+ assert.equal(malformed.riskPath,undefined);
+ assert.ok(malformed.advisoryWarnings.some(w=>/lifecycle trace/.test(w)));
+});
+test('model prompt seeks a grounded conditional trace for PR Plan and GitHub tool permission examples',()=>{
+ const request=buildModelRequest(validateRequest({scenarioText:original,assessment:true}));
+ const prompt=request.messages[0].content;
+ assert.match(prompt,/A CONDITIONAL causal hypothesis is useful/);
+ assert.match(prompt,/For a PR-Plan-based autonomous approval proposal/);
+ assert.match(prompt,/For a PR summarization assistant with local GitHub CLI or MCP credentials/);
+ assert.match(prompt,/Use riskPath:null only when no supportable causal sequence/);
+});
+test('V6 empty-state fallback renders scenario challenge and safeguard rather than an empty failure card',()=>{
+ const view=fs.readFileSync(new URL('../challenge-v6-report-view.mjs',import.meta.url),'utf8');
+ assert.match(view,/v6-fallback-card/);
+ assert.match(view,/project\.leadRiskReason/);
+ assert.match(view,/project\.safeguards\[0\]\.objective/);
+ assert.match(view,/Inspect engineering safeguards/);
+ assert.match(view,/invalidTrace/);
+ assert.doesNotMatch(view,/No defensible stage-by-stage failure path was returned/);
+ assert.doesNotMatch(view,/No artificial decision was generated/);
+});
