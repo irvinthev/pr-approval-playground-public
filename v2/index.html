@@ -17,11 +17,11 @@
 <a class="skip" href="#main">Skip to main content</a>
 <header class="site-head"><div class="wrap head-flex">
 <a class="brand" href="#overview"><span class="brand-mark">◈</span><span>AI-ENABLED SDLC<small>ENVIRONMENT → RISK → DESIGN → EVIDENCE</small></span></a>
-<nav class="nav" aria-label="Assessment stages">
-<a href="#overview" data-viewlink="overview">01 Overview</a>
-<a href="#risk" data-viewlink="risk">02 Risk Assessment</a>
-<a href="#engineering" data-viewlink="engineering">03 Engineering Expectations</a>
-<a href="#testing" data-viewlink="testing">04 Assessment &amp; Testing</a></nav>
+<nav class="nav" aria-label="Assessment stages"><a href="./learn.html">01 Learn</a><a href="./nondeterministic-audit.html">02 Engineer &amp; Evaluate</a>
+<a href="#overview" data-viewlink="overview">03 Assess · Overview</a>
+<a href="#risk" data-viewlink="risk">Risk Assessment</a>
+<a href="#engineering" data-viewlink="engineering">Architecture &amp; Build</a>
+<a href="#testing" data-viewlink="testing">Assessment &amp; Testing</a></nav>
 <span class="header-meta">V2 CONCEPT · FICTIONAL / LOCAL</span>
 </div></header>
 <main id="main" class="wrap">
@@ -29,7 +29,7 @@
 <div class="hero"><div class="eyebrow">Start with your environment, not a generic checklist</div>
 <h1>What risks actually matter in your software-delivery workflow?</h1>
 <p>Describe how AI or automation participates, what it can authorize, and what the change can affect. Then connect relevant failure scenarios to engineering expectations and evidence-based conclusions.</p>
-<div class="buttons space"><button class="btn primary" data-entry="proposed">Assess a proposed design</button><button class="btn secondary" data-entry="existing">Assess an existing workflow</button></div>
+<div class="buttons space"><a href="./learn.html" class="btn secondary">Learn what AI changes</a><a href="./nondeterministic-audit.html" class="btn secondary">Explore technical testing</a><button class="btn primary" data-entry="proposed">Assess a proposed design</button><button class="btn secondary" data-entry="existing">Assess an existing workflow</button></div>
 <p class="mini" style="margin-top:18px;color:#c6dce8">Public, fictional demonstration. Structured inputs run only in this browser. No AI inference, external assessment service, or evidence verification occurs.</p>
 </div>
 <div class="section"><div class="section-header"><p class="eyebrow">What you will produce</p><h2>One connected assessment—not four unrelated documents</h2><p>The same selected risks follow you across the journey. The matrix explains applicability and priority separately from safeguard maturity.</p></div>
@@ -75,7 +75,7 @@
 <p class="small">All candidate risks remain inspectable, including those not indicated by the current profile. Priority is an illustrative qualitative screen, not a score or validated ranking.</p>
 <div class="risk-buttons"><button data-filter="applicable" class="active">Relevant / plausible</button><button data-filter="all">All candidate risks</button></div>
 <div class="table-scroll"><table class="matrix"><thead><tr><th>ID</th><th>Failure scenario &amp; reason</th><th>Applies?</th><th>Priority</th></tr></thead><tbody id="risk-matrix"></tbody></table></div>
-<div class="detail" id="risk-detail" aria-live="polite"></div></div>
+<div class="detail" id="risk-detail" aria-live="polite"></div><p class="mini">Need the method first? <a href="./learn.html#risk-index">Explore the risk library</a> · <a href="./nondeterministic-audit.html#evaluation">Learn nondeterministic testing</a> · <a href="./nondeterministic-audit.html#telemetry">Telemetry &amp; access</a>.</p></div>
 <div class="buttons space"><a href="#engineering" class="btn primary">Continue to engineering expectations →</a><button class="btn" id="export-risk">Export assessment JSON</button></div>
 </div></div>
 </section>
@@ -121,7 +121,7 @@
 <div class="grid two"><div class="card soft"><div class="muted-label">Expected behavior</div><p id="eng-experiment-expected"></p></div><div class="card soft"><div class="muted-label">What would change the design decision</div><p id="eng-experiment-decision"></p></div></div>
 <p class="mini">Experiments must be executed in an authorized test environment. The prototype does not run GitHub commands or simulate actual enforcement.</p>
 </div>
-<div class="buttons space"><a href="#risk" class="btn">← Return to risk assessment</a><a href="#testing" class="btn primary">Assess the selected expectation →</a></div>
+<div class="buttons space"><a id="eng-risk-guide" href="./nondeterministic-audit.html#controls" class="btn">Build &amp; test guide for this risk</a><a href="#risk" class="btn">← Return to risk assessment</a><a href="#testing" class="btn primary">Assess the selected expectation →</a></div>
 </section>
 <section id="view-testing" class="view" hidden>
 <div class="crumb"><a href="#engineering">Engineering Architecture</a> / Assessment &amp; Testing</div>
@@ -158,7 +158,7 @@
 <p class="small">The history reflects local changes and recorded assertions, not a tamper-resistant audit trail.</p><ol id="review-history" class="review-log"></ol>
 <p class="mini">Source descriptions and framework guidance support investigation, not control effectiveness. This demonstration does not authorize management's implementation or create an IA conclusion.</p>
 </details>
-<div class="buttons space"><a href="#engineering" class="btn">← Engineering architecture</a><a href="#risk" class="btn">Revisit environment and risk</a></div>
+<div class="buttons space"><a id="test-risk-guide" href="./nondeterministic-audit.html#evaluation" class="btn">Detailed technical testing for this risk</a><a href="#engineering" class="btn">← Engineering architecture</a><a href="#risk" class="btn">Revisit environment and risk</a></div>
 </section>
 </main>
 <footer class="footer"><div class="wrap">AI-Enabled SDLC Field Guide · V2 design branch · Fictional public educational example. No automated approval, AI assessment, deployment, credential collection, or evidence upload. <a href="../field-guide-v2.html">Previous Field Guide version</a> <a href="../open-scenario.html">Existing experimental Challenge Lab</a></div></footer>
@@ -220,7 +220,7 @@ function renderRisk(){var rows=results(),n=rows.filter(function(r){return r.appl
 $("risk-stats").innerHTML=[["Relevant mechanisms",n,"Applied to current profile"],["Requiring clarification",p,"Keep visible, do not assume safe"],["High-attention",hi,"Consequences and credible paths"]].map(function(x){return'<div class="card"><div class="muted-label">'+x[0]+'</div><div class="summary-number">'+x[1]+'</div><small>'+x[2]+'</small></div>'}).join("");
 $("matrix-version").textContent="Assessment "+revision;$("profile-status").textContent=config.phase==="proposed"?"Proposed design · not validated":"Existing workflow · evidence not validated";
 var visible=selectedFilter==="all"?rows:rows.filter(function(r){return r.applicability!=="no"});$("risk-matrix").innerHTML=visible.map(function(r){return'<tr tabindex="0" role="button" data-risk="'+r.id+'" aria-label="Inspect '+r.id+'" class="'+(r.id===currentRisk?"selected":"")+'"><td>'+r.id+'</td><td><b>'+esc(r.title)+'</b><div class="reason">'+esc(r.why)+'</div></td><td>'+badge(r.applicability)+'</td><td>'+prBadge(r.priority)+'</td></tr>'}).join("");
-var r=selected();$("risk-detail").innerHTML='<div class="summary-line"><h3>'+r.id+' · '+esc(r.title)+'</h3>'+badge(r.applicability)+'</div><div class="muted-label">Why it applies / remains uncertain</div><p>'+esc(r.why)+'</p><div class="muted-label">What changes its priority</div><p>Potential exposure: '+esc(exposureText())+'. Priority reflects consequences and reachable conditions, <strong>not</strong> assumed safeguard effectiveness.</p><div class="muted-label">Treatment and evidence are assessed separately</div><p>'+esc(r.expect)+'</p><div class="status-row">'+prBadge(r.priority)+' <span class="status unknown">'+esc(evidenceName(evidence[r.id]||"unknown"))+'</span></div><div class="buttons space"><a class="btn primary" href="#engineering">Open engineering expectations →</a><a class="btn" href="#testing">Examine evidence →</a></div>';
+var r=selected();$("risk-detail").innerHTML='<div class="summary-line"><h3>'+r.id+' · '+esc(r.title)+'</h3>'+badge(r.applicability)+'</div><div class="muted-label">Why it applies / remains uncertain</div><p>'+esc(r.why)+'</p><div class="muted-label">What changes its priority</div><p>Potential exposure: '+esc(exposureText())+'. Priority reflects consequences and reachable conditions, <strong>not</strong> assumed safeguard effectiveness.</p><div class="muted-label">Treatment and evidence are assessed separately</div><p>'+esc(r.expect)+'</p><div class="status-row">'+prBadge(r.priority)+' <span class="status unknown">'+esc(evidenceName(evidence[r.id]||"unknown"))+'</span></div><div class="buttons space"><a class="btn primary" href="#engineering">Open engineering expectations →</a><a class="btn" href="#testing">Examine evidence →</a><a class="btn" href="./nondeterministic-audit.html#risk-'+r.id+'">Safeguard &amp; test example ↗</a></div>';
 document.querySelectorAll("[data-filter]").forEach(function(b){b.classList.toggle("active",b.dataset.filter===selectedFilter)});
 $("pending-notice").hidden=!pending}
 function exposureText(){var x=[];["shared","customer","financial","security"].forEach(function(k){if(config[k])x.push({shared:"shared dependencies",customer:"customer services",financial:"financial processing",security:"security-sensitive functions"}[k])});return x.join(", ")||"not specified"}
@@ -263,7 +263,7 @@ $("eng-telemetry").innerHTML=p.signals.map(function(x){return"<tr><td><strong>"+
 $("eng-fallback").textContent=p.fallback;$("eng-owner").textContent=p.owner;$("eng-heading").textContent=r.id+" · "+r.title;$("eng-state").textContent=r.priority+" · "+r.applicability;$("engineering-risk-buttons").innerHTML=riskButtons();$("eng-failure").textContent=r.when+" "+r.why;$("eng-expectation").textContent=r.expect;$("eng-boundary").textContent=r.boundary;$("eng-operations").textContent=r.ops;
 $("framework-cards").innerHTML=r.refs.map(function(id){var f=refCatalog[id];return'<div class="card soft"><div class="kicker">'+esc(f.role)+'</div><h3>'+esc(f.name)+'</h3><p>'+esc(f.note)+'</p><a target="_blank" rel="noopener noreferrer" href="'+f.url+'">Publisher documentation ↗</a></div>'}).join("");
 $("source-inspection").innerHTML="<p><strong>Fictional proposal statement:</strong> "+esc(r.source)+"</p><p><strong>Analysis:</strong> "+esc(r.when)+"</p>";
-$("eng-experiment-title").textContent=r.id+" · Explore a failure condition";$("eng-experiment").textContent=r.negative;$("eng-experiment-expected").textContent=r.expect;$("eng-experiment-decision").textContent=r.failure}
+$("eng-risk-guide").href="./nondeterministic-audit.html#risk-"+r.id;$("eng-experiment-title").textContent=r.id+" · Explore a failure condition";$("eng-experiment").textContent=r.negative;$("eng-experiment-expected").textContent=r.expect;$("eng-experiment-decision").textContent=r.failure}
 function findingName(x){return({"not-assessed":"Not assessed","design-open":"Design questions open","design-viable":"Conditional design hypothesis","blocked":"Unauthorized action blocked · user-reported","succeeded":"Unauthorized action succeeded · user-reported","inconclusive":"Inconclusive"})[x]||"Not assessed"}
 function decisionQuestion(){return config.pattern==="routing"?"Does manager review preserve or replace required code-owner approvals?":config.pattern==="agent"?"Can the agent approve a different PR or revision without new human authorization?":config.pattern==="auto"?"Can an ineligible change reach approval or merge through AI decisions or bot exemptions?":"Which restrictions are independently enforced?"}
 function renderTesting(){var r=selected(),f=findings[r.id]||{result:"not-assessed",notes:""},rs=results().filter(function(x){return x.applicability==="yes"}),completed=rs.filter(function(x){return findings[x.id]&&findings[x.id].result!=="not-assessed"}),failed=rs.filter(function(x){return findings[x.id]&&findings[x.id].result==="succeeded"});
@@ -274,7 +274,7 @@ $("worked-test").innerHTML="<p><strong>Illustrative challenge:</strong> "+esc(r.
 $("assessment-summary-heading").textContent=failed.length?"Reported unauthorized execution requires investigation":completed.length?completed.length+" reviewed risk record(s) · user-reported":"Assessment not yet established";
 $("assessment-summary-explanation").textContent=config.phase==="proposed"?"The proposal may be explored, but management must decide whether an experiment is worthwhile. No operating effectiveness can be inferred.":"Only user-recorded observations are available. This static prototype does not verify configurations, negative tests or monitoring evidence.";
 $("assessment-result-list").innerHTML=rs.map(function(x){var q=findings[x.id]||{result:"not-assessed",notes:""};return'<div class="card soft"><strong>'+x.id+" · "+esc(x.title)+'</strong><p>'+esc(findingName(q.result))+'</p>'+(q.notes?'<p class="mini">'+esc(q.notes)+'</p>':"")+'</div>'}).join("");
-$("decision-unknown").textContent=decisionQuestion();$("scope-description").textContent="Context: "+patternName(config.pattern)+" · "+config.phase+" · exposure: "+exposureText()+". The browser does not validate claims or evidence.";renderHistory()}
+$("test-risk-guide").href="./nondeterministic-audit.html#risk-"+r.id;$("decision-unknown").textContent=decisionQuestion();$("scope-description").textContent="Context: "+patternName(config.pattern)+" · "+config.phase+" · exposure: "+exposureText()+". The browser does not validate claims or evidence.";renderHistory()}
 function patternName(p){return({auto:"Autonomous AI approval",agent:"Agent-executed human approval",routing:"Automated manager routing",advisory:"AI-assisted advisory review",fast:"Human Fast Track"})[p]}
 function renderHistory(){$("review-history").innerHTML=history.map(function(x){return"<li>"+esc(x)+"</li>"}).join("")}
 function markPending(){pending=JSON.stringify(fromForm())!==JSON.stringify(config);$("pending-notice").hidden=!pending;if(pending)$("scenario-preset").value="custom"}
@@ -298,7 +298,7 @@ if(value!=="not-assessed"&&!notes){$("finding-state").textContent="Describe the 
 findings[currentRisk]={result:value,notes:notes,scope:config.phase,assessmentRevision:revision};revision++;record("User reported "+currentRisk+": "+findingName(value)+"; unverified.");renderTesting()});
 function save(){var payload={version:"v2-guided-assessment",scope:"fictional educational",revision:revision,environment:config,risks:results().map(function(r){return{id:r.id,applicability:r.applicability,priority:r.priority,rationale:r.why,expected_behavior:r.expect,user_reported_finding:findings[r.id]||{result:"not-assessed"},frameworks:r.refs}}),selected_architecture:activePlan().options[selectedArchitecture][0],review_history:history,warning:"No evidence has been independently verified; not an IA conclusion or management approval."};var blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"}),u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download="fictional-sdlc-assessment-v2.json";document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},1000)}
 $("export-risk").addEventListener("click",save);$("export-assessment").addEventListener("click",save);$("print-assessment").addEventListener("click",function(){window.print()});
-window.addEventListener("hashchange",setPage);fillForm(config);$("scenario-preset").value="auto";renderRisk();renderEngineering();renderTesting();setPage();
+var linkedRisk=new URLSearchParams(location.search).get("risk");if(linkedRisk&&riskCatalog.some(function(r){return r.id===linkedRisk})){currentRisk=linkedRisk;selectedFilter="all"}window.addEventListener("hashchange",setPage);fillForm(config);$("scenario-preset").value="auto";renderRisk();renderEngineering();renderTesting();setPage();
 })();
 </script>
 </body></html>
