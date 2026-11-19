@@ -104,7 +104,7 @@ export function renderV6Report(target,response,scenarioText=''){
   add(choices,kicker('ARCHITECTURE QUESTION'),
     node('h3','v6-question',project.leadRisk||'Which condition would change this decision?'));
   text(choices,'v6-tension',project.leadRiskReason||project.basis);
-  text(choices,'v6-note','Gemini did not return a defensible two-option design choice. No artificial decision was generated.');
+  text(choices,'v6-note','The scenario does not establish two comparable design strategies. Explore the failure mechanism and safeguards, then compare alternatives under Management Considerations.');
  }
  root.append(choices);
 
@@ -219,7 +219,36 @@ export function renderV6Report(target,response,scenarioText=''){
     project.riskPath.steps[0];
   selectStage(focusStage.id);
  }else{
-  text(failure,'v6-empty','No defensible stage-by-stage failure path was returned. This does not establish that the design is risk-free.');
+  // Do not invent lifecycle stage identities when the validated model did
+  // not return a trace. Still show the scenario-specific primary challenge,
+  // potential validation question, and expected safeguards from the SAME
+  // signed assessment response instead of displaying an empty failure tab.
+  const summary=node('section','v6-stage-card v6-fallback-card');
+  add(summary,kicker('PRIMARY FAILURE MECHANISM · MODEL-GENERATED'),
+    node('h3','v6-stage-title',project.leadRisk||'What could cause this design to fail?'));
+  text(summary,'v6-stage-event',
+    project.leadRiskReason||'The assessment did not provide a concrete causal mechanism.');
+  const checks=node('div','v6-outcomes v6-fallback-outcomes');
+  if(project.experiments.length||project.unknowns.length){
+   const evidence=node('div','v6-outcome v6-evidence');
+   add(evidence,node('strong','','What could distinguish the outcomes?'));
+   text(evidence,'',project.experiments[0]||project.unknowns[0]);
+   checks.append(evidence);
+  }
+  if(project.safeguards.length){
+   const expected=node('div','v6-outcome v6-stop');
+   add(expected,node('strong','','Expected safeguard to investigate'));
+   text(expected,'',project.safeguards[0].objective);
+   checks.append(expected);
+  }
+  if(checks.childElementCount)summary.append(checks);
+  const invalidTrace=project.advisoryWarnings.some(w=>/lifecycle trace/i.test(w));
+  text(summary,'v6-note',invalidTrace?
+   'A proposed stage trace did not pass validation, so no stage-level sequence is shown. These are scenario-derived considerations, not observed failure or verified enforcement.':
+   'The assessment did not establish a stage-by-stage causal sequence. These are scenario-derived considerations, not observed failure or verified enforcement.');
+  if(project.safeguards.length)
+   summary.append(jumpButton('Inspect engineering safeguards',()=>setTab('safeguards')));
+  failure.append(summary);
  }
  if(project.reconciliation||project.operational){
   const operation=project.reconciliation||project.operational;
