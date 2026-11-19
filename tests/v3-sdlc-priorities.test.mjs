@@ -51,3 +51,12 @@ test('No selected activities yields no priorities and no claim of low risk',()=>
  assert.deepEqual(ids(profile([],'advisory')),[]);
  assert.match(assessment,/This does not demonstrate low risk/);
 });
+
+test('Decision brief carries ranked risk titles, rationale and change conditions',()=>{
+ assert.match(assessment,/Priorities to investigate first/);
+ assert.match(assessment,/brief-priority-list/);
+ assert.match(assessment,/Why prioritized:/);
+ assert.match(assessment,/What could change the assessment:/);
+ assert.match(assessment,/p\.id\+' · '/);
+ assert.match(assessment,/#resultsList,#prioritySummary,#metrics/);
+});
