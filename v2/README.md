@@ -60,3 +60,18 @@ Keep `main` and the original homepage unchanged and review this as a **draft pul
 The Engineering view now starts with the problem, compares three possible implementations per authority pattern, and explains what to reuse, configure, build, instrument and operate. The selected risk remains linked to the architecture and its targeted negative-test question. The Assessment view replaces opaque evidence-maturity counters with a guided investigation and a user-reported result. An illustrative completed test is explicitly fictional.
 
 **Verification note:** The 18 targeted checks executed against the latest branch source passed. This is not equivalent to a complete Node test run, interactive browser QA, accessibility testing or validation of real GitHub enforcement.
+
+
+## V2 learning and technical assurance extension (branch-only)
+
+The V2 preview now has **three connected entry points**, without replacing the original assessor:
+
+- **Learn:** `/v2/learn.html` — how AI changes SDLC, new vs amplified risks, nondeterministic decisions, and three contrasting authority models.
+- **Engineer & Evaluate:** `/v2/nondeterministic-audit.html` — model evaluation methodology, risk-to-safeguard/test library (R01–R09), GitHub access and tool permissions, event telemetry, population reconciliation and authorization experiments.
+- **Assess:** `/v2/index.html` — existing environment-driven risk assessment, architecture choices and evidence-bounded findings. Deep links `/v2/index.html?risk=R01#risk` to `R09` select a risk without changing the default fictional architecture.
+
+For the three-scenario design validation, compare (1) advisory-only AI review, (2) agent execution of explicit human approval and (3) autonomous AI approval. These have different decision authority and therefore must not inherit identical technical or audit conclusions.
+
+**Important:** These are educational guidance and fictional examples. There is no automated model evaluation, production telemetry ingestion, evidence verification or implemented real-world safeguard. Proposed designs are not evaluated for operating effectiveness. Tests: `node --test tests/v2-learning-journey.test.mjs tests/v2-assessment-model.test.mjs`.
+
+**Review note:** All changes remain on `feature/v2-environment-risk-assessment`; the original repository homepage and production `main` are intentionally untouched. This iteration requires browser/mobile review before considering any future release.
