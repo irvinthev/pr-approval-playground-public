@@ -79,7 +79,14 @@ function renderRiskFocus(){
   if(i)p.append(' · ');
   const a=document.createElement('a');a.href='#'+target;a.textContent=target;p.appendChild(a);
  });
- el.append(title,p);main.insertBefore(el,main.children[1]||null);
+ const r=(window.SDLCRiskRecords||[]).find(x=>x.id===id);
+ if(r){
+  const claim=document.createElement('p');const b=document.createElement('strong');b.textContent='Engineering claim to challenge: ';claim.append(b,document.createTextNode(r.objective));
+  const negative=document.createElement('p');negative.textContent='Test to consider: '+r.negativeTest;
+  el.append(title,claim,negative,p);
+ }else el.append(title,p);
+ const toNotes=document.createElement('a');toNotes.href='#investigation';toNotes.textContent='Document evidence and conclusion →';el.append(toNotes);
+ main.insertBefore(el,main.children[1]||null);
 }
 
 function setupEvidenceForm(){
