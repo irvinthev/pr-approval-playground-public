@@ -27,7 +27,7 @@ const records=window.SDLCRiskRecords;
 const esc=s=>String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 const field=(label,value)=>'<div class="field"><b>'+esc(label)+'</b><p>'+esc(value)+'</p></div>';
 function card(r){
-const related=(window.FGSession?.domains?.[r.id]||[]);const assuranceLink=related.length?'<p class="small-note"><a href="./assurance.html?risk='+encodeURIComponent(r.id)+'#'+related[0]+'">Explore relevant assurance guidance →</a></p>':'';
+const related=(window.FGSession?.domains?.[r.id]||[]);const assuranceLink=related.length?'<p class="small-note"><a href="./assurance.html?risk='+encodeURIComponent(r.id)+'#'+related[0]+'">Explore relevant assurance guidance →</a> · <a href="./assurance.html?risk='+encodeURIComponent(r.id)+'#investigation">Record evidence and a conclusion →</a></p>':'';
 const options='<ul>'+r.approaches.map(a=>'<li><strong>'+esc(a[0])+':</strong> '+esc(a[1])+'</li>').join('')+'</ul>';
 return '<article id="'+esc(r.id)+'"><header><div class="card-intro"><span class="kicker">'+esc(r.id)+' · '+esc(r.group)+'</span><h2>'+esc(r.title)+'</h2><div class="plain-risk"><strong>The Risk</strong><p>'+esc(r.plainEnglish)+'</p></div><span class="class-tag">'+esc(r.relevance)+'</span><div class="stage-tags">'+r.stages.map(st=>'<span class="stage-tag'+(st===r.primaryStage?' primary':'')+'">'+(st===r.primaryStage?'Origin: ':'Conditional: ')+esc(st)+'</span>').join('')+'</div></div></header>'+
 '<div class="quick-read"><div class="quick-question"><strong>Engineering question</strong><p>'+esc(r.challenge)+'</p></div><div class="quick-cols"><div><strong>Design option to compare</strong><p>'+esc(r.approaches[0]?.[0]||'Review alternatives')+': '+esc(r.approaches[0]?.[1]||'')+'</p></div><div><strong>Challenge the boundary</strong><p>'+esc(r.negativeTest)+'</p></div></div><div class="quick-links">'+assuranceLink+'</div></div>'+ 
@@ -45,6 +45,8 @@ const synonyms={
  'prompt injection':['untrusted instructions','untrusted content','tool response','malicious comment','R12'],
  'injection':['untrusted instructions','malicious comment','R12'],
  'approval drift':['stale approval','revision','R04'],
+ 'stale approval':['approval becomes stale','revision','R04'],
+ 'exfiltration':['external AI','egress','data boundary','R06'],
  'data leak':['egress','exfiltration','external AI','R06'],
  'so d':['segregation of duties','approval','authorization'],
  'rollback':['recovery','incident','stop']
