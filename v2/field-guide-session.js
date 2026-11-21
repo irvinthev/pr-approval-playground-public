@@ -11,6 +11,8 @@
  };
  function read(){try{const x=JSON.parse(sessionStorage.getItem(KEY)||'null');return x&&x.version===1?x:null;}catch{return null;}}
  function save(data){try{sessionStorage.setItem(KEY,JSON.stringify({version:1,...data}));return true;}catch{return false;}}
+ function saveDecision(decision){const current=read()||{};return save({...current,decision});}
+ function readDecision(){return read()?.decision||null;}
  function clear(){try{sessionStorage.removeItem(KEY);}catch{}}
  function selectedRisk(){const p=new URLSearchParams(location.search),id=p.get('risk')||(location.hash.match(/R\d{2}/)||[])[0];return /^R(?:0[1-9]|1\d|2[01])$/.test(id||'')?id:null;}
  function contextBar(){
@@ -22,6 +24,6 @@
   el.querySelector('.fg-context-detail').textContent=subtitle;
   const main=document.querySelector('main');if(main)main.prepend(el);
  }
- window.FGSession={read,save,clear,selectedRisk,domains,contextBar};
+ window.FGSession={read,save,saveDecision,readDecision,clear,selectedRisk,domains,contextBar};
  document.addEventListener('DOMContentLoaded',contextBar);
 })();
