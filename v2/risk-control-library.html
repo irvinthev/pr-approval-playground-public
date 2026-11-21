@@ -12,7 +12,28 @@
 .quick-links p{margin:0}
 .quick-links a{font-size:13px;font-weight:750}
 .stage-tag.primary{background:#e6f7f3;border-color:#178284;color:#155d64;font-weight:750}
-@media(max-width:700px){.quick-read{padding:2px 16px 16px}.quick-cols{grid-template-columns:minmax(0,1fr)}}</style><link rel="stylesheet" href="./field-guide-readability.css"></head><body data-fg-page="library">
+@media(max-width:700px){.quick-read{padding:2px 16px 16px}.quick-cols{grid-template-columns:minmax(0,1fr)}}
+/* V3.9: six compact SDLC group previews; full records expand on demand */
+body[data-fg-page="library"] .list{display:grid;gap:10px;margin-top:20px}
+body[data-fg-page="library"] .stage-cluster{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+body[data-fg-page="library"] .stage-cluster>summary{display:block;list-style:none;cursor:pointer;padding:15px 19px;position:relative}
+body[data-fg-page="library"] .stage-cluster>summary::-webkit-details-marker{display:none}
+body[data-fg-page="library"] .stage-cluster>summary::after{content:"⌄";position:absolute;right:16px;top:14px;font-size:20px;color:#286e77}
+body[data-fg-page="library"] .stage-cluster[open]>summary::after{content:"⌃"}
+body[data-fg-page="library"] .stage-cluster-heading{font-size:17px;font-weight:800;display:block;padding-right:25px}
+body[data-fg-page="library"] .stage-cluster-count{font-size:12px;color:var(--muted);display:block}
+body[data-fg-page="library"] .stage-cluster-previews{margin:8px 0 0;padding:0;list-style:none;display:grid;gap:3px;color:#355769;font-size:13px}
+body[data-fg-page="library"] .stage-cluster-action{font-size:12px;color:#087a80;font-weight:750;display:block;margin-top:9px}
+body[data-fg-page="library"] .stage-cluster-content{padding:12px;display:grid;gap:14px;border-top:1px solid var(--line)}
+body[data-fg-page="library"] .stage-cluster-content article{margin:0}
+body[data-fg-page="library"] .stage-cluster[open]>.stage-cluster-content{background:#f6fafb}
+@media(max-width:760px){
+ body[data-fg-page="library"] .stage-cluster>summary{padding:12px 15px}
+ body[data-fg-page="library"] .stage-cluster-heading{font-size:15px}
+ body[data-fg-page="library"] .stage-cluster-previews{font-size:12px}
+ body[data-fg-page="library"] .stage-cluster-content{padding:8px}
+}
+</style><link rel="stylesheet" href="./field-guide-readability.css"></head><body data-fg-page="library">
 <header class="top"><div class="wrap"><span class="brand">AI-ENABLED SDLC · PLAYGROUND</span><nav aria-label="Field Guide"><a href="./field-guide.html">Field Guide</a><a href="./sdlc-assessment.html">Risk Assessment</a><a href="./risk-control-library.html" aria-current="page">Risk &amp; Control Library</a><a href="./assurance.html">Assurance</a></nav></div></header>
 <main class="wrap"><section class="hero"><div class="eyebrow">Full reference · fictional public examples</div><h1>Risk &amp; Control Library</h1><p>Explore 21 fictional risks across the AI-enabled SDLC. Distinguish failure origin from conditional applicability and downstream impacts, then challenge architectures, safeguards and evidence. This remains an illustrative teaching reference, not a validated comprehensive risk inventory.</p><p><a class="btn" href="./sdlc-assessment.html">Assess your AI-enabled SDLC environment</a></p></section>
 <div class="warning"><strong>Source boundary:</strong> This public educational library preserves nine original fictional PR-approval records and adds twelve newly authored hypothetical SDLC scenarios. It is <strong>not</strong> the private AI Auto Approve register, a company risk inventory, verified implementation, or an approved control framework. Examples are illustrative and must be validated in the actual environment.</div>
@@ -80,31 +101,54 @@ function selected(){
  });
 }
 let lastDeepLink=null;
+const stageNameToId=st=>st.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/-$/,'');
+function stageGroup(st,group){
+ const id='stage-group-'+stageNameToId(st);
+ const previews=group.slice(0,2).map(r=>'<li><strong>'+esc(r.id)+'</strong> · '+esc(r.title)+'</li>').join('');
+ return '<details class="stage-cluster" id="'+id+'"><summary><span class="stage-cluster-heading">'+esc(st)+'</span><span class="stage-cluster-count">'+group.length+' primary scenarios</span>'+
+  '<ul class="stage-cluster-previews">'+previews+'</ul><span class="stage-cluster-action">Explore all '+group.length+' scenarios and technical details</span></summary>'+
+  '<div class="stage-cluster-content">'+group.map(card).join('')+'</div></details>';
+}
+function hasActiveFilters(){
+ return document.getElementById('q').value.trim()!==''||document.getElementById('domain').value!=='all'||document.getElementById('stage').value!=='all'||document.getElementById('relevance').value!=='all';
+}
 function render(focusLink=false){
  const container=document.getElementById('records');
- const opened=new Set([...container.querySelectorAll('article details[open]')].map(el=>el.closest('article')?.id).filter(Boolean));
- let found=selected();
- const requested=(location.hash.slice(1)||new URLSearchParams(location.search).get('risk')||'').toUpperCase();
- if(focusLink&&/^R(?:0[1-9]|1\d|2[01])$/.test(requested)&&records.some(r=>r.id===requested)){
-  if(!found.some(r=>r.id===requested)){
-   document.getElementById('q').value='';
-   document.getElementById('domain').value='all';
-   document.getElementById('stage').value='all';
-   document.getElementById('relevance').value='all';
-   found=selected();
-  }
-  opened.add(requested);
+ const oldOpenCards=new Set([...container.querySelectorAll('article details[open]')].map(el=>el.closest('article')?.id).filter(Boolean));
+ const oldGroups=new Set([...container.querySelectorAll('.stage-cluster[open]')].map(el=>el.id));
+ const selectedRisks=selected();
+ const targetRisk=(location.hash.slice(1)||new URLSearchParams(location.search).get('risk')||'').toUpperCase();
+ const validRisk=/^R(?:0[1-9]|1\d|2[01])$/.test(targetRisk)&&records.some(r=>r.id===targetRisk);
+ if(focusLink&&validRisk&&(!selectedRisks.some(r=>r.id===targetRisk))){
+  // Links from Assessment must not be hidden by a previous filter.
+  document.getElementById('q').value='';
+  document.getElementById('domain').value='all';
+  document.getElementById('stage').value='all';
+  document.getElementById('relevance').value='all';
  }
- container.innerHTML=found.map(card).join('');
- opened.forEach(id=>{const record=document.getElementById(id);if(record){const detail=record.querySelector('details');if(detail)detail.open=true;}});
- document.getElementById('count').textContent=found.length+' of '+records.length+' records';
+ const found=selected();
+ const filtered=hasActiveFilters();
+ if(filtered){container.innerHTML=found.map(card).join('');}
+ else {
+  container.innerHTML=stages.map(st=>{
+   const group=found.filter(r=>r.primaryStage===st);
+   return group.length?stageGroup(st,group):'';
+  }).join('');
+ }
+ oldGroups.forEach(id=>{const group=document.getElementById(id);if(group)group.open=true;});
+ oldOpenCards.forEach(id=>{const card=document.getElementById(id);if(card){const details=card.querySelector('details');if(details)details.open=true;const cluster=card.closest('.stage-cluster');if(cluster)cluster.open=true;}});
+ if(focusLink&&validRisk){
+  const record=document.getElementById(targetRisk);
+  if(record){const cluster=record.closest('.stage-cluster');if(cluster)cluster.open=true;
+   const details=record.querySelector('details');if(details)details.open=true;
+   if(targetRisk!==lastDeepLink){lastDeepLink=targetRisk;requestAnimationFrame(()=>record.scrollIntoView({block:'start',behavior:'auto'}));}
+  }
+ }
+ document.getElementById('count').textContent=filtered?found.length+' of '+records.length+' matching records':records.length+' scenarios · 6 SDLC stages';
  document.getElementById('empty').hidden=found.length>0;
  renderStages();
- if(focusLink&&requested!==lastDeepLink){
-  const target=document.getElementById(requested);
-  if(target){lastDeepLink=requested;requestAnimationFrame(()=>target.scrollIntoView({block:'start',behavior:'auto'}));}
- }
 }
+
 document.getElementById('q').addEventListener('input',()=>render());
 document.getElementById('domain').addEventListener('change',()=>render());
 document.getElementById('stage').addEventListener('change',()=>render());
