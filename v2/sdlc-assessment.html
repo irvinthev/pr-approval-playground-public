@@ -201,7 +201,10 @@ function build(profile){
  const priorities=window.SDLCPriorities.select(profile,eligible);
  const existingDecision=FGSession.readDecision();
  const decision=FGDecision.decisionFromFields(decisionValues(),existingDecision);
- decision.relatedRisks=priorities.map(p=>p.id);
+ // Decision references are specific to the selected architecture, not inferred from the environment's highest authority.
+ const decisionAnchors={fasttrack:['R04','R07'],execution:['R01','R03','R04'],autonomous:['R02','R03','R04','R16'],custom:[]};
+ decision.relatedRisks=decisionAnchors[decision.mode]||[];
+ decision.suggestedProfileRisks=priorities.map(p=>p.id);
  decision.assertedSafeguards=(profile.safeguards||[]).map(id=>safeguards.find(s=>s[0]===id)?.[1]).filter(Boolean);
 
  const warn=$('profile-warnings');warn.hidden=profileIssues.length===0;
