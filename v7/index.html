@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Engineering Challenge Lab — V7 Preview</title><meta name="description" content="Fictional engineering architecture investigation. No live credentials or production systems.">
+<style>
+:root{--navy:#102437;--ink:#1a3241;--muted:#59717e;--line:#d8e5e9;--bg:#f3f7f8;--white:#fff;--teal:#136e75;--pale:#e7f4f2;--amber:#86521f;--red:#9a3c3c;font:15px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:var(--bg)}
+*{box-sizing:border-box}body{margin:0}a{color:var(--teal)}button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid #47a6ae;outline-offset:3px}
+header{background:var(--navy);color:white;padding:17px max(20px,calc((100% - 1170px)/2));display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.brand{font-weight:800;letter-spacing:-.025em}.brand span{display:block;font-size:11px;letter-spacing:.09em;color:#9dbfc9;font-weight:600;text-transform:uppercase}.flag{border:1px solid #61808a;border-radius:20px;padding:5px 10px;font-size:11px;color:#d0e3e8}
+main{max-width:1170px;margin:0 auto;padding:28px 20px 70px}.hero{background:linear-gradient(120deg,#102f41,#164f60);border-radius:17px;color:white;padding:27px 32px;margin-bottom:20px}.eyebrow{text-transform:uppercase;letter-spacing:.13em;font-size:11px;font-weight:800;color:#8ed9d5}
+h1{font-size:clamp(26px,4vw,38px);line-height:1.18;letter-spacing:-.04em;margin:7px 0}h2{font-size:24px;letter-spacing:-.025em;line-height:1.25;margin:0 0 10px}h3{font-size:17px;margin:0 0 10px}p{margin:0 0 13px}.hero p{color:#d0e2e9;max-width:810px}.notice{font-size:12px;color:#56737e;margin:12px 0 21px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:18px 0}.step{border:1px solid var(--line);border-radius:10px;background:white;color:var(--ink);padding:12px;text-align:left;font-size:13px;font-weight:750}.step small{display:block;font-size:10px;color:var(--muted);font-weight:700}.step.active{background:var(--pale);border:2px solid var(--teal);padding:11px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 290px;align-items:start;gap:19px}.panel{border:1px solid var(--line);background:white;border-radius:15px;padding:24px;margin-bottom:17px}.sidebar{position:sticky;top:15px}.muted{color:var(--muted)}.small{font-size:12px}.caps{font-size:10px;text-transform:uppercase;letter-spacing:.11em;font-weight:800;color:var(--teal)}
+.option-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin:17px 0}.option{padding:15px;border:1px solid var(--line);border-radius:11px;background:#fbfdfd;text-align:left}.option strong{display:block}.option small{display:block;color:var(--muted);font-size:12px;margin-top:4px}.option.selected{border:2px solid var(--teal);padding:14px;background:var(--pale)}.option:disabled{opacity:.6;cursor:not-allowed}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}.mini{padding:13px;border:1px solid var(--line);border-radius:10px;background:#fbfdfd}.mini strong{display:block;margin-bottom:4px}.mini p{font-size:12px;margin:0;color:var(--muted)}
+.boundaries{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:16px 0}.boundary{background:#f5f9fa;border:1px solid var(--line);padding:11px 7px;text-align:center;border-radius:9px;font-size:12px;font-weight:750}.boundary.active{background:var(--pale);border-color:var(--teal)}
+.detail{background:#f4f8f8;padding:16px;border-radius:11px;border-left:3px solid var(--teal);margin:14px 0}.detail p{font-size:13px}.detail p:last-child{margin:0}
+.check{display:flex;gap:10px;padding:12px;border:1px solid var(--line);border-radius:10px;margin:8px 0;align-items:flex-start;cursor:pointer}.check input{margin-top:5px;accent-color:var(--teal)}.check b{display:block;font-size:13px}.check small{display:block;font-size:12px;color:var(--muted)}
+.buttons{display:flex;flex-wrap:wrap;gap:9px;margin:18px 0 0}.btn{border:1px solid var(--line);background:#fff;border-radius:9px;padding:10px 15px;font-weight:750;color:var(--ink)}.btn.primary{background:var(--teal);border-color:var(--teal);color:white}.btn:hover{filter:brightness(.96)}.btn:disabled{opacity:.45;cursor:not-allowed}
+.result{margin:18px 0;background:#f5f8fa;border:1px solid var(--line);border-radius:11px;padding:17px}.result strong{display:block;margin-bottom:6px}.result.warn{background:#fff7ed;border-color:#e8ccaa}.result.pass{background:#ecf7f0;border-color:#c5e5d1}.result.fail{background:#fdf0ef;border-color:#efceca}
+.pill{display:inline-block;border-radius:20px;background:#e9f0f3;padding:4px 9px;font-size:11px;font-weight:800}.metric{font-size:25px;font-weight:800;letter-spacing:-.035em}.line{height:1px;background:var(--line);margin:16px 0}ul{margin:8px 0;padding-left:19px}li{margin:5px 0}dl{margin:0}dt{font-size:11px;text-transform:uppercase;color:var(--muted);font-weight:800;letter-spacing:.09em;margin-top:13px}dd{margin:4px 0 0;font-size:13px}.screen[hidden]{display:none!important}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:12px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;background:#edf3f5;padding:16px;border-radius:10px}.actions-note{font-size:11px;color:var(--muted);margin-top:12px}.reference{font-size:12px;border-top:1px solid var(--line);padding-top:14px;margin-top:20px}
+footer{font-size:11px;color:var(--muted);margin-top:30px}.status-list{padding-left:17px;font-size:12px;color:var(--muted)}
+@media(max-width:830px){.layout{grid-template-columns:1fr}.sidebar{position:static}.boundaries{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){main{padding:15px 12px 50px}.hero{padding:23px 19px}.panel{padding:18px}.steps{grid-template-columns:repeat(2,1fr)}.option-grid,.cards{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important}}
+</style></head><body>
+<header><div class="brand">AI Engineering Challenge Lab <span>V7 · Isolated Design Preview</span></div><span class="flag">Fictional scenario · No live integrations</span></header>
+<main><div class="hero"><div class="eyebrow">Architecture challenge / delegated execution</div><h1>When an agent clicks Approve, who made the decision?</h1><p>Investigate a proposed workflow for three stacked pull requests. Separate what an engineer decided, what an AI agent can execute, what GitHub enforces, and what the evidence can establish.</p></div>
+<div class="notice">Educational demonstration. No real GitHub permissions, AI reviews, production systems, or audit evidence are tested. This version intentionally does not invoke an LLM or transmit inputs.</div>
+<nav class="steps" aria-label="Investigation steps"><button class="step active" data-step="0"><small>01</small>Explore</button><button class="step" data-step="1"><small>02</small>Investigate</button><button class="step" data-step="2"><small>03</small>Experiment</button><button class="step" data-step="3"><small>04</small>Decide</button></nav>
+<div class="layout"><div>
+<section class="panel screen" data-screen="0"><div class="caps">Define the problem</div><h2>Reduce repetitive approval interactions</h2><p>Three related pull requests are ready for review. An engineer uses an AI assistant to navigate changes and proposes having the agent submit GitHub approvals through an integration. The stated intent is to delegate the mechanical submission, not the judgment.</p>
+<div class="option-grid"><button class="option selected" aria-pressed="true" id="case-human"><strong>Human-authorized execution</strong><small>Active case. Engineer makes a specific approval decision; agent submits it.</small></button><button class="option" disabled><strong>Autonomous AI approval</strong><small>Planned V7.2: agent independently makes the approval decision.</small></button></div>
+<div class="cards"><div class="mini"><strong>Engineering objective</strong><p>Fewer repetitive actions across stacked PRs without sacrificing meaningful review.</p></div><div class="mini"><strong>Central design question</strong><p>Can the system enforce delegated execution rather than simply trusting an agent's instructions?</p></div><div class="mini"><strong>Scope</strong><p>Fictional GitHub PR approval. Merge and production paths are downstream considerations, not assumed safe.</p></div><div class="mini"><strong>Alternative worth comparing</strong><p>Direct engineer approval in GitHub, or a narrowly scoped approval-execution service.</p></div></div>
+<div class="buttons"><button class="btn primary" data-next>Investigate architecture →</button></div></section>
+<section class="panel screen" data-screen="1" hidden><div class="caps">Inspect the trust boundaries</div><h2>What actually restricts the agent?</h2><p class="muted small">Select a component. The scenario's initial conditions are assumptions, not verified details about GitHub MCP, CLI tools, or any particular coding agent.</p>
+<div class="boundaries" id="boundaries"></div><div class="detail" id="boundary-detail" aria-live="polite"></div>
+<div class="mini"><strong>Key distinction</strong><p>Approval attributed to the engineer's GitHub identity does not by itself prove that the engineer exercised judgment. A prompt can express intent without restricting what an agent's credential can do.</p></div>
+<div class="buttons"><button class="btn" data-prev>← Explore</button><button class="btn primary" data-next>Run experiments →</button></div></section>
+<section class="panel screen" data-screen="2" hidden><div class="caps">Challenge the proposed design</div><h2>Change one boundary. Observe the outcome.</h2><p class="small muted">These toggles configure a fictional system. The output distinguishes decision legitimacy, execution confinement, revision validity, and whether the simulated gate would allow an action.</p>
+<div id="controls"></div>
+<div class="buttons"><button class="btn primary" id="run">Evaluate simulated action</button><button class="btn" id="baseline">Restore baseline</button></div><div id="experiment-result" aria-live="polite"></div>
+<div class="buttons"><button class="btn" data-prev>← Investigate</button><button class="btn primary" data-next>Review decision brief →</button></div></section>
+<section class="panel screen" data-screen="3" hidden><div class="caps">Decision brief</div><h2>What does the current investigation support?</h2><p>Capture the engineering decision without turning simulated guardrails into claims about real-world enforcement.</p>
+<div id="decision-summary" aria-live="polite"></div><h3>Exportable case brief</h3><pre id="brief"></pre>
+<div class="buttons"><button class="btn primary" id="copy">Copy decision brief</button><button class="btn" id="download">Export JSON</button><button class="btn" data-prev>← Experiment</button></div><p class="actions-note" id="export-status"></p></section>
+</div>
+<aside class="sidebar"><div class="panel"><div class="caps">Active investigation</div><h3>Delegated PR approval</h3><p class="small muted">CASE-DELEGATE-01 · Scenario v0.1</p><div class="line"></div><div class="caps">State</div><div id="side-status" class="metric">Not evaluated</div><p id="side-explainer" class="small muted">Examine architecture and run an experiment to establish a modeled outcome.</p><div class="line"></div><div class="caps">Coverage</div><ul class="status-list"><li>Human approval decision</li><li>Agent action scope</li><li>Exact revision</li><li>Independent enforcement</li><li>Evidence limitations</li></ul><p class="reference">For background, see the <a href="../field-guide-v2.html" target="_blank" rel="noopener noreferrer">Field Guide V2</a>. Reference content does not change the active case.</p><button class="btn" id="reset" style="margin-top:13px;width:100%">Reset investigation</button></div></aside></div>
+<footer>V7.1 concept slice · Client-side fictional evaluator · No model access, persistence, telemetry or connected production evidence. The source repository's legacy evaluators are unchanged.</footer>
+</main>
+<script>
+(function(){
+'use strict';
+const NODES=[
+{name:'Engineer',subtitle:'Decision authority',known:'The proposal says a human decides which three PR revisions to approve.',capability:'The engineer can assess code and issue specific authorization.',restriction:'A recorded instruction and reviewed revision set are required in the modeled design.',unknown:'Whether meaningful human review took place cannot be established from an approval record alone.'},
+{name:'AI agent',subtitle:'Execution authority',known:'The agent submits approval actions through an integration.',capability:'An unrestricted GitHub credential could potentially perform other permitted actions.',restriction:'A scoped execution gateway could check an immutable authorization before allowing the write.',unknown:'Which CLI/MCP tools and credential permissions are actually available is unverified.'},
+{name:'GitHub',subtitle:'Independent enforcement',known:'GitHub receives approvals attributed to an authenticated actor.',capability:'Branch rules and approvals may restrict merging, subject to configuration and bypass rights.',restriction:'GitHub branch protections are distinct from controls on the agent deciding to submit an approval.',unknown:'No actual rulesets, bypass actors, commit invalidation or app scopes were evaluated.'},
+{name:'Release',subtitle:'Downstream integrity',known:'An approved PR may later enter a merge queue and deployment workflow.',capability:'Build and release systems can operate under separate identities and permissions.',restriction:'Artifact lineage and production reconciliation would require separate evidence.',unknown:'This first slice does not establish any real production change-path completeness.'}
+];
+const CONFIG=[
+{id:'humanDecision',label:'Engineer explicitly approves the identified changes',description:'A specific human decision exists before the agent submits an action.',default:true},
+{id:'reviewEvidence',label:'Review rationale and human instruction are recorded',description:'A meaningful judgment still cannot be inferred solely from these records.',default:true},
+{id:'commitBound',label:'Authorization is bound to exact commit revisions',description:'Approval instructions identify the reviewed revisions, not just mutable PR numbers.',default:true},
+{id:'scopeRestricted',label:'Independent execution gateway constrains agent action',description:'The modeled gateway checks action, target, actor and revision before execution.',default:true},
+{id:'newRevision',label:'A PR receives a new commit before submission',description:'Creates a stale authorization condition in the scenario.',default:false},
+{id:'promptInjection',label:'PR content attempts to redirect the agent',description:'Untrusted change content tries to approve a different PR.',default:false},
+{id:'bypassPermission',label:'A direct write path can bypass the gateway',description:'The agent credential retains an alternative path to submit approvals.',default:false}
+];
+const state={step:0,chosenBoundary:1,config:Object.fromEntries(CONFIG.map(c=>[c.id,c.default])),result:null,experiments:[]};
+const $=id=>document.getElementById(id);
+const escapeText=v=>String(v);
+function evaluation(c){
+ const human=!!c.humanDecision;
+ const reviewRecord=!!c.reviewEvidence;
+ const exact=!!c.commitBound&&!c.newRevision;
+ const independent=!!c.scopeRestricted&&!c.bypassPermission;
+ const hostile=!!c.promptInjection;
+ const authorized=human&&exact;
+ const gatewayAllows=human&&exact&&independent&&!hostile;
+ const reason=[];
+ if(!human)reason.push('No explicit human decision is present.');
+ if(!reviewRecord)reason.push('Recorded human review evidence is incomplete.');
+ if(!c.commitBound)reason.push('Authorization is not bound to exact revisions.');
+ if(c.newRevision)reason.push('A newer revision invalidates the prior authorization.');
+ if(!c.scopeRestricted)reason.push('No independent action restriction is modeled.');
+ if(c.bypassPermission)reason.push('The agent has an alternative path around the gateway.');
+ if(hostile)reason.push('Untrusted PR content attempts to change the target action.');
+ const observed= gatewayAllows?'MODELED_ALLOW':independent?'MODELED_DENY':'ENFORCEMENT_UNESTABLISHED';
+ const disposition=!human||!exact?'HUMAN_REAUTHORIZATION_REQUIRED':!independent?'ENFORCEMENT_UNESTABLISHED':hostile?'MODELED_DENY':'CONDITIONAL_DESIGN_CANDIDATE';
+ return {authorized,reviewRecord,revisionCurrent:exact,enforcementIndependent:independent,attemptedAction:hostile?'Approve a PR outside the authorized set':'Submit approvals for identified PR revisions',enforcementResult:observed,disposition,reasons:reason,evidenceLimit:'Simulated decision only. No real tool invocation, human review verification, GitHub protection, or production trace.'};
+}
+function renderStep(){
+ document.querySelectorAll('.step').forEach((x,i)=>{x.classList.toggle('active',i===state.step);x.setAttribute('aria-current',i===state.step?'step':'false')});
+ document.querySelectorAll('.screen').forEach((x,i)=>x.hidden=i!==state.step);
+ if(state.step===3)renderDecision();
+}
+function selectStep(i){state.step=Math.max(0,Math.min(3,i));renderStep();document.querySelector('main').scrollIntoView({block:'start'});}
+function renderBoundaries(){
+ const root=$('boundaries');root.replaceChildren();
+ NODES.forEach((node,i)=>{const b=document.createElement('button');b.className='boundary'+(i===state.chosenBoundary?' active':'');b.textContent=node.name;b.setAttribute('aria-pressed',String(i===state.chosenBoundary));b.onclick=()=>{state.chosenBoundary=i;renderBoundaries()};root.append(b)});
+ const n=NODES[state.chosenBoundary];const detail=$('boundary-detail');detail.replaceChildren();
+ const h=document.createElement('h3');h.textContent=n.name+' — '+n.subtitle;detail.append(h);
+ [['Scenario fact',n.known],['Possible capability',n.capability],['Proposed restriction',n.restriction],['Not established',n.unknown]].forEach(([k,v])=>{const p=document.createElement('p');const strong=document.createElement('strong');strong.textContent=k+': ';p.append(strong,document.createTextNode(v));detail.append(p)});
+}
+function renderControls(){
+ const root=$('controls');root.replaceChildren();
+ CONFIG.forEach(item=>{const label=document.createElement('label');label.className='check';const check=document.createElement('input');check.type='checkbox';check.checked=state.config[item.id];check.onchange=()=>{state.config[item.id]=check.checked;state.result=null;renderResult();renderSidebar()};const txt=document.createElement('span');const b=document.createElement('b');b.textContent=item.label;const small=document.createElement('small');small.textContent=item.description;txt.append(b,small);label.append(check,txt);root.append(label)});
+}
+function renderSidebar(){const r=state.result;$('side-status').textContent=!r?'Not evaluated':r.enforcementResult==='MODELED_ALLOW'?'Modeled allow':r.enforcementResult==='MODELED_DENY'?'Modeled deny':'Unresolved';$('side-status').style.fontSize='21px';$('side-explainer').textContent=!r?'Examine architecture and run an experiment to establish a modeled outcome.':'Last evaluated: '+r.disposition.replaceAll('_',' ').toLowerCase()+'. Results are fictional.'}
+function renderResult(){
+ const root=$('experiment-result');root.replaceChildren();const r=state.result;if(!r)return;
+ const box=document.createElement('div');box.className='result '+(r.enforcementResult==='MODELED_ALLOW'?'pass':r.enforcementResult==='MODELED_DENY'?'fail':'warn');
+ const h=document.createElement('strong');h.textContent=r.enforcementResult.replaceAll('_',' ');box.append(h);
+ [['Attempted action',r.attemptedAction],['Enforcement outcome',r.enforcementResult==='MODELED_ALLOW'?'The hypothetical restricted gateway accepts this specified action.':r.enforcementResult==='MODELED_DENY'?'The hypothetical gateway rejects this attempted action.':'The proposed safeguards cannot prove the action would be blocked.'],['Assessment',r.disposition.replaceAll('_',' ')],['Evidence limitation',r.evidenceLimit]].forEach(([k,v])=>{const p=document.createElement('p');const b=document.createElement('b');b.textContent=k+': ';p.append(b,document.createTextNode(v));box.append(p)});
+ if(r.reasons.length){const ul=document.createElement('ul');r.reasons.forEach(reason=>{const li=document.createElement('li');li.textContent=reason;ul.append(li)});box.append(ul)}
+ root.append(box)
+}
+function briefText(){
+ const r=state.result;const lines=['AI ENGINEERING CHALLENGE LAB — FICTIONAL DECISION BRIEF','CASE-DELEGATE-01 · Scenario v0.1','', 'Objective: Reduce repetitive GitHub approval interactions across stacked PRs.','Proposal: Human decides; AI agent submits the specified approvals.','Alternative: Engineer approves directly, or an independently scoped approval-execution gateway.','',r?'Last experiment: '+r.disposition.replaceAll('_',' '):'Assessment: No experiment run.',r?'Attempted action: '+r.attemptedAction:'',r?'Enforcement result: '+r.enforcementResult:'',r?'Decision record present (assumed): '+r.authorized:'',r?'Independent execution restriction (assumed): '+r.enforcementIndependent:'',r?'Rationale/review evidence (assumed): '+r.reviewRecord:'',''];
+ if(r&&r.reasons.length){lines.push('Design gaps / unresolved conditions:');r.reasons.forEach(x=>lines.push('- '+x));lines.push('')}
+ lines.push('Real-world evidence still needed: credential scopes, enforced action boundaries, exact revision linkage, meaningful review practices, GitHub settings and bypass coverage, end-to-end production lineage.','', 'Readiness: NOT ASSESSED for any real-world implementation.','Evidence support: simulated behavior only.','This artifact is educational; it is not an audit conclusion or implementation approval.');return lines.filter(x=>x!==undefined).join('\n')
+}
+function renderDecision(){
+ const root=$('decision-summary');root.replaceChildren();const box=document.createElement('div');box.className='result '+(!state.result?'warn':state.result.enforcementResult==='MODELED_ALLOW'?'pass':state.result.enforcementResult==='MODELED_DENY'?'fail':'warn');const h=document.createElement('strong');h.textContent=state.result?'Modeled disposition: '+state.result.disposition.replaceAll('_',' '):'No modeled outcome yet';const p=document.createElement('p');p.textContent=state.result?'This is conditional on the scenario toggles, not an observed engineering control.':'Return to Experiment to evaluate your proposed configuration.';box.append(h,p);root.append(box);$('brief').textContent=briefText()
+}
+function reset(){state.step=0;state.chosenBoundary=1;state.config=Object.fromEntries(CONFIG.map(c=>[c.id,c.default]));state.result=null;state.experiments=[];renderBoundaries();renderControls();renderResult();renderSidebar();renderStep()}
+document.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>selectStep(Number(b.dataset.step)));
+document.querySelectorAll('[data-next]').forEach(b=>b.onclick=()=>selectStep(state.step+1));
+document.querySelectorAll('[data-prev]').forEach(b=>b.onclick=()=>selectStep(state.step-1));
+$('run').onclick=()=>{state.result=evaluation(state.config);state.experiments.push({config:{...state.config},outcome:state.result.disposition});renderResult();renderSidebar()};
+$('baseline').onclick=()=>{state.config=Object.fromEntries(CONFIG.map(c=>[c.id,c.default]));state.result=null;renderControls();renderResult();renderSidebar()};
+$('reset').onclick=reset;
+$('copy').onclick=()=>{const t=briefText();if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(()=>$('export-status').textContent='Brief copied.',()=>$('export-status').textContent='Clipboard unavailable. Select and copy the brief above.')}else{$('export-status').textContent='Clipboard unavailable. Select and copy the brief above.'}};
+$('download').onclick=()=>{const payload={schemaVersion:1,caseId:'CASE-DELEGATE-01',scenarioVersion:'0.1',fictional:true,config:state.config,latestResult:state.result,experiments:state.experiments,evidenceStatus:'SIMULATED_ONLY'};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='challenge-lab-v7-fictional-case.json';a.click();URL.revokeObjectURL(url);$('export-status').textContent='Fictional scenario JSON exported.'};
+renderBoundaries();renderControls();renderSidebar();renderStep();
+window.V7Demo={evaluate:evaluation};
+})();
+</script></body></html>
