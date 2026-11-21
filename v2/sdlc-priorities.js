@@ -42,7 +42,7 @@ const rulebook=[
  {id:'R15',order:13,check:p=>has(p,'sameAuthor')&&inAny(p,['coding','testing']),
   trigger:p=>'The same AI workflow generates implementation and corresponding tests.',
   change:'Use independently derived acceptance criteria or seeded defects to test the test oracle.',impact:'Generated tests may repeat the implementation’s incorrect assumption.'},
- {id:'R01',order:14,check:p=>p.authority==='execution'&&inAny(p,['review'])&&has(p,'tools'),
+ {id:'R01',order:14,check:p=>p.authority==='execution'&&inAny(p,['review']),
   trigger:p=>'A review agent executes human instructions using tools.',
   change:'Bind each approved operation to the exact human decision, PR and revision.',impact:'The agent could act beyond the human’s specific approval.'},
  {id:'R17',order:15,check:p=>p.activities.length>0,
