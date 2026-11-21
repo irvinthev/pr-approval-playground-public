@@ -13,10 +13,12 @@ function id(prefix){return prefix+'-'+Date.now().toString(36)+'-'+Math.random().
 function text(v){return typeof v==='string'?v.trim():'';}
 function decisionFromFields(fields,existing){
  const mode=modes[fields.mode]?fields.mode:'custom',template=modes[mode];
- const d={id:existing?.id||id('decision'),mode,title:text(fields.title)||template.title,alternatives:(Array.isArray(fields.alternatives)?fields.alternatives:String(fields.alternatives||'').split('\n')).map(text).filter(Boolean),
+ const title=text(fields.title)||template.title;
+ const sameDecision=!!(existing&&existing.mode===mode&&existing.title===title);
+ const d={id:sameDecision?existing.id:id('decision'),mode,title,alternatives:(Array.isArray(fields.alternatives)?fields.alternatives:String(fields.alternatives||'').split('\n')).map(text).filter(Boolean),
   authority:{decider:text(fields.decider),executor:text(fields.executor),scope:text(fields.scope)},
   relatedRisks:Array.isArray(fields.relatedRisks)?fields.relatedRisks.filter(v=>/^R(?:0[1-9]|1\d|2[01])$/.test(v)):[],
-  assumptions:text(fields.assumptions),claims:Array.isArray(existing?.claims)?existing.claims:[],management:existing?.management||{decision:'',owner:'',rationale:''}};
+  assumptions:text(fields.assumptions),claims:sameDecision&&Array.isArray(existing?.claims)?existing.claims:[],management:sameDecision?existing.management||{decision:'',owner:'',rationale:''}:{decision:'',owner:'',rationale:''}};
  return d;
 }
 function classify(claim){
