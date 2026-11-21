@@ -1,0 +1,217 @@
+/* V3.3 Readability & Visual Rhythm
+   Presentation-only overrides for the five-page public Field Guide.
+   Keep scenario records, priority logic, and navigation behavior unchanged. */
+:root{--fg-reading:72ch;--fg-gap:clamp(20px,2.8vw,32px)}
+html{scroll-padding-top:20px}
+body{font-size:16px;line-height:1.7;-webkit-text-size-adjust:100%;overflow-wrap:break-word}
+main{padding-bottom:clamp(56px,6vw,84px)}
+main p,main li,main dd{line-height:1.7}
+main p{margin-top:10px;margin-bottom:16px}
+main>p,.hero>p,.section>p{max-width:var(--fg-reading)}
+h1,h2,h3,h4{letter-spacing:-.012em}
+h1{line-height:1.16}
+h2{line-height:1.3}
+h3{line-height:1.4}
+nav{row-gap:8px}
+nav a,.nav a,.top nav a{font-size:13px;line-height:1.45;padding:7px 4px;text-underline-offset:4px}
+nav a[aria-current="page"]{text-decoration-thickness:2px}
+main .eyebrow{font-size:12px;line-height:1.5}
+main .muted{line-height:1.7}
+main .section{margin-top:clamp(38px,5vw,60px);margin-bottom:clamp(38px,5vw,60px)}
+main .section h2{margin-top:8px;margin-bottom:17px}
+main .grid{gap:clamp(16px,2vw,23px)}
+main .card,main .panel{padding:clamp(23px,2.8vw,32px)}
+main .card h3,main .panel h3{margin-bottom:12px}
+main .note,main .warning,main .notice{padding:18px 22px;line-height:1.7}
+main .btn,main button.btn{padding:12px 17px;font-size:14px;line-height:1.5;min-height:44px}
+main summary{line-height:1.55}
+main details{scroll-margin-top:24px}
+footer{font-size:13px;line-height:1.65}
+footer a{display:inline-block;padding-block:5px}
+/* Overview and Assurance share a compact original type scale. */
+body[data-fg-page="overview"] .hero{padding:clamp(30px,4vw,50px)}
+body[data-fg-page="overview"] .card p{font-size:15px;line-height:1.75}
+body[data-fg-page="overview"] .section .card{min-height:100%}
+body[data-fg-page="overview"] .section .card h3{font-size:19px}
+body[data-fg-page="overview"] details{padding:24px 28px}
+body[data-fg-page="assurance"] .assurance-domain{margin:16px 0;padding:22px 26px}
+body[data-fg-page="assurance"] .assurance-domain summary{font-size:17px;line-height:1.55}
+body[data-fg-page="assurance"] .assurance-detail{margin-top:22px}
+body[data-fg-page="assurance"] .assurance-unit{margin-top:17px;padding:19px 22px}
+body[data-fg-page="assurance"] .assurance-unit h3{font-size:12px;line-height:1.65;margin-bottom:10px}
+body[data-fg-page="assurance"] .assurance-unit p,
+body[data-fg-page="assurance"] .assurance-unit li{font-size:15px;line-height:1.78}
+body[data-fg-page="assurance"] .assurance-unit ol{padding-left:25px}
+body[data-fg-page="assurance"] .assurance-unit li{margin-bottom:11px}
+body[data-fg-page="assurance"] .as-example{padding:17px 22px}
+body[data-fg-page="assurance"] .as-crosswalk{padding:20px 23px}
+body[data-fg-page="assurance"] .as-note{font-size:12px;line-height:1.65}
+body[data-fg-page="assurance"] .assurance-detail p{max-width:75ch}
+/* Learn: readable instructional content and gentler table rhythm. */
+body[data-fg-page="learn"] .hero{padding:clamp(30px,4vw,49px);margin:34px 0}
+body[data-fg-page="learn"] .section{margin:45px 0}
+body[data-fg-page="learn"] .section h2{font-size:clamp(24px,2.8vw,30px);line-height:1.3}
+body[data-fg-page="learn"] .card p,
+body[data-fg-page="learn"] .panel p{font-size:15px;line-height:1.75}
+body[data-fg-page="learn"] .journey .card{padding:24px}
+body[data-fg-page="learn"] .journey .card p{font-size:15px}
+body[data-fg-page="learn"] .sidebar a{font-size:14px;line-height:1.55;margin:12px 0}
+body[data-fg-page="learn"] th,body[data-fg-page="learn"] td{font-size:14px;line-height:1.65;padding:17px}
+body[data-fg-page="learn"] details{padding:21px 25px;margin:17px 0}
+/* Risk Assessment: choices stay navigable but should not look like micro-cards. */
+body[data-fg-page="assessment"] main{padding-top:42px}
+body[data-fg-page="assessment"] main>p{max-width:76ch}
+body[data-fg-page="assessment"] h2{font-size:clamp(23px,2.5vw,28px);margin-bottom:17px}
+body[data-fg-page="assessment"] h3{font-size:18px}
+body[data-fg-page="assessment"] .panel{margin:26px 0;padding:clamp(24px,3vw,34px)}
+body[data-fg-page="assessment"] .grid{gap:16px}
+body[data-fg-page="assessment"] .choice{padding:17px 18px;gap:12px;min-height:78px;line-height:1.65}
+body[data-fg-page="assessment"] .choice b{font-size:15px}
+body[data-fg-page="assessment"] label{font-size:15px}
+body[data-fg-page="assessment"] .hint{font-size:14px;line-height:1.65}
+body[data-fg-page="assessment"] .subsection{margin-top:30px;padding-top:26px}
+body[data-fg-page="assessment"] .notice{margin:24px 0 32px}
+body[data-fg-page="assessment"] .lead-challenges{gap:20px;margin-top:25px}
+body[data-fg-page="assessment"] .lead-challenge{padding:25px}
+body[data-fg-page="assessment"] .lead-challenge.featured{padding:29px}
+body[data-fg-page="assessment"] .lead-challenge h3{font-size:20px;line-height:1.35}
+body[data-fg-page="assessment"] .lead-challenge.featured h3{font-size:25px}
+body[data-fg-page="assessment"] .lead-description{font-size:15px;line-height:1.7}
+body[data-fg-page="assessment"] .challenge-next{margin-top:20px;padding-top:18px}
+body[data-fg-page="assessment"] .challenge-next b{font-size:13px;margin:14px 0 5px}
+body[data-fg-page="assessment"] .challenge-next p{font-size:15px;line-height:1.7}
+body[data-fg-page="assessment"] .challenge-links{gap:19px;margin-top:24px;font-size:14px}
+body[data-fg-page="assessment"] .additional-item{padding:17px 20px;gap:15px}
+body[data-fg-page="assessment"] .additional-item strong{font-size:15px}
+body[data-fg-page="assessment"] .additional-item small{font-size:13px;line-height:1.65}
+body[data-fg-page="assessment"] .result{padding:24px;margin:18px 0}
+body[data-fg-page="assessment"] .result h3{margin-bottom:12px}
+body[data-fg-page="assessment"] .result dd{font-size:14px}
+body[data-fg-page="assessment"] .result dl{row-gap:12px}
+body[data-fg-page="assessment"] .why{font-size:14px;line-height:1.7}
+body[data-fg-page="assessment"] .brief-priority-list>li{padding-block:17px}
+body[data-fg-page="assessment"] .brief-priority-list p{font-size:14px;line-height:1.7}
+/* Library: restore scale inside expandable evidence / engineering detail. */
+body[data-fg-page="library"] .hero{padding:44px 0 29px}
+body[data-fg-page="library"] .hero p{max-width:76ch}
+body[data-fg-page="library"] .toolbar{padding:23px;gap:18px;margin:28px 0}
+body[data-fg-page="library"] .toolbar label{font-size:13px;line-height:1.6;margin-bottom:6px}
+body[data-fg-page="library"] .list{gap:24px;margin-top:27px}
+body[data-fg-page="library"] article header{padding:27px 29px;gap:24px}
+body[data-fg-page="library"] article h2{font-size:clamp(23px,2.6vw,29px);line-height:1.3;margin:10px 0}
+body[data-fg-page="library"] article header p{font-size:15px;line-height:1.75}
+body[data-fg-page="library"] .plain-risk{padding:19px 22px;margin:17px 0}
+body[data-fg-page="library"] .plain-risk p{font-size:16px;line-height:1.75}
+body[data-fg-page="library"] .technical-summary{font-size:13px!important;line-height:1.7}
+body[data-fg-page="library"] article summary{padding:19px 29px;font-size:15px}
+body[data-fg-page="library"] .content{padding:24px 29px}
+body[data-fg-page="library"] .risk-section{margin-bottom:27px;padding-bottom:23px}
+body[data-fg-page="library"] .risk-section h3{font-size:19px;margin-bottom:15px}
+body[data-fg-page="library"] .columns{gap:20px}
+body[data-fg-page="library"] .field{padding:19px 22px}
+body[data-fg-page="library"] .field b{font-size:12px;line-height:1.6}
+body[data-fg-page="library"] .field p,
+body[data-fg-page="library"] .field li{font-size:15px;line-height:1.75}
+body[data-fg-page="library"] .field li{margin:10px 0}
+body[data-fg-page="library"] .challenge{padding:18px 21px}
+body[data-fg-page="library"] .small-note{font-size:13px;line-height:1.7}
+body[data-fg-page="library"] .lifecycle{padding:24px;margin:24px 0}
+body[data-fg-page="library"] .stage-grid{gap:13px;margin-top:20px}
+body[data-fg-page="library"] .stage-button{padding:16px;min-height:112px;gap:8px}
+body[data-fg-page="library"] .stage-button strong{font-size:15px;line-height:1.45}
+body[data-fg-page="library"] .stage-button small{font-size:12px;line-height:1.5}
+body[data-fg-page="library"] .stage-tag{font-size:11px;padding:4px 9px}
+@media(max-width:1000px){
+ body[data-fg-page="assessment"] .cols3{grid-template-columns:repeat(2,minmax(0,1fr))}
+ body[data-fg-page="library"] .stage-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:760px){
+ body{font-size:16px;line-height:1.68}
+ nav,body[data-fg-page="learn"] .top nav{display:flex;flex-wrap:wrap;gap:4px 11px}
+ nav a,.nav a,.top nav a{font-size:13px;min-height:40px;display:inline-flex;align-items:center;margin:0;padding:8px 4px}
+ main .section{margin:34px 0}
+ main .card,main .panel{padding:22px}
+ main .grid{gap:16px}
+ main .note,main .warning,main .notice{padding:17px 18px}
+ body[data-fg-page="overview"] .hero,body[data-fg-page="learn"] .hero{padding:27px 23px}
+ body[data-fg-page="learn"] .section{margin:36px 0}
+ body[data-fg-page="learn"] .journey .card{padding:21px}
+ body[data-fg-page="assessment"] main{padding-top:28px}
+ body[data-fg-page="assessment"] .panel{padding:22px;margin:21px 0}
+ body[data-fg-page="assessment"] .cols3,body[data-fg-page="assessment"] .grid{grid-template-columns:1fr}
+ body[data-fg-page="assessment"] .choice{min-height:66px;padding:15px}
+ body[data-fg-page="assessment"] .lead-challenges{grid-template-columns:1fr;gap:17px}
+ body[data-fg-page="assessment"] .lead-challenge,body[data-fg-page="assessment"] .lead-challenge.featured{padding:21px}
+ body[data-fg-page="assessment"] .lead-challenge.featured h3{font-size:21px}
+ body[data-fg-page="assessment"] .result{padding:20px}
+ body[data-fg-page="library"] .hero{padding:30px 0 20px}
+ body[data-fg-page="library"] .toolbar{padding:19px}
+ body[data-fg-page="library"] article header{padding:22px}
+ body[data-fg-page="library"] article summary{padding:17px 21px}
+ body[data-fg-page="library"] .content{padding:20px}
+ body[data-fg-page="library"] .field{padding:18px}
+ body[data-fg-page="library"] .lifecycle{padding:18px}
+ body[data-fg-page="library"] .stage-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ body[data-fg-page="library"] .stage-button{min-height:108px;padding:13px}
+ body[data-fg-page="assurance"] .assurance-domain{padding:19px 20px}
+ body[data-fg-page="assurance"] .assurance-unit{padding:17px 18px}
+}
+@media(max-width:390px){
+ body[data-fg-page="library"] .stage-grid{grid-template-columns:1fr}
+ body[data-fg-page="library"] .stage-button{min-height:72px}
+}
+@media print{
+ body{font-size:11pt;line-height:1.45}
+ main .card,main .panel{padding:12pt}
+ body[data-fg-page="assessment"] .lead-challenge{break-inside:avoid}
+}
+
+/* V3.7.1: Assurance condensed navigation wins over legacy readability rules.
+   Expanded procedure text retains the original readable type scale. */
+body[data-fg-page="assurance"] .domain-grid>.assurance-domain:not([open]){
+  margin:0;
+  padding:11px 13px;
+  border-radius:9px;
+}
+body[data-fg-page="assurance"] .domain-grid>.assurance-domain:not([open]) summary{
+  font-size:13px;
+  line-height:1.35;
+  font-weight:750;
+}
+body[data-fg-page="assurance"] .domain-grid>.assurance-domain:not([open]) .as-question{
+  margin-top:3px;
+  font-size:12px;
+  line-height:1.4;
+  font-weight:500;
+}
+body[data-fg-page="assurance"] .domain-grid>.assurance-domain[open]{
+  margin:0;
+  padding:17px 20px;
+}
+body[data-fg-page="assurance"] .domain-grid>.assurance-domain[open] summary{
+  font-size:16px;
+}
+body[data-fg-page="assurance"] .domain-grid>.assurance-domain[open] .assurance-detail{
+  margin-top:16px;
+}
+@media(max-width:760px){
+ body[data-fg-page="assurance"] .domain-grid{
+   grid-template-columns:minmax(0,1fr);
+   gap:7px;
+ }
+ body[data-fg-page="assurance"] .domain-grid>.assurance-domain:not([open]){
+   padding:9px 12px;
+ }
+ body[data-fg-page="assurance"] .domain-grid>.assurance-domain:not([open]) summary{
+   font-size:12.5px;
+   line-height:1.3;
+ }
+ body[data-fg-page="assurance"] .domain-grid>.assurance-domain:not([open]) .as-question{
+   font-size:12px;
+   margin-top:2px;
+   line-height:1.35;
+ }
+ body[data-fg-page="assurance"] .domain-grid>.assurance-domain[open]{
+   padding:15px 16px;
+ }
+}

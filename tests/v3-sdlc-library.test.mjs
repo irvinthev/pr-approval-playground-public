@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import { readFileSync } from 'node:fs';
+const html=readFileSync(new URL('../v2/risk-control-library.html',import.meta.url),'utf8');
+const data=readFileSync(new URL('../v2/sdlc-risk-data.js',import.meta.url),'utf8');
+const match=data.match(/window.SDLCRiskRecords=(\[[\s\S]*?\]);/);
+assert.ok(match,'Shared risk catalog exists');
+const risks=JSON.parse(match[1]);
+const stages=['Design & planning','Coding & tool execution','Testing & validation','Review & approval','Build & release','Production & operations'];
+test('preserves the nine original PR approval risk IDs',()=>{for(let i=1;i<=9;i++)assert.equal(risks.filter(r=>r.id==='R'+String(i).padStart(2,'0')&&r.type==='original').length,1);});
+test('adds twelve new and distinct SDLC scenario records',()=>{assert.equal(risks.length,21);assert.equal(new Set(risks.map(r=>r.id)).size,21);assert.equal(risks.filter(r=>r.type==='new').length,12);});
+test('covers six engineering lifecycle stages and cross-stage mechanisms',()=>{for(const stage of stages)assert.ok(risks.some(r=>r.primaryStage===stage),stage);assert.ok(risks.some(r=>r.stages.length>3));assert.ok(risks.every(r=>r.stages.includes(r.primaryStage)));});
+test('all risks have engineering, evaluation, monitoring and evidence fields',()=>{for(const r of risks){for(const key of ['plainEnglish','why','challenge','objective','securityBoundary','inspect','negativeTest','evidence','monitor','respond','sourceStatement','provenance','relevance'])assert.ok(r[key],r.id+' missing '+key);assert.equal(r.approaches.length,3);}});
+test('stage filter and cross-cutting stage controls are present',()=>{assert.match(html,/id="stageGrid"/);assert.match(html,/id="stage"/);assert.match(html,/r\.stages\.includes\(stage\)/);assert.match(html,/renderStages/);});
+test('does not publish private-company references',()=>{for(const token of ['Braze','Appboy','GRC-3735','TEM-607'])assert.ok(!(html+data).includes(token),token);});
