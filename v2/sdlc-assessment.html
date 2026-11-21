@@ -25,6 +25,23 @@ main{padding-top:32px;padding-bottom:65px}.eyebrow{font-size:11px;color:var(--te
 .decision-preview{background:#ebf7f4;border-left:4px solid #138382;padding:16px 19px;border-radius:8px;margin-bottom:20px}
 .decision-preview p{margin:7px 0}
 @media(max-width:740px){.decision-cols{grid-template-columns:1fr}}
+
+/* V3.8 mobile-first decision setup: preset first, optional editing on demand */
+.decision-capture{background:#f1f9f8;border:1px solid #c5dedd;border-radius:11px;padding:15px 17px;margin:18px 0}
+.decision-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.decision-head h3{margin:4px 0 0}
+.decision-head .example-btn{background:#117a7d;color:white;border-color:#117a7d;padding:9px 13px}
+.decision-primary{display:grid;gap:6px;margin:15px 0}
+.decision-primary label{font-size:13px;font-weight:750}
+.decision-primary select{font:inherit;min-height:44px;padding:10px 12px;width:100%;max-width:100%;background:white;color:var(--ink);border:1px solid #adcbd0;border-radius:8px}
+.decision-at-glance{padding:12px 14px;background:white;border:1px solid #d0e4e5;border-radius:9px}
+.decision-at-glance strong{font-size:15px}
+.decision-at-glance p{font-size:13px;margin:5px 0;color:#416171;line-height:1.5}
+.decision-custom{margin-top:12px;background:transparent;border-top:1px solid #c9dcdc;padding:12px 0 0}
+.decision-custom summary{font-size:13px;font-weight:750;color:#165e69;cursor:pointer}
+.decision-custom .decision-inputs{margin-top:12px}
+.decision-disclaimer{font-size:12px;color:#4a6a77;margin:12px 0 0}
+@media(max-width:740px){.decision-head{display:grid;gap:9px}.decision-head .example-btn{width:100%;text-align:center;justify-self:stretch}.decision-capture{padding:13px 14px}}
 </style><link rel="stylesheet" href="./field-guide-readability.css"></head><body data-fg-page="assessment">
 <header><div class="wrap"><div class="brand">AI-ENABLED SDLC · FIELD GUIDE</div><nav aria-label="Field Guide"><a href="./field-guide.html">Field Guide</a><a href="./sdlc-assessment.html" aria-current="page">Risk Assessment</a><a href="./risk-control-library.html">Risk &amp; Control Library</a><a href="./assurance.html">Assurance</a></nav></div></header>
 <main class="wrap">
@@ -42,16 +59,21 @@ main{padding-top:32px;padding-bottom:65px}.eyebrow{font-size:11px;color:var(--te
 </div></fieldset></div></section>
 <section class="panel"><div class="eyebrow">02 · Environment and boundaries</div><h2>Which capabilities and exposures exist?</h2><p class="hint">Select only what is known. Unknowns should remain open questions rather than assumed control failures.</p><div class="grid" id="capabilities"></div>
 <div class="subsection"><h3>Safeguards management says exist</h3><p class="hint">These are self-reported claims. Selecting a safeguard does not establish that it is effective or independently enforced.</p><div class="grid" id="safeguards"></div></div>
-<details class="decision-capture" id="decision-capture" open><summary>V3.8 · What specific engineering decision are you evaluating?</summary>
-<p class="hint">This decision is scoped separately from the environment-wide AI authority level above. The comparison is exploratory; selecting an option is not approval.</p>
+<section class="decision-capture" id="decision-capture" aria-labelledby="decision-heading">
+<div class="decision-head"><div><div class="eyebrow">V3.8 · Engineering decision</div><h3 id="decision-heading">Choose what you want to evaluate</h3></div><button type="button" class="btn example-btn" id="decision-example">Load fictional PR approval example</button></div>
+<div class="decision-primary"><label for="decision-mode">Architecture to compare</label><select id="decision-mode"><option value="fasttrack">Human fast-track</option><option value="execution">Human-authorized agent execution</option><option value="autonomous">Bounded autonomous AI approval</option><option value="custom">Other / mixed-authority decision</option></select></div>
+<div class="decision-at-glance" id="decision-glance" aria-live="polite"><strong>Choose an architecture</strong><p>We'll show the decision question and authority boundary here. No additional typing required for the three presets.</p></div>
+<details class="decision-custom" id="decision-custom"><summary>Optional · Customize question, authority, alternatives and assumptions</summary>
+<p class="hint">Presets supply illustrative architecture descriptions. Edit these only if they do not fit the workflow you are evaluating.</p>
 <div class="decision-inputs">
-<label>Decision architecture <select id="decision-mode"><option value="fasttrack">Human fast-track</option><option value="execution">Human-authorized agent execution</option><option value="autonomous">Bounded autonomous AI approval</option><option value="custom">Other / mixed-authority decision</option></select></label>
-<label>Decision question <textarea id="decision-title" rows="2" placeholder="Which engineering choice needs a decision?"></textarea></label>
-<div class="decision-cols"><label>Who decides? <textarea id="decision-decider" rows="2"></textarea></label><label>Who executes? <textarea id="decision-executor" rows="2"></textarea></label></div>
-<label>What is authorized without further approval? <textarea id="decision-scope" rows="2"></textarea></label>
-<label>Architecture alternatives (one per line) <textarea id="decision-alternatives" rows="3"></textarea></label>
-<label>Assumptions or known constraints <textarea id="decision-assumptions" rows="2" placeholder="What has not been verified?"></textarea></label>
+<label for="decision-title">Decision question <textarea id="decision-title" rows="2" placeholder="Which engineering choice needs a decision?"></textarea></label>
+<div class="decision-cols"><label for="decision-decider">Who decides? <textarea id="decision-decider" rows="2"></textarea></label><label for="decision-executor">Who executes? <textarea id="decision-executor" rows="2"></textarea></label></div>
+<label for="decision-scope">What can happen without further authorization? <textarea id="decision-scope" rows="2"></textarea></label>
+<label for="decision-alternatives">Alternatives (one per line) <textarea id="decision-alternatives" rows="3"></textarea></label>
+<label for="decision-assumptions">Assumptions or unknowns <textarea id="decision-assumptions" rows="2" placeholder="What has not been verified?"></textarea></label>
 </div></details>
+<p class="decision-disclaimer">Presets are illustrative, not evidence of implemented safeguards or authorization. The selected engineering decision is separate from the environment-wide authority profile above.</p>
+</section>
 <div id="profile-warnings" class="profile-warnings" role="status" aria-live="polite" hidden></div><div class="actions"><button type="submit" class="btn primary">Generate applicability assessment</button><button type="button" id="reset" class="btn">Reset</button></div>
 </section></form>
 <section class="panel hidden" id="results" aria-live="polite">
@@ -179,8 +201,17 @@ return '<article id="risk-'+escape(r.id)+'" class="result '+(x.status==='Needs v
 
 const decisionIds={mode:'decision-mode',title:'decision-title',decider:'decision-decider',executor:'decision-executor',scope:'decision-scope',alternatives:'decision-alternatives',assumptions:'decision-assumptions'};
 function decisionValues(){return Object.fromEntries(Object.entries(decisionIds).map(([k,id])=>[k,$(id).value]));}
-function populateDecision(d,resetMode=false){
- const modes=FGDecision.modes, mode=d?.mode||'execution',base=modes[mode]||modes.custom;
+function updateDecisionGlance(){
+ const d=decisionValues(),box=$('decision-glance');
+ box.replaceChildren();
+ const h=document.createElement('strong');h.textContent=d.title||'Custom decision — add a decision question';
+ const authority=document.createElement('p');
+ authority.textContent='Decides: '+(d.decider||'Not specified')+' · Executes: '+(d.executor||'Not specified');
+ const scope=document.createElement('p');scope.textContent='Boundary: '+(d.scope||'Not specified');
+ box.append(h,authority,scope);
+}
+function populateDecision(d){
+ const modes=FGDecision.modes,mode=d?.mode||'custom',base=modes[mode]||modes.custom;
  $('decision-mode').value=mode;
  $('decision-title').value=d?.title??base.title;
  $('decision-decider').value=d?.authority?.decider??base.decider;
@@ -188,10 +219,33 @@ function populateDecision(d,resetMode=false){
  $('decision-scope').value=d?.authority?.scope??base.scope;
  $('decision-alternatives').value=(d?.alternatives||base.alternatives).join('\n');
  $('decision-assumptions').value=d?.assumptions||'';
+ updateDecisionGlance();
 }
 $('decision-mode').addEventListener('change',()=>{
- const mode=$('decision-mode').value, m=FGDecision.modes[mode];
+ const mode=$('decision-mode').value,m=FGDecision.modes[mode];
  populateDecision({mode,title:m.title,authority:{decider:m.decider,executor:m.executor,scope:m.scope},alternatives:m.alternatives});
+ $('decision-custom').open=mode==='custom';
+});
+Object.values(decisionIds).filter(id=>id!=='decision-mode').forEach(id=>$(id).addEventListener('input',updateDecisionGlance));
+$('decision-example').addEventListener('click',()=>{
+ const mode='execution',m=FGDecision.modes[mode];
+ populateDecision({mode,title:m.title,authority:{decider:m.decider,executor:m.executor,scope:m.scope},alternatives:m.alternatives,
+  assumptions:'Fictional sandbox scenario. Effective GitHub permissions, revision binding and bypass paths are not yet verified.'});
+ $('decision-custom').open=false;
+ document.querySelectorAll('#activities input[type="checkbox"]').forEach(el=>el.checked=el.value==='review');
+ document.querySelectorAll('input[name="authority"]').forEach(el=>el.checked=el.value==='execution');
+ document.querySelectorAll('#capabilities input[type="checkbox"]').forEach(el=>el.checked=['tools','untrusted'].includes(el.value));
+ document.querySelectorAll('#safeguards input[type="checkbox"]').forEach(el=>el.checked=false);
+ const profile={activities:['review'],authority:'execution',capabilities:['tools','untrusted'],safeguards:[]};
+ build(profile);
+ const current=FGSession.readDecision();
+ const claims=[
+  {id:FGDecision.id('claim'),text:'An agent cannot approve a different PR or revision without renewed human authorization.',observations:[]},
+  {id:FGDecision.id('claim'),text:'An approval on revision A cannot authorize revision B after the PR changes.',observations:[]}
+ ];
+ // Seed investigative questions, never fabricated test results.
+ if(current){current.claims=claims;current.example=true;FGSession.saveDecision(current);}
+ $('results').scrollIntoView({behavior:'smooth',block:'start'});
 });
 function build(profile){
  const matched=evaluate(profile);
