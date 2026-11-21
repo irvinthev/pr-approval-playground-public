@@ -61,10 +61,27 @@ const rulebook=[
 function has(p,key){return (p.capabilities||[]).includes(key)}
 function inAny(p,ids){return ids.some(id=>(p.activities||[]).includes(id))}
 function select(profile,matched){
- const ids=new Set(matched.map(x=>x.risk.id));
- const candidates=rulebook.filter(r=>ids.has(r.id)&&r.check(profile))
-   .map(r=>({id:r.id,why:r.trigger(profile),consequence:r.impact,decisionQuestion:matched.find(x=>x.risk.id===r.id).risk.challenge,whatChanges:r.change,rule:'Stage + delegated authority + selected capabilities',rank:r.order}));
- return candidates.sort((a,b)=>a.rank-b.rank).slice(0,6);
+ const byId=new Map(matched.map(x=>[x.risk.id,x]));
+ const defining=profile.authority==='execution'&&inAny(profile,['review'])?'R01':profile.authority==='autonomous'&&inAny(profile,['review'])?'R02':null;
+ const candidates=rulebook.filter(r=>byId.has(r.id)&&r.check(profile))
+   .map(r=>{
+     const item=byId.get(r.id);
+     const conditional=item.status==='Needs verification';
+     const isDefining=r.id===defining;
+     return {id:r.id,why:r.trigger(profile),consequence:r.impact,
+       decisionQuestion:item.risk.challenge,whatChanges:r.change,
+       rule:'Explicit architecture signals; conditionally applicable cases are flagged',
+       category:isDefining?'Architecture-defining question':'Supporting investigation',
+       conditional,rank:r.order};
+   });
+ candidates.sort((a,b)=>{
+  if(a.id===defining)return -1;
+  if(b.id===defining)return 1;
+  if(a.conditional!==b.conditional)return a.conditional?1:-1;
+  return a.rank-b.rank;
+ });
+ return candidates.slice(0,6);
 }
+
 root.SDLCPriorities={select,ruleCount:rulebook.length};
 })(window);
