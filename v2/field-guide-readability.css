@@ -165,3 +165,53 @@ body[data-fg-page="library"] .stage-tag{font-size:11px;padding:4px 9px}
  main .card,main .panel{padding:12pt}
  body[data-fg-page="assessment"] .lead-challenge{break-inside:avoid}
 }
+
+/* V3.7.1: Assurance condensed navigation wins over legacy readability rules.
+   Expanded procedure text retains the original readable type scale. */
+body[data-fg-page="assurance"] .domain-grid>.assurance-domain:not([open]){
+  margin:0;
+  padding:11px 13px;
+  border-radius:9px;
+}
+body[data-fg-page="assurance"] .domain-grid>.assurance-domain:not([open]) summary{
+  font-size:13px;
+  line-height:1.35;
+  font-weight:750;
+}
+body[data-fg-page="assurance"] .domain-grid>.assurance-domain:not([open]) .as-question{
+  margin-top:3px;
+  font-size:12px;
+  line-height:1.4;
+  font-weight:500;
+}
+body[data-fg-page="assurance"] .domain-grid>.assurance-domain[open]{
+  margin:0;
+  padding:17px 20px;
+}
+body[data-fg-page="assurance"] .domain-grid>.assurance-domain[open] summary{
+  font-size:16px;
+}
+body[data-fg-page="assurance"] .domain-grid>.assurance-domain[open] .assurance-detail{
+  margin-top:16px;
+}
+@media(max-width:760px){
+ body[data-fg-page="assurance"] .domain-grid{
+   grid-template-columns:minmax(0,1fr);
+   gap:7px;
+ }
+ body[data-fg-page="assurance"] .domain-grid>.assurance-domain:not([open]){
+   padding:9px 12px;
+ }
+ body[data-fg-page="assurance"] .domain-grid>.assurance-domain:not([open]) summary{
+   font-size:12.5px;
+   line-height:1.3;
+ }
+ body[data-fg-page="assurance"] .domain-grid>.assurance-domain:not([open]) .as-question{
+   font-size:12px;
+   margin-top:2px;
+   line-height:1.35;
+ }
+ body[data-fg-page="assurance"] .domain-grid>.assurance-domain[open]{
+   padding:15px 16px;
+ }
+}
