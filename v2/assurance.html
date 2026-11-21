@@ -345,10 +345,10 @@ function setupDecisionTrace(){
   drawClaims();
  });
  $('trace-save').addEventListener('click',()=>{
-  persist();brief();$('trace-feedback').textContent='Decision trace saved in this browser session. Observations have not been authenticated.';
+  persist();drawClaims();brief();$('trace-feedback').textContent='Decision trace saved in this browser session. Observations have not been authenticated.';
  });
  $('trace-export').addEventListener('click',()=>{
-  persist();brief();
+  persist();drawClaims();brief();
   const record=FGDecision.exportRecord(decision,FGSession.read()?.profile);
   const blob=new Blob([JSON.stringify(record,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
   a.href=url;a.download='engineering-decision-record.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
