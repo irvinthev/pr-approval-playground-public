@@ -61,15 +61,42 @@ body[data-fg-page="library"] .technical-body .field p{font-size:12px}
  body[data-fg-page="library"] .risk-line{padding:9px 0}
  body[data-fg-page="library"] .risk-line p{font-size:13px}
 }
+
+/* V3.11 theme-first editorial reading experience */
+#featured-themes{display:grid;gap:11px;margin:20px 0 28px}
+.featured-theme{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.featured-theme>summary{padding:17px 20px;display:grid;gap:4px;list-style:none;cursor:pointer}
+.featured-theme>summary::-webkit-details-marker{display:none}
+.featured-theme>summary:after{content:"Explore examples +";font-size:12px;color:#117a7d;font-weight:750}
+.featured-theme[open]>summary:after{content:"Hide examples −"}
+.theme-title{font-size:19px;font-weight:800;color:#173f52}
+.theme-question{font-size:14px;color:#365c6d}
+.theme-meta{font-size:12px;color:#617989}
+.theme-feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:15px 20px;background:#f6fafb;border-top:1px solid var(--line)}
+.featured-risk{background:#fff;border:1px solid #dce8ec;border-radius:9px;padding:16px;min-width:0}
+.featured-risk h3{margin:5px 0 8px;font-size:16px;line-height:1.35}
+.featured-risk p{font-size:13px;margin:0 0 12px;color:#456274;line-height:1.5}
+.featured-risk a{font-weight:700;font-size:12px}
+.theme-more{padding:9px 20px 13px;background:#f6fafb}
+.show-theme{font:inherit;background:none;color:#086e76;border:none;padding:4px 0;cursor:pointer;font-size:12px;font-weight:750}
+.full-reference{margin:16px 0 35px;border:1px solid var(--line);border-radius:12px;background:white}
+.full-reference>summary{display:grid;gap:4px;padding:18px 20px;list-style:none;font-size:16px}
+.full-reference>summary::-webkit-details-marker{display:none}
+.full-reference>summary span{font-size:13px;color:var(--muted);font-weight:400}
+.reference-body{padding:0 17px 14px;border-top:1px solid var(--line)}
+.full-reference .toolbar{margin-top:15px}
+.full-reference .list{margin-bottom:16px}
+@media(max-width:740px){.theme-feature-grid{grid-template-columns:1fr;padding:12px}.featured-theme>summary{padding:15px}.reference-body{padding:0 9px 10px}}
 </style><link rel="stylesheet" href="./field-guide-readability.css"></head><body data-fg-page="library">
 <header class="top"><div class="wrap"><span class="brand">AI-ENABLED SDLC · PLAYGROUND</span><nav aria-label="Field Guide"><a href="./field-guide.html">Field Guide</a><a href="./sdlc-assessment.html">Risk Assessment</a><a href="./risk-control-library.html" aria-current="page">Risk &amp; Control Library</a><a href="./assurance.html">Assurance</a></nav></div></header>
-<main class="wrap"><section class="hero"><div class="eyebrow">Full reference · fictional public examples</div><h1>Risk &amp; Control Library</h1><p>Explore 21 illustrative scenarios. Each explains the risk, why it matters, a misconception to challenge, potential safeguards, and a practical engineering question. This remains an illustrative teaching reference, not a validated comprehensive risk inventory.</p><p><a class="btn" href="./sdlc-assessment.html">Assess your AI-enabled SDLC environment</a></p></section>
-<div class="warning"><strong>Source boundary:</strong> This public educational library preserves nine original fictional PR-approval records and adds twelve newly authored hypothetical SDLC scenarios. It is <strong>not</strong> the private AI Auto Approve register, a company risk inventory, verified implementation, or an approved control framework. Examples are illustrative and must be validated in the actual environment.</div>
-<section class="lifecycle" aria-label="SDLC areas"><div class="lifecycle-header"><strong>Explore by engineering activity</strong><span>Choose where the failure occurs. Additional stages only apply under stated conditions.</span></div><div class="stage-grid" id="stageGrid"></div></section>
-<div class="toolbar"><div class="search"><label for="q">Search risks, AI failure paths, tests and safeguards</label><input id="q" type="search" placeholder="e.g. stale approval, GitHub, false negative"></div><div><label for="domain">Risk theme</label><select id="domain"><option value="all">All themes</option><option value="AI decision reliability">AI decision reliability</option><option value="Change &amp; configuration integrity">Change &amp; configuration integrity</option><option value="Data &amp; trust boundaries">Data &amp; trust boundaries</option><option value="Delegated authority">Delegated authority</option><option value="Evaluation &amp; test quality">Evaluation &amp; test quality</option><option value="Evidence &amp; observability">Evidence &amp; observability</option><option value="Generated artifact quality">Generated artifact quality</option><option value="Identity &amp; permissions">Identity &amp; permissions</option><option value="Operational autonomy &amp; recovery">Operational autonomy &amp; recovery</option><option value="Release &amp; production integrity">Release &amp; production integrity</option><option value="Requirements &amp; design">Requirements &amp; design</option><option value="Review accountability">Review accountability</option><option value="Untrusted instructions">Untrusted instructions</option></select></div><div><label for="stage">SDLC stage</label><select id="stage"><option value="all">All stages</option><option value="Design &amp; planning">Design &amp; planning</option><option value="Coding &amp; tool execution">Coding &amp; tool execution</option><option value="Testing &amp; validation">Testing &amp; validation</option><option value="Review &amp; approval">Review &amp; approval</option><option value="Build &amp; release">Build &amp; release</option><option value="Production &amp; operations">Production &amp; operations</option></select></div><div><label for="relevance">AI relevance</label><select id="relevance"><option value="all">All types</option><option value="Agent-specific">Agent-specific</option><option value="AI-amplified">AI-amplified</option><option value="Foundational dependency">Foundational dependency</option></select></div><div class="stats" id="count" aria-live="polite"></div></div>
+<main class="wrap"><section class="hero"><div class="eyebrow">Full reference · fictional public examples</div><h1>Risk &amp; Control Library</h1><p>Explore five themes through two featured risks each. Expand the full reference to browse all 22 illustrative scenarios, their safeguards, tests and assurance links. This remains an illustrative teaching reference, not a validated comprehensive risk inventory.</p><p><a class="btn" href="./sdlc-assessment.html">Assess your AI-enabled SDLC environment</a></p></section>
+<div class="warning"><strong>Source boundary:</strong> This public educational library preserves nine original fictional PR-approval records and adds thirteen newly authored hypothetical SDLC scenarios. It is <strong>not</strong> the private AI Auto Approve register, a company risk inventory, verified implementation, or an approved control framework. Examples are illustrative and must be validated in the actual environment.</div>
+<section id="featured-themes" aria-label="Featured risk themes"></section>
+<details id="full-reference" class="full-reference"><summary><strong>Full risk reference</strong><span>Browse all 22 scenarios, filter by theme or lifecycle stage, and access detailed evidence and testing.</span></summary><div class="reference-body"><section class="lifecycle" aria-label="SDLC areas"><div class="lifecycle-header"><strong>Explore by engineering activity</strong><span>Choose where the failure occurs. Additional stages only apply under stated conditions.</span></div><div class="stage-grid" id="stageGrid"></div></section>
+<div class="toolbar"><div class="search"><label for="q">Search risks, AI failure paths, tests and safeguards</label><input id="q" type="search" placeholder="e.g. stale approval, GitHub, false negative"></div><div><label for="domain">Risk theme</label><select id="domain"><option value="all">All themes</option><option value="context">Context & Engineering Judgment</option><option value="authority">Agent Authority & Trust Boundaries</option><option value="quality">Output Quality & Verification</option><option value="change">Change & Production Integrity</option><option value="operations">Operational Visibility & Resilience</option></select></div><div><label for="stage">SDLC stage</label><select id="stage"><option value="all">All stages</option><option value="Design &amp; planning">Design &amp; planning</option><option value="Coding &amp; tool execution">Coding &amp; tool execution</option><option value="Testing &amp; validation">Testing &amp; validation</option><option value="Review &amp; approval">Review &amp; approval</option><option value="Build &amp; release">Build &amp; release</option><option value="Production &amp; operations">Production &amp; operations</option></select></div><div><label for="relevance">AI relevance</label><select id="relevance"><option value="all">All types</option><option value="Agent-specific">Agent-specific</option><option value="AI-amplified">AI-amplified</option><option value="Foundational dependency">Foundational dependency</option></select></div><div class="stats" id="count" aria-live="polite"></div></div>
 <div class="note"><b>How to read:</b> Primary stage means where the illustrated failure originates. Additional stages are conditional; downstream consequences are not counted as additional failures. AI relevance is a scenario-specific interpretation. Safeguard options and tests are illustrative, not verified outcomes.</div>
-<div class="list" id="records"></div><p id="empty" hidden>No matching risks. Try a different term or domain.</p>
-</main><footer class="foot"><div class="wrap">V3 library concept · Preview branch only. Record source: V2 illustrative risk catalog. All real controls and evidence require independent verification.</div> · <a href="./field-guide.html#methods">Methodology &amp; Sources</a></footer>
+<div class="list" id="records"></div><p id="empty" hidden>No matching risks. Try a different term or theme.</p></div></details>
+</main><footer class="foot"><div class="wrap">V3.11 featured risks · Preview branch only. Record source: V2 illustrative risk catalog. All real controls and evidence require independent verification.</div> · <a href="./field-guide.html#methods">Methodology &amp; Sources</a></footer>
 <script src="./field-guide-session.js"></script><script src="./sdlc-risk-data.js"></script>
 <script>
 const records=window.SDLCRiskRecords;
@@ -79,6 +106,7 @@ const field=(label,value)=>'<div class="field"><b>'+esc(label)+'</b><p>'+esc(val
 // Each card makes one cause → failure → consequence claim. Misconceptions are prompts to test,
 // not assertions that all engineering organizations actually hold these beliefs.
 const editorial={
+R22:["Agents acting without reliable decision-critical requirements, dependencies, or operational context may make unsuitable engineering decisions, resulting in defects, unsafe approvals or production failures.","Access to the repository and documentation necessarily means the agent has enough context to decide."],
 R10:["AI-assisted planning that overlooks security or business constraints may carry those omissions into implementation, resulting in unsafe behavior or costly rework.","A complete-looking AI specification necessarily captures the requirements that matter."],
 R11:["AI-generated architecture advice based on incomplete operating context may conceal critical tradeoffs, resulting in fragile or unnecessarily costly designs.","A persuasive architecture recommendation has already considered our constraints."],
 R12:["An agent that treats untrusted repository or tool content as instructions may execute actions outside its assigned task, resulting in unauthorized changes or information exposure.","Repository comments and tool responses are only data, so they cannot redirect agent actions."],
@@ -122,6 +150,39 @@ function card(r){
  technical+'</div></article>';
 }
 
+// V3.11: themes are navigation lenses, not exclusive classes. A record exists once.
+const riskThemes=[{"id":"context","title":"Context & Engineering Judgment","q":"Does the agent have sufficient, trustworthy context to make a sound engineering decision?","featured":["R22","R11"],"risks":["R22","R10","R11","R05"]},{"id":"authority","title":"Agent Authority & Trust Boundaries","q":"Can an agent or its information flows cross boundaries it was not authorized to cross?","featured":["R12","R13"],"risks":["R01","R03","R12","R13","R06","R22"]},{"id":"quality","title":"Output Quality & Verification","q":"Can flawed outputs or unreliable evaluations pass as trustworthy?","featured":["R14","R15"],"risks":["R14","R15","R16","R17","R22","R10"]},{"id":"change","title":"Change & Production Integrity","q":"Can an unvalidated or unauthorized change reach production?","featured":["R04","R07"],"risks":["R02","R04","R08","R18","R19","R07","R05"]},{"id":"operations","title":"Operational Visibility & Resilience","q":"Can engineers detect, interrupt, explain and recover from harmful agent behavior?","featured":["R20","R21"],"risks":["R09","R20","R21","R17"]}];
+const membership=id=>riskThemes.filter(t=>t.risks.includes(id)).map(t=>t.title);
+function featuredCards(){
+ return riskThemes.map(t=>{
+  const featured=t.featured.map(id=>{
+   const r=records.find(v=>v.id===id);
+   if(!r)throw new Error('Featured risk missing: '+id);
+   return '<div class="featured-risk"><span class="kicker">'+esc(r.id)+'</span><h3>'+esc(r.title)+'</h3><p>'+esc(r.plainEnglish)+'</p><a href="#'+esc(id)+'" data-risk-link="'+esc(id)+'">Read the complete risk &amp; assurance challenge →</a></div>';
+  }).join('');
+  return '<details class="featured-theme" id="theme-'+t.id+'"><summary><span class="theme-title">'+esc(t.title)+'</span><span class="theme-question">'+esc(t.q)+'</span><span class="theme-meta">2 featured examples · '+t.risks.length+' related risk records</span></summary><div class="theme-feature-grid">'+featured+'</div><div class="theme-more"><button class="show-theme" data-theme="'+t.id+'" type="button">Explore all risks in this theme →</button></div></details>';
+ }).join('');
+}
+function setupFeatured(){
+ document.getElementById('featured-themes').innerHTML=featuredCards();
+ document.querySelectorAll('.featured-risk [data-risk-link]').forEach(link=>link.addEventListener('click',()=>{
+  document.getElementById('full-reference').open=true;
+  document.getElementById('domain').value='all';
+  document.getElementById('q').value='';
+  document.getElementById('stage').value='all';
+  document.getElementById('relevance').value='all';
+  render(true);
+ }));
+ document.querySelectorAll('.show-theme').forEach(btn=>btn.addEventListener('click',()=>{
+  document.getElementById('full-reference').open=true;
+  document.getElementById('domain').value=btn.dataset.theme;
+  document.getElementById('stage').value='all';
+  document.getElementById('relevance').value='all';
+  document.getElementById('q').value='';
+  render();
+  document.getElementById('full-reference').scrollIntoView({behavior:'smooth',block:'start'});
+ }));
+}
 const stages=["Design & planning","Coding & tool execution","Testing & validation","Review & approval","Build & release","Production & operations"];
 
 const synonyms={
@@ -159,7 +220,7 @@ function selected(){
  return records.filter(r=>{
   const q=document.getElementById('q').value.trim().toLowerCase();
   const domain=document.getElementById('domain').value,stage=document.getElementById('stage').value,relevance=document.getElementById('relevance').value;
-  return (domain==='all'||r.theme===domain)&&(stage==='all'||r.stages.includes(stage))&&(relevance==='all'||r.relevance===relevance)&&matchesQuery(r,q);
+  return (domain==='all'||riskThemes.find(t=>t.id===domain)?.risks.includes(r.id))&&(stage==='all'||r.stages.includes(stage))&&(relevance==='all'||r.relevance===relevance)&&matchesQuery(r,q);
  });
 }
 let lastDeepLink=null;
@@ -179,8 +240,9 @@ function render(focusLink=false){
  const oldOpenCards=new Set([...container.querySelectorAll('article .technical[open]')].map(el=>el.closest('article')?.id).filter(Boolean));
  const oldGroups=new Set([...container.querySelectorAll('.stage-cluster[open]')].map(el=>el.id));
  const selectedRisks=selected();
+ if(focusLink&&/^R(?:0[1-9]|1\d|2[0-2])$/.test((location.hash.slice(1)||new URLSearchParams(location.search).get("risk")||"").toUpperCase())) document.getElementById("full-reference").open=true;
  const targetRisk=(location.hash.slice(1)||new URLSearchParams(location.search).get('risk')||'').toUpperCase();
- const validRisk=/^R(?:0[1-9]|1\d|2[01])$/.test(targetRisk)&&records.some(r=>r.id===targetRisk);
+ const validRisk=/^R(?:0[1-9]|1\d|2[0-2])$/.test(targetRisk)&&records.some(r=>r.id===targetRisk);
  if(focusLink&&validRisk&&(!selectedRisks.some(r=>r.id===targetRisk))){
   // Links from Assessment must not be hidden by a previous filter.
   document.getElementById('q').value='';
@@ -206,7 +268,7 @@ function render(focusLink=false){
    if(targetRisk!==lastDeepLink){lastDeepLink=targetRisk;requestAnimationFrame(()=>record.scrollIntoView({block:'start',behavior:'auto'}));}
   }
  }
- document.getElementById('count').textContent=filtered?found.length+' of '+records.length+' matching records':records.length+' scenarios · 6 SDLC stages';
+ document.getElementById('count').textContent=filtered?found.length+' of '+records.length+' matching records':records.length+' distinct scenarios · 6 SDLC stages';
  document.getElementById('empty').hidden=found.length>0;
  renderStages();
 }
@@ -216,5 +278,6 @@ document.getElementById('domain').addEventListener('change',()=>render());
 document.getElementById('stage').addEventListener('change',()=>render());
 document.getElementById('relevance').addEventListener('change',()=>render());
 window.addEventListener('hashchange',()=>{lastDeepLink=null;render(true);});
+setupFeatured();
 render(true);
 </script></body></html>
