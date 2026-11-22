@@ -33,9 +33,37 @@ body[data-fg-page="library"] .stage-cluster[open]>.stage-cluster-content{backgro
  body[data-fg-page="library"] .stage-cluster-previews{font-size:12px}
  body[data-fg-page="library"] .stage-cluster-content{padding:8px}
 }
+
+/* V3.10: one claim per section, minimal metadata, reference depth optional */
+body[data-fg-page="library"] .risk-card header{padding:16px 20px 5px}
+body[data-fg-page="library"] .risk-card h2{font-size:19px;margin:5px 0 0}
+body[data-fg-page="library"] .risk-reading{padding:2px 20px 17px}
+body[data-fg-page="library"] .risk-line{padding:10px 0;border-bottom:1px solid #e9eff2}
+body[data-fg-page="library"] .risk-line:last-of-type{border-bottom:0}
+body[data-fg-page="library"] .risk-line h3{font-size:12px;color:#246373;letter-spacing:.015em;margin:0 0 4px}
+body[data-fg-page="library"] .risk-line p{margin:0;font-size:14px;line-height:1.55}
+body[data-fg-page="library"] .risk-line ul{margin:2px 0 0;padding-left:19px}
+body[data-fg-page="library"] .risk-line li{font-size:13px;line-height:1.5;margin:5px 0}
+body[data-fg-page="library"] .risk-line .small-note{font-size:11px;color:var(--muted);margin-top:7px}
+body[data-fg-page="library"] .misconception{font-style:italic;color:#425b69}
+body[data-fg-page="library"] .core-challenge{font-weight:650}
+body[data-fg-page="library"] .risk-actions{display:flex;flex-wrap:wrap;gap:13px;padding:10px 0}
+body[data-fg-page="library"] .risk-actions a{font-size:12px;font-weight:700}
+body[data-fg-page="library"] .technical{border:1px solid #d8e6ec;border-radius:8px;margin-top:6px;background:#f9fcfd}
+body[data-fg-page="library"] .technical>summary{font-size:12px;padding:10px 12px;color:#426674}
+body[data-fg-page="library"] .technical-body{padding:12px}
+body[data-fg-page="library"] .technical-body .field{padding:10px}
+body[data-fg-page="library"] .technical-body .field p{font-size:12px}
+@media(max-width:700px){
+ body[data-fg-page="library"] .risk-card header{padding:13px 13px 4px}
+ body[data-fg-page="library"] .risk-card h2{font-size:17px}
+ body[data-fg-page="library"] .risk-reading{padding:0 13px 13px}
+ body[data-fg-page="library"] .risk-line{padding:9px 0}
+ body[data-fg-page="library"] .risk-line p{font-size:13px}
+}
 </style><link rel="stylesheet" href="./field-guide-readability.css"></head><body data-fg-page="library">
 <header class="top"><div class="wrap"><span class="brand">AI-ENABLED SDLC · PLAYGROUND</span><nav aria-label="Field Guide"><a href="./field-guide.html">Field Guide</a><a href="./sdlc-assessment.html">Risk Assessment</a><a href="./risk-control-library.html" aria-current="page">Risk &amp; Control Library</a><a href="./assurance.html">Assurance</a></nav></div></header>
-<main class="wrap"><section class="hero"><div class="eyebrow">Full reference · fictional public examples</div><h1>Risk &amp; Control Library</h1><p>Explore 21 fictional risks across the AI-enabled SDLC. Distinguish failure origin from conditional applicability and downstream impacts, then challenge architectures, safeguards and evidence. This remains an illustrative teaching reference, not a validated comprehensive risk inventory.</p><p><a class="btn" href="./sdlc-assessment.html">Assess your AI-enabled SDLC environment</a></p></section>
+<main class="wrap"><section class="hero"><div class="eyebrow">Full reference · fictional public examples</div><h1>Risk &amp; Control Library</h1><p>Explore 21 illustrative scenarios. Each explains the risk, why it matters, a misconception to challenge, potential safeguards, and a practical engineering question. This remains an illustrative teaching reference, not a validated comprehensive risk inventory.</p><p><a class="btn" href="./sdlc-assessment.html">Assess your AI-enabled SDLC environment</a></p></section>
 <div class="warning"><strong>Source boundary:</strong> This public educational library preserves nine original fictional PR-approval records and adds twelve newly authored hypothetical SDLC scenarios. It is <strong>not</strong> the private AI Auto Approve register, a company risk inventory, verified implementation, or an approved control framework. Examples are illustrative and must be validated in the actual environment.</div>
 <section class="lifecycle" aria-label="SDLC areas"><div class="lifecycle-header"><strong>Explore by engineering activity</strong><span>Choose where the failure occurs. Additional stages only apply under stated conditions.</span></div><div class="stage-grid" id="stageGrid"></div></section>
 <div class="toolbar"><div class="search"><label for="q">Search risks, AI failure paths, tests and safeguards</label><input id="q" type="search" placeholder="e.g. stale approval, GitHub, false negative"></div><div><label for="domain">Risk theme</label><select id="domain"><option value="all">All themes</option><option value="AI decision reliability">AI decision reliability</option><option value="Change &amp; configuration integrity">Change &amp; configuration integrity</option><option value="Data &amp; trust boundaries">Data &amp; trust boundaries</option><option value="Delegated authority">Delegated authority</option><option value="Evaluation &amp; test quality">Evaluation &amp; test quality</option><option value="Evidence &amp; observability">Evidence &amp; observability</option><option value="Generated artifact quality">Generated artifact quality</option><option value="Identity &amp; permissions">Identity &amp; permissions</option><option value="Operational autonomy &amp; recovery">Operational autonomy &amp; recovery</option><option value="Release &amp; production integrity">Release &amp; production integrity</option><option value="Requirements &amp; design">Requirements &amp; design</option><option value="Review accountability">Review accountability</option><option value="Untrusted instructions">Untrusted instructions</option></select></div><div><label for="stage">SDLC stage</label><select id="stage"><option value="all">All stages</option><option value="Design &amp; planning">Design &amp; planning</option><option value="Coding &amp; tool execution">Coding &amp; tool execution</option><option value="Testing &amp; validation">Testing &amp; validation</option><option value="Review &amp; approval">Review &amp; approval</option><option value="Build &amp; release">Build &amp; release</option><option value="Production &amp; operations">Production &amp; operations</option></select></div><div><label for="relevance">AI relevance</label><select id="relevance"><option value="all">All types</option><option value="Agent-specific">Agent-specific</option><option value="AI-amplified">AI-amplified</option><option value="Foundational dependency">Foundational dependency</option></select></div><div class="stats" id="count" aria-live="polite"></div></div>
@@ -47,19 +75,53 @@ body[data-fg-page="library"] .stage-cluster[open]>.stage-cluster-content{backgro
 const records=window.SDLCRiskRecords;
 const esc=s=>String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 const field=(label,value)=>'<div class="field"><b>'+esc(label)+'</b><p>'+esc(value)+'</p></div>';
+// V3.10: reader-facing editorial summaries. Shared records and assessment logic are unchanged.
+// Each card makes one cause → failure → consequence claim. Misconceptions are prompts to test,
+// not assertions that all engineering organizations actually hold these beliefs.
+const editorial={
+R10:["AI-assisted planning that overlooks security or business constraints may carry those omissions into implementation, resulting in unsafe behavior or costly rework.","A complete-looking AI specification necessarily captures the requirements that matter."],
+R11:["AI-generated architecture advice based on incomplete operating context may conceal critical tradeoffs, resulting in fragile or unnecessarily costly designs.","A persuasive architecture recommendation has already considered our constraints."],
+R12:["An agent that treats untrusted repository or tool content as instructions may execute actions outside its assigned task, resulting in unauthorized changes or information exposure.","Repository comments and tool responses are only data, so they cannot redirect agent actions."],
+R13:["An agent with permissions beyond its task may access sensitive information or change protected configuration, resulting in unauthorized actions or data exposure.","Asking an agent to stay within scope restricts what its credentials permit."],
+R14:["AI-generated code accepted without adequate independent validation may contain exploitable defects, resulting in security vulnerabilities or service failures.","Code that compiles and passes CI necessarily meets its security requirements."],
+R15:["AI-generated tests built on the same flawed assumptions as the code may miss consequential defects, resulting in a release that passes checks but violates requirements.","AI-authored tests independently verify AI-authored code just because they are separate files."],
+R16:["AI review evaluations that conceal serious missed defects behind aggregate pass rates may support unsafe approval decisions, resulting in defects escaping review.","High reviewer agreement or overall accuracy establishes that severe edge cases are handled."],
+R17:["Changes to models, prompts, retrieval, or tool permissions without proportional reevaluation may alter agent behavior, resulting in unreliable or unauthorized engineering actions.","An unchanged source repository means the agent's effective behavior is unchanged."],
+R01:["An agent with broad approval permissions may approve a PR or revision beyond the engineer's explicit instruction, resulting in authorization without the intended human decision.","A GitHub approval attributed to a person establishes that they approved that exact change."],
+R02:["AI classification errors without independent eligibility restrictions may approve changes requiring human review, resulting in unauthorized or unsafe merges.","A low-risk model score alone establishes that a change is eligible for autonomous approval."],
+R03:["An automation identity with broad bypass permissions may circumvent required review or merge restrictions, resulting in unauthorized changes reaching protected branches.","A bot's own eligibility check is sufficient protection when that bot can bypass the rules."],
+R04:["Agents or automated workflows may change code after approval without invalidating the earlier decision, allowing an unreviewed revision to merge and potentially cause security or reliability failures.","A visible approval always applies to the exact code that ultimately merges."],
+R05:["AI review limited to a local diff may miss effects on shared components or dependent systems, resulting in consequential changes incorrectly treated as low-risk.","A small diff in an apparently safe file necessarily has a small blast radius."],
+R06:["AI review integrations that transmit excessive repository or runtime context may disclose confidential code or secrets, resulting in data exposure or contractual harm.","Only the visible PR diff reaches an external AI reviewer."],
+R08:["Automated reviewer routing without adequate qualification or ownership checks may substitute an inappropriate approval, resulting in changes missing necessary technical scrutiny.","Any human approval provides the same expertise as the required domain reviewer."],
+R09:["Incomplete AI event records or missing reconciliation may conceal bypassed or failed actions, resulting in undetected changes and unreliable investigations.","A successful automation dashboard proves the decision and exception population is complete."],
+R07:["Release pathways not bound to approved source and build provenance may deploy unreviewed artifacts, resulting in unauthorized production changes.","An approved PR by itself proves that the deployed artifact is authorized."],
+R18:["Build agents that can modify CI policy or artifacts may undermine validation after review, resulting in untrusted software being promoted as approved.","Passing CI establishes integrity even if the agent can alter the checks themselves."],
+R19:["Release agents with unrestricted deployment permissions may select unapproved artifacts or environments, resulting in unauthorized production changes or outages.","A prompt specifying the destination environment restricts the agent's actual deployment authority."],
+R20:["Operations agents acting on incomplete or manipulated signals may execute unsafe remediation, resulting in outages, data loss, or expanded incidents.","An AI-generated remediation plan is safe to execute because it sounds consistent with the incident."],
+R21:["Autonomous operations lacking independent shutdown and complete event visibility may continue harmful actions without timely containment, resulting in prolonged incidents or unreconstructable changes.","Asking the agent to stop is equivalent to an independently enforced kill switch."]
+};
+function riskSection(title,content,css=''){return '<section class="risk-line '+css+'"><h3>'+title+'</h3>'+content+'</section>'}
 function card(r){
-const related=(window.FGSession?.domains?.[r.id]||[]);const assuranceLink=related.length?'<p class="small-note"><a href="./assurance.html?risk='+encodeURIComponent(r.id)+'#'+related[0]+'">Explore relevant assurance guidance →</a> · <a href="./assurance.html?risk='+encodeURIComponent(r.id)+'#investigation">Record evidence and a conclusion →</a></p>':'';
-const options='<ul>'+r.approaches.map(a=>'<li><strong>'+esc(a[0])+':</strong> '+esc(a[1])+'</li>').join('')+'</ul>';
-return '<article id="'+esc(r.id)+'"><header><div class="card-intro"><span class="kicker">'+esc(r.id)+' · '+esc(r.group)+'</span><h2>'+esc(r.title)+'</h2><div class="plain-risk"><strong>The Risk</strong><p>'+esc(r.plainEnglish)+'</p></div><span class="class-tag">'+esc(r.relevance)+'</span><div class="stage-tags">'+r.stages.map(st=>'<span class="stage-tag'+(st===r.primaryStage?' primary':'')+'">'+(st===r.primaryStage?'Origin: ':'Conditional: ')+esc(st)+'</span>').join('')+'</div></div></header>'+
-'<div class="quick-read"><div class="quick-question"><strong>Engineering question</strong><p>'+esc(r.challenge)+'</p></div><div class="quick-cols"><div><strong>Design option to compare</strong><p>'+esc(r.approaches[0]?.[0]||'Review alternatives')+': '+esc(r.approaches[0]?.[1]||'')+'</p></div><div><strong>Challenge the boundary</strong><p>'+esc(r.negativeTest)+'</p></div></div><div class="quick-links">'+assuranceLink+'</div></div>'+ 
-'<details><summary>Full technical reference · enforcement, tradeoffs, evidence &amp; response</summary><div class="content">'+
-'<section class="risk-section"><h3>01 · Why it matters</h3><p>'+esc(r.why)+'</p><div class="field"><b>Lifecycle mapping</b><p><strong>Primary failure stage:</strong> '+esc(r.primaryStage)+'</p>'+(r.otherApplicable.length?'<p><strong>Other applicable stages, if:</strong></p><ul>'+r.otherApplicable.map(x=>'<li><strong>'+esc(x.stage)+':</strong> '+esc(x.condition)+'</li>').join('')+'</ul>':'')+(r.downstreamEffects.length?'<p><strong>Possible downstream consequences:</strong> '+esc(r.downstreamEffects.join(', '))+'</p>':'')+'</div></section>'+
-'<section class="risk-section"><h3>02 · Engineering expectations</h3><div class="columns">'+field('Control objective',r.objective)+field('Effective enforcement boundary',r.securityBoundary)+'</div><div class="field"><b>Architecture alternatives and tradeoffs</b>'+options+'</div></section>'+
-'<section class="risk-section"><h3>03 · Challenge & testing</h3><p class="challenge"><strong>Decision-changing question:</strong> '+esc(r.challenge)+'</p><div class="columns">'+field('Inspect actual configuration',r.inspect)+field('Negative test',r.negativeTest)+'</div></section>'+
-'<section class="risk-section"><h3>04 · Evidence, monitoring & response</h3><div class="columns">'+field('Evidence to examine',r.evidence)+field('Monitoring',r.monitor)+field('Response if safeguard fails',r.respond)+'</div></section>'+
-'<section class="risk-section last"><h3>05 · Scenario and provenance</h3><p>'+esc(r.sourceStatement)+'</p><p class="small-note"><strong>Record origin:</strong> '+(r.type==='original'?'Existing V2 fictional PR approval catalog':'New V3 hypothetical SDLC scenario')+'.</p><p class="small-note"><strong>Reference categories:</strong> '+esc(r.refs.join(', '))+'. Not provision-level mappings or independently verified implementation evidence.</p>'+'<p class="small-note"><strong>Assessment limitation:</strong> The SDLC-wide assessment identifies potential relevance and investigation priorities; it does not assign a validated risk score.</p><a class="btn secondary" href="./sdlc-assessment.html">Explore SDLC-wide assessment</a>'+'</section>'+
-'</div></details></article>';
+ const e=editorial[r.id];if(!e)throw new Error('Missing risk editorial: '+r.id);
+ const related=(window.FGSession?.domains?.[r.id]||[]);
+ const assurance=related.length?'<a href="./assurance.html?risk='+encodeURIComponent(r.id)+'#'+related[0]+'">Explore assurance and evidence →</a>':'';
+ const safeguards=r.approaches.slice(0,2).map(a=>'<li><strong>'+esc(a[0])+':</strong> '+esc(a[1])+'</li>').join('');
+ const technical='<details class="technical"><summary>Technical reference · tests, enforcement &amp; evidence</summary><div class="technical-body">'+
+  '<div class="columns">'+field('Enforcement boundary',r.securityBoundary)+field('Inspect configuration',r.inspect)+field('Negative test',r.negativeTest)+field('Evidence',r.evidence)+field('Monitoring',r.monitor)+field('Response',r.respond)+'</div>'+
+  (r.approaches.length>2?'<p class="small-note"><strong>Additional option:</strong> '+esc(r.approaches[2][0])+': '+esc(r.approaches[2][1])+'</p>':'')+
+  (r.otherApplicable.length?'<p class="small-note"><strong>Other lifecycle exposure:</strong> '+r.otherApplicable.map(x=>esc(x.stage)+' ('+esc(x.condition)+')').join('; ')+'</p>':'')+
+  '<p class="small-note">Illustrative scenario; validate applicability, engineering constraints and technical evidence in the actual environment. '+esc(r.refs.join(', '))+'.</p></div></details>';
+ return '<article id="'+esc(r.id)+'" class="risk-card"><header><div class="card-intro"><span class="kicker">'+esc(r.id)+' · '+esc(r.primaryStage)+'</span><h2>'+esc(r.title)+'</h2></div></header><div class="risk-reading">'+
+ riskSection('Risk','<p>'+esc(e[0])+'</p>')+
+ riskSection('Why it matters','<p>'+esc(r.why)+'</p>')+
+ riskSection('Common misconception','<p class="misconception">“'+esc(e[1])+'”</p>')+
+ riskSection('Potential safeguards or alternatives','<ul>'+safeguards+'</ul><p class="small-note">Consider safeguards proportionate to the agent’s actual authority, exposure and reachable paths.</p>')+
+ riskSection('Question / challenge','<p class="core-challenge">'+esc(r.challenge)+'</p>')+
+ '<div class="risk-actions">'+assurance+'<a href="./sdlc-assessment.html">Assess applicability →</a></div>'+
+ technical+'</div></article>';
 }
+
 const stages=["Design & planning","Coding & tool execution","Testing & validation","Review & approval","Build & release","Production & operations"];
 
 const synonyms={
@@ -106,7 +168,7 @@ function stageGroup(st,group){
  const id='stage-group-'+stageNameToId(st);
  const previews=group.slice(0,2).map(r=>'<li><strong>'+esc(r.id)+'</strong> · '+esc(r.title)+'</li>').join('');
  return '<details class="stage-cluster" id="'+id+'"><summary><span class="stage-cluster-heading">'+esc(st)+'</span><span class="stage-cluster-count">'+group.length+' primary scenarios</span>'+
-  '<ul class="stage-cluster-previews">'+previews+'</ul><span class="stage-cluster-action">Explore all '+group.length+' scenarios and technical details</span></summary>'+
+  '<ul class="stage-cluster-previews">'+previews+'</ul><span class="stage-cluster-action">Explore all '+group.length+' scenarios</span></summary>'+
   '<div class="stage-cluster-content">'+group.map(card).join('')+'</div></details>';
 }
 function hasActiveFilters(){
@@ -114,7 +176,7 @@ function hasActiveFilters(){
 }
 function render(focusLink=false){
  const container=document.getElementById('records');
- const oldOpenCards=new Set([...container.querySelectorAll('article details[open]')].map(el=>el.closest('article')?.id).filter(Boolean));
+ const oldOpenCards=new Set([...container.querySelectorAll('article .technical[open]')].map(el=>el.closest('article')?.id).filter(Boolean));
  const oldGroups=new Set([...container.querySelectorAll('.stage-cluster[open]')].map(el=>el.id));
  const selectedRisks=selected();
  const targetRisk=(location.hash.slice(1)||new URLSearchParams(location.search).get('risk')||'').toUpperCase();
@@ -140,7 +202,7 @@ function render(focusLink=false){
  if(focusLink&&validRisk){
   const record=document.getElementById(targetRisk);
   if(record){const cluster=record.closest('.stage-cluster');if(cluster)cluster.open=true;
-   const details=record.querySelector('details');if(details)details.open=true;
+   // The technical appendix remains closed when arriving from a deep link.
    if(targetRisk!==lastDeepLink){lastDeepLink=targetRisk;requestAnimationFrame(()=>record.scrollIntoView({block:'start',behavior:'auto'}));}
   }
  }
