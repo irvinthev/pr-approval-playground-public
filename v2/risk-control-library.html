@@ -87,14 +87,107 @@ body[data-fg-page="library"] .technical-body .field p{font-size:12px}
 .full-reference .toolbar{margin-top:15px}
 .full-reference .list{margin-bottom:16px}
 @media(max-width:740px){.theme-feature-grid{grid-template-columns:1fr;padding:12px}.featured-theme>summary{padding:15px}.reference-body{padding:0 9px 10px}}
+
+/* V3.12 — editorial reading system */
+:root{--ink:#173444;--muted:#526b79;--line:#dce6eb;--bg:#f7f9fa}
+html{scroll-behavior:smooth;scroll-padding-top:22px}
+body{font-size:16px;line-height:1.62}
+.wrap{max-width:1120px}
+.hero{padding:44px 0 20px}
+.hero h1{font-size:clamp(32px,4.2vw,48px);line-height:1.11;letter-spacing:-.027em;max-width:830px}
+.hero p{font-size:17px;line-height:1.62;max-width:720px}
+.hero .btn{font-size:15px;min-height:44px;display:inline-flex;align-items:center}
+.eyebrow{font-size:13px}
+.source-note{font-size:14px;max-width:760px;color:var(--muted);margin:2px 0 26px}
+#featured-themes{gap:14px;margin:18px 0 34px}
+.featured-theme{border-radius:13px;box-shadow:none}
+.featured-theme>summary{padding:23px 26px;gap:8px;min-height:100px}
+.featured-theme>summary:after{font-size:14px}
+.theme-title{font-size:clamp(21px,2vw,25px);line-height:1.24;letter-spacing:-.012em}
+.theme-question{font-size:16px;line-height:1.48;max-width:760px}
+.theme-meta{font-size:13px}
+.theme-feature-grid{gap:16px;padding:20px 24px}
+.featured-risk{padding:24px;border:1px solid #e4eaee;border-radius:12px}
+.featured-risk .kicker{font-size:13px}
+.featured-risk h3{font-size:21px;line-height:1.3;margin:9px 0 12px;letter-spacing:-.01em}
+.featured-risk p{font-size:16px;line-height:1.58;margin-bottom:18px;color:#385766}
+.featured-risk a{display:inline-flex;align-items:center;font-size:15px;min-height:44px;line-height:1.4}
+.theme-more{padding:12px 24px 17px}
+.show-theme{font-size:15px;min-height:44px}
+.focus-panel{margin:24px 0 38px;scroll-margin-top:24px}
+.focus-panel[hidden]{display:none}
+.focus-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;margin:0 0 17px}
+.focus-top button{font:inherit;font-weight:700;color:#096e76;background:none;border:0;padding:10px 0;min-height:44px;cursor:pointer}
+.focus-top span{font-size:14px;color:var(--muted)}
+.focus-panel .risk-card{border-color:#c9dcdf;box-shadow:0 12px 30px rgba(15,41,54,.035)}
+.focus-panel .risk-card header{padding:28px 32px 10px}
+.focus-panel .risk-card h2{font-size:clamp(25px,3.1vw,33px);line-height:1.2;letter-spacing:-.018em}
+.focus-panel .risk-reading{max-width:830px;padding:2px 32px 28px}
+.focus-panel .risk-line{padding:17px 0}
+.focus-panel .risk-line h3{font-size:15px;margin-bottom:8px}
+.focus-panel .risk-line p{font-size:17px;line-height:1.63}
+.focus-panel .risk-line li{font-size:16px;line-height:1.55;margin:9px 0}
+.focus-panel .risk-line .small-note{font-size:14px}
+.focus-panel .core-challenge{font-size:18px}
+.focus-panel .risk-actions a{font-size:15px;min-height:44px;display:inline-flex;align-items:center}
+.focus-panel .technical>summary{font-size:15px;min-height:44px}
+.focus-panel .technical-body .field b{font-size:13px}
+.focus-panel .technical-body .field p{font-size:15px;line-height:1.55}
+.full-reference{margin-top:22px;border-radius:13px}
+.full-reference>summary{padding:23px 26px;font-size:20px;gap:8px}
+.full-reference>summary span{font-size:15px;line-height:1.5}
+.reference-body{padding:7px 24px 26px}
+.reference-help{font-size:14px;color:var(--muted);line-height:1.55}
+.toolbar{gap:15px}
+.toolbar label{font-size:14px}
+.toolbar input,.toolbar select{font-size:16px;min-height:44px}
+.stage-button{min-height:104px;padding:14px}
+.stage-button strong{font-size:15px}
+.stage-button small{font-size:13px}
+.index-stage{margin:20px 0}
+.index-stage h3{font-size:17px;color:#225568;margin:18px 0 10px}
+.reference-index{display:grid;gap:9px}
+.risk-index-item{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:6px 12px;padding:15px 48px 15px 17px;border:1px solid #dbe8ea;border-radius:10px;background:#fff;color:var(--ink);text-decoration:none;min-height:72px}
+.risk-index-item:hover,.risk-index-item:focus-visible{border-color:#158184;background:#f4faf9}
+.risk-index-name{display:flex;gap:13px;align-items:baseline;font-size:16px;line-height:1.4}
+.risk-index-name strong{color:#087981;font-size:14px;flex-shrink:0}
+.risk-index-meta{font-size:13px;color:var(--muted);grid-column:1}
+.index-arrow{position:absolute;right:18px;top:24px;color:#14777a}
+.nav a{font-size:14px;min-height:36px}
+@media(max-width:740px){
+ .wrap{padding-left:18px;padding-right:18px}
+ .hero{padding:32px 0 18px}
+ .hero p{font-size:16px}
+ .featured-theme>summary{padding:19px 18px}
+ .theme-feature-grid{grid-template-columns:1fr;gap:12px;padding:13px 17px}
+ .featured-risk{padding:19px}
+ .featured-risk h3{font-size:20px}
+ .featured-risk p{font-size:16px}
+ .theme-more{padding:9px 17px 14px}
+ .focus-panel .risk-card header{padding:22px 20px 8px}
+ .focus-panel .risk-reading{padding:0 20px 22px}
+ .focus-panel .risk-line p{font-size:16px}
+ .focus-panel .risk-line li{font-size:16px}
+ .focus-panel .risk-line{padding:14px 0}
+ .full-reference>summary{padding:20px}
+ .reference-body{padding:7px 13px 18px}
+ .risk-index-item{padding:14px 36px 14px 13px}
+ .risk-index-name{display:block}
+ .risk-index-name strong{margin-right:9px}
+ .lifecycle{padding:14px}
+ .stage-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
 </style><link rel="stylesheet" href="./field-guide-readability.css"></head><body data-fg-page="library">
 <header class="top"><div class="wrap"><span class="brand">AI-ENABLED SDLC · PLAYGROUND</span><nav aria-label="Field Guide"><a href="./field-guide.html">Field Guide</a><a href="./sdlc-assessment.html">Risk Assessment</a><a href="./risk-control-library.html" aria-current="page">Risk &amp; Control Library</a><a href="./assurance.html">Assurance</a></nav></div></header>
-<main class="wrap"><section class="hero"><div class="eyebrow">Full reference · fictional public examples</div><h1>Risk &amp; Control Library</h1><p>Explore five themes through two featured risks each. Expand the full reference to browse all 22 illustrative scenarios, their safeguards, tests and assurance links. This remains an illustrative teaching reference, not a validated comprehensive risk inventory.</p><p><a class="btn" href="./sdlc-assessment.html">Assess your AI-enabled SDLC environment</a></p></section>
-<div class="warning"><strong>Source boundary:</strong> This public educational library preserves nine original fictional PR-approval records and adds thirteen newly authored hypothetical SDLC scenarios. It is <strong>not</strong> the private AI Auto Approve register, a company risk inventory, verified implementation, or an approved control framework. Examples are illustrative and must be validated in the actual environment.</div>
+<main class="wrap"><section class="hero"><div class="eyebrow">AI-enabled SDLC / Risk Library</div><h1>Where can agentic engineering fail?</h1><p>Five engineering themes, ten featured examples, and one complete reference to 22 illustrative risks. Explore a risk, challenge its assumptions, or browse the full catalog.</p><p><a class="btn" href="./sdlc-assessment.html">Assess your AI-enabled SDLC environment</a></p></section>
+<p class="source-note"><strong>Illustrative only.</strong> These scenarios are not verified company findings or an approved risk framework. <a href="./field-guide.html#methods">Methodology and source boundaries</a>.</p>
 <section id="featured-themes" aria-label="Featured risk themes"></section>
-<details id="full-reference" class="full-reference"><summary><strong>Full risk reference</strong><span>Browse all 22 scenarios, filter by theme or lifecycle stage, and access detailed evidence and testing.</span></summary><div class="reference-body"><section class="lifecycle" aria-label="SDLC areas"><div class="lifecycle-header"><strong>Explore by engineering activity</strong><span>Choose where the failure occurs. Additional stages only apply under stated conditions.</span></div><div class="stage-grid" id="stageGrid"></div></section>
+<section id="risk-focus" class="focus-panel" aria-label="Selected risk" hidden><div class="focus-top"><button id="focus-close" type="button">← Back to themes</button><span>Risk detail · one canonical record</span></div><div id="focus-content"></div></section>
+<details id="full-reference" class="full-reference"><summary><strong>Explore all 22 risks</strong><span>Search, filter by theme or lifecycle stage, and access technical evidence and testing.</span></summary><div class="reference-body"><section class="lifecycle" aria-label="SDLC areas"><div class="lifecycle-header"><strong>Explore by engineering activity</strong><span>Choose where the failure occurs. Additional stages only apply under stated conditions.</span></div><div class="stage-grid" id="stageGrid"></div></section>
 <div class="toolbar"><div class="search"><label for="q">Search risks, AI failure paths, tests and safeguards</label><input id="q" type="search" placeholder="e.g. stale approval, GitHub, false negative"></div><div><label for="domain">Risk theme</label><select id="domain"><option value="all">All themes</option><option value="context">Context & Engineering Judgment</option><option value="authority">Agent Authority & Trust Boundaries</option><option value="quality">Output Quality & Verification</option><option value="change">Change & Production Integrity</option><option value="operations">Operational Visibility & Resilience</option></select></div><div><label for="stage">SDLC stage</label><select id="stage"><option value="all">All stages</option><option value="Design &amp; planning">Design &amp; planning</option><option value="Coding &amp; tool execution">Coding &amp; tool execution</option><option value="Testing &amp; validation">Testing &amp; validation</option><option value="Review &amp; approval">Review &amp; approval</option><option value="Build &amp; release">Build &amp; release</option><option value="Production &amp; operations">Production &amp; operations</option></select></div><div><label for="relevance">AI relevance</label><select id="relevance"><option value="all">All types</option><option value="Agent-specific">Agent-specific</option><option value="AI-amplified">AI-amplified</option><option value="Foundational dependency">Foundational dependency</option></select></div><div class="stats" id="count" aria-live="polite"></div></div>
-<div class="note"><b>How to read:</b> Primary stage means where the illustrated failure originates. Additional stages are conditional; downstream consequences are not counted as additional failures. AI relevance is a scenario-specific interpretation. Safeguard options and tests are illustrative, not verified outcomes.</div>
+<p class="reference-help">The stage filter describes where a failure may occur. Themes can overlap; each risk has one underlying record. These are illustrative prompts, not validated findings.</p>
 <div class="list" id="records"></div><p id="empty" hidden>No matching risks. Try a different term or theme.</p></div></details>
 </main><footer class="foot"><div class="wrap">V3.11 featured risks · Preview branch only. Record source: V2 illustrative risk catalog. All real controls and evidence require independent verification.</div> · <a href="./field-guide.html#methods">Methodology &amp; Sources</a></footer>
 <script src="./field-guide-session.js"></script><script src="./sdlc-risk-data.js"></script>
@@ -158,20 +251,36 @@ function featuredCards(){
   const featured=t.featured.map(id=>{
    const r=records.find(v=>v.id===id);
    if(!r)throw new Error('Featured risk missing: '+id);
-   return '<div class="featured-risk"><span class="kicker">'+esc(r.id)+'</span><h3>'+esc(r.title)+'</h3><p>'+esc(r.plainEnglish)+'</p><a href="#'+esc(id)+'" data-risk-link="'+esc(id)+'">Read the complete risk &amp; assurance challenge →</a></div>';
+   return '<div class="featured-risk"><span class="kicker">'+esc(r.id)+'</span><h3>'+esc(r.title)+'</h3><p>'+esc(r.plainEnglish)+'</p><a href="#'+esc(id)+'" data-risk-link="'+esc(id)+'">Explore this risk →</a></div>';
   }).join('');
-  return '<details class="featured-theme" '+(t.id==="context"?"open ":"")+'id="theme-'+t.id+'"><summary><span class="theme-title">'+esc(t.title)+'</span><span class="theme-question">'+esc(t.q)+'</span><span class="theme-meta">2 featured examples · '+t.risks.length+' related risk records</span></summary><div class="theme-feature-grid">'+featured+'</div><div class="theme-more"><button class="show-theme" data-theme="'+t.id+'" type="button">Explore all risks in this theme →</button></div></details>';
+  return '<details class="featured-theme" '+(t.id==="context"?"open ":"")+'id="theme-'+t.id+'"><summary><span class="theme-title">'+esc(t.title)+'</span><span class="theme-question">'+esc(t.q)+'</span><span class="theme-meta">Two featured examples · '+t.risks.length+' related risks</span></summary><div class="theme-feature-grid">'+featured+'</div><div class="theme-more"><button class="show-theme" data-theme="'+t.id+'" type="button">Explore all risks in this theme →</button></div></details>';
  }).join('');
+}
+function openRisk(id,scroll=true){
+ const risk=records.find(r=>r.id===id);
+ if(!risk)return false;
+ const panel=document.getElementById('risk-focus');
+ document.getElementById('focus-content').innerHTML=card(risk);
+ panel.hidden=false;
+ if(scroll)requestAnimationFrame(()=>panel.scrollIntoView({block:'start',behavior:'smooth'}));
+ return true;
+}
+function closeRisk(){
+ document.getElementById('risk-focus').hidden=true;
+ document.getElementById('focus-content').innerHTML='';
+ if(/^#R(?:0[1-9]|1\d|2[0-2])$/.test(location.hash)){
+  history.replaceState(null,'',location.pathname+location.search);
+ }
+ document.getElementById('featured-themes').scrollIntoView({block:'start',behavior:'smooth'});
 }
 function setupFeatured(){
  document.getElementById('featured-themes').innerHTML=featuredCards();
- document.querySelectorAll('.featured-risk [data-risk-link]').forEach(link=>link.addEventListener('click',()=>{
-  document.getElementById('full-reference').open=true;
-  document.getElementById('domain').value='all';
-  document.getElementById('q').value='';
-  document.getElementById('stage').value='all';
-  document.getElementById('relevance').value='all';
-  render(true);
+ document.getElementById('focus-close').addEventListener('click',closeRisk);
+ document.querySelectorAll('.featured-risk [data-risk-link]').forEach(link=>link.addEventListener('click',event=>{
+  event.preventDefault();
+  const id=link.dataset.riskLink;
+  if(location.hash==='#'+id)openRisk(id);
+  else location.hash=id;
  }));
  document.querySelectorAll('.show-theme').forEach(btn=>btn.addEventListener('click',()=>{
   document.getElementById('full-reference').open=true;
@@ -183,6 +292,7 @@ function setupFeatured(){
   document.getElementById('full-reference').scrollIntoView({behavior:'smooth',block:'start'});
  }));
 }
+
 const stages=["Design & planning","Coding & tool execution","Testing & validation","Review & approval","Build & release","Production & operations"];
 
 const synonyms={
@@ -237,47 +347,39 @@ function hasActiveFilters(){
 }
 function render(focusLink=false){
  const container=document.getElementById('records');
- const oldOpenCards=new Set([...container.querySelectorAll('article .technical[open]')].map(el=>el.closest('article')?.id).filter(Boolean));
- const oldGroups=new Set([...container.querySelectorAll('.stage-cluster[open]')].map(el=>el.id));
- const selectedRisks=selected();
- if(focusLink&&/^R(?:0[1-9]|1\d|2[0-2])$/.test((location.hash.slice(1)||new URLSearchParams(location.search).get("risk")||"").toUpperCase())) document.getElementById("full-reference").open=true;
  const targetRisk=(location.hash.slice(1)||new URLSearchParams(location.search).get('risk')||'').toUpperCase();
  const validRisk=/^R(?:0[1-9]|1\d|2[0-2])$/.test(targetRisk)&&records.some(r=>r.id===targetRisk);
- if(focusLink&&validRisk&&(!selectedRisks.some(r=>r.id===targetRisk))){
-  // Links from Assessment must not be hidden by a previous filter.
-  document.getElementById('q').value='';
-  document.getElementById('domain').value='all';
-  document.getElementById('stage').value='all';
-  document.getElementById('relevance').value='all';
- }
- const found=selected();
- const filtered=hasActiveFilters();
- if(filtered){container.innerHTML=found.map(card).join('');}
- else {
-  container.innerHTML=stages.map(st=>{
-   const group=found.filter(r=>r.primaryStage===st);
-   return group.length?stageGroup(st,group):'';
-  }).join('');
- }
- oldGroups.forEach(id=>{const group=document.getElementById(id);if(group)group.open=true;});
- oldOpenCards.forEach(id=>{const card=document.getElementById(id);if(card){const details=card.querySelector('details');if(details)details.open=true;const cluster=card.closest('.stage-cluster');if(cluster)cluster.open=true;}});
  if(focusLink&&validRisk){
-  const record=document.getElementById(targetRisk);
-  if(record){const cluster=record.closest('.stage-cluster');if(cluster)cluster.open=true;
-   // The technical appendix remains closed when arriving from a deep link.
-   if(targetRisk!==lastDeepLink){lastDeepLink=targetRisk;requestAnimationFrame(()=>record.scrollIntoView({block:'start',behavior:'auto'}));}
-  }
+  openRisk(targetRisk,!document.getElementById('risk-focus').hidden||location.hash.length>0);
  }
- document.getElementById('count').textContent=filtered?found.length+' of '+records.length+' matching records':records.length+' distinct scenarios · 6 SDLC stages';
+ const found=selected(),filtered=hasActiveFilters();
+ // Full reference is an index, not another accordion stack. Each entry opens the same focused risk view.
+ container.innerHTML=found.length?(
+   filtered?'<div class="reference-index">'+found.map(indexItem).join('')+'</div>':
+   stages.map(st=>{
+    const group=found.filter(r=>r.primaryStage===st);
+    return group.length?'<section class="index-stage"><h3>'+esc(st)+'</h3><div class="reference-index">'+group.map(indexItem).join('')+'</div></section>':'';
+   }).join('')
+ ):'';
+ container.querySelectorAll('[data-open-risk]').forEach(a=>a.addEventListener('click',e=>{
+  e.preventDefault();const id=a.dataset.openRisk;
+  if(location.hash==='#'+id)openRisk(id);
+  else location.hash=id;
+ }));
+ document.getElementById('count').textContent=filtered?found.length+' of '+records.length+' matching records':records.length+' distinct scenarios';
  document.getElementById('empty').hidden=found.length>0;
  renderStages();
+}
+function indexItem(r){
+ const themes=membership(r.id);
+ return '<a class="risk-index-item" href="#'+esc(r.id)+'" data-open-risk="'+esc(r.id)+'"><span class="risk-index-name"><strong>'+esc(r.id)+'</strong><span>'+esc(r.title)+'</span></span><span class="risk-index-meta">'+esc(themes.join(' · '))+'</span><span class="index-arrow" aria-hidden="true">→</span></a>';
 }
 
 document.getElementById('q').addEventListener('input',()=>render());
 document.getElementById('domain').addEventListener('change',()=>render());
 document.getElementById('stage').addEventListener('change',()=>render());
 document.getElementById('relevance').addEventListener('change',()=>render());
-window.addEventListener('hashchange',()=>{lastDeepLink=null;render(true);});
+window.addEventListener('hashchange',()=>render(true));
 setupFeatured();
 render(true);
 </script></body></html>
