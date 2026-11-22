@@ -7,7 +7,7 @@
  R06:['AS-06'],R07:['AS-05','AS-08'],R08:['AS-01','AS-04'],R09:['AS-08','AS-07'],
  R10:['AS-01','AS-03'],R11:['AS-01'],R12:['AS-02','AS-06'],R13:['AS-02','AS-01'],
  R14:['AS-03'],R15:['AS-03'],R16:['AS-04'],R17:['AS-04','AS-07'],R18:['AS-03','AS-05'],
- R19:['AS-05','AS-07'],R20:['AS-07','AS-02'],R21:['AS-07','AS-08']
+ R19:['AS-05','AS-07'],R20:['AS-07','AS-02'],R21:['AS-07','AS-08'],R22:['AS-03','AS-04']
  };
  function read(){try{const x=JSON.parse(sessionStorage.getItem(KEY)||'null');return x&&x.version===1?x:null;}catch{return null;}}
  function save(data){try{sessionStorage.setItem(KEY,JSON.stringify({version:1,...data}));return true;}catch{return false;}}
