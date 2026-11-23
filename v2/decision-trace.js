@@ -14,9 +14,16 @@ function text(v){return typeof v==='string'?v.trim():'';}
 function decisionFromFields(fields,existing){
  const mode=modes[fields.mode]?fields.mode:'custom',template=modes[mode];
  const title=text(fields.title)||template.title;
- const sameDecision=!!(existing&&existing.mode===mode&&existing.title===title);
+ // An authorization boundary is part of the identity of the decision being evaluated.
+ // Do not transplant observations or a management disposition across changed actors,
+ // execution identities, or delegated scope merely because the question/title is unchanged.
+ const authority={decider:text(fields.decider),executor:text(fields.executor),scope:text(fields.scope)};
+ const sameDecision=!!(existing&&existing.mode===mode&&existing.title===title&&
+  text(existing.authority?.decider)===authority.decider&&
+  text(existing.authority?.executor)===authority.executor&&
+  text(existing.authority?.scope)===authority.scope);
  const d={id:sameDecision?existing.id:id('decision'),mode,title,alternatives:(Array.isArray(fields.alternatives)?fields.alternatives:String(fields.alternatives||'').split('\n')).map(text).filter(Boolean),
-  authority:{decider:text(fields.decider),executor:text(fields.executor),scope:text(fields.scope)},
+  authority,
   relatedRisks:Array.isArray(fields.relatedRisks)?fields.relatedRisks.filter(v=>/^R(?:0[1-9]|1\d|2[01])$/.test(v)):[],
   assumptions:text(fields.assumptions),claims:sameDecision&&Array.isArray(existing?.claims)?existing.claims:[],management:sameDecision?existing.management||{decision:'',owner:'',rationale:''}:{decision:'',owner:'',rationale:''}};
  return d;
